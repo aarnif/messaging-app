@@ -1,5 +1,6 @@
 # Työaikakirjanpito
 
-| päivä | aika | mitä tein |
-| :---: | :--- | :-------- |
-|  yht  | 0    |           |
+| päivä | aika | mitä tein                |
+| :---: | :--- | :----------------------- |
+| 26.9  | 1    | vaatimusmäärittelyn teko |
+|  yht  | 1    |                          |
