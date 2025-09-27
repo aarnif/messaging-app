@@ -1,0 +1,19 @@
+export interface Contact {
+  userId: number;
+  contactId: number;
+  status: "added" | "blocked";
+}
+
+export interface Chat {
+  type: "private" | "group";
+  name: string | null;
+  description: string | null;
+  avatar: string | null;
+  createdBy: number;
+}
+
+export interface ChatMember {
+  userId: number;
+  chatId: number;
+  role: "member" | "admin";
+}
