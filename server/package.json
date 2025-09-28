@@ -6,7 +6,8 @@
   "scripts": {
     "start:db": "docker compose -f docker-compose.yml up",
     "populate:db": "POPULATE_DB=true tsx src/populateDatabase.ts",
-    "dev": "NODE_ENV=development nodemon --exec tsx src/index.ts"
+    "dev": "NODE_ENV=development nodemon --exec tsx src/index.ts",
+    "lint": "eslint ."
   },
   "keywords": [],
   "author": "",
@@ -25,8 +26,13 @@
     "umzug": "^3.8.2"
   },
   "devDependencies": {
+    "@eslint/js": "^9.36.0",
+    "@stylistic/eslint-plugin": "^5.4.0",
     "@types/bcrypt": "^6.0.0",
+    "@types/eslint__js": "^8.42.3",
+    "eslint": "^9.36.0",
     "tsx": "^4.20.5",
-    "typescript": "^5.9.2"
+    "typescript": "^5.9.2",
+    "typescript-eslint": "^8.44.1"
   }
 }
