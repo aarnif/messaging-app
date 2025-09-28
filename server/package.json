@@ -5,6 +5,7 @@
   "main": "index.js",
   "scripts": {
     "start:db": "docker compose -f docker-compose.yml up",
+    "populate:db": "POPULATE_DB=true tsx src/populateDatabase.ts",
     "dev": "NODE_ENV=development nodemon --exec tsx src/index.ts"
   },
   "keywords": [],
