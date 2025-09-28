@@ -31,6 +31,4 @@ const connectToDatabase = async () => {
   }
 };
 
-connectToDatabase();
-
 export { sequelize, connectToDatabase };
