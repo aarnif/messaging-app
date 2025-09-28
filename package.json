@@ -1,0 +1,24 @@
+{
+  "name": "fullstack-open-project",
+  "version": "1.0.0",
+  "description": "The Full Stack Open Course Project: Messaging App",
+  "main": "index.js",
+  "scripts": {
+    "install:server": "npm install --prefix server",
+    "start:db": "npm run start:db --prefix server",
+    "populate:db": "npm run populate:db --prefix server",
+    "dev:server": "npm run dev --prefix server"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/aarnif/fullstack-open-project.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "module",
+  "bugs": {
+    "url": "https://github.com/aarnif/fullstack-open-project/issues"
+  },
+  "homepage": "https://github.com/aarnif/fullstack-open-project#readme"
+}
