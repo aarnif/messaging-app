@@ -15,6 +15,16 @@ input CreateUserInput {
   confirmPassword: String!
 }
 
+type Token {
+  value: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
 type Mutation {
   createUser(input: CreateUserInput!): User
+  login(input: LoginInput!): Token
 }

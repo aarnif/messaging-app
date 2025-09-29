@@ -1,8 +1,10 @@
 import type { Resolvers } from "./types/graphql";
 import { User, Contact, Chat, ChatMember, Message } from "./models";
+import config from "config";
 import { GraphQLError } from "graphql";
 import { z } from "zod";
 import bcrypt from "bcrypt";
+import jwt from "jsonwebtoken";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -75,6 +77,37 @@ export const resolvers: Resolvers = {
         });
       } catch (error) {
         throw new GraphQLError("Failed to create user", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
+    login: async (_, { input }) => {
+      const { username, password } = input;
+      const userExists = await User.findOne({ where: { username } });
+
+      if (
+        !userExists ||
+        !(await bcrypt.compare(password, userExists.passwordHash))
+      ) {
+        throw new GraphQLError("Invalid username or password!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      try {
+        const userForToken = {
+          username: userExists.username,
+          id: userExists.id,
+        };
+
+        return { value: jwt.sign(userForToken, config.JWT_SECRET) };
+      } catch (error) {
+        throw new GraphQLError("Failed to login!", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
