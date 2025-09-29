@@ -27,6 +27,24 @@ export const resolvers: Resolvers = {
       }
       return User.findByPk(context.currentUser.id);
     },
+    findUserById: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const user = await User.findByPk(Number(id));
+      if (!user) {
+        throw new GraphQLError("User not found!", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+      return user;
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {
