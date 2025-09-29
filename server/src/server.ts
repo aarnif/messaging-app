@@ -6,6 +6,7 @@ import { fileURLToPath } from "url";
 import { gql } from "graphql-tag";
 import { resolvers } from "./resolvers";
 import { connectToDatabase } from "./db";
+import config from "config";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -19,7 +20,9 @@ const typeDefs = gql(
 const start = async () => {
   await connectToDatabase();
   const server = new ApolloServer({ typeDefs, resolvers });
-  const { url } = await startStandaloneServer(server);
+  const { url } = await startStandaloneServer(server, {
+    listen: { port: config.PORT },
+  });
   console.log(`Server is now running at ${url}`);
 };
 
