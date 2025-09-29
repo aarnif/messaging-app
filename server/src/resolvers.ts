@@ -19,6 +19,14 @@ export const resolvers: Resolvers = {
 
       return counts.reduce((total, count) => total + count, 0);
     },
+    me: async (_, __, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+      return User.findByPk(context.currentUser.id);
+    },
   },
   Mutation: {
     createUser: async (_, { input }) => {

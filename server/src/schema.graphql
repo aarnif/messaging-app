@@ -1,5 +1,6 @@
 type Query {
   countDocuments: Int!
+  me: User
 }
 
 type User {
@@ -9,14 +10,15 @@ type User {
   avatar: String
 }
 
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  login(input: LoginInput!): Token
+}
+
 input CreateUserInput {
   username: String!
   password: String!
   confirmPassword: String!
-}
-
-type Token {
-  value: String!
 }
 
 input LoginInput {
@@ -24,7 +26,6 @@ input LoginInput {
   password: String!
 }
 
-type Mutation {
-  createUser(input: CreateUserInput!): User
-  login(input: LoginInput!): Token
+type Token {
+  value: String!
 }
