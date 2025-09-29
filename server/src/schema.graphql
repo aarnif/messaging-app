@@ -1,3 +1,20 @@
 type Query {
   countDocuments: Int!
 }
+
+type User {
+  id: ID!
+  username: String!
+  name: String
+  avatar: String
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  confirmPassword: String!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+}
