@@ -7,4 +7,6 @@
 | 26.9  | 4    | tietokannan luonti       |
 | 27.9  | 4    |                          |
 | 28.9  | 1    |                          |
-|  yht  | 12   |                          |
+| 28.9  | 1    | Palvelimen teko          |
+| 29.9  | 3    |                          |
+|  yht  | 16   |                          |
