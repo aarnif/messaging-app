@@ -4,3 +4,7 @@
 - Vaatimusmäärittelyn teko
 - Tietokannan suunnittelu, sen mallien luonti (5 taulua) ja alustus seed datalla
 - Palvelimen teon aloitus
+
+## Viikko 2
+
+- Käyttäjänhallinnan lisäys palvelimelle
