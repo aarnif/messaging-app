@@ -125,6 +125,39 @@ export const resolvers: Resolvers = {
       }
       return chat;
     },
+    allContactsByUser: async (
+      _,
+      { searchByName },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const whereClause = searchByName
+        ? { name: { [Op.iLike]: `%${searchByName}%` } }
+        : {};
+
+      const user = await User.findByPk(context.currentUser.id, {
+        include: [
+          {
+            model: Contact,
+            as: "contacts",
+            include: [
+              {
+                model: User,
+                as: "contact",
+                where: whereClause,
+              },
+            ],
+          },
+        ],
+      });
+
+      return user?.contacts || [];
+    },
   },
   ChatMember: {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>

@@ -2,6 +2,7 @@ import type { InferAttributes, InferCreationAttributes } from "sequelize";
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../db";
 import { Chat } from "./chat";
+import { Contact } from "./contact";
 
 class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare id?: number;
@@ -10,6 +11,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare name: string;
   declare avatar: string | null;
   declare chats?: Chat[];
+  declare contacts?: Contact[];
 }
 User.init(
   {
