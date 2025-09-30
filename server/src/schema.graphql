@@ -55,6 +55,7 @@ type Contact {
 type Mutation {
   createUser(input: CreateUserInput!): User
   login(input: LoginInput!): Token
+  addContact(id: ID!): Contact
 }
 
 input CreateUserInput {

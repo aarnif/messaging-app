@@ -258,5 +258,63 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    addContact: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const contactId = Number(id);
+
+      if (contactId === context.currentUser.id) {
+        throw new GraphQLError("Cannot add yourself as a contact", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      const contactExists = await Contact.findOne({
+        where: {
+          userId: Number(context.currentUser.id),
+          contactId: contactId,
+        },
+      });
+
+      if (contactExists) {
+        throw new GraphQLError("Contact already exists!", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      try {
+        const newContact = await Contact.create({
+          userId: Number(context.currentUser.id),
+          contactId: contactId,
+          status: "added",
+        });
+
+        return await Contact.findByPk(newContact.id, {
+          include: [
+            {
+              model: User,
+              as: "contactDetails",
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to create contact!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
