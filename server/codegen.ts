@@ -9,6 +9,7 @@ const config: CodegenConfig = {
           User: "src/models/user#User as SequelizeUser",
           Contact: "src/models/contact#Contact as SequelizeContact",
           Chat: "src/models/chat#Chat as SequelizeChat",
+          UserChat: "src/models/chat#Chat as SequelizeChat",
           ChatMember: "src/models/chatMember#ChatMember as SequelizeChatMember",
           Message: "src/models/message#Message as SequelizeMessage",
         },

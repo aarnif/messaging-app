@@ -5,6 +5,7 @@ import { GraphQLError } from "graphql";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
+import { Op } from "sequelize";
 
 export const resolvers: Resolvers = {
   Query: {
@@ -44,6 +45,51 @@ export const resolvers: Resolvers = {
         });
       }
       return user;
+    },
+    allChatsByUser: async (
+      _,
+      { searchByTitle },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const whereClause = searchByTitle
+        ? { name: { [Op.iLike]: `%${searchByTitle}%` } }
+        : {};
+
+      const user = await User.findByPk(context.currentUser.id, {
+        include: [
+          {
+            model: Chat,
+            as: "chats",
+            where: whereClause,
+            through: {
+              attributes: [],
+            },
+            include: [
+              {
+                model: Message,
+                as: "messages",
+                include: [{ model: User, as: "sender" }],
+              },
+            ],
+          },
+        ],
+        order: [
+          [
+            { model: Chat, as: "chats" },
+            { model: Message, as: "messages" },
+            "createdAt",
+            "DESC",
+          ],
+        ],
+      });
+
+      return user?.chats || [];
     },
   },
   Mutation: {
