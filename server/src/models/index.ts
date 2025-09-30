@@ -6,7 +6,7 @@ import { Message } from "./message";
 
 User.hasMany(Contact, { foreignKey: "userId", as: "contacts" });
 Contact.belongsTo(User, { foreignKey: "userId", as: "owner" });
-Contact.belongsTo(User, { foreignKey: "contactId", as: "contact" });
+Contact.belongsTo(User, { foreignKey: "contactId", as: "contactDetails" });
 
 User.hasMany(Chat, { foreignKey: "createdBy", as: "createdChats" });
 Chat.belongsTo(User, { foreignKey: "createdBy", as: "creator" });

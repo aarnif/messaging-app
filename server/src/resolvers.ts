@@ -148,7 +148,7 @@ export const resolvers: Resolvers = {
             include: [
               {
                 model: User,
-                as: "contact",
+                as: "contactDetails",
                 where: whereClause,
               },
             ],
