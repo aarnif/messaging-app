@@ -5,7 +5,7 @@ import stylistic from "@stylistic/eslint-plugin";
 
 export default defineConfig({
   files: ["**/*.ts"],
-  ignores: ["server/src/types.ts", "node_modules"],
+  ignores: ["src/types/graphql.ts", "node_modules"],
   extends: [
     eslint.configs.recommended,
     ...tseslint.configs.recommendedTypeChecked,
