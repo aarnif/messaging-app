@@ -1,4 +1,4 @@
-import type { Contact } from "../types";
+import type { Contact } from "../types/other";
 
 const contacts: Contact[] = [
   {

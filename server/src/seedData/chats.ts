@@ -1,4 +1,4 @@
-import type { Chat } from "../types";
+import type { Chat } from "../types/other";
 
 const chats: Chat[] = [
   {
