@@ -3,6 +3,7 @@ type Query {
   me: User
   findUserById(id: ID!): User!
   allChatsByUser(searchByTitle: String): [UserChat]
+  findChatById(id: ID!): Chat!
 }
 
 type User {
@@ -17,6 +18,24 @@ type UserChat {
   name: String
   avatar: String
   messages: [Message]
+}
+
+type Chat {
+  id: ID!
+  type: String!
+  name: String
+  description: String
+  avatar: String
+  members: [ChatMember]
+  messages: [Message]
+}
+
+type ChatMember {
+  id: ID!
+  username: String!
+  name: String
+  avatar: String
+  role: String
 }
 
 type Message {

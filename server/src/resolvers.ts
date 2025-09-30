@@ -91,6 +91,44 @@ export const resolvers: Resolvers = {
 
       return user?.chats || [];
     },
+    findChatById: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const chat = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["role"],
+            },
+          },
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found!", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+      return chat;
+    },
+  },
+  ChatMember: {
+    role: (parent: ChatMember & { chat_member?: { role: string } }) =>
+      parent.chat_member?.role || null,
   },
   Mutation: {
     createUser: async (_, { input }) => {
