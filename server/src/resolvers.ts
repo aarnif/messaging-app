@@ -132,7 +132,7 @@ export const resolvers: Resolvers = {
     },
     allContactsByUser: async (
       _,
-      { searchByName },
+      { search },
       context: { currentUser: User | null }
     ) => {
       if (!context.currentUser) {
@@ -141,8 +141,13 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const whereClause = searchByName
-        ? { name: { [Op.iLike]: `%${searchByName}%` } }
+      const whereClause = search
+        ? {
+            [Op.or]: [
+              { username: { [Op.iLike]: `%${search}%` } },
+              { name: { [Op.iLike]: `%${search}%` } },
+            ],
+          }
         : {};
 
       const user = await User.findByPk(context.currentUser.id, {
