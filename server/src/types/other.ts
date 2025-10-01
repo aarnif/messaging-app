@@ -1,7 +1,7 @@
 export interface Contact {
   userId: number;
   contactId: number;
-  status: "added" | "blocked";
+  isBlocked: boolean;
 }
 
 export interface Chat {
