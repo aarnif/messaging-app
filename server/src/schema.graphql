@@ -59,6 +59,7 @@ type Mutation {
   addContact(id: ID!): Contact
   removeContact(id: ID!): Contact
   toggleBlockContact(id: ID!): Contact
+  editProfile(input: EditProfileInput!): User
 }
 
 input CreateUserInput {
@@ -70,6 +71,11 @@ input CreateUserInput {
 input LoginInput {
   username: String!
   password: String!
+}
+
+input EditProfileInput {
+  name: String!
+  about: String
 }
 
 type Token {

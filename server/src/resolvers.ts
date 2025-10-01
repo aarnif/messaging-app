@@ -395,5 +395,62 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    editProfile: async (
+      _,
+      { input },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { name, about } = input;
+
+      const editProfileInputSchema = z.object({
+        name: z.string().min(3, "Name be at least 3 characters long"),
+        about: z.string().nullable(),
+      });
+
+      try {
+        editProfileInputSchema.parse({ name, about });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      try {
+        const user = await User.findByPk(context.currentUser.id);
+
+        if (!user) {
+          throw new GraphQLError("User not found!", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: context.currentUser.id,
+            },
+          });
+        }
+
+        user.name = name;
+        user.about = about || null;
+
+        await user.save();
+        return user;
+      } catch (error) {
+        throw new GraphQLError("Failed to edit profile!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
