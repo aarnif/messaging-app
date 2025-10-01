@@ -168,6 +168,46 @@ export const resolvers: Resolvers = {
 
       return user?.contacts || [];
     },
+    nonContactUsers: async (
+      _,
+      { search },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const whereClause = search
+        ? {
+            [Op.or]: [
+              { username: { [Op.iLike]: `%${search}%` } },
+              { name: { [Op.iLike]: `%${search}%` } },
+            ],
+          }
+        : {};
+
+      const existingContacts = await Contact.findAll({
+        where: { userId: context.currentUser.id },
+        attributes: ["contactId"],
+      });
+
+      const existingContactIds = existingContacts.map(
+        (contact) => contact.contactId
+      );
+
+      const availableUsers = await User.findAll({
+        where: {
+          id: {
+            [Op.notIn]: [...existingContactIds, Number(context.currentUser.id)],
+          },
+          ...whereClause,
+        },
+      });
+
+      return availableUsers;
+    },
     isBlockedByUser: async (
       _,
       { id },
