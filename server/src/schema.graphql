@@ -11,6 +11,7 @@ type User {
   id: ID!
   username: String!
   name: String
+  about: String
   avatar: String
 }
 

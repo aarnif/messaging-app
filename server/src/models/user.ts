@@ -9,6 +9,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare username: string;
   declare passwordHash: string;
   declare name: string;
+  declare about: string | null;
   declare avatar: string | null;
   declare chats?: Chat[];
   declare contacts?: Contact[];
@@ -30,6 +31,10 @@ User.init(
       allowNull: false,
     },
     name: {
+      type: DataTypes.STRING,
+      allowNull: true,
+    },
+    about: {
       type: DataTypes.STRING,
       allowNull: true,
     },
