@@ -48,7 +48,7 @@ export const resolvers: Resolvers = {
     },
     allChatsByUser: async (
       _,
-      { searchByTitle },
+      { search },
       context: { currentUser: User | null }
     ) => {
       if (!context.currentUser) {
@@ -57,8 +57,13 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const whereClause = searchByTitle
-        ? { name: { [Op.iLike]: `%${searchByTitle}%` } }
+      const whereClause = search
+        ? {
+            [Op.or]: [
+              { name: { [Op.iLike]: `%${search}%` } },
+              { description: { [Op.iLike]: `%${search}%` } },
+            ],
+          }
         : {};
 
       const user = await User.findByPk(context.currentUser.id, {

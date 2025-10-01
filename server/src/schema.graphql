@@ -2,7 +2,7 @@ type Query {
   countDocuments: Int!
   me: User
   findUserById(id: ID!): User!
-  allChatsByUser(searchByTitle: String): [UserChat]
+  allChatsByUser(search: String): [UserChat]
   allContactsByUser(searchByName: String): [Contact]
   findChatById(id: ID!): Chat!
   isBlockedByUser(id: ID!): Boolean
