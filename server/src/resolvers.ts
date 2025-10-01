@@ -316,5 +316,42 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    removeContact: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        const contactToBeRemoved = await Contact.findOne({
+          where: {
+            id: Number(id),
+            userId: context.currentUser.id,
+          },
+          include: [{ model: User, as: "contactDetails" }],
+        });
+
+        if (!contactToBeRemoved) {
+          throw new GraphQLError("Contact not found!", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        await contactToBeRemoved.destroy();
+
+        return contactToBeRemoved;
+      } catch (error) {
+        throw new GraphQLError("Failed to remove contact!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
