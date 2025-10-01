@@ -9,7 +9,7 @@ class Contact extends Model<
   declare id?: number;
   declare userId: number;
   declare contactId: number;
-  declare status: "added" | "blocked";
+  declare isBlocked: boolean;
 }
 Contact.init(
   {
@@ -34,9 +34,9 @@ Contact.init(
         key: "id",
       },
     },
-    status: {
-      type: DataTypes.ENUM("added", "blocked"),
-      defaultValue: "added",
+    isBlocked: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
       allowNull: false,
     },
   },

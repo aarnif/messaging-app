@@ -48,7 +48,7 @@ type Message {
 
 type Contact {
   id: ID!
-  status: String!
+  isBlocked: Boolean!
   contactDetails: User
 }
 

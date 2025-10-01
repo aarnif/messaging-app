@@ -296,7 +296,7 @@ export const resolvers: Resolvers = {
         const newContact = await Contact.create({
           userId: Number(context.currentUser.id),
           contactId: contactId,
-          status: "added",
+          isBlocked: false,
         });
 
         return await Contact.findByPk(newContact.id, {
