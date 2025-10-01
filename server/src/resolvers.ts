@@ -353,5 +353,47 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    toggleBlockContact: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        const targetContact = await Contact.findOne({
+          where: {
+            id: Number(id),
+            userId: context.currentUser.id,
+          },
+          include: [{ model: User, as: "contactDetails" }],
+        });
+
+        if (!targetContact) {
+          throw new GraphQLError("Contact not found!", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        targetContact.isBlocked = !targetContact.isBlocked;
+        await targetContact.save();
+
+        return targetContact;
+      } catch (error) {
+        throw new GraphQLError("Failed to remove contact!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
