@@ -158,6 +158,36 @@ export const resolvers: Resolvers = {
 
       return user?.contacts || [];
     },
+    isBlockedByUser: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const contact = await Contact.findOne({
+        where: {
+          contactId: context.currentUser.id,
+          userId: Number(id),
+        },
+        include: [{ model: User, as: "contactDetails" }],
+      });
+
+      if (!contact) {
+        throw new GraphQLError("Contact not found!", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      return contact.isBlocked;
+    },
   },
   ChatMember: {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>
