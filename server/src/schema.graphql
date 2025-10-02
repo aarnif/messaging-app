@@ -65,6 +65,7 @@ type Mutation {
   createChat(input: CreateChatInput!): Chat
   deleteChat(id: ID!): Chat
   editChat(input: EditChatInput!): Chat
+  leaveChat(id: ID!): Chat
 }
 
 input CreateUserInput {

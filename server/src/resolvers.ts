@@ -801,5 +801,45 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    leaveChat: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        await ChatMember.destroy({
+          where: {
+            userId: context?.currentUser?.id,
+            chatId: Number(id),
+          },
+        });
+
+        return await Chat.findByPk(Number(id), {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to leave chat!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
