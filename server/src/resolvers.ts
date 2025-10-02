@@ -626,5 +626,61 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    deleteChat: async (_, { id }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        const chatToBeDeleted = await Chat.findByPk(Number(id), {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+
+        if (!chatToBeDeleted) {
+          throw new GraphQLError("Chat not found!", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        await chatToBeDeleted.destroy();
+        await ChatMember.destroy({
+          where: {
+            chatId: Number(id),
+          },
+        });
+        await Message.destroy({
+          where: {
+            chatId: Number(id),
+          },
+        });
+
+        return chatToBeDeleted;
+      } catch (error) {
+        throw new GraphQLError("Failed to delete chat!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
