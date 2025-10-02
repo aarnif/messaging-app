@@ -64,6 +64,7 @@ type Mutation {
   editProfile(input: EditProfileInput!): User
   createChat(input: CreateChatInput!): Chat
   deleteChat(id: ID!): Chat
+  editChat(input: EditChatInput!): Chat
 }
 
 input CreateUserInput {
@@ -87,6 +88,13 @@ input CreateChatInput {
   description: String
   members: [ID!]!
   initialMessage: String!
+}
+
+input EditChatInput {
+  id: ID!
+  name: String!
+  description: String
+  members: [ID!]!
 }
 
 type Token {

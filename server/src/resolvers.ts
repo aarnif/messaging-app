@@ -682,5 +682,124 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    editChat: async (_, { input }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { id, name, description, members } = input;
+
+      const editChatSchema = z.object({
+        id: z.string(),
+        name: z
+          .string()
+          .min(3, "Group chat name must be at least 3 characters long"),
+        description: z.string().nullable(),
+        members: z.string().array(),
+      });
+
+      try {
+        editChatSchema.parse({ id, name, description, members });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      try {
+        const chatToBeUpdated = await Chat.findByPk(Number(id), {
+          include: [
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+
+        if (!chatToBeUpdated) {
+          throw new GraphQLError("Chat not found!", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        const currentMemberIds =
+          chatToBeUpdated.members?.map((member) => member.id) || [];
+
+        const newMemberIds = members.map((member) => Number(member));
+
+        const membersToAdd = newMemberIds.filter(
+          (memberId) => !currentMemberIds.includes(memberId)
+        );
+
+        const membersToRemove = currentMemberIds.filter(
+          (memberId) =>
+            !newMemberIds.includes(Number(memberId)) &&
+            Number(memberId) !== Number(context?.currentUser?.id)
+        );
+
+        if (membersToAdd.length > 0) {
+          await ChatMember.bulkCreate(
+            membersToAdd.map((memberId) => ({
+              userId: memberId,
+              chatId: Number(chatToBeUpdated.id),
+              role: "member",
+            }))
+          );
+        }
+
+        if (membersToRemove.length > 0) {
+          await ChatMember.destroy({
+            where: {
+              userId: {
+                [Op.in]: membersToRemove.map((member) => Number(member)),
+              },
+              chatId: Number(chatToBeUpdated.id),
+            },
+          });
+        }
+
+        chatToBeUpdated.name = name;
+        chatToBeUpdated.description = description || null;
+
+        await chatToBeUpdated.save();
+
+        return await Chat.findByPk(Number(id), {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to edit chat!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
