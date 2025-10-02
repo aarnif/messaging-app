@@ -532,5 +532,99 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    createChat: async (_, { input }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { name, description, members, initialMessage } = input;
+
+      const newChatSchema = z
+        .object({
+          name: z.string().nullable(),
+          description: z.string().nullable(),
+          members: z.string().array(),
+          initialMessage: z.string().min(1, "Message content cannot be empty."),
+        })
+        .refine(
+          (data) => {
+            if (data.members.length > 1) {
+              return data.name && data.name.trim().length >= 3;
+            }
+            return true;
+          },
+          {
+            message: "Group chat name must be at least 3 characters long",
+            path: ["name"],
+          }
+        );
+
+      try {
+        newChatSchema.parse({ name, description, members, initialMessage });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      try {
+        const newChat = await Chat.create({
+          name: name || null,
+          description: description || null,
+          type: members.length > 1 ? "group" : "private",
+          createdBy: Number(context.currentUser.id),
+        });
+
+        await ChatMember.bulkCreate(
+          [context.currentUser.id, ...members].map((member) => {
+            return {
+              userId: Number(member),
+              chatId: Number(newChat.id),
+              role:
+                Number(member) === Number(context.currentUser?.id)
+                  ? "admin"
+                  : "member",
+            };
+          })
+        );
+
+        await Message.create({
+          senderId: Number(context.currentUser.id),
+          chatId: Number(newChat.id),
+          content: initialMessage,
+        });
+
+        return await Chat.findByPk(newChat.id, {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to create chat!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };

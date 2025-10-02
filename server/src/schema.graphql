@@ -62,6 +62,7 @@ type Mutation {
   removeContact(id: ID!): Contact
   toggleBlockContact(id: ID!): Contact
   editProfile(input: EditProfileInput!): User
+  createChat(input: CreateChatInput!): Chat
 }
 
 input CreateUserInput {
@@ -78,6 +79,13 @@ input LoginInput {
 input EditProfileInput {
   name: String!
   about: String
+}
+
+input CreateChatInput {
+  name: String
+  description: String
+  members: [ID!]!
+  initialMessage: String!
 }
 
 type Token {
