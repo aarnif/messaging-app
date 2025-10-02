@@ -66,6 +66,7 @@ type Mutation {
   deleteChat(id: ID!): Chat
   editChat(input: EditChatInput!): Chat
   leaveChat(id: ID!): Chat
+  sendMessage(input: SendMessageInput!): Chat
 }
 
 input CreateUserInput {
@@ -96,6 +97,11 @@ input EditChatInput {
   name: String!
   description: String
   members: [ID!]!
+}
+
+input SendMessageInput {
+  id: ID!
+  content: String!
 }
 
 type Token {

@@ -841,5 +841,68 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    sendMessage: async (
+      _,
+      { input },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { id, content } = input;
+
+      const newMessageInputSchema = z.object({
+        id: z.string(),
+        content: z.string().min(1, "Message content cannot be empty"),
+      });
+
+      try {
+        newMessageInputSchema.parse({ id, content });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      try {
+        await Message.create({
+          senderId: Number(context.currentUser.id),
+          chatId: Number(id),
+          content: content,
+        });
+
+        return await Chat.findByPk(Number(id), {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role"],
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to add message to chat!", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
