@@ -21,5 +21,13 @@ export interface ChatMember {
 // For supertest GraphQL HTTP response typing
 export interface HTTPGraphQLResponse<T> {
   data?: T;
-  errors?: Array<{ message: string }>;
+  errors?: Array<{
+    message: string;
+    extensions?: {
+      code?: string;
+      validationErrors?: Array<{
+        message?: string;
+      }>;
+    };
+  }>;
 }
