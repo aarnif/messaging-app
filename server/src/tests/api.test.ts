@@ -2,7 +2,7 @@ import request from "supertest";
 import type { Response } from "supertest";
 import type { ApolloServer, BaseContext } from "@apollo/server";
 import type { HTTPGraphQLResponse } from "../types/other";
-import type { User, Contact } from "~/types/graphql";
+import type { User, Contact, Chat, CreateChatInput } from "~/types/graphql";
 
 import { sequelize } from "../db";
 import { start } from "../server";
@@ -23,6 +23,26 @@ const user2Details = {
   ...user1Details,
   id: "2",
   username: "user2",
+};
+
+const user3Details = {
+  ...user1Details,
+  id: "3",
+  username: "user3",
+};
+
+const privateChatDetails = {
+  name: null,
+  description: null,
+  members: [user2Details.id],
+  initialMessage: "Hello world",
+};
+
+const groupChatDetails = {
+  name: "Group Chat",
+  description: "Test description",
+  members: [user2Details.id, user3Details.id],
+  initialMessage: "Hello world",
 };
 
 const COUNT_DOCUMENTS = `
@@ -90,6 +110,35 @@ const REMOVE_CONTACT = `
         name
         about
         avatar
+      }
+    }
+  }
+`;
+
+const CREATE_CHAT = `
+  mutation CreateChat($input: CreateChatInput!) {
+    createChat(input: $input) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
       }
     }
   }
@@ -172,6 +221,21 @@ const removeContact = async (id: string, token: string): Promise<Response> => {
     .send({
       query: REMOVE_CONTACT,
       variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const createChat = async (
+  input: CreateChatInput,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: CREATE_CHAT,
+      variables: { input },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -702,6 +766,204 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Contact not found");
         assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+    });
+  });
+
+  void describe("Chats", () => {
+    let token: string;
+
+    beforeEach(async () => {
+      await createUser(user1Details);
+      await createUser(user2Details);
+      await createUser(user3Details);
+      const loginResponse = await login({
+        username: user1Details.username,
+        password: user1Details.password,
+      });
+
+      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+        login: { value: string };
+      }>;
+      token = loginBody.data!.login.value;
+    });
+
+    void describe("Create chat", () => {
+      void test("fails without authentication", async () => {
+        const response = await createChat(privateChatDetails, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with empty initial message", async () => {
+        const response = await createChat(
+          {
+            ...privateChatDetails,
+            initialMessage: "",
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Message content cannot be empty"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("fails with group chat without name", async () => {
+        const response = await createChat(
+          {
+            ...groupChatDetails,
+            name: "",
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Group chat name must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("fails with group chat name shorter than 3 characters", async () => {
+        const response = await createChat(
+          {
+            ...groupChatDetails,
+            name: "te",
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Group chat name must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("succeeds creating private chat", async () => {
+        const response = await createChat(privateChatDetails, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.type, "private");
+        assert.strictEqual(chat.name, null);
+        assert.strictEqual(chat.description, null);
+        assert.strictEqual(chat.avatar, null);
+        assert.strictEqual(chat.members?.length, 2);
+        assert.strictEqual(chat.messages?.length, 1);
+        assert.strictEqual(chat.messages[0]?.content, "Hello world");
+        assert.strictEqual(chat.messages[0]?.sender?.id, user1Details.id);
+
+        const creator = chat.members.find(
+          (member) => member?.id === user1Details.id
+        );
+        const member = chat.members.find(
+          (member) => member?.id === user2Details.id
+        );
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member, "Member should be in members");
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(member.role, "member");
+      });
+
+      void test("succeeds creating group chat", async () => {
+        const response = await createChat(groupChatDetails, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        const chat = responseBody.data?.createChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.type, "group");
+        assert.strictEqual(chat.name, groupChatDetails.name);
+        assert.strictEqual(chat.description, groupChatDetails.description);
+        assert.strictEqual(chat.avatar, null);
+        assert.strictEqual(chat.members?.length, 3);
+        assert.strictEqual(chat.messages?.length, 1);
+        assert.strictEqual(
+          chat?.messages[0]?.content,
+          groupChatDetails.initialMessage
+        );
+        assert.strictEqual(chat?.messages[0]?.sender?.id, user1Details.id);
+        const creator = chat.members.find(
+          (member) => member?.id === user1Details.id
+        );
+        const member1 = chat.members.find(
+          (member) => member?.id === user2Details.id
+        );
+        const member2 = chat.members.find(
+          (member) => member?.id === user3Details.id
+        );
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member1, "Member 1 should be in members");
+        assert.ok(member2, "Member 2 should be in members");
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(member1.role, "member");
+        assert.strictEqual(member2.role, "member");
       });
     });
   });
