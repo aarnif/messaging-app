@@ -444,24 +444,24 @@ export const resolvers: Resolvers = {
         });
       }
 
-      try {
-        const targetContact = await Contact.findOne({
-          where: {
-            id: Number(id),
-            userId: context.currentUser.id,
+      const targetContact = await Contact.findOne({
+        where: {
+          id: Number(id),
+          userId: context.currentUser.id,
+        },
+        include: [{ model: User, as: "contactDetails" }],
+      });
+
+      if (!targetContact) {
+        throw new GraphQLError("Contact not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
           },
-          include: [{ model: User, as: "contactDetails" }],
         });
+      }
 
-        if (!targetContact) {
-          throw new GraphQLError("Contact not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
+      try {
         targetContact.isBlocked = !targetContact.isBlocked;
         await targetContact.save();
 
