@@ -44,6 +44,18 @@ const LOGIN = `
   }
 `;
 
+const ME = `
+  query Me {
+    me {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -89,6 +101,18 @@ const login = async ({
     })
     .expect("Content-Type", /json/)
     .expect(200);
+};
+
+const getMe = async (token?: string, expectedCode = 200): Promise<Response> => {
+  const response = request(url).post("/").send({
+    query: ME,
+  });
+
+  if (token) {
+    response.set("Authorization", `Bearer ${token}`);
+  }
+
+  return await response.expect("Content-Type", /json/).expect(expectedCode);
 };
 
 void describe("GraphQL API", () => {
@@ -326,6 +350,89 @@ void describe("GraphQL API", () => {
       assert.ok(token.value, "Token value should be defined");
       assert.strictEqual(typeof token.value, "string");
       assert.ok(token.value.length > 0, "Token should not be empty");
+    });
+  });
+
+  void describe("Get current user", () => {
+    let token: string;
+
+    beforeEach(async () => {
+      await createUser(userDetails);
+      const loginResponse = await login({
+        username: userDetails.username,
+        password: userDetails.password,
+      });
+
+      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+        login: { value: string };
+      }>;
+      token = loginBody.data!.login.value;
+    });
+
+    void test("fails without authentication", async () => {
+      const response = await getMe();
+
+      assert.strictEqual(response.error, false);
+
+      const responseBody = response.body as HTTPGraphQLResponse<{
+        me: User;
+      }>;
+      const user = responseBody.data?.me;
+
+      assert.strictEqual(user, null, "User should be null");
+      assert.ok(responseBody.errors, "Response should have errors");
+      assert.ok(
+        responseBody.errors?.length > 0,
+        "Should have at least one error"
+      );
+
+      const error = responseBody.errors[0];
+      assert.strictEqual(error.message, "Not authenticated");
+      assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+    });
+
+    void test("succeeds with valid token", async () => {
+      const response = await getMe(token);
+
+      assert.strictEqual(response.error, false);
+
+      const responseBody = response.body as HTTPGraphQLResponse<{
+        me: User;
+      }>;
+      const user = responseBody.data?.me;
+
+      assert.ok(user, "User should be defined");
+      assert.strictEqual(user.username, userDetails.username);
+      assert.strictEqual(
+        user.name,
+        userDetails.username[0].toUpperCase() + userDetails.username.slice(1)
+      );
+      assert.strictEqual(user.about, null);
+      assert.strictEqual(user.avatar, null);
+      assert.ok(user.id, "User ID should be defined");
+    });
+
+    void test("fails with invalid token", async () => {
+      const response = await getMe("invalid-token", 500);
+
+      const responseBody = response.body as HTTPGraphQLResponse<{
+        me: User;
+      }>;
+      const user = responseBody.data?.me;
+
+      assert.strictEqual(user, undefined, "User should be null");
+      assert.ok(responseBody.errors, "Response should have errors");
+      assert.ok(
+        responseBody.errors?.length > 0,
+        "Should have at least one error"
+      );
+
+      const error = responseBody.errors[0];
+      assert.strictEqual(
+        error.message,
+        "Context creation failed: jwt malformed"
+      );
+      assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
     });
   });
 
