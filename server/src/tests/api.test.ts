@@ -179,6 +179,35 @@ const EDIT_CHAT = `
   }
 `;
 
+const DELETE_CHAT = `
+  mutation DeleteChat($id: ID!) {
+    deleteChat(id: $id) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -286,6 +315,18 @@ const editChat = async (
     .send({
       query: EDIT_CHAT,
       variables: { input },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const deleteChat = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: DELETE_CHAT,
+      variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -1236,6 +1277,95 @@ void describe("GraphQL API", () => {
         assert.ok(chat, "Chat should be defined");
         assert.strictEqual(chat.name, "Chat with No Description");
         assert.strictEqual(chat.description, null);
+      });
+    });
+
+    void describe("Delete chat", () => {
+      let chatId: string;
+
+      beforeEach(async () => {
+        const response = await createChat(groupChatDetails, token);
+        const chatBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        chatId = chatBody.data.createChat.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await deleteChat(chatId, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          deleteChat: Chat;
+        }>;
+        const chat = responseBody.data?.deleteChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent chat ID", async () => {
+        const response = await deleteChat("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          deleteChat: Chat;
+        }>;
+        const chat = responseBody.data?.deleteChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Chat not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds deleting chat with valid ID", async () => {
+        const response = await deleteChat(chatId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          deleteChat: Chat;
+        }>;
+        const chat = responseBody.data?.deleteChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.type, "group");
+        assert.strictEqual(chat.name, groupChatDetails.name);
+        assert.strictEqual(chat.description, groupChatDetails.description);
+      });
+
+      void test("fails when trying to delete same chat twice", async () => {
+        await deleteChat(chatId, token);
+        const response = await deleteChat(chatId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          deleteChat: Chat;
+        }>;
+        const chat = responseBody.data?.deleteChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Chat not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
       });
     });
   });
