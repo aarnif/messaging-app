@@ -494,7 +494,8 @@ void describe("GraphQL API", () => {
         const loginBody = loginResponse.body as HTTPGraphQLResponse<{
           login: { value: string };
         }>;
-        token = loginBody.data!.login.value;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
       });
 
       void test("fails without authentication", async () => {
@@ -580,7 +581,8 @@ void describe("GraphQL API", () => {
       const loginBody = loginResponse.body as HTTPGraphQLResponse<{
         login: { value: string };
       }>;
-      token = loginBody.data!.login.value;
+      assert.ok(loginBody.data, "Login token value should be defined");
+      token = loginBody.data.login.value;
     });
 
     void describe("Add contact", () => {
@@ -785,7 +787,8 @@ void describe("GraphQL API", () => {
       const loginBody = loginResponse.body as HTTPGraphQLResponse<{
         login: { value: string };
       }>;
-      token = loginBody.data!.login.value;
+      assert.ok(loginBody.data, "Login token value should be defined");
+      token = loginBody.data.login.value;
     });
 
     void describe("Create chat", () => {
