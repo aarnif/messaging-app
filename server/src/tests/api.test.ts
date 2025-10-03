@@ -179,294 +179,297 @@ void describe("GraphQL API", () => {
     const count = responseBody.data?.countDocuments;
     assert.strictEqual(count, 0);
   });
+  void describe("Users", () => {
+    void describe("User creation", () => {
+      void test("fails with username shorter than 3 characters", async () => {
+        const response = await createUser({
+          ...user1Details,
+          username: "us",
+        });
 
-  void describe("User creation", () => {
-    void test("fails with username shorter than 3 characters", async () => {
-      const response = await createUser({
-        ...user1Details,
-        username: "us",
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        const user = responseBody.data?.createUser;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Username must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      assert.strictEqual(response.error, false);
+      void test("fails with password shorter than 6 characters", async () => {
+        const response = await createUser({
+          ...user1Details,
+          password: "short",
+        });
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        createUser: User;
-      }>;
-      const user = responseBody.data?.createUser;
+        assert.strictEqual(response.error, false);
 
-      assert.strictEqual(user, null, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        const user = responseBody.data?.createUser;
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Input validation failed");
-      assert.strictEqual(
-        error.extensions?.validationErrors?.[0].message,
-        "Username must be at least 3 characters long"
-      );
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
-    });
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-    void test("fails with password shorter than 6 characters", async () => {
-      const response = await createUser({
-        ...user1Details,
-        password: "short",
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Password must be at least 6 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      assert.strictEqual(response.error, false);
+      void test("fails when passwords do not match", async () => {
+        const response = await createUser({
+          ...user1Details,
+          confirmPassword: "passwor",
+        });
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        createUser: User;
-      }>;
-      const user = responseBody.data?.createUser;
+        assert.strictEqual(response.error, false);
 
-      assert.strictEqual(user, null, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        const user = responseBody.data?.createUser;
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Input validation failed");
-      assert.strictEqual(
-        error.extensions?.validationErrors?.[0].message,
-        "Password must be at least 6 characters long"
-      );
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
-    });
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-    void test("fails when passwords do not match", async () => {
-      const response = await createUser({
-        ...user1Details,
-        confirmPassword: "passwor",
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Passwords do not match"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      assert.strictEqual(response.error, false);
+      void test("fails if user already exists", async () => {
+        await createUser(user1Details);
+        const response = await createUser(user1Details);
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        createUser: User;
-      }>;
-      const user = responseBody.data?.createUser;
+        assert.strictEqual(response.error, false);
 
-      assert.strictEqual(user, null, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        const user = responseBody.data?.createUser;
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Input validation failed");
-      assert.strictEqual(
-        error.extensions?.validationErrors?.[0].message,
-        "Passwords do not match"
-      );
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
-    });
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-    void test("fails if user already exists", async () => {
-      await createUser(user1Details);
-      const response = await createUser(user1Details);
-
-      assert.strictEqual(response.error, false);
-
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        createUser: User;
-      }>;
-      const user = responseBody.data?.createUser;
-
-      assert.strictEqual(user, null, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
-
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Username already exists");
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
-    });
-
-    void test("succeeds with valid input", async () => {
-      const response = await createUser(user1Details);
-
-      assert.strictEqual(response.error, false);
-
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        createUser: User;
-      }>;
-      const user = responseBody.data?.createUser;
-
-      assert.ok(user, "User should be defined");
-      assert.strictEqual(user.username, user1Details.username);
-      assert.strictEqual(
-        user.name,
-        user1Details.username[0].toUpperCase() + user1Details.username.slice(1)
-      );
-      assert.strictEqual(user.about, null);
-      assert.strictEqual(user.avatar, null);
-    });
-  });
-
-  void describe("User login", () => {
-    beforeEach(async () => {
-      await createUser(user1Details);
-    });
-
-    void test("fails with non-existent username", async () => {
-      const response = await login({
-        username: "nonexistent",
-        password: user1Details.password,
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Username already exists");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      assert.strictEqual(response.error, false);
+      void test("succeeds with valid input", async () => {
+        const response = await createUser(user1Details);
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
-      const token = responseBody.data?.login;
+        assert.strictEqual(response.error, false);
 
-      assert.strictEqual(token, null, "Token should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        const user = responseBody.data?.createUser;
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Invalid username or password");
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.username, user1Details.username);
+        assert.strictEqual(
+          user.name,
+          user1Details.username[0].toUpperCase() +
+            user1Details.username.slice(1)
+        );
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
+      });
     });
 
-    void test("fails with incorrect password", async () => {
-      const response = await login({
-        username: user1Details.username,
-        password: "wrongpassword",
+    void describe("User login", () => {
+      beforeEach(async () => {
+        await createUser(user1Details);
       });
 
-      assert.strictEqual(response.error, false);
+      void test("fails with non-existent username", async () => {
+        const response = await login({
+          username: "nonexistent",
+          password: user1Details.password,
+        });
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
-      const token = responseBody.data?.login;
+        assert.strictEqual(response.error, false);
 
-      assert.strictEqual(token, null, "Token should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        const token = responseBody.data?.login;
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Invalid username or password");
-      assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
-    });
+        assert.strictEqual(token, null, "Token should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-    void test("succeeds with valid credentials", async () => {
-      const response = await login({
-        username: user1Details.username,
-        password: user1Details.password,
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Invalid username or password");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      assert.strictEqual(response.error, false);
+      void test("fails with incorrect password", async () => {
+        const response = await login({
+          username: user1Details.username,
+          password: "wrongpassword",
+        });
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
-      const token = responseBody.data?.login;
+        assert.strictEqual(response.error, false);
 
-      assert.ok(token, "Token should be defined");
-      assert.ok(token.value, "Token value should be defined");
-      assert.strictEqual(typeof token.value, "string");
-      assert.ok(token.value.length > 0, "Token should not be empty");
-    });
-  });
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        const token = responseBody.data?.login;
 
-  void describe("Get current user", () => {
-    let token: string;
+        assert.strictEqual(token, null, "Token should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-    beforeEach(async () => {
-      await createUser(user1Details);
-      const loginResponse = await login({
-        username: user1Details.username,
-        password: user1Details.password,
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Invalid username or password");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
-      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
-      token = loginBody.data!.login.value;
+      void test("succeeds with valid credentials", async () => {
+        const response = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        const token = responseBody.data?.login;
+
+        assert.ok(token, "Token should be defined");
+        assert.ok(token.value, "Token value should be defined");
+        assert.strictEqual(typeof token.value, "string");
+        assert.ok(token.value.length > 0, "Token should not be empty");
+      });
     });
 
-    void test("fails without authentication", async () => {
-      const response = await getMe();
+    void describe("Get current user", () => {
+      let token: string;
 
-      assert.strictEqual(response.error, false);
+      beforeEach(async () => {
+        await createUser(user1Details);
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        me: User;
-      }>;
-      const user = responseBody.data?.me;
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        token = loginBody.data!.login.value;
+      });
 
-      assert.strictEqual(user, null, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+      void test("fails without authentication", async () => {
+        const response = await getMe();
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(error.message, "Not authenticated");
-      assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
-    });
+        assert.strictEqual(response.error, false);
 
-    void test("succeeds with valid token", async () => {
-      const response = await getMe(token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          me: User;
+        }>;
+        const user = responseBody.data?.me;
 
-      assert.strictEqual(response.error, false);
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        me: User;
-      }>;
-      const user = responseBody.data?.me;
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
 
-      assert.ok(user, "User should be defined");
-      assert.strictEqual(user.username, user1Details.username);
-      assert.strictEqual(
-        user.name,
-        user1Details.username[0].toUpperCase() + user1Details.username.slice(1)
-      );
-      assert.strictEqual(user.about, null);
-      assert.strictEqual(user.avatar, null);
-      assert.ok(user.id, "User ID should be defined");
-    });
+      void test("succeeds with valid token", async () => {
+        const response = await getMe(token);
 
-    void test("fails with invalid token", async () => {
-      const response = await getMe("invalid-token", 500);
+        assert.strictEqual(response.error, false);
 
-      const responseBody = response.body as HTTPGraphQLResponse<{
-        me: User;
-      }>;
-      const user = responseBody.data?.me;
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          me: User;
+        }>;
+        const user = responseBody.data?.me;
 
-      assert.strictEqual(user, undefined, "User should be null");
-      assert.ok(responseBody.errors, "Response should have errors");
-      assert.ok(
-        responseBody.errors?.length > 0,
-        "Should have at least one error"
-      );
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.username, user1Details.username);
+        assert.strictEqual(
+          user.name,
+          user1Details.username[0].toUpperCase() +
+            user1Details.username.slice(1)
+        );
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
+        assert.ok(user.id, "User ID should be defined");
+      });
 
-      const error = responseBody.errors[0];
-      assert.strictEqual(
-        error.message,
-        "Context creation failed: jwt malformed"
-      );
-      assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
+      void test("fails with invalid token", async () => {
+        const response = await getMe("invalid-token", 500);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          me: User;
+        }>;
+        const user = responseBody.data?.me;
+
+        assert.strictEqual(user, undefined, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(
+          error.message,
+          "Context creation failed: jwt malformed"
+        );
+        assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
+      });
     });
   });
 
