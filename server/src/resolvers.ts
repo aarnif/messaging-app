@@ -37,7 +37,7 @@ export const resolvers: Resolvers = {
 
       const user = await User.findByPk(Number(id));
       if (!user) {
-        throw new GraphQLError("User not found!", {
+        throw new GraphQLError("User not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
@@ -121,7 +121,7 @@ export const resolvers: Resolvers = {
       });
 
       if (!chat) {
-        throw new GraphQLError("Chat not found!", {
+        throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
@@ -228,7 +228,7 @@ export const resolvers: Resolvers = {
       });
 
       if (!contact) {
-        throw new GraphQLError("Contact not found!", {
+        throw new GraphQLError("Contact not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
@@ -282,7 +282,7 @@ export const resolvers: Resolvers = {
       });
 
       if (userExists) {
-        throw new GraphQLError("Username already exists!", {
+        throw new GraphQLError("Username already exists", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: username,
@@ -315,7 +315,7 @@ export const resolvers: Resolvers = {
         !userExists ||
         !(await bcrypt.compare(password, userExists.passwordHash))
       ) {
-        throw new GraphQLError("Invalid username or password!", {
+        throw new GraphQLError("Invalid username or password", {
           extensions: {
             code: "BAD_USER_INPUT",
           },
@@ -330,7 +330,7 @@ export const resolvers: Resolvers = {
 
         return { value: jwt.sign(userForToken, config.JWT_SECRET) };
       } catch (error) {
-        throw new GraphQLError("Failed to login!", {
+        throw new GraphQLError("Failed to login", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -364,7 +364,7 @@ export const resolvers: Resolvers = {
       });
 
       if (contactExists) {
-        throw new GraphQLError("Contact already exists!", {
+        throw new GraphQLError("Contact already exists", {
           extensions: {
             code: "BAD_USER_INPUT",
             invalidArgs: id,
@@ -388,7 +388,7 @@ export const resolvers: Resolvers = {
           ],
         });
       } catch (error) {
-        throw new GraphQLError("Failed to create contact!", {
+        throw new GraphQLError("Failed to create contact", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -413,7 +413,7 @@ export const resolvers: Resolvers = {
         });
 
         if (!contactToBeRemoved) {
-          throw new GraphQLError("Contact not found!", {
+          throw new GraphQLError("Contact not found", {
             extensions: {
               code: "NOT_FOUND",
               invalidArgs: id,
@@ -425,7 +425,7 @@ export const resolvers: Resolvers = {
 
         return contactToBeRemoved;
       } catch (error) {
-        throw new GraphQLError("Failed to remove contact!", {
+        throw new GraphQLError("Failed to remove contact", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -454,7 +454,7 @@ export const resolvers: Resolvers = {
         });
 
         if (!targetContact) {
-          throw new GraphQLError("Contact not found!", {
+          throw new GraphQLError("Contact not found", {
             extensions: {
               code: "NOT_FOUND",
               invalidArgs: id,
@@ -467,7 +467,7 @@ export const resolvers: Resolvers = {
 
         return targetContact;
       } catch (error) {
-        throw new GraphQLError("Failed to remove contact!", {
+        throw new GraphQLError("Failed to remove contact", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -489,7 +489,7 @@ export const resolvers: Resolvers = {
       const { name, about } = input;
 
       const editProfileInputSchema = z.object({
-        name: z.string().min(3, "Name be at least 3 characters long"),
+        name: z.string().min(3, "Name must be at least 3 characters long"),
         about: z.string().nullable(),
       });
 
@@ -510,7 +510,7 @@ export const resolvers: Resolvers = {
         const user = await User.findByPk(context.currentUser.id);
 
         if (!user) {
-          throw new GraphQLError("User not found!", {
+          throw new GraphQLError("User not found", {
             extensions: {
               code: "NOT_FOUND",
               invalidArgs: context.currentUser.id,
@@ -524,7 +524,7 @@ export const resolvers: Resolvers = {
         await user.save();
         return user;
       } catch (error) {
-        throw new GraphQLError("Failed to edit profile!", {
+        throw new GraphQLError("Failed to edit profile", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -546,7 +546,7 @@ export const resolvers: Resolvers = {
           name: z.string().nullable(),
           description: z.string().nullable(),
           members: z.string().array(),
-          initialMessage: z.string().min(1, "Message content cannot be empty."),
+          initialMessage: z.string().min(1, "Message content cannot be empty"),
         })
         .refine(
           (data) => {
@@ -618,7 +618,7 @@ export const resolvers: Resolvers = {
           ],
         });
       } catch (error) {
-        throw new GraphQLError("Failed to create chat!", {
+        throw new GraphQLError("Failed to create chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -652,7 +652,7 @@ export const resolvers: Resolvers = {
         });
 
         if (!chatToBeDeleted) {
-          throw new GraphQLError("Chat not found!", {
+          throw new GraphQLError("Chat not found", {
             extensions: {
               code: "NOT_FOUND",
               invalidArgs: id,
@@ -674,7 +674,7 @@ export const resolvers: Resolvers = {
 
         return chatToBeDeleted;
       } catch (error) {
-        throw new GraphQLError("Failed to delete chat!", {
+        throw new GraphQLError("Failed to delete chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -727,7 +727,7 @@ export const resolvers: Resolvers = {
         });
 
         if (!chatToBeUpdated) {
-          throw new GraphQLError("Chat not found!", {
+          throw new GraphQLError("Chat not found", {
             extensions: {
               code: "NOT_FOUND",
               invalidArgs: id,
@@ -793,7 +793,7 @@ export const resolvers: Resolvers = {
           ],
         });
       } catch (error) {
-        throw new GraphQLError("Failed to edit chat!", {
+        throw new GraphQLError("Failed to edit chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -833,7 +833,7 @@ export const resolvers: Resolvers = {
           ],
         });
       } catch (error) {
-        throw new GraphQLError("Failed to leave chat!", {
+        throw new GraphQLError("Failed to leave chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
@@ -896,7 +896,7 @@ export const resolvers: Resolvers = {
           ],
         });
       } catch (error) {
-        throw new GraphQLError("Failed to add message to chat!", {
+        throw new GraphQLError("Failed to add message to chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
