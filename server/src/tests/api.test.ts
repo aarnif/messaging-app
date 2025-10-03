@@ -8,6 +8,7 @@ import type {
   Chat,
   CreateChatInput,
   EditChatInput,
+  SendMessageInput,
 } from "~/types/graphql";
 
 import { sequelize } from "../db";
@@ -224,6 +225,35 @@ const TOGGLE_BLOCK_CONTACT = `
   }
 `;
 
+const SEND_MESSAGE = `
+  mutation SendMessage($input: SendMessageInput!) {
+    sendMessage(input: $input) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -358,6 +388,21 @@ const deleteChat = async (id: string, token: string): Promise<Response> => {
     .send({
       query: DELETE_CHAT,
       variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const sendMessage = async (
+  input: SendMessageInput,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: SEND_MESSAGE,
+      variables: { input },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -1501,6 +1546,109 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Chat not found");
         assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+    });
+
+    void describe("Send message", () => {
+      let chatId: string;
+
+      beforeEach(async () => {
+        const response = await createChat(privateChatDetails, token);
+        const chatBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        chatId = chatBody.data.createChat.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await sendMessage(
+          {
+            id: chatId,
+            content: "Hello from unauthenticated user",
+          },
+          ""
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          sendMessage: Chat;
+        }>;
+        const chat = responseBody.data?.sendMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with empty message content", async () => {
+        const response = await sendMessage(
+          {
+            id: chatId,
+            content: "",
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          sendMessage: Chat;
+        }>;
+        const chat = responseBody.data?.sendMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Message content cannot be empty"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("succeeds sending message to chat", async () => {
+        const messageContent = "Hello from chat!";
+        const response = await sendMessage(
+          {
+            id: chatId,
+            content: messageContent,
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          sendMessage: Chat;
+        }>;
+        const chat = responseBody.data?.sendMessage;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.type, "private");
+        assert.strictEqual(chat.messages?.length, 2);
+
+        const initialMessage = chat.messages?.[0];
+        assert.ok(initialMessage, "Initial message should exist");
+        assert.strictEqual(
+          initialMessage.content,
+          privateChatDetails.initialMessage
+        );
+
+        const newMessage = chat.messages?.[chat.messages.length - 1];
+        assert.ok(newMessage, "New message should exist");
+        assert.strictEqual(newMessage.content, messageContent);
+        assert.strictEqual(newMessage.sender?.id, user1Details.id);
+        assert.strictEqual(newMessage.sender?.username, user1Details.username);
       });
     });
   });
