@@ -17,6 +17,14 @@ export const emptyDatabase = async () => {
   console.log("Tables dropped!");
 };
 
+export const createDatabase = async () => {
+  await User.sync();
+  await Contact.sync();
+  await Chat.sync();
+  await ChatMember.sync();
+  await Message.sync();
+};
+
 const createUsers = async () => {
   const createdUsers = await User.bulkCreate(
     await Promise.all(
@@ -52,7 +60,6 @@ const createMessages = async () => {
 };
 
 export const populateDatabase = async () => {
-  await sequelize.sync();
   await createUsers();
   await createContacts();
   await createChats();
@@ -63,6 +70,7 @@ export const populateDatabase = async () => {
 const main = async () => {
   await connectToDatabase();
   await emptyDatabase();
+  await createDatabase();
   await populateDatabase();
   await sequelize.close();
   console.log("Connection closed!");
