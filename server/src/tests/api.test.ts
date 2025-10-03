@@ -2,7 +2,7 @@ import request from "supertest";
 import type { Response } from "supertest";
 import type { ApolloServer, BaseContext } from "@apollo/server";
 import type { HTTPGraphQLResponse } from "../types/other";
-import type { User } from "~/types/graphql";
+import type { User, Contact } from "~/types/graphql";
 
 import { sequelize } from "../db";
 import { start } from "../server";
@@ -12,10 +12,17 @@ import assert from "node:assert";
 
 let url: string;
 
-const userDetails = {
+const user1Details = {
+  id: "1",
   username: "user1",
   password: "password",
   confirmPassword: "password",
+};
+
+const user2Details = {
+  ...user1Details,
+  id: "2",
+  username: "user2",
 };
 
 const COUNT_DOCUMENTS = `
@@ -52,6 +59,22 @@ const ME = `
       name
       about
       avatar
+    }
+  }
+`;
+
+const ADD_CONTACT = `
+  mutation AddContact($id: ID!) {
+    addContact(id: $id) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
     }
   }
 `;
@@ -115,6 +138,18 @@ const getMe = async (token?: string, expectedCode = 200): Promise<Response> => {
   return await response.expect("Content-Type", /json/).expect(expectedCode);
 };
 
+const addContact = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: ADD_CONTACT,
+      variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
 
@@ -148,7 +183,7 @@ void describe("GraphQL API", () => {
   void describe("User creation", () => {
     void test("fails with username shorter than 3 characters", async () => {
       const response = await createUser({
-        ...userDetails,
+        ...user1Details,
         username: "us",
       });
 
@@ -177,7 +212,7 @@ void describe("GraphQL API", () => {
 
     void test("fails with password shorter than 6 characters", async () => {
       const response = await createUser({
-        ...userDetails,
+        ...user1Details,
         password: "short",
       });
 
@@ -206,7 +241,7 @@ void describe("GraphQL API", () => {
 
     void test("fails when passwords do not match", async () => {
       const response = await createUser({
-        ...userDetails,
+        ...user1Details,
         confirmPassword: "passwor",
       });
 
@@ -234,8 +269,8 @@ void describe("GraphQL API", () => {
     });
 
     void test("fails if user already exists", async () => {
-      await createUser(userDetails);
-      const response = await createUser(userDetails);
+      await createUser(user1Details);
+      const response = await createUser(user1Details);
 
       assert.strictEqual(response.error, false);
 
@@ -257,7 +292,7 @@ void describe("GraphQL API", () => {
     });
 
     void test("succeeds with valid input", async () => {
-      const response = await createUser(userDetails);
+      const response = await createUser(user1Details);
 
       assert.strictEqual(response.error, false);
 
@@ -267,10 +302,10 @@ void describe("GraphQL API", () => {
       const user = responseBody.data?.createUser;
 
       assert.ok(user, "User should be defined");
-      assert.strictEqual(user.username, userDetails.username);
+      assert.strictEqual(user.username, user1Details.username);
       assert.strictEqual(
         user.name,
-        userDetails.username[0].toUpperCase() + userDetails.username.slice(1)
+        user1Details.username[0].toUpperCase() + user1Details.username.slice(1)
       );
       assert.strictEqual(user.about, null);
       assert.strictEqual(user.avatar, null);
@@ -279,13 +314,13 @@ void describe("GraphQL API", () => {
 
   void describe("User login", () => {
     beforeEach(async () => {
-      await createUser(userDetails);
+      await createUser(user1Details);
     });
 
     void test("fails with non-existent username", async () => {
       const response = await login({
         username: "nonexistent",
-        password: userDetails.password,
+        password: user1Details.password,
       });
 
       assert.strictEqual(response.error, false);
@@ -309,7 +344,7 @@ void describe("GraphQL API", () => {
 
     void test("fails with incorrect password", async () => {
       const response = await login({
-        username: userDetails.username,
+        username: user1Details.username,
         password: "wrongpassword",
       });
 
@@ -334,8 +369,8 @@ void describe("GraphQL API", () => {
 
     void test("succeeds with valid credentials", async () => {
       const response = await login({
-        username: userDetails.username,
-        password: userDetails.password,
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.strictEqual(response.error, false);
@@ -356,10 +391,10 @@ void describe("GraphQL API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await createUser(userDetails);
+      await createUser(user1Details);
       const loginResponse = await login({
-        username: userDetails.username,
-        password: userDetails.password,
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       const loginBody = loginResponse.body as HTTPGraphQLResponse<{
@@ -401,10 +436,10 @@ void describe("GraphQL API", () => {
       const user = responseBody.data?.me;
 
       assert.ok(user, "User should be defined");
-      assert.strictEqual(user.username, userDetails.username);
+      assert.strictEqual(user.username, user1Details.username);
       assert.strictEqual(
         user.name,
-        userDetails.username[0].toUpperCase() + userDetails.username.slice(1)
+        user1Details.username[0].toUpperCase() + user1Details.username.slice(1)
       );
       assert.strictEqual(user.about, null);
       assert.strictEqual(user.avatar, null);
@@ -432,6 +467,112 @@ void describe("GraphQL API", () => {
         "Context creation failed: jwt malformed"
       );
       assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
+    });
+  });
+
+  void describe("Contacts", () => {
+    let token: string;
+
+    beforeEach(async () => {
+      await createUser(user1Details);
+      await createUser(user2Details);
+      const loginResponse = await login({
+        username: user1Details.username,
+        password: user1Details.password,
+      });
+
+      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+        login: { value: string };
+      }>;
+      token = loginBody.data!.login.value;
+    });
+
+    void describe("Add contact", () => {
+      void test("fails without authentication", async () => {
+        const response = await addContact(user1Details.id, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+        const contact = responseBody.data?.addContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails when trying to add yourself as contact", async () => {
+        const response = await addContact(user1Details.id, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+        const contact = responseBody.data?.addContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Cannot add yourself as a contact");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("succeeds with valid user ID", async () => {
+        const response = await addContact(user2Details.id, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+        const contact = responseBody.data?.addContact;
+
+        assert.ok(contact, "Contact should be defined");
+        assert.strictEqual(contact.isBlocked, false);
+        assert.ok(contact.contactDetails, "Contact details should be defined");
+        assert.strictEqual(contact.contactDetails.id, user2Details.id);
+        assert.strictEqual(
+          contact.contactDetails.username,
+          user2Details.username
+        );
+        assert.strictEqual(
+          contact.contactDetails.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+        assert.strictEqual(contact.contactDetails.about, null);
+        assert.strictEqual(contact.contactDetails.avatar, null);
+      });
+
+      void test("fails when trying to add same contact twice", async () => {
+        await addContact(user2Details.id, token);
+        const response = await addContact(user2Details.id, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+        const contact = responseBody.data?.addContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact already exists");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
     });
   });
 
