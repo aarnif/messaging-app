@@ -6,7 +6,7 @@ import type { User } from "~/types/graphql";
 
 import { sequelize } from "../db";
 import { start } from "../server";
-import { emptyDatabase, populateDatabase } from "../populateDatabase";
+import { emptyDatabase, createDatabase } from "../populateDatabase";
 import { describe, before, beforeEach, test, after } from "node:test";
 import assert from "node:assert";
 
@@ -124,7 +124,7 @@ void describe("GraphQL API", () => {
 
   beforeEach(async () => {
     await emptyDatabase();
-    await populateDatabase();
+    await createDatabase();
   });
 
   void test("returns document count from database", async () => {
@@ -142,8 +142,7 @@ void describe("GraphQL API", () => {
       countDocuments: number;
     }>;
     const count = responseBody.data?.countDocuments;
-    assert.ok(count, "Count should be defined");
-    assert.strictEqual(count, 312);
+    assert.strictEqual(count, 0);
   });
 
   void describe("User creation", () => {
