@@ -633,33 +633,33 @@ export const resolvers: Resolvers = {
         });
       }
 
-      try {
-        const chatToBeDeleted = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
+      const chatToBeDeleted = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["role"],
             },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["role"],
-              },
-            },
-          ],
+          },
+        ],
+      });
+
+      if (!chatToBeDeleted) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
         });
+      }
 
-        if (!chatToBeDeleted) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
+      try {
         await chatToBeDeleted.destroy();
         await ChatMember.destroy({
           where: {
