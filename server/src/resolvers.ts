@@ -713,28 +713,28 @@ export const resolvers: Resolvers = {
         }
       }
 
-      try {
-        const chatToBeUpdated = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["role"],
-              },
+      const chatToBeUpdated = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["role"],
             },
-          ],
+          },
+        ],
+      });
+
+      if (!chatToBeUpdated) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
         });
+      }
 
-        if (!chatToBeUpdated) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
+      try {
         const currentMemberIds =
           chatToBeUpdated.members?.map((member) => member.id) || [];
 
