@@ -506,18 +506,18 @@ export const resolvers: Resolvers = {
         }
       }
 
+      const user = await User.findByPk(context.currentUser.id);
+
+      if (!user) {
+        throw new GraphQLError("User not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: context.currentUser.id,
+          },
+        });
+      }
+
       try {
-        const user = await User.findByPk(context.currentUser.id);
-
-        if (!user) {
-          throw new GraphQLError("User not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: context.currentUser.id,
-            },
-          });
-        }
-
         user.name = name;
         user.about = about || null;
 
