@@ -208,6 +208,22 @@ const DELETE_CHAT = `
   }
 `;
 
+const TOGGLE_BLOCK_CONTACT = `
+  mutation ToggleBlockContact($id: ID!) {
+    toggleBlockContact(id: $id) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -284,6 +300,21 @@ const removeContact = async (id: string, token: string): Promise<Response> => {
     .post("/")
     .send({
       query: REMOVE_CONTACT,
+      variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const toggleBlockContact = async (
+  id: string,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: TOGGLE_BLOCK_CONTACT,
       variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
@@ -859,6 +890,110 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Contact not found");
         assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+    });
+
+    void describe("Toggle block contact", () => {
+      let contactId: string;
+
+      beforeEach(async () => {
+        const response = await addContact(user2Details.id, token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+
+        const contact = responseBody.data?.addContact;
+        assert.ok(contact?.id, "Contact ID should be defined");
+        contactId = contact.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await toggleBlockContact(contactId, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          toggleBlockContact: Contact;
+        }>;
+        const contact = responseBody.data?.toggleBlockContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent contact", async () => {
+        const response = await toggleBlockContact("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          toggleBlockContact: Contact;
+        }>;
+        const contact = responseBody.data?.toggleBlockContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds blocking contact", async () => {
+        const response = await toggleBlockContact(contactId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          toggleBlockContact: Contact;
+        }>;
+        const contact = responseBody.data?.toggleBlockContact;
+
+        assert.ok(contact, "Contact should be defined");
+        assert.strictEqual(contact.id, contactId);
+        assert.strictEqual(contact.isBlocked, true);
+        assert.ok(contact.contactDetails, "Contact details should be defined");
+        assert.strictEqual(contact.contactDetails.id, user2Details.id);
+        assert.strictEqual(
+          contact.contactDetails.username,
+          user2Details.username
+        );
+        assert.strictEqual(
+          contact.contactDetails.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+      });
+
+      void test("succeeds unblocking contact", async () => {
+        await toggleBlockContact(contactId, token);
+        const response = await toggleBlockContact(contactId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          toggleBlockContact: Contact;
+        }>;
+        const contact = responseBody.data?.toggleBlockContact;
+
+        assert.ok(contact, "Contact should be defined");
+        assert.strictEqual(contact.id, contactId);
+        assert.strictEqual(contact.isBlocked, false);
+        assert.ok(contact.contactDetails, "Contact details should be defined");
+        assert.strictEqual(contact.contactDetails.id, user2Details.id);
+        assert.strictEqual(
+          contact.contactDetails.username,
+          user2Details.username
+        );
+        assert.strictEqual(
+          contact.contactDetails.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
       });
     });
   });
