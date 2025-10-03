@@ -2,7 +2,13 @@ import request from "supertest";
 import type { Response } from "supertest";
 import type { ApolloServer, BaseContext } from "@apollo/server";
 import type { HTTPGraphQLResponse } from "../types/other";
-import type { User, Contact, Chat, CreateChatInput } from "~/types/graphql";
+import type {
+  User,
+  Contact,
+  Chat,
+  CreateChatInput,
+  EditChatInput,
+} from "~/types/graphql";
 
 import { sequelize } from "../db";
 import { start } from "../server";
@@ -144,6 +150,35 @@ const CREATE_CHAT = `
   }
 `;
 
+const EDIT_CHAT = `
+  mutation EditChat($input: EditChatInput!) {
+    editChat(input: $input) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -235,6 +270,21 @@ const createChat = async (
     .post("/")
     .send({
       query: CREATE_CHAT,
+      variables: { input },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const editChat = async (
+  input: EditChatInput,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: EDIT_CHAT,
       variables: { input },
     })
     .set("Authorization", `Bearer ${token}`)
@@ -967,6 +1017,225 @@ void describe("GraphQL API", () => {
         assert.strictEqual(creator.role, "admin");
         assert.strictEqual(member1.role, "member");
         assert.strictEqual(member2.role, "member");
+      });
+    });
+
+    void describe("Edit chat", () => {
+      let chatId: string;
+
+      beforeEach(async () => {
+        const response = await createChat(groupChatDetails, token);
+        const chatBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        chatId = chatBody.data.createChat.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "Updated Chat",
+            description: "Updated description",
+            members: [user2Details.id],
+          },
+          ""
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with empty chat name", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "",
+            description: "Updated description",
+            members: [user2Details.id, user3Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Group chat name must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("fails with chat name shorter than 3 characters", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "AB",
+            description: "Updated description",
+            members: [user2Details.id, user3Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Group chat name must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("fails with non-existent chat ID", async () => {
+        const response = await editChat(
+          {
+            id: "999",
+            name: "Updated Chat",
+            description: "Updated description",
+            members: [user2Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Chat not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds updating chat name and description", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "Updated Group Chat",
+            description: "Updated test description",
+            members: [user2Details.id, user3Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.type, "group");
+        assert.strictEqual(chat.name, "Updated Group Chat");
+        assert.strictEqual(chat.description, "Updated test description");
+        assert.strictEqual(chat.members?.length, 3);
+
+        const creator = chat.members?.find((m) => m?.id === user1Details.id);
+        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
+        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
+
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member1, "Member 1 should be in members");
+        assert.ok(member2, "Member 2 should be in members");
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(member1.role, "member");
+        assert.strictEqual(member2.role, "member");
+      });
+
+      void test("succeeds removing member from chat", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "Updated Group Chat",
+            description: "Updated description",
+            members: [user2Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.members?.length, 2);
+
+        const creator = chat.members?.find((m) => m?.id === user1Details.id);
+        const member = chat.members?.find((m) => m?.id === user2Details.id);
+        const removedMember = chat.members?.find(
+          (m) => m?.id === user3Details.id
+        );
+
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member, "Member should be in members");
+        assert.strictEqual(removedMember, undefined, "User3 should be removed");
+      });
+
+      void test("succeeds with null description", async () => {
+        const response = await editChat(
+          {
+            id: chatId,
+            name: "Chat with No Description",
+            description: null,
+            members: [user2Details.id, user3Details.id],
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editChat: Chat;
+        }>;
+        const chat = responseBody.data?.editChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.name, "Chat with No Description");
+        assert.strictEqual(chat.description, null);
       });
     });
   });
