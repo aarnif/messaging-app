@@ -8,6 +8,7 @@
     "populate:db": "POPULATE_DB=true tsx src/populateDatabase.ts",
     "generate": "graphql-codegen --config codegen.ts",
     "dev": "npm run generate && NODE_ENV=development nodemon --exec tsx src/index.ts",
+    "test": "NODE_ENV=test tsx --test src/tests/*.test.ts",
     "lint": "eslint ."
   },
   "keywords": [],
@@ -36,8 +37,10 @@
     "@types/bcrypt": "^6.0.0",
     "@types/eslint__js": "^8.42.3",
     "@types/jsonwebtoken": "^9.0.10",
+    "@types/supertest": "^6.0.3",
     "eslint": "^9.36.0",
     "nodemon": "^3.1.10",
+    "supertest": "^7.1.4",
     "tsx": "^4.20.5",
     "typescript": "^5.9.2",
     "typescript-eslint": "^8.44.1"

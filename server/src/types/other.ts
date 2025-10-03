@@ -17,3 +17,9 @@ export interface ChatMember {
   chatId: number;
   role: "member" | "admin";
 }
+
+// For supertest GraphQL HTTP response typing
+export interface HTTPGraphQLResponse<T> {
+  data?: T;
+  errors?: Array<{ message: string }>;
+}

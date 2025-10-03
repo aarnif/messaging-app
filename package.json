@@ -9,6 +9,7 @@
     "populate:db": "npm run populate:db --prefix server",
     "generate:server": "npm run generate --prefix server",
     "dev:server": "npm run dev --prefix server",
+    "test:server": "npm run test --prefix server",
     "lint:server": "npm run lint --prefix server"
   },
   "repository": {

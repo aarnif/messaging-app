@@ -1,4 +1,5 @@
 import { ApolloServer } from "@apollo/server";
+import type { BaseContext } from "@apollo/server";
 import { startStandaloneServer } from "@apollo/server/standalone";
 import { readFileSync } from "fs";
 import path from "path";
@@ -19,9 +20,12 @@ const typeDefs = gql(
   })
 );
 
-const start = async () => {
+const start = async (): Promise<{
+  server: ApolloServer<BaseContext>;
+  url: string;
+}> => {
   await connectToDatabase();
-  const server = new ApolloServer({ typeDefs, resolvers });
+  const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });
   const { url } = await startStandaloneServer(server, {
     listen: { port: config.PORT },
     context: async ({ req }) => {
@@ -40,6 +44,8 @@ const start = async () => {
     },
   });
   console.log(`Server is now running at ${url}`);
+
+  return { server, url };
 };
 
 export { start };
