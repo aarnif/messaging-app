@@ -403,24 +403,24 @@ export const resolvers: Resolvers = {
         });
       }
 
-      try {
-        const contactToBeRemoved = await Contact.findOne({
-          where: {
-            id: Number(id),
-            userId: context.currentUser.id,
+      const contactToBeRemoved = await Contact.findOne({
+        where: {
+          id: Number(id),
+          userId: context.currentUser.id,
+        },
+        include: [{ model: User, as: "contactDetails" }],
+      });
+
+      if (!contactToBeRemoved) {
+        throw new GraphQLError("Contact not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
           },
-          include: [{ model: User, as: "contactDetails" }],
         });
+      }
 
-        if (!contactToBeRemoved) {
-          throw new GraphQLError("Contact not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
+      try {
         await contactToBeRemoved.destroy();
 
         return contactToBeRemoved;
