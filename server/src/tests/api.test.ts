@@ -79,6 +79,22 @@ const ADD_CONTACT = `
   }
 `;
 
+const REMOVE_CONTACT = `
+  mutation RemoveContact($id: ID!) {
+    removeContact(id: $id) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -150,6 +166,18 @@ const addContact = async (id: string, token: string): Promise<Response> => {
     .expect(200);
 };
 
+const removeContact = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: REMOVE_CONTACT,
+      variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
 
@@ -179,6 +207,7 @@ void describe("GraphQL API", () => {
     const count = responseBody.data?.countDocuments;
     assert.strictEqual(count, 0);
   });
+
   void describe("Users", () => {
     void describe("User creation", () => {
       void test("fails with username shorter than 3 characters", async () => {
@@ -575,6 +604,104 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Contact already exists");
         assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+    });
+
+    void describe("Remove contact", () => {
+      let contactId: string;
+      beforeEach(async () => {
+        const response = await addContact(user2Details.id, token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+
+        const contact = responseBody.data?.addContact;
+        assert.ok(contact?.id, "Contact ID should be defined");
+        contactId = contact.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await removeContact(contactId, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          removeContact: Contact;
+        }>;
+        const contact = responseBody.data?.removeContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent contact", async () => {
+        const response = await removeContact("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          removeContact: Contact;
+        }>;
+        const contact = responseBody.data?.removeContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds with valid contact ID", async () => {
+        const response = await removeContact(contactId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          removeContact: Contact;
+        }>;
+        const contact = responseBody.data?.removeContact;
+
+        assert.ok(contact, "Contact should be defined");
+        assert.strictEqual(contact.id, "1");
+        assert.strictEqual(contact.isBlocked, false);
+        assert.ok(contact.contactDetails, "Contact details should be defined");
+        assert.strictEqual(contact.contactDetails.id, user2Details.id);
+        assert.strictEqual(
+          contact.contactDetails.username,
+          user2Details.username
+        );
+        assert.strictEqual(
+          contact.contactDetails.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+      });
+
+      void test("fails when trying to remove same contact twice", async () => {
+        await removeContact(contactId, token);
+        const response = await removeContact(contactId, token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          removeContact: Contact;
+        }>;
+        const contact = responseBody.data?.removeContact;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
       });
     });
   });
