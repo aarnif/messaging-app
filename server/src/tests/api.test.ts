@@ -6,6 +6,7 @@ import type {
   User,
   Contact,
   Chat,
+  EditProfileInput,
   CreateChatInput,
   EditChatInput,
   SendMessageInput,
@@ -283,6 +284,18 @@ const LEAVE_CHAT = `
   }
 `;
 
+const EDIT_PROFILE = `
+  mutation EditProfile($input: EditProfileInput!) {
+    editProfile(input: $input) {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -444,6 +457,21 @@ const leaveChat = async (id: string, token: string): Promise<Response> => {
     .send({
       query: LEAVE_CHAT,
       variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const editProfile = async (
+  input: EditProfileInput,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: EDIT_PROFILE,
+      variables: { input },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -771,6 +799,129 @@ void describe("GraphQL API", () => {
           "Context creation failed: jwt malformed"
         );
         assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
+      });
+    });
+
+    void describe("Edit profile", () => {
+      let token: string;
+
+      beforeEach(async () => {
+        await createUser(user1Details);
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await editProfile(
+          {
+            name: "Updated Name",
+            about: "Updated about",
+          },
+          ""
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editProfile: User;
+        }>;
+        const user = responseBody.data?.editProfile;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with name shorter than 3 characters", async () => {
+        const response = await editProfile(
+          {
+            name: "AB",
+            about: "Valid about text",
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editProfile: User;
+        }>;
+        const user = responseBody.data?.editProfile;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Input validation failed");
+        assert.strictEqual(
+          error.extensions?.validationErrors?.[0].message,
+          "Name must be at least 3 characters long"
+        );
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("succeeds updating name and about", async () => {
+        const updatedName = "Updated Name";
+        const updatedAbout = "This is my updated about section";
+
+        const response = await editProfile(
+          {
+            name: updatedName,
+            about: updatedAbout,
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editProfile: User;
+        }>;
+        const user = responseBody.data?.editProfile;
+
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.id, user1Details.id);
+        assert.strictEqual(user.username, user1Details.username);
+        assert.strictEqual(user.name, updatedName);
+        assert.strictEqual(user.about, updatedAbout);
+        assert.strictEqual(user.avatar, null);
+      });
+
+      void test("succeeds updating name with null about", async () => {
+        const updatedName = "Another Updated Name";
+
+        const response = await editProfile(
+          {
+            name: updatedName,
+            about: null,
+          },
+          token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          editProfile: User;
+        }>;
+        const user = responseBody.data?.editProfile;
+
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.id, user1Details.id);
+        assert.strictEqual(user.username, user1Details.username);
+        assert.strictEqual(user.name, updatedName);
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
       });
     });
   });
