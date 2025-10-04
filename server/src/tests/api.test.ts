@@ -254,6 +254,35 @@ const SEND_MESSAGE = `
   }
 `;
 
+const LEAVE_CHAT = `
+  mutation LeaveChat($id: ID!) {
+    leaveChat(id: $id) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const createUser = async ({
   username,
   password,
@@ -403,6 +432,18 @@ const sendMessage = async (
     .send({
       query: SEND_MESSAGE,
       variables: { input },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const leaveChat = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: LEAVE_CHAT,
+      variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -1050,6 +1091,7 @@ void describe("GraphQL API", () => {
       await createUser(user1Details);
       await createUser(user2Details);
       await createUser(user3Details);
+
       const loginResponse = await login({
         username: user1Details.username,
         password: user1Details.password,
@@ -1649,6 +1691,88 @@ void describe("GraphQL API", () => {
         assert.strictEqual(newMessage.content, messageContent);
         assert.strictEqual(newMessage.sender?.id, user1Details.id);
         assert.strictEqual(newMessage.sender?.username, user1Details.username);
+      });
+    });
+
+    void describe("Leave chat", () => {
+      let chatId: string;
+      let token2: string;
+
+      beforeEach(async () => {
+        const chatResponse = await createChat(groupChatDetails, token);
+        const chatBody = chatResponse.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        chatId = chatBody.data.createChat.id;
+
+        const loginResponse = await login({
+          username: user2Details.username,
+          password: user2Details.password,
+        });
+
+        const loginResponseBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(
+          loginResponseBody.data,
+          "User2 login token value should be defined"
+        );
+        token2 = loginResponseBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await leaveChat(chatId, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          leaveChat: Chat;
+        }>;
+        const chat = responseBody.data?.leaveChat;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("succeeds when member leaves group chat", async () => {
+        const response = await leaveChat(chatId, token2);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          leaveChat: Chat;
+        }>;
+        const chat = responseBody.data?.leaveChat;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.members?.length, 2);
+
+        const leftMember = chat.members?.find(
+          (member) => member?.id === user2Details.id
+        );
+        const creator = chat.members?.find(
+          (member) => member?.id === user1Details.id
+        );
+        const otherMember = chat.members?.find(
+          (member) => member?.id === user3Details.id
+        );
+
+        assert.strictEqual(
+          leftMember,
+          undefined,
+          "User2 should no longer be in members"
+        );
+        assert.ok(creator, "Creator should still be in members");
+        assert.ok(otherMember, "User3 should still be in members");
+
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(otherMember.role, "member");
       });
     });
   });
