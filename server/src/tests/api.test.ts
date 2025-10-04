@@ -314,6 +314,35 @@ const FIND_USER_BY_ID = `
   }
 `;
 
+const FIND_CHAT_BY_ID = `
+  query FindChatById($id: ID!) {
+    findChatById(id: $id) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+      }
+      messages {
+        id
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 const createUser = async (input: CreateUserInput): Promise<Response> => {
   return await request(url)
     .post("/")
@@ -476,6 +505,18 @@ const findUserById = async (id: string, token: string): Promise<Response> => {
     .post("/")
     .send({
       query: FIND_USER_BY_ID,
+      variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const findChatById = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: FIND_CHAT_BY_ID,
       variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
@@ -1712,10 +1753,14 @@ void describe("GraphQL API", () => {
         assert.ok(chat, "Chat should be defined");
         assert.strictEqual(chat.members?.length, 2);
 
-        const creator = chat.members?.find((m) => m?.id === user1Details.id);
-        const member = chat.members?.find((m) => m?.id === user2Details.id);
+        const creator = chat.members?.find(
+          (member) => member?.id === user1Details.id
+        );
+        const member = chat.members?.find(
+          (member) => member?.id === user2Details.id
+        );
         const removedMember = chat.members?.find(
-          (m) => m?.id === user3Details.id
+          (member) => member?.id === user3Details.id
         );
 
         assert.ok(creator, "Creator should be in members");
@@ -1831,6 +1876,96 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Chat not found");
         assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+    });
+
+    void describe("Find chat by ID", () => {
+      let chatId: string;
+
+      beforeEach(async () => {
+        const response = await createChat(groupChatDetails, token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(
+          responseBody.data?.createChat.id,
+          "Chat ID should be defined"
+        );
+        chatId = responseBody.data.createChat.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await findChatById(chatId, "");
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findChatById: Chat;
+        }>;
+        const chat = responseBody.data?.findChatById;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent chat ID", async () => {
+        const response = await findChatById("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findChatById: Chat;
+        }>;
+        const chat = responseBody.data?.findChatById;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Chat not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds finding chat", async () => {
+        const response = await findChatById(chatId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findChatById: Chat;
+        }>;
+        const chat = responseBody.data?.findChatById;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.type, "group");
+        assert.strictEqual(chat.name, groupChatDetails.name);
+        assert.strictEqual(chat.description, groupChatDetails.description);
+        assert.strictEqual(chat.avatar, null);
+        assert.strictEqual(chat.members?.length, 3);
+        assert.strictEqual(chat.messages?.length, 1);
+
+        const creator = chat.members?.find((m) => m?.id === user1Details.id);
+        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
+        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
+
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member1, "Member 1 should be in members");
+        assert.ok(member2, "Member 2 should be in members");
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(member1.role, "member");
+        assert.strictEqual(member2.role, "member");
+
+        const message = chat.messages?.[0];
+        assert.ok(message, "Message should exist");
+        assert.strictEqual(message.content, groupChatDetails.initialMessage);
+        assert.strictEqual(message.sender?.id, user1Details.id);
+        assert.strictEqual(message.sender?.username, user1Details.username);
       });
     });
 
