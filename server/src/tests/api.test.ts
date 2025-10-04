@@ -6,6 +6,7 @@ import type {
   User,
   Contact,
   Chat,
+  LoginInput,
   EditProfileInput,
   CreateChatInput,
   EditChatInput,
@@ -321,23 +322,12 @@ const createUser = async ({
     .expect(200);
 };
 
-const login = async ({
-  username,
-  password,
-}: {
-  username: string;
-  password: string;
-}): Promise<Response> => {
+const login = async (input: LoginInput): Promise<Response> => {
   return await request(url)
     .post("/")
     .send({
       query: LOGIN,
-      variables: {
-        input: {
-          username,
-          password,
-        },
-      },
+      variables: { input },
     })
     .expect("Content-Type", /json/)
     .expect(200);
