@@ -302,6 +302,18 @@ const EDIT_PROFILE = `
   }
 `;
 
+const FIND_USER_BY_ID = `
+  query FindUserById($id: ID!) {
+    findUserById(id: $id) {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+`;
+
 const createUser = async (input: CreateUserInput): Promise<Response> => {
   return await request(url)
     .post("/")
@@ -453,6 +465,18 @@ const editProfile = async (
     .send({
       query: EDIT_PROFILE,
       variables: { input },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const findUserById = async (id: string, token: string): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: FIND_USER_BY_ID,
+      variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -780,6 +804,93 @@ void describe("GraphQL API", () => {
           "Context creation failed: jwt malformed"
         );
         assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
+      });
+    });
+
+    void describe.only("Find user by ID", () => {
+      let token: string;
+      let user2Id: string;
+
+      beforeEach(async () => {
+        await createUser(user1Input);
+        const user2Response = await createUser(user2Input);
+
+        const user2Body = user2Response.body as HTTPGraphQLResponse<{
+          createUser: User;
+        }>;
+        assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
+        user2Id = user2Body.data.createUser.id;
+
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await findUserById(user2Id, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findUserById: User;
+        }>;
+        const user = responseBody.data?.findUserById;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent user ID", async () => {
+        const response = await findUserById("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findUserById: User;
+        }>;
+        const user = responseBody.data?.findUserById;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "User not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds with valid user ID", async () => {
+        const response = await findUserById(user2Id, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findUserById: User;
+        }>;
+        const user = responseBody.data?.findUserById;
+
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.id, user2Id);
+        assert.strictEqual(user.username, user2Details.username);
+        assert.strictEqual(
+          user.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
       });
     });
 
