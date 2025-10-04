@@ -6,6 +6,7 @@ import type {
   User,
   Contact,
   Chat,
+  CreateUserInput,
   LoginInput,
   EditProfileInput,
   CreateChatInput,
@@ -39,6 +40,10 @@ const user3Details = {
   id: "3",
   username: "user3",
 };
+
+const { id: _, ...user1Input } = user1Details;
+const { id: _id, ...user2Input } = user2Details;
+const { id: _id2, ...user3Input } = user3Details;
 
 const privateChatDetails = {
   name: null,
@@ -297,26 +302,12 @@ const EDIT_PROFILE = `
   }
 `;
 
-const createUser = async ({
-  username,
-  password,
-  confirmPassword,
-}: {
-  username: string;
-  password: string;
-  confirmPassword: string;
-}): Promise<Response> => {
+const createUser = async (input: CreateUserInput): Promise<Response> => {
   return await request(url)
     .post("/")
     .send({
       query: CREATE_USER,
-      variables: {
-        input: {
-          username,
-          password,
-          confirmPassword,
-        },
-      },
+      variables: { input },
     })
     .expect("Content-Type", /json/)
     .expect(200);
@@ -502,7 +493,7 @@ void describe("GraphQL API", () => {
     void describe("User creation", () => {
       void test("fails with username shorter than 3 characters", async () => {
         const response = await createUser({
-          ...user1Details,
+          ...user1Input,
           username: "us",
         });
 
@@ -531,7 +522,7 @@ void describe("GraphQL API", () => {
 
       void test("fails with password shorter than 6 characters", async () => {
         const response = await createUser({
-          ...user1Details,
+          ...user1Input,
           password: "short",
         });
 
@@ -560,7 +551,7 @@ void describe("GraphQL API", () => {
 
       void test("fails when passwords do not match", async () => {
         const response = await createUser({
-          ...user1Details,
+          ...user1Input,
           confirmPassword: "passwor",
         });
 
@@ -588,8 +579,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails if user already exists", async () => {
-        await createUser(user1Details);
-        const response = await createUser(user1Details);
+        await createUser(user1Input);
+        const response = await createUser(user1Input);
 
         assert.strictEqual(response.error, false);
 
@@ -611,7 +602,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid input", async () => {
-        const response = await createUser(user1Details);
+        const response = await createUser(user1Input);
 
         assert.strictEqual(response.error, false);
 
@@ -634,7 +625,7 @@ void describe("GraphQL API", () => {
 
     void describe("User login", () => {
       beforeEach(async () => {
-        await createUser(user1Details);
+        await createUser(user1Input);
       });
 
       void test("fails with non-existent username", async () => {
@@ -711,7 +702,7 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        await createUser(user1Details);
+        await createUser(user1Input);
         const loginResponse = await login({
           username: user1Details.username,
           password: user1Details.password,
@@ -796,7 +787,7 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        await createUser(user1Details);
+        await createUser(user1Input);
         const loginResponse = await login({
           username: user1Details.username,
           password: user1Details.password,
@@ -920,8 +911,8 @@ void describe("GraphQL API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await createUser(user1Details);
-      await createUser(user2Details);
+      await createUser(user1Input);
+      await createUser(user2Input);
       const loginResponse = await login({
         username: user1Details.username,
         password: user1Details.password,
@@ -1229,9 +1220,9 @@ void describe("GraphQL API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await createUser(user1Details);
-      await createUser(user2Details);
-      await createUser(user3Details);
+      await createUser(user1Input);
+      await createUser(user2Input);
+      await createUser(user3Input);
 
       const loginResponse = await login({
         username: user1Details.username,
