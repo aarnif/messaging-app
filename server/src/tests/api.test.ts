@@ -385,231 +385,92 @@ const ALL_CHATS_BY_USER = `
   }
 `;
 
-const createUser = async (input: CreateUserInput): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: CREATE_USER,
-      variables: { input },
-    })
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
-
-const login = async (input: LoginInput): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: LOGIN,
-      variables: { input },
-    })
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
-
-const getMe = async (token?: string, expectedCode = 200): Promise<Response> => {
+const makeRequest = async <Variables>(
+  query: string,
+  variables: Variables,
+  token: string = "",
+  expectedStatusCode: number = 200
+): Promise<Response> => {
   const response = request(url).post("/").send({
-    query: ME,
+    query,
+    variables,
   });
 
   if (token) {
     response.set("Authorization", `Bearer ${token}`);
   }
 
-  return await response.expect("Content-Type", /json/).expect(expectedCode);
+  return await response
+    .expect("Content-Type", /json/)
+    .expect(expectedStatusCode);
 };
 
-const addContact = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: ADD_CONTACT,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const createUser = async (input: CreateUserInput): Promise<Response> =>
+  await makeRequest(CREATE_USER, { input });
 
-const removeContact = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: REMOVE_CONTACT,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const login = async (input: LoginInput): Promise<Response> =>
+  await makeRequest(LOGIN, { input });
+
+const getMe = async (token?: string, expectedCode = 200): Promise<Response> =>
+  await makeRequest(ME, {}, token, expectedCode);
+
+const addContact = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(ADD_CONTACT, { id }, token);
+
+const removeContact = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(REMOVE_CONTACT, { id }, token);
 
 const toggleBlockContact = async (
   id: string,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: TOGGLE_BLOCK_CONTACT,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> => await makeRequest(TOGGLE_BLOCK_CONTACT, { id }, token);
 
 const createChat = async (
   input: CreateChatInput,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: CREATE_CHAT,
-      variables: { input },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> => await makeRequest(CREATE_CHAT, { input }, token);
 
 const editChat = async (
   input: EditChatInput,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: EDIT_CHAT,
-      variables: { input },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> => await makeRequest(EDIT_CHAT, { input }, token);
 
-const deleteChat = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: DELETE_CHAT,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const deleteChat = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(DELETE_CHAT, { id }, token);
 
 const sendMessage = async (
   input: SendMessageInput,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: SEND_MESSAGE,
-      variables: { input },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> => await makeRequest(SEND_MESSAGE, { input }, token);
 
-const leaveChat = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: LEAVE_CHAT,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const leaveChat = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(LEAVE_CHAT, { id }, token);
 
 const editProfile = async (
   input: EditProfileInput,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: EDIT_PROFILE,
-      variables: { input },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> => await makeRequest(EDIT_PROFILE, { input }, token);
 
-const findUserById = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: FIND_USER_BY_ID,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const findUserById = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(FIND_USER_BY_ID, { id }, token);
 
-const findChatById = async (id: string, token: string): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: FIND_CHAT_BY_ID,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const findChatById = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(FIND_CHAT_BY_ID, { id }, token);
 
-const isBlockedByUser = async (
-  id: string,
-  token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: IS_BLOCKED_BY_USER,
-      variables: { id },
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+const isBlockedByUser = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(IS_BLOCKED_BY_USER, { id }, token);
 
 const allContactsByUser = async (
   search: string | null,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: ALL_CONTACTS_BY_USER,
-      variables: search ? { search } : {},
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> =>
+  await makeRequest(ALL_CONTACTS_BY_USER, search ? { search } : {}, token);
 
 const allChatsByUser = async (
   search: string | null,
   token: string
-): Promise<Response> => {
-  return await request(url)
-    .post("/")
-    .send({
-      query: ALL_CHATS_BY_USER,
-      variables: search ? { search } : {},
-    })
-    .set("Authorization", `Bearer ${token}`)
-    .expect("Content-Type", /json/)
-    .expect(200);
-};
+): Promise<Response> =>
+  await makeRequest(ALL_CHATS_BY_USER, search ? { search } : {}, token);
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
