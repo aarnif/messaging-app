@@ -349,6 +349,22 @@ const IS_BLOCKED_BY_USER = `
   }
 `;
 
+const ALL_CONTACTS_BY_USER = `
+  query AllContactsByUser($search: String) {
+    allContactsByUser(search: $search) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const createUser = async (input: CreateUserInput): Promise<Response> => {
   return await request(url)
     .post("/")
@@ -539,6 +555,21 @@ const isBlockedByUser = async (
     .send({
       query: IS_BLOCKED_BY_USER,
       variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const allContactsByUser = async (
+  search: string | null,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: ALL_CONTACTS_BY_USER,
+      variables: search ? { search } : {},
     })
     .set("Authorization", `Bearer ${token}`)
     .expect("Content-Type", /json/)
@@ -1087,6 +1118,7 @@ void describe("GraphQL API", () => {
     beforeEach(async () => {
       await createUser(user1Input);
       await createUser(user2Input);
+      await createUser(user3Input);
 
       const loginResponse = await login({
         username: user1Details.username,
@@ -1489,6 +1521,149 @@ void describe("GraphQL API", () => {
           undefined,
           "Should have no errors"
         );
+      });
+    });
+
+    void describe("All contacts by user", () => {
+      void test("fails without authentication", async () => {
+        const response = await allContactsByUser(null, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.strictEqual(contacts, null, "Contacts should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("returns empty array when no contacts exist", async () => {
+        const response = await allContactsByUser(null, user1Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 0, "Should have no contacts");
+        assert.strictEqual(
+          responseBody.errors,
+          undefined,
+          "Should have no errors"
+        );
+      });
+
+      void test("returns all contacts when user has contacts", async () => {
+        await addContact(user2Details.id, user1Token);
+        await addContact(user3Details.id, user1Token);
+
+        const response = await allContactsByUser(null, user1Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
+      });
+
+      void test("filters contacts by username search", async () => {
+        await addContact(user2Details.id, user1Token);
+        await addContact(user3Details.id, user1Token);
+
+        const response = await allContactsByUser(
+          user2Details.username,
+          user1Token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 1, "Should have 1 contact");
+
+        const contact = contacts[0];
+        assert.ok(contact, "Contact should exist");
+        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+        assert.strictEqual(
+          contact.contactDetails.username,
+          user2Details.username
+        );
+      });
+
+      void test("filters contacts by name search", async () => {
+        await addContact(user2Details.id, user1Token);
+        await addContact(user3Details.id, user1Token);
+
+        const newName = "New Name";
+
+        await editProfile(
+          {
+            name: newName,
+            about: null,
+          },
+          user2Token
+        );
+
+        const response = await allContactsByUser(newName, user1Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 1, "Should have 1 contact");
+
+        const contact = contacts[0];
+        assert.ok(contact, "Contact should exist");
+        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+        assert.strictEqual(contact.contactDetails.name, newName);
+      });
+
+      void test("returns empty array when search has no matches", async () => {
+        await addContact(user2Details.id, user1Token);
+        await addContact(user3Details.id, user1Token);
+
+        const response = await allContactsByUser("nonexistent", user1Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 0, "Should have no contacts");
+      });
+
+      void test("search is case insensitive", async () => {
+        await addContact(user2Details.id, user1Token);
+
+        const response = await allContactsByUser("USER2", user1Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          allContactsByUser: Contact[];
+        }>;
+        const contacts = responseBody.data?.allContactsByUser;
+
+        assert.ok(Array.isArray(contacts), "Contacts should be an array");
+        assert.strictEqual(contacts.length, 1, "Should have 1 contact");
+
+        const contact = contacts[0];
+        assert.ok(contact, "Contact should exist");
+        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
       });
     });
   });
