@@ -343,6 +343,12 @@ const FIND_CHAT_BY_ID = `
   }
 `;
 
+const IS_BLOCKED_BY_USER = `
+  query IsBlockedByUser($id: ID!) {
+    isBlockedByUser(id: $id) 
+  }
+`;
+
 const createUser = async (input: CreateUserInput): Promise<Response> => {
   return await request(url)
     .post("/")
@@ -517,6 +523,21 @@ const findChatById = async (id: string, token: string): Promise<Response> => {
     .post("/")
     .send({
       query: FIND_CHAT_BY_ID,
+      variables: { id },
+    })
+    .set("Authorization", `Bearer ${token}`)
+    .expect("Content-Type", /json/)
+    .expect(200);
+};
+
+const isBlockedByUser = async (
+  id: string,
+  token: string
+): Promise<Response> => {
+  return await request(url)
+    .post("/")
+    .send({
+      query: IS_BLOCKED_BY_USER,
       variables: { id },
     })
     .set("Authorization", `Bearer ${token}`)
@@ -1060,21 +1081,37 @@ void describe("GraphQL API", () => {
   });
 
   void describe("Contacts", () => {
-    let token: string;
+    let user1Token: string;
+    let user2Token: string;
 
     beforeEach(async () => {
       await createUser(user1Input);
       await createUser(user2Input);
+
       const loginResponse = await login({
         username: user1Details.username,
         password: user1Details.password,
       });
 
-      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+      const user1LoginBody = loginResponse.body as HTTPGraphQLResponse<{
         login: { value: string };
       }>;
-      assert.ok(loginBody.data, "Login token value should be defined");
-      token = loginBody.data.login.value;
+      assert.ok(
+        user1LoginBody.data,
+        "User1 login token value should be defined"
+      );
+      user1Token = user1LoginBody.data.login.value;
+
+      const user2LoginResponse = await login({
+        username: user2Details.username,
+        password: user2Details.password,
+      });
+
+      const user2LoginBody = user2LoginResponse.body as HTTPGraphQLResponse<{
+        login: { value: string };
+      }>;
+      assert.ok(user2LoginBody.data, "User2 login token should be defined");
+      user2Token = user2LoginBody.data.login.value;
     });
 
     void describe("Add contact", () => {
@@ -1099,7 +1136,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to add yourself as contact", async () => {
-        const response = await addContact(user1Details.id, token);
+        const response = await addContact(user1Details.id, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           addContact: Contact;
@@ -1119,7 +1156,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const response = await addContact(user2Details.id, token);
+        const response = await addContact(user2Details.id, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           addContact: Contact;
@@ -1144,8 +1181,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to add same contact twice", async () => {
-        await addContact(user2Details.id, token);
-        const response = await addContact(user2Details.id, token);
+        await addContact(user2Details.id, user1Token);
+        const response = await addContact(user2Details.id, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           addContact: Contact;
@@ -1168,7 +1205,7 @@ void describe("GraphQL API", () => {
     void describe("Remove contact", () => {
       let contactId: string;
       beforeEach(async () => {
-        const response = await addContact(user2Details.id, token);
+        const response = await addContact(user2Details.id, user1Token);
         const responseBody = response.body as HTTPGraphQLResponse<{
           addContact: Contact;
         }>;
@@ -1199,7 +1236,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const response = await removeContact("999", token);
+        const response = await removeContact("999", user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           removeContact: Contact;
@@ -1219,7 +1256,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid contact ID", async () => {
-        const response = await removeContact(contactId, token);
+        const response = await removeContact(contactId, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           removeContact: Contact;
@@ -1243,8 +1280,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to remove same contact twice", async () => {
-        await removeContact(contactId, token);
-        const response = await removeContact(contactId, token);
+        await removeContact(contactId, user1Token);
+        const response = await removeContact(contactId, user1Token);
         const responseBody = response.body as HTTPGraphQLResponse<{
           removeContact: Contact;
         }>;
@@ -1267,7 +1304,7 @@ void describe("GraphQL API", () => {
       let contactId: string;
 
       beforeEach(async () => {
-        const response = await addContact(user2Details.id, token);
+        const response = await addContact(user2Details.id, user1Token);
         const responseBody = response.body as HTTPGraphQLResponse<{
           addContact: Contact;
         }>;
@@ -1298,7 +1335,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const response = await toggleBlockContact("999", token);
+        const response = await toggleBlockContact("999", user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           toggleBlockContact: Contact;
@@ -1318,7 +1355,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds blocking contact", async () => {
-        const response = await toggleBlockContact(contactId, token);
+        const response = await toggleBlockContact(contactId, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           toggleBlockContact: Contact;
@@ -1342,8 +1379,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds unblocking contact", async () => {
-        await toggleBlockContact(contactId, token);
-        const response = await toggleBlockContact(contactId, token);
+        await toggleBlockContact(contactId, user1Token);
+        const response = await toggleBlockContact(contactId, user1Token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
           toggleBlockContact: Contact;
@@ -1363,6 +1400,94 @@ void describe("GraphQL API", () => {
           contact.contactDetails.name,
           user2Details.username[0].toUpperCase() +
             user2Details.username.slice(1)
+        );
+      });
+    });
+
+    void describe("Is blocked by user", () => {
+      let contactId: string;
+      beforeEach(async () => {
+        const response = await addContact(user2Details.id, user1Token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+
+        const contact = responseBody.data?.addContact;
+        assert.ok(contact?.id, "Contact ID should be defined");
+        contactId = contact.id;
+        await addContact(user1Details.id, user2Token);
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await isBlockedByUser(user1Details.id, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          isBlockedByUser: boolean;
+        }>;
+        const isBlocked = responseBody.data?.isBlockedByUser;
+
+        assert.strictEqual(isBlocked, null, "IsBlocked should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent contact", async () => {
+        const response = await isBlockedByUser("999", user2Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          isBlockedByUser: boolean;
+        }>;
+        const isBlocked = responseBody.data?.isBlockedByUser;
+
+        assert.strictEqual(isBlocked, null, "IsBlocked should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("returns false when not blocked", async () => {
+        const response = await isBlockedByUser(user1Details.id, user2Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          isBlockedByUser: boolean;
+        }>;
+        const isBlocked = responseBody.data?.isBlockedByUser;
+
+        assert.strictEqual(isBlocked, false, "Should not be blocked");
+        assert.strictEqual(
+          responseBody.errors,
+          undefined,
+          "Should have no errors"
+        );
+      });
+
+      void test("returns true when blocked", async () => {
+        await toggleBlockContact(contactId, user1Token);
+        const response = await isBlockedByUser(user1Details.id, user2Token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          isBlockedByUser: boolean;
+        }>;
+        const isBlocked = responseBody.data?.isBlockedByUser;
+
+        assert.strictEqual(isBlocked, true, "Should be blocked");
+        assert.strictEqual(
+          responseBody.errors,
+          undefined,
+          "Should have no errors"
         );
       });
     });
