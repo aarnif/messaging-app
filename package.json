@@ -14,6 +14,7 @@
     "dev:ui": "npm run dev --prefix ui",
     "build:ui": "npm run build --prefix ui",
     "test:ui": "npm run test --prefix ui",
+    "test:ui:coverage": "npm run test --prefix ui -- --coverage",
     "lint:ui": "npm run lint --prefix ui",
     "preview:ui": "npm run preview --prefix ui"
   },
