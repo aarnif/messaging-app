@@ -142,6 +142,9 @@ vite.config.ts.timestamp-*
 # Apollo Server types
 server/src/types/graphql.ts
 
+# Apollo Client types
+ui/src/__generated__/
+
 # Vite Build
 dist-ssr
 *.local

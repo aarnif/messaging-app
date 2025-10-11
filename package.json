@@ -11,6 +11,7 @@
     "dev:server": "npm run dev --prefix server",
     "test:server": "npm run test --prefix server",
     "lint:server": "npm run lint --prefix server",
+    "generate:ui": "npm run generate --prefix ui",
     "dev:ui": "npm run dev --prefix ui",
     "build:ui": "npm run build --prefix ui",
     "test:ui": "npm run test --prefix ui",
