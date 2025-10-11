@@ -13,6 +13,7 @@
     "lint:server": "npm run lint --prefix server",
     "dev:ui": "npm run dev --prefix ui",
     "build:ui": "npm run build --prefix ui",
+    "test:ui": "npm run test --prefix ui",
     "lint:ui": "npm run lint --prefix ui",
     "preview:ui": "npm run preview --prefix ui"
   },
