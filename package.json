@@ -10,7 +10,11 @@
     "generate:server": "npm run generate --prefix server",
     "dev:server": "npm run dev --prefix server",
     "test:server": "npm run test --prefix server",
-    "lint:server": "npm run lint --prefix server"
+    "lint:server": "npm run lint --prefix server",
+    "dev:ui": "npm run dev --prefix ui",
+    "build:ui": "npm run build --prefix ui",
+    "lint:ui": "npm run lint --prefix ui",
+    "preview:ui": "npm run preview --prefix ui"
   },
   "repository": {
     "type": "git",
