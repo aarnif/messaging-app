@@ -1,4 +1,4 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
@@ -19,6 +19,17 @@ const meMock: MockLink.MockedResponse = {
         about: null,
         avatar: null,
       },
+    },
+  },
+};
+
+const meNull: MockLink.MockedResponse = {
+  request: {
+    query: ME,
+  },
+  result: {
+    data: {
+      me: null,
     },
   },
 };
@@ -51,40 +62,58 @@ describe("<App />", () => {
     expect(screen.getByText("Sign Up")).toBeDefined();
   });
 
-  test("renders chats page", () => {
+  test("redirects user to sign in page if not logged in", () => {
+    renderComponent(["/chats"], [meNull]);
+
+    expect(screen.getByText("Sign In")).toBeDefined();
+  });
+
+  test("renders chats page", async () => {
     renderComponent(["/chats"]);
 
-    expect(screen.getByText("Chats")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Chats")).toBeDefined();
+    });
   });
 
-  test("renders chat page", () => {
+  test("renders chat page", async () => {
     renderComponent(["/chats/1"]);
 
-    expect(screen.getByText("Chat with ID 1")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Chat with ID 1")).toBeDefined();
+    });
   });
 
-  test("renders contacts page", () => {
+  test("renders contacts page", async () => {
     renderComponent(["/contacts"]);
 
-    expect(screen.getByText("Contacts")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Contacts")).toBeDefined();
+    });
   });
 
-  test("renders contact page", () => {
+  test("renders contact page", async () => {
     renderComponent(["/contacts/1"]);
 
-    expect(screen.getByText("Contact with ID 1")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Contact with ID 1")).toBeDefined();
+    });
   });
 
-  test("renders profile page", () => {
+  test("renders profile page", async () => {
     renderComponent(["/profile"]);
 
-    expect(screen.getByText("Profile")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Profile")).toBeDefined();
+    });
   });
 
-  test("renders settings page", () => {
+  test("renders settings page", async () => {
     renderComponent(["/settings"]);
 
-    expect(screen.getByText("Settings")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Settings")).toBeDefined();
+    });
   });
 
   test("renders not found page for unmatched routes", () => {
