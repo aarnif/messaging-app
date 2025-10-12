@@ -1,13 +1,35 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
+import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import App from "../App";
+import { ME } from "../graphql/queries";
+import type { MockLink } from "@apollo/client/testing";
 
-const renderComponent = (initialEntries = ["/"]) =>
+const meMock: MockLink.MockedResponse = {
+  request: {
+    query: ME,
+  },
+  result: {
+    data: {
+      me: {
+        id: "1",
+        username: "user1",
+        name: "User1",
+        about: null,
+        avatar: null,
+      },
+    },
+  },
+};
+
+const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
   render(
-    <MemoryRouter initialEntries={initialEntries}>
-      <App />
-    </MemoryRouter>
+    <MockedProvider mocks={mocks}>
+      <MemoryRouter initialEntries={initialEntries}>
+        <App />
+      </MemoryRouter>
+    </MockedProvider>
   );
 
 describe("<App />", () => {

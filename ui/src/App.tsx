@@ -1,8 +1,14 @@
 import { Routes, Route, useMatch } from "react-router";
+import { useQuery } from "@apollo/client/react";
+import { ME } from "./graphql/queries";
 
 const App = () => {
+  const { data } = useQuery(ME);
   const matchChat = useMatch("/chats/:id")?.params;
   const matchContact = useMatch("/contacts/:id")?.params;
+
+  const currentUser = data?.me;
+  console.log("Current user:", currentUser);
 
   return (
     <Routes>
