@@ -28,3 +28,11 @@
 **Testit**
 
 - Testien kirjoitus yllä mainituille toiminnoille (Node.js Test runner + Supertest)
+
+## Viikko 3
+
+### Käyttöliittymä:
+
+- Käyttöliittymän suunnittelu Figma-sovelluksella
+- Käyttöliittymän alustus (React + Vite + TypeScript + Tailwind CSS)
+- Reitityksen lisäys (React Router v7)
