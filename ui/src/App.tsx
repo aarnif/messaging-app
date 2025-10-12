@@ -1,8 +1,7 @@
 import { Routes, Route, useMatch } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
-
-const SignIn = () => <p>Sign In</p>;
+import SignIn from "./components/SignIn";
 
 const App = () => {
   const { data } = useQuery(ME);
