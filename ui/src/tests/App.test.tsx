@@ -44,28 +44,36 @@ const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
   );
 
 describe("<App />", () => {
-  test("renders index page", () => {
+  test("renders index page", async () => {
     renderComponent();
 
-    expect(screen.getByText("Index")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Index")).toBeDefined();
+    });
   });
 
-  test("renders sign in page", () => {
+  test("renders sign in page", async () => {
     renderComponent(["/signin"]);
 
-    expect(screen.getByText("Sign In")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Sign In")).toBeDefined();
+    });
   });
 
-  test("renders sign up page", () => {
+  test("renders sign up page", async () => {
     renderComponent(["/signup"]);
 
-    expect(screen.getByText("Sign Up")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Sign Up")).toBeDefined();
+    });
   });
 
-  test("redirects user to sign in page if not logged in", () => {
+  test("redirects user to sign in page if not logged in", async () => {
     renderComponent(["/chats"], [meNull]);
 
-    expect(screen.getByText("Sign In")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Sign In")).toBeDefined();
+    });
   });
 
   test("renders chats page", async () => {
@@ -116,9 +124,11 @@ describe("<App />", () => {
     });
   });
 
-  test("renders not found page for unmatched routes", () => {
+  test("renders not found page for unmatched routes", async () => {
     renderComponent(["/unknown"]);
 
-    expect(screen.getByText("Page Not Found")).toBeDefined();
+    await waitFor(() => {
+      expect(screen.getByText("Page Not Found")).toBeDefined();
+    });
   });
 });

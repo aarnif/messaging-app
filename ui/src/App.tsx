@@ -1,12 +1,16 @@
-import { Routes, Route, useMatch } from "react-router";
+import { Routes, Route, useMatch, Navigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
 import SignIn from "./components/SignIn";
 
 const App = () => {
-  const { data } = useQuery(ME);
+  const { data, loading } = useQuery(ME);
   const matchChat = useMatch("/chats/:id")?.params;
   const matchContact = useMatch("/contacts/:id")?.params;
+
+  if (loading) {
+    return null;
+  }
 
   const currentUser = data?.me;
 
@@ -15,28 +19,47 @@ const App = () => {
       <Route path="/" element={<p>Index</p>} />
       <Route path="/signin" element={<SignIn />} />
       <Route path="/signup" element={<p>Sign Up</p>} />
-      <Route path="/chats" element={currentUser ? <p>Chats</p> : <SignIn />} />
+      <Route
+        path="/chats"
+        element={currentUser ? <p>Chats</p> : <Navigate to="/signin" replace />}
+      />
       <Route
         path="/chats/:id"
-        element={currentUser ? <p>Chat with ID {matchChat?.id}</p> : <SignIn />}
+        element={
+          currentUser ? (
+            <p>Chat with ID {matchChat?.id}</p>
+          ) : (
+            <Navigate to="/signin" replace />
+          )
+        }
       />
       <Route
         path="/contacts"
-        element={currentUser ? <p>Contacts</p> : <SignIn />}
+        element={
+          currentUser ? <p>Contacts</p> : <Navigate to="/signin" replace />
+        }
       />
       <Route
         path="/contacts/:id"
         element={
-          currentUser ? <p>Contact with ID {matchContact?.id}</p> : <SignIn />
+          currentUser ? (
+            <p>Contact with ID {matchContact?.id}</p>
+          ) : (
+            <Navigate to="/signin" replace />
+          )
         }
       />
       <Route
         path="/profile"
-        element={currentUser ? <p>Profile</p> : <SignIn />}
+        element={
+          currentUser ? <p>Profile</p> : <Navigate to="/signin" replace />
+        }
       />
       <Route
         path="/settings"
-        element={currentUser ? <p>Settings</p> : <SignIn />}
+        element={
+          currentUser ? <p>Settings</p> : <Navigate to="/signin" replace />
+        }
       />
       <Route path="/*" element={<p>Page Not Found</p>} />
     </Routes>
