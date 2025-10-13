@@ -1,7 +1,7 @@
 import type { InputField } from "../types";
 
 const FormField = ({ field }: { field: InputField }) => {
-  const { name, type, value, onChange, onReset } = field;
+  const { name, type, value, placeholder, onChange, onReset } = field;
   const isEmpty = value.length === 0;
   const labelText = name[0].toUpperCase() + name.slice(1);
   return (
@@ -19,11 +19,12 @@ const FormField = ({ field }: { field: InputField }) => {
         className="inset-0 w-full px-2 font-normal peer focus:bg-opacity-0 text-slate-900 focus:outline-none dark:text-slate-100"
         type={type}
         value={value}
+        placeholder={placeholder}
         onChange={onChange}
         onReset={onReset}
       />
       <p
-        className={`absolute bg-slate-100 px-2 font-medium transition-all peer-focus:text-sm/4 hover:cursor-text ${
+        className={`absolute right-0 left-3 bg-slate-100 px-1 font-medium transition-all peer-focus:right-auto peer-focus:text-sm/4 hover:cursor-text ${
           !isEmpty
             ? "-translate-y-6.5 bg-white text-sm/4 font-normal text-purple-500 dark:bg-slate-800 dark:text-purple-400"
             : "text-slate-900 peer-focus:-translate-y-6.5 peer-focus:bg-white peer-focus:text-sm/4 peer-focus:font-normal peer-focus:text-purple-500 dark:bg-slate-900 dark:text-slate-100 peer-focus:dark:bg-slate-800 peer-focus:dark:text-purple-400"
