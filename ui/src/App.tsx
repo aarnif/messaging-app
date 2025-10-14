@@ -18,8 +18,14 @@ const App = () => {
   return (
     <Routes>
       <Route path="/" element={<p>Index</p>} />
-      <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<SignUp />} />
+      <Route
+        path="/signin"
+        element={currentUser ? <Navigate to="/chats" replace /> : <SignIn />}
+      />
+      <Route
+        path="/signup"
+        element={currentUser ? <Navigate to="/chats" replace /> : <SignUp />}
+      />
       <Route
         path="/chats"
         element={currentUser ? <p>Chats</p> : <Navigate to="/signin" replace />}

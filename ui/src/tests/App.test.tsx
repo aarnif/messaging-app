@@ -24,7 +24,7 @@ describe("<App />", () => {
   });
 
   test("renders sign in page", async () => {
-    renderComponent(["/signin"]);
+    renderComponent(["/signin"], [meNullMock]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
@@ -32,18 +32,34 @@ describe("<App />", () => {
   });
 
   test("renders sign up page", async () => {
-    renderComponent(["/signup"]);
+    renderComponent(["/signup"], [meNullMock]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
     });
   });
 
-  test("redirects user to sign in page if not logged in", async () => {
+  test("redirects to sign in when not authenticated", async () => {
     renderComponent(["/chats"], [meNullMock]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
+    });
+  });
+
+  test("redirects to chats from sign in when authenticated", async () => {
+    renderComponent(["/signin"], [meMock]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Chats")).toBeDefined();
+    });
+  });
+
+  test("redirects to chats from sign up when authenticated", async () => {
+    renderComponent(["/signup"], [meMock]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Chats")).toBeDefined();
     });
   });
 
@@ -95,7 +111,7 @@ describe("<App />", () => {
     });
   });
 
-  test("renders not found page for unmatched routes", async () => {
+  test("renders not found page for unknown routes", async () => {
     renderComponent(["/unknown"]);
 
     await waitFor(() => {
