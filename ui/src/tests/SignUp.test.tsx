@@ -187,6 +187,6 @@ describe("<SignUp />", () => {
     });
 
     expect(mockClient.resetStore).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith("/chats");
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 });

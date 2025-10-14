@@ -108,7 +108,7 @@ describe("<SignIn />", () => {
     });
 
     expect(mockClient.resetStore).toHaveBeenCalled();
-    expect(mockNavigate).toHaveBeenCalledWith("/chats");
+    expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
   test("navigates to signup page on sign up button click", async () => {

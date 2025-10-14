@@ -19,19 +19,15 @@ const App = () => {
     <Routes>
       <Route
         path="/"
-        element={currentUser ? <Navigate to="/chats" replace /> : <SignIn />}
+        element={currentUser ? <p>Chats</p> : <Navigate to="/signin" replace />}
       />
       <Route
         path="/signin"
-        element={currentUser ? <Navigate to="/chats" replace /> : <SignIn />}
+        element={currentUser ? <Navigate to="/" replace /> : <SignIn />}
       />
       <Route
         path="/signup"
-        element={currentUser ? <Navigate to="/chats" replace /> : <SignUp />}
-      />
-      <Route
-        path="/chats"
-        element={currentUser ? <p>Chats</p> : <Navigate to="/signin" replace />}
+        element={currentUser ? <Navigate to="/" replace /> : <SignUp />}
       />
       <Route
         path="/chats/:id"

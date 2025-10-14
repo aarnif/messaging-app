@@ -49,7 +49,7 @@ const SignIn = () => {
     if (data?.login?.value) {
       localStorage.setItem("token", data.login.value);
       client.resetStore();
-      navigate("/chats");
+      navigate("/");
       console.log("Form submitted succesfully!");
     }
   };

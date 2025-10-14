@@ -15,22 +15,6 @@ const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
   );
 
 describe("<App />", () => {
-  test("redirects from index page to chats when authenticated", async () => {
-    renderComponent(["/"], [meMock]);
-
-    await waitFor(() => {
-      expect(screen.getByText("Chats")).toBeDefined();
-    });
-  });
-
-  test("redirects from index page to sign in when not authenticated", async () => {
-    renderComponent(["/"], [meNullMock]);
-
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
-    });
-  });
-
   test("renders sign in page", async () => {
     renderComponent(["/signin"], [meNullMock]);
 
@@ -47,15 +31,15 @@ describe("<App />", () => {
     });
   });
 
-  test("redirects to sign in when not authenticated", async () => {
-    renderComponent(["/chats"], [meNullMock]);
+  test("redirects from home page to sign in when not authenticated", async () => {
+    renderComponent(["/"], [meNullMock]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
     });
   });
 
-  test("redirects to chats from sign in when authenticated", async () => {
+  test("redirects to home page from sign in when authenticated", async () => {
     renderComponent(["/signin"], [meMock]);
 
     await waitFor(() => {
@@ -63,7 +47,7 @@ describe("<App />", () => {
     });
   });
 
-  test("redirects to chats from sign up when authenticated", async () => {
+  test("redirects to home page from sign up when authenticated", async () => {
     renderComponent(["/signup"], [meMock]);
 
     await waitFor(() => {
@@ -71,8 +55,8 @@ describe("<App />", () => {
     });
   });
 
-  test("renders chats page", async () => {
-    renderComponent(["/chats"]);
+  test("renders home page", async () => {
+    renderComponent(["/"]);
 
     await waitFor(() => {
       expect(screen.getByText("Chats")).toBeDefined();
