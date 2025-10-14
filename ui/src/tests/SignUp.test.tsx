@@ -10,6 +10,7 @@ import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import SignUp from "../components/SignUp";
 import {
+  LOGIN_TOKEN,
   invalidUsername,
   invalidPassword,
   mismatchedPasswords,
@@ -20,6 +21,7 @@ import {
   mockClient,
   mockNavigate,
 } from "./mocks";
+import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -39,7 +41,7 @@ vi.mock("@apollo/client/react", async () => {
 
 Object.defineProperty(global, "localStorage", { value: localStorage });
 
-const renderComponent = (mocks = [createUserMock]) =>
+const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
@@ -181,10 +183,7 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        "token",
-        loginMock.result.data.login.value
-      );
+      expect(localStorage.setItem).toHaveBeenCalledWith("token", LOGIN_TOKEN);
     });
 
     expect(mockClient.resetStore).toHaveBeenCalled();

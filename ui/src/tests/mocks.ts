@@ -1,7 +1,17 @@
 import { ME } from "../graphql/queries";
 import { CREATE_USER, LOGIN } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
+import type {
+  MeQuery,
+  MeQueryVariables,
+  CreateUserMutation,
+  CreateUserMutationVariables,
+  LoginMutation,
+  LoginMutationVariables,
+} from "../__generated__/graphql";
 import { vi } from "vitest";
+
+export const LOGIN_TOKEN = "fake-token-12345";
 
 export const NEW_USER_DETAILS = {
   id: "1",
@@ -35,7 +45,7 @@ const currentUserMock = {
   avatar: null,
 };
 
-export const meMock: MockLink.MockedResponse = {
+export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
   request: {
     query: ME,
   },
@@ -46,7 +56,7 @@ export const meMock: MockLink.MockedResponse = {
   },
 };
 
-export const meNullMock: MockLink.MockedResponse = {
+export const meNullMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
   request: {
     query: ME,
   },
@@ -63,7 +73,10 @@ export const createUserInput = {
   confirmPassword: NEW_USER_DETAILS.password,
 };
 
-export const createUserMock = {
+export const createUserMock: MockLink.MockedResponse<
+  CreateUserMutation,
+  CreateUserMutationVariables
+> = {
   request: {
     query: CREATE_USER,
     variables: {
@@ -77,7 +90,10 @@ export const createUserMock = {
   },
 };
 
-export const createUserErrorMock = {
+export const createUserErrorMock: MockLink.MockedResponse<
+  CreateUserMutation,
+  CreateUserMutationVariables
+> = {
   request: {
     query: CREATE_USER,
     variables: {
@@ -101,7 +117,12 @@ export const loginInput = {
   password: NEW_USER_DETAILS.password,
 };
 
-export const loginMock = {
+export const invalidLoginPassword = loginInput.password.slice(0, -1);
+
+export const loginMock: MockLink.MockedResponse<
+  LoginMutation,
+  LoginMutationVariables
+> = {
   request: {
     query: LOGIN,
     variables: {
@@ -111,17 +132,20 @@ export const loginMock = {
   result: {
     data: {
       login: {
-        value: "fake-token-12345",
+        value: LOGIN_TOKEN,
       },
     },
   },
 };
 
-export const loginErrorMock = {
+export const loginErrorMock: MockLink.MockedResponse<
+  LoginMutation,
+  LoginMutationVariables
+> = {
   request: {
     query: LOGIN,
     variables: {
-      input: { ...loginInput, password: "passwor" },
+      input: { ...loginInput, password: invalidLoginPassword },
     },
   },
   result: {

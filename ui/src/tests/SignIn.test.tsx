@@ -10,7 +10,9 @@ import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import SignIn from "../components/SignIn";
 import {
+  LOGIN_TOKEN,
   loginInput,
+  invalidLoginPassword,
   loginMock,
   loginErrorMock,
   mockClient,
@@ -73,12 +75,12 @@ describe("<SignIn />", () => {
   test("displays error if wrong credentials", async () => {
     const user = userEvent.setup();
 
-    const { username, password } = loginErrorMock.request.variables.input;
+    const { username } = loginInput;
 
     renderComponent([loginErrorMock]);
 
     await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
+    await user.type(screen.getByLabelText("Password"), invalidLoginPassword);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
     await waitFor(() => {
@@ -102,10 +104,7 @@ describe("<SignIn />", () => {
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith(
-        "token",
-        loginMock.result.data.login.value
-      );
+      expect(localStorage.setItem).toHaveBeenCalledWith("token", LOGIN_TOKEN);
     });
 
     expect(mockClient.resetStore).toHaveBeenCalled();
