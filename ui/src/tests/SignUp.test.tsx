@@ -9,102 +9,17 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import SignUp from "../components/SignUp";
-import { CREATE_USER, LOGIN } from "../graphql/mutations";
-
-const NEW_USER_DETAILS = {
-  username: "user1",
-  password: "password",
-  confirmPassword: "password",
-};
-
-const USERNAME_TOO_SHORT = {
-  ...NEW_USER_DETAILS,
-  username: "us",
-};
-
-const PASSWORD_TOO_SHORT = {
-  ...NEW_USER_DETAILS,
-  password: "pass",
-  confirmPassword: "pass",
-};
-
-const PASSWORDS_DO_NOT_MATCH = {
-  ...NEW_USER_DETAILS,
-  password: "password",
-  confirmPassword: "passwor",
-};
-
-const createUserMock = {
-  request: {
-    query: CREATE_USER,
-    variables: {
-      input: NEW_USER_DETAILS,
-    },
-  },
-  result: {
-    data: {
-      createUser: {
-        id: "1",
-        username: NEW_USER_DETAILS.username,
-        name: NEW_USER_DETAILS.username[0] + NEW_USER_DETAILS.username.slice(1),
-        about: null,
-        avatar: null,
-      },
-    },
-  },
-};
-
-const createUserErrorMock = {
-  request: {
-    query: CREATE_USER,
-    variables: {
-      input: NEW_USER_DETAILS,
-    },
-  },
-  result: {
-    errors: [
-      {
-        message: "Username already exists",
-      },
-    ],
-    data: {
-      createUser: null,
-    },
-  },
-};
-
-const loginMock = {
-  request: {
-    query: LOGIN,
-    variables: {
-      input: {
-        username: NEW_USER_DETAILS.username,
-        password: NEW_USER_DETAILS.password,
-      },
-    },
-  },
-  result: {
-    data: {
-      login: {
-        value: "fake-token-12345",
-      },
-    },
-  },
-};
-
-const mockClient = {
-  resetStore: vi.fn(),
-  refetchQueries: vi.fn(),
-  query: vi.fn(),
-  cache: {
-    updateQuery: vi.fn(),
-    readQuery: vi.fn(),
-    evict: vi.fn(),
-    identify: vi.fn(),
-  },
-};
-
-const mockNavigate = vi.fn();
+import {
+  invalidUsername,
+  invalidPassword,
+  mismatchedPasswords,
+  createUserInput,
+  createUserMock,
+  createUserErrorMock,
+  loginMock,
+  mockClient,
+  mockNavigate,
+} from "./mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -165,7 +80,7 @@ describe("<SignUp />", () => {
   test("displays error if username is too short", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = USERNAME_TOO_SHORT;
+    const { username, password, confirmPassword } = invalidUsername;
 
     renderComponent();
 
@@ -189,7 +104,7 @@ describe("<SignUp />", () => {
   test("displays error if password is too short", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = PASSWORD_TOO_SHORT;
+    const { username, password, confirmPassword } = invalidPassword;
 
     renderComponent();
 
@@ -213,7 +128,7 @@ describe("<SignUp />", () => {
   test("displays error if passwords do not match", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = PASSWORDS_DO_NOT_MATCH;
+    const { username, password, confirmPassword } = mismatchedPasswords;
 
     renderComponent();
 
@@ -235,7 +150,7 @@ describe("<SignUp />", () => {
   test("displays error if username already exists", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = NEW_USER_DETAILS;
+    const { username, password, confirmPassword } = createUserInput;
 
     renderComponent([createUserErrorMock]);
 
@@ -256,7 +171,7 @@ describe("<SignUp />", () => {
   test("signs up user successfully", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = NEW_USER_DETAILS;
+    const { username, password, confirmPassword } = createUserInput;
 
     renderComponent([createUserMock, loginMock]);
 

@@ -9,52 +9,13 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import SignIn from "../components/SignIn";
-import { LOGIN } from "../graphql/mutations";
-
-const loginMock = {
-  request: {
-    query: LOGIN,
-    variables: { input: { username: "user1", password: "password" } },
-  },
-  result: {
-    data: {
-      login: {
-        value: "fake-token-12345",
-      },
-    },
-  },
-};
-
-const loginErrorMock = {
-  request: {
-    query: LOGIN,
-    variables: { input: { username: "user1", password: "passwor" } },
-  },
-  result: {
-    errors: [
-      {
-        message: "Invalid username or password",
-      },
-    ],
-    data: {
-      login: null,
-    },
-  },
-};
-
-const mockClient = {
-  resetStore: vi.fn(),
-  refetchQueries: vi.fn(),
-  query: vi.fn(),
-  cache: {
-    updateQuery: vi.fn(),
-    readQuery: vi.fn(),
-    evict: vi.fn(),
-    identify: vi.fn(),
-  },
-};
-
-const mockNavigate = vi.fn();
+import {
+  loginInput,
+  loginMock,
+  loginErrorMock,
+  mockClient,
+  mockNavigate,
+} from "./mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -133,7 +94,7 @@ describe("<SignIn />", () => {
   test("signs in user successfully", async () => {
     const user = userEvent.setup();
 
-    const { username, password } = loginMock.request.variables.input;
+    const { username, password } = loginInput;
 
     renderComponent();
     await user.type(screen.getByLabelText("Username"), username);

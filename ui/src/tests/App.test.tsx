@@ -3,36 +3,7 @@ import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import App from "../App";
-import { ME } from "../graphql/queries";
-import type { MockLink } from "@apollo/client/testing";
-
-const meMock: MockLink.MockedResponse = {
-  request: {
-    query: ME,
-  },
-  result: {
-    data: {
-      me: {
-        id: "1",
-        username: "user1",
-        name: "User1",
-        about: null,
-        avatar: null,
-      },
-    },
-  },
-};
-
-const meNull: MockLink.MockedResponse = {
-  request: {
-    query: ME,
-  },
-  result: {
-    data: {
-      me: null,
-    },
-  },
-};
+import { meMock, meNullMock } from "./mocks";
 
 const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
   render(
@@ -69,7 +40,7 @@ describe("<App />", () => {
   });
 
   test("redirects user to sign in page if not logged in", async () => {
-    renderComponent(["/chats"], [meNull]);
+    renderComponent(["/chats"], [meNullMock]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
