@@ -56,7 +56,7 @@ describe("<App />", () => {
     renderComponent(["/signin"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Sign In")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
     });
   });
 
@@ -72,7 +72,7 @@ describe("<App />", () => {
     renderComponent(["/chats"], [meNull]);
 
     await waitFor(() => {
-      expect(screen.getByText("Sign In")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
     });
   });
 
