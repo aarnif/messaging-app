@@ -2,6 +2,7 @@ import { Routes, Route, useMatch, Navigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
 import SignIn from "./components/SignIn";
+import SignUp from "./components/SignUp";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
@@ -18,7 +19,7 @@ const App = () => {
     <Routes>
       <Route path="/" element={<p>Index</p>} />
       <Route path="/signin" element={<SignIn />} />
-      <Route path="/signup" element={<p>Sign Up</p>} />
+      <Route path="/signup" element={<SignUp />} />
       <Route
         path="/chats"
         element={currentUser ? <p>Chats</p> : <Navigate to="/signin" replace />}

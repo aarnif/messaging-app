@@ -64,7 +64,7 @@ describe("<App />", () => {
     renderComponent(["/signup"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Sign Up")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
     });
   });
 
