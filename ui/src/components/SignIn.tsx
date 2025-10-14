@@ -5,27 +5,20 @@ import FormField from "../ui/FormField";
 import Button from "../ui/Button";
 import { useNavigate } from "react-router";
 import { useMutation, useApolloClient } from "@apollo/client/react";
-import { useState } from "react";
 import { LOGIN } from "../graphql/mutations";
+import useNotifyMessage from "../hooks/useNotifyMessage";
 import { AnimatePresence } from "motion/react";
 
 const SignIn = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
+  const { message, showMessage } = useNotifyMessage();
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(
     "password",
     "password",
     "Enter your password here..."
   );
-  const [message, setMessage] = useState<string | null>(null);
-
-  const showMessage = (message: string) => {
-    setMessage(message);
-    setTimeout(() => {
-      setMessage(null);
-    }, 3000);
-  };
 
   const [mutate] = useMutation(LOGIN, {
     onError: (error) => {
