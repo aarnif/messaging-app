@@ -16,7 +16,7 @@ const FormField = ({ field }: { field: InputField }) => {
       <input
         id={name}
         name={name}
-        className="inset-0 w-full px-2 font-normal peer focus:bg-opacity-0 text-slate-900 focus:outline-none dark:text-slate-100"
+        className="peer focus:bg-opacity-0 inset-0 w-full px-2 font-normal text-slate-900 focus:outline-none dark:text-slate-100"
         type={type}
         value={value}
         placeholder={placeholder}
@@ -26,7 +26,7 @@ const FormField = ({ field }: { field: InputField }) => {
       <p
         className={`absolute right-0 left-3 bg-slate-100 px-1 font-medium transition-all peer-focus:right-auto peer-focus:text-sm/4 hover:cursor-text ${
           !isEmpty
-            ? "-translate-y-6.5 bg-white text-sm/4 font-normal text-purple-500 dark:bg-slate-800 dark:text-purple-400"
+            ? "right-auto -translate-y-6.5 bg-white text-sm/4 font-normal text-purple-500 dark:bg-slate-800 dark:text-purple-400"
             : "text-slate-900 peer-focus:-translate-y-6.5 peer-focus:bg-white peer-focus:text-sm/4 peer-focus:font-normal peer-focus:text-purple-500 dark:bg-slate-900 dark:text-slate-100 peer-focus:dark:bg-slate-800 peer-focus:dark:text-purple-400"
         }`}
       >
