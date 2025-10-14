@@ -13,16 +13,16 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 
 ### Ennen kirjautumista
 
-- [ ] **Käyttäjän luonti**
+- [x] **Käyttäjän luonti**
 
-  - [ ] Käyttäjätunnuksen tulee olla uniikki
-  - [ ] Käyttäjätunnuksen tulee olla pituudeltaan vähintään 3 merkkiä
-  - [ ] Salasanan tulee olla pituudeltaan vähintään 6 merkkiä
-  - [ ] Jos käyttäjätunnus on jo käytössä, käyttäjälle ilmoitetaan tästä
+  - [x] Käyttäjätunnuksen tulee olla uniikki
+  - [x] Käyttäjätunnuksen tulee olla pituudeltaan vähintään 3 merkkiä
+  - [x] Salasanan tulee olla pituudeltaan vähintään 6 merkkiä
+  - [x] Jos käyttäjätunnus on jo käytössä, käyttäjälle ilmoitetaan tästä
 
-- [ ] **Käyttäjän kirjautuminen**
-  - [ ] Kirjautuminen tapahtuu syöttämällä käyttäjätunnus ja salasana lomakkeelle
-    - [ ] Jos käyttäjätunnus tai salasana on väärin, käyttäjälle ilmoitetaan tästä
+- [x] **Käyttäjän kirjautuminen**
+  - [x] Kirjautuminen tapahtuu syöttämällä käyttäjätunnus ja salasana lomakkeelle
+    - [x] Jos käyttäjätunnus tai salasana on väärin, käyttäjälle ilmoitetaan tästä
 
 ### Kirjautumisen jälkeen
 
