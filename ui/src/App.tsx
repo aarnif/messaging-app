@@ -17,7 +17,10 @@ const App = () => {
 
   return (
     <Routes>
-      <Route path="/" element={<p>Index</p>} />
+      <Route
+        path="/"
+        element={currentUser ? <Navigate to="/chats" replace /> : <SignIn />}
+      />
       <Route
         path="/signin"
         element={currentUser ? <Navigate to="/chats" replace /> : <SignIn />}

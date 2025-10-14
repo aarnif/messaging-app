@@ -15,11 +15,19 @@ const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
   );
 
 describe("<App />", () => {
-  test("renders index page", async () => {
-    renderComponent();
+  test("redirects from index page to chats when authenticated", async () => {
+    renderComponent(["/"], [meMock]);
 
     await waitFor(() => {
-      expect(screen.getByText("Index")).toBeDefined();
+      expect(screen.getByText("Chats")).toBeDefined();
+    });
+  });
+
+  test("redirects from index page to sign in when not authenticated", async () => {
+    renderComponent(["/"], [meNullMock]);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
     });
   });
 
