@@ -108,7 +108,7 @@ const SignUp = () => {
   };
 
   return (
-    <div className="flex flex-col">
+    <div className="flex min-h-screen flex-col bg-[url(/background-light.svg)] dark:bg-[url(/background-dark.svg)]">
       <Header showBackground={false} />
       <div className="flex justify-center p-8">
         <form
