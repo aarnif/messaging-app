@@ -5,9 +5,12 @@ import {
   FaCog,
   FaSignOutAlt,
 } from "react-icons/fa";
-import { NavLink } from "react-router";
+import { useApolloClient } from "@apollo/client/react";
+import { useNavigate, NavLink } from "react-router";
 
 const Menu = () => {
+  const client = useApolloClient();
+  const navigate = useNavigate();
   const styles = {
     container:
       "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer",
@@ -38,6 +41,13 @@ const Menu = () => {
     },
   ];
 
+  const handleLogout = () => {
+    console.log("Logging out...");
+    localStorage.clear();
+    client.resetStore();
+    navigate("/signin");
+  };
+
   return (
     <div className="flex w-full flex-row justify-around bg-slate-200/90 sm:w-auto sm:flex-col sm:justify-start sm:gap-4 sm:bg-slate-200 dark:bg-slate-900/90 sm:dark:bg-slate-900">
       {navItems.map((item) => (
@@ -46,10 +56,7 @@ const Menu = () => {
           <p className={styles.title}>{item.title}</p>
         </NavLink>
       ))}
-      <button
-        className={styles.container}
-        onClick={() => console.log("Log Out Clicked")}
-      >
+      <button className={styles.container} onClick={handleLogout}>
         <FaSignOutAlt className={styles.icon} />
         <p className={styles.title}>Log Out</p>
       </button>
