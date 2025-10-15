@@ -12,10 +12,14 @@ const Menu = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
   const styles = {
-    container:
-      "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer",
-    title: "text-xs font-medium text-slate-900 dark:text-slate-50 sm:hidden",
-    icon: "h-7 w-7 sm:h-8 sm:w-8 text-slate-900 dark:text-slate-50",
+    container: {
+      default:
+        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-slate-900 dark:text-slate-50",
+      active:
+        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-green-600 dark:text-green-500",
+    },
+    title: "sm:hidden",
+    icon: "h-7 w-7",
   };
 
   const navItems = [
@@ -51,12 +55,18 @@ const Menu = () => {
   return (
     <div className="flex w-full flex-row justify-around bg-slate-200/90 sm:w-auto sm:flex-col sm:justify-start sm:gap-4 sm:bg-slate-200 dark:bg-slate-900/90 sm:dark:bg-slate-900">
       {navItems.map((item) => (
-        <NavLink key={item.path} to={item.path} className={styles.container}>
+        <NavLink
+          key={item.path}
+          to={item.path}
+          className={({ isActive }) =>
+            isActive ? styles.container.active : styles.container.default
+          }
+        >
           {item.icon}
           <p className={styles.title}>{item.title}</p>
         </NavLink>
       ))}
-      <button className={styles.container} onClick={handleLogout}>
+      <button className={styles.container.default} onClick={handleLogout}>
         <FaSignOutAlt className={styles.icon} />
         <p className={styles.title}>Log Out</p>
       </button>

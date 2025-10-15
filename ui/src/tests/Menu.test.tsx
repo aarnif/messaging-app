@@ -41,6 +41,20 @@ describe("<Menu />", () => {
     expect(screen.getByRole("button", { name: "Log Out" })).toBeDefined();
   });
 
+  test("highlight active menu item on item click", async () => {
+    const user = userEvent.setup();
+
+    renderComponent();
+
+    const contactLink = screen.getByRole("link", { name: "Contacts" });
+
+    await user.click(contactLink);
+
+    expect(contactLink.className).toContain(
+      "text-green-600 dark:text-green-500"
+    );
+  });
+
   test("logs out and navigates to signin page on log up button click", async () => {
     const user = userEvent.setup();
 
