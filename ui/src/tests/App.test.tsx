@@ -43,7 +43,7 @@ describe("<App />", () => {
     renderComponent(["/signin"], [meMock]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats Page")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
     });
   });
 
@@ -51,7 +51,7 @@ describe("<App />", () => {
     renderComponent(["/signup"], [meMock]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats Page")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
     });
   });
 
@@ -59,7 +59,7 @@ describe("<App />", () => {
     renderComponent(["/"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats Page")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
     });
   });
 

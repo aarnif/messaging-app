@@ -179,6 +179,28 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
   },
 };
 
+export const userChatsMock = [
+  {
+    id: "1",
+    name: "Test Chat 1",
+    avatar: null,
+    messages: [
+      {
+        id: "1",
+        sender: {
+          id: NEW_USER_DETAILS.id,
+          username: NEW_USER_DETAILS.username,
+          name: NEW_USER_DETAILS.name,
+          about: null,
+          avatar: null,
+        },
+        content: "This is a chat message.",
+        createdAt: "1759094100000",
+      },
+    ],
+  },
+];
+
 export const allChatsByUser: MockLink.MockedResponse<
   AllChatsByUserQuery,
   AllChatsByUserQueryVariables
@@ -191,27 +213,7 @@ export const allChatsByUser: MockLink.MockedResponse<
   },
   result: {
     data: {
-      allChatsByUser: [
-        {
-          id: "1",
-          name: "Test Chat 1",
-          avatar: null,
-          messages: [
-            {
-              id: "1",
-              sender: {
-                id: NEW_USER_DETAILS.id,
-                username: NEW_USER_DETAILS.username,
-                name: NEW_USER_DETAILS.name,
-                about: null,
-                avatar: null,
-              },
-              content: "This is a chat message.",
-              createdAt: "1759094100000",
-            },
-          ],
-        },
-      ],
+      allChatsByUser: userChatsMock,
     },
   },
 };

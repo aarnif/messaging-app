@@ -2,7 +2,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
-import { allChatsByUserEmpty, allChatsByUser } from "./mocks";
+import { allChatsByUserEmpty, allChatsByUser, userChatsMock } from "./mocks";
 import Chats from "../components/Chats";
 
 const renderComponent = (mocks = [allChatsByUser]) =>
@@ -37,7 +37,19 @@ describe("<Chats />", () => {
     renderComponent();
 
     await waitFor(() => {
-      expect(screen.getByText("All chats by user.")).toBeDefined();
+      userChatsMock.forEach((chat) => {
+        const { name, messages } = chat;
+        const latestMessage = messages[messages.length - 1];
+
+        expect(screen.getByText(name)).toBeDefined();
+        expect(
+          screen.getByText(new RegExp(`${latestMessage.sender.name}:`))
+        ).toBeDefined();
+        expect(screen.getByText(latestMessage.createdAt)).toBeDefined();
+        expect(
+          screen.getByText(new RegExp(latestMessage.content.slice(0, 24)))
+        ).toBeDefined();
+      });
     });
   });
 });

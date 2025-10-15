@@ -3,7 +3,9 @@ import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { FaSearch } from "react-icons/fa";
 import { MdOpenInNew } from "react-icons/md";
 import { useQuery } from "@apollo/client/react";
+import { NavLink } from "react-router";
 import type { InputField } from "../types";
+import type { UserChat } from "../__generated__/graphql";
 
 const MenuHeader = ({ searchWord }: { searchWord: InputField }) => {
   const { name, type, value, placeholder, onChange, onReset } = searchWord;
@@ -40,6 +42,46 @@ const MenuHeader = ({ searchWord }: { searchWord: InputField }) => {
   );
 };
 
+const ChatItem = ({ chat }: { chat: UserChat }) => {
+  const { id, name, messages } = chat;
+  const latestMessage = messages?.[messages.length - 1];
+
+  if (!latestMessage) {
+    return null;
+  }
+
+  const { sender, content, createdAt } = latestMessage;
+  const messagePreview = content ? `${content.slice(0, 24)}...` : "";
+
+  return (
+    <NavLink
+      to={`/chats/${id}`}
+      className="rounded-xl transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+    >
+      <div className="flex gap-4 p-2">
+        <img
+          className="h-12 w-12 rounded-full"
+          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+        />
+        <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+              {name}
+            </h2>
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+              {createdAt}
+            </p>
+          </div>
+          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+            {sender?.name}:{" "}
+            <span className="font-normal">{messagePreview}</span>
+          </p>
+        </div>
+      </div>
+    </NavLink>
+  );
+};
+
 const ListMenu = () => {
   const searchWord = useField(
     "search-chats",
@@ -53,19 +95,22 @@ const ListMenu = () => {
     },
   });
 
-  if (loading) {
-    return null;
-  }
-
-  console.log("Users chats:", data?.allChatsByUser);
+  const chats = data?.allChatsByUser;
+  const hasChats = chats && chats.length > 0;
 
   return (
     <div className="flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800">
       <MenuHeader searchWord={searchWord} />
-      {data?.allChatsByUser && data.allChatsByUser.length === 0 ? (
-        <p>No chats found.</p>
+      {loading ? null : hasChats ? (
+        <div className="flex flex-col gap-2 p-2">
+          {chats.map((chat) => chat && <ChatItem key={chat.id} chat={chat} />)}
+        </div>
       ) : (
-        <p>All chats by user.</p>
+        <div className="px-4 py-2">
+          <h2 className="font-bold text-slate-700 dark:text-slate-200">
+            No chats found.
+          </h2>
+        </div>
       )}
     </div>
   );
