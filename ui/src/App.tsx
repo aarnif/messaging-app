@@ -22,7 +22,7 @@ const App = () => {
         path="/"
         element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
       >
-        <Route index element={<p>Chats</p>} />
+        <Route index element={<p>Chats Page</p>} />
         <Route
           path="/chats/:id"
           element={
@@ -36,7 +36,11 @@ const App = () => {
         <Route
           path="/contacts"
           element={
-            currentUser ? <p>Contacts</p> : <Navigate to="/signin" replace />
+            currentUser ? (
+              <p>Contacts Page</p>
+            ) : (
+              <Navigate to="/signin" replace />
+            )
           }
         />
         <Route
@@ -52,13 +56,21 @@ const App = () => {
         <Route
           path="/profile"
           element={
-            currentUser ? <p>Profile</p> : <Navigate to="/signin" replace />
+            currentUser ? (
+              <p>Profile Page</p>
+            ) : (
+              <Navigate to="/signin" replace />
+            )
           }
         />
         <Route
           path="/settings"
           element={
-            currentUser ? <p>Settings</p> : <Navigate to="/signin" replace />
+            currentUser ? (
+              <p>Settings Page</p>
+            ) : (
+              <Navigate to="/signin" replace />
+            )
           }
         />
       </Route>

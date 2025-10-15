@@ -43,7 +43,7 @@ describe("<App />", () => {
     renderComponent(["/signin"], [meMock]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats")).toBeDefined();
+      expect(screen.getByText("Chats Page")).toBeDefined();
     });
   });
 
@@ -51,7 +51,7 @@ describe("<App />", () => {
     renderComponent(["/signup"], [meMock]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats")).toBeDefined();
+      expect(screen.getByText("Chats Page")).toBeDefined();
     });
   });
 
@@ -59,7 +59,7 @@ describe("<App />", () => {
     renderComponent(["/"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chats")).toBeDefined();
+      expect(screen.getByText("Chats Page")).toBeDefined();
     });
   });
 
@@ -75,7 +75,7 @@ describe("<App />", () => {
     renderComponent(["/contacts"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Contacts")).toBeDefined();
+      expect(screen.getByText("Contacts Page")).toBeDefined();
     });
   });
 
@@ -91,7 +91,7 @@ describe("<App />", () => {
     renderComponent(["/profile"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Profile")).toBeDefined();
+      expect(screen.getByText("Profile Page")).toBeDefined();
     });
   });
 
@@ -99,7 +99,7 @@ describe("<App />", () => {
     renderComponent(["/settings"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings")).toBeDefined();
+      expect(screen.getByText("Settings Page")).toBeDefined();
     });
   });
 
