@@ -1,4 +1,4 @@
-import { ME } from "../graphql/queries";
+import { ME, ALL_CHATS_BY_USER } from "../graphql/queries";
 import { CREATE_USER, LOGIN } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -8,6 +8,8 @@ import type {
   CreateUserMutationVariables,
   LoginMutation,
   LoginMutationVariables,
+  AllChatsByUserQuery,
+  AllChatsByUserQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -156,6 +158,60 @@ export const loginErrorMock: MockLink.MockedResponse<
     ],
     data: {
       login: null,
+    },
+  },
+};
+
+export const allChatsByUserEmpty: MockLink.MockedResponse<
+  AllChatsByUserQuery,
+  AllChatsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CHATS_BY_USER,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      allChatsByUser: [],
+    },
+  },
+};
+
+export const allChatsByUser: MockLink.MockedResponse<
+  AllChatsByUserQuery,
+  AllChatsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CHATS_BY_USER,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      allChatsByUser: [
+        {
+          id: "1",
+          name: "Test Chat 1",
+          avatar: null,
+          messages: [
+            {
+              id: "1",
+              sender: {
+                id: NEW_USER_DETAILS.id,
+                username: NEW_USER_DETAILS.username,
+                name: NEW_USER_DETAILS.name,
+                about: null,
+                avatar: null,
+              },
+              content: "This is a chat message.",
+              createdAt: "1759094100000",
+            },
+          ],
+        },
+      ],
     },
   },
 };

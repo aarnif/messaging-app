@@ -1,13 +1,11 @@
 import useField from "../hooks/useField";
+import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { FaSearch } from "react-icons/fa";
 import { MdOpenInNew } from "react-icons/md";
+import { useQuery } from "@apollo/client/react";
+import type { InputField } from "../types";
 
-const MenuHeader = () => {
-  const searchWord = useField(
-    "search-chats",
-    "text",
-    "Search by title or description..."
-  );
+const MenuHeader = ({ searchWord }: { searchWord: InputField }) => {
   const { name, type, value, placeholder, onChange, onReset } = searchWord;
   return (
     <div className="flex w-full flex-col gap-4 p-4">
@@ -42,23 +40,46 @@ const MenuHeader = () => {
   );
 };
 
-const ListMenu = () => (
-  <div className="flex flex-grow bg-white sm:max-w-[360px] dark:bg-slate-800">
-    <MenuHeader />
-  </div>
-);
+const ListMenu = () => {
+  const searchWord = useField(
+    "search-chats",
+    "text",
+    "Search by title or description..."
+  );
 
-const Chats = () => {
+  const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
+    variables: {
+      search: searchWord.value,
+    },
+  });
+
+  if (loading) {
+    return null;
+  }
+
+  console.log("Users chats:", data?.allChatsByUser);
+
   return (
-    <div className="flex flex-grow">
-      <ListMenu />
-      <div className="hidden flex-grow items-center justify-center sm:flex">
-        <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
-          Select Chat to Start Messaging.
-        </p>
-      </div>
+    <div className="flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800">
+      <MenuHeader searchWord={searchWord} />
+      {data?.allChatsByUser && data.allChatsByUser.length === 0 ? (
+        <p>No chats found.</p>
+      ) : (
+        <p>All chats by user.</p>
+      )}
     </div>
   );
 };
+
+const Chats = () => (
+  <div className="flex flex-grow">
+    <ListMenu />
+    <div className="hidden flex-grow items-center justify-center sm:flex">
+      <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+        Select Chat to Start Messaging.
+      </p>
+    </div>
+  </div>
+);
 
 export default Chats;
