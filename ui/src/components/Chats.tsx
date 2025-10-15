@@ -4,6 +4,7 @@ import { FaSearch } from "react-icons/fa";
 import { MdOpenInNew } from "react-icons/md";
 import { useQuery } from "@apollo/client/react";
 import { NavLink } from "react-router";
+import Spinner from "../ui/Spinner";
 import type { InputField } from "../types";
 import type { UserChat } from "../__generated__/graphql";
 
@@ -101,7 +102,11 @@ const ListMenu = () => {
   return (
     <div className="flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800">
       <MenuHeader searchWord={searchWord} />
-      {loading ? null : hasChats ? (
+      {loading ? (
+        <div className="mt-8">
+          <Spinner />
+        </div>
+      ) : hasChats ? (
         <div className="flex flex-col gap-2 p-2">
           {chats.map((chat) => chat && <ChatItem key={chat.id} chat={chat} />)}
         </div>
