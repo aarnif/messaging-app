@@ -4,6 +4,7 @@ import { ME } from "./graphql/queries";
 import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
+import Chats from "./components/Chats";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
@@ -22,7 +23,7 @@ const App = () => {
         path="/"
         element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
       >
-        <Route index element={<p>Chats Page</p>} />
+        <Route index element={<Chats />} />
         <Route
           path="/chats/:id"
           element={
