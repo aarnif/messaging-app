@@ -14,7 +14,7 @@ const Menu = () => {
   const styles = {
     container: {
       default:
-        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-slate-900 dark:text-slate-50",
+        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-slate-900 hover:text-slate-700 dark:text-slate-50 dark:hover:text-slate-200",
       active:
         "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-green-600 dark:text-green-500",
     },
