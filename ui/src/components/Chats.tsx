@@ -74,7 +74,7 @@ const ListMenu = () => {
           <Spinner />
         </div>
       ) : hasChats ? (
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
           {chats.map((chat) => chat && <ChatItem key={chat.id} chat={chat} />)}
         </div>
       ) : (
