@@ -1,7 +1,7 @@
 import useField from "../hooks/useField";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { useQuery } from "@apollo/client/react";
-import { NavLink, Outlet } from "react-router";
+import { NavLink, Outlet, useLocation } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { UserChat } from "../__generated__/graphql";
@@ -63,11 +63,18 @@ const ListMenu = () => {
     },
   });
 
+  const location = useLocation();
+  const showListOnMobile = location.pathname === "/";
+
   const chats = data?.allChatsByUser;
   const hasChats = chats && chats.length > 0;
 
   return (
-    <div className="flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800">
+    <div
+      className={`flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800 ${
+        showListOnMobile ? "" : "hidden sm:flex"
+      }`}
+    >
       <MenuHeader title="Chats" searchWord={searchWord} />
       {loading ? (
         <div className="mt-8">
