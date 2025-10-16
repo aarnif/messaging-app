@@ -5,6 +5,7 @@ import { NavLink, Outlet, useLocation } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { UserChat } from "../__generated__/graphql";
+import { formatDisplayDate } from "../helpers";
 
 const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { id, name, messages } = chat;
@@ -16,6 +17,8 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? `${content.slice(0, 24)}...` : "";
+
+  const formattedTime = formatDisplayDate(createdAt);
 
   return (
     <NavLink
@@ -36,9 +39,11 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
               {name}
             </h2>
-            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-              {createdAt}
-            </p>
+            {formattedTime && (
+              <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+                {formattedTime}
+              </p>
+            )}
           </div>
           <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
             {sender?.name}:{" "}
