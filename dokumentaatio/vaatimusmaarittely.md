@@ -40,4 +40,4 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
   - [ ] Käyttäjä voi poistaa kontakteja
   - [ ] Käyttäjä voi blokata kontaktin
 
-- [ ] **Käyttäjä voi kirjautua ulos järjestelmästä**
+- [x] **Käyttäjä voi kirjautua ulos järjestelmästä**
