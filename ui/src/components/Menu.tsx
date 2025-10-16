@@ -11,6 +11,16 @@ import { useNavigate, NavLink } from "react-router";
 const Menu = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
+
+  const isPathActive = (path: string) => {
+    if (path === "/") {
+      return (
+        location.pathname === "/" || location.pathname.startsWith("/chats")
+      );
+    }
+    return location.pathname.startsWith(path);
+  };
+
   const styles = {
     container: {
       default:
@@ -58,8 +68,10 @@ const Menu = () => {
         <NavLink
           key={item.path}
           to={item.path}
-          className={({ isActive }) =>
-            isActive ? styles.container.active : styles.container.default
+          className={
+            isPathActive(item.path)
+              ? styles.container.active
+              : styles.container.default
           }
         >
           {item.icon}

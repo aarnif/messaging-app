@@ -23,17 +23,23 @@ const App = () => {
         path="/"
         element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
       >
-        <Route index element={<Chats />} />
-        <Route
-          path="/chats/:id"
-          element={
-            currentUser ? (
-              <p>Chat with ID {matchChat?.id}</p>
-            ) : (
-              <Navigate to="/signin" replace />
-            )
-          }
-        />
+        <Route path="/" element={<Chats />}>
+          <Route
+            index
+            element={
+              <div className="hidden flex-grow items-center justify-center sm:flex">
+                <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+                  Select Chat to Start Messaging.
+                </p>
+              </div>
+            }
+          />
+          <Route
+            path="/chats/:id"
+            element={<p>Chat with ID {matchChat?.id}</p>}
+          />
+        </Route>
+
         <Route
           path="/contacts"
           element={

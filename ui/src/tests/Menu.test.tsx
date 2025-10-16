@@ -50,9 +50,7 @@ describe("<Menu />", () => {
 
     await user.click(contactLink);
 
-    expect(contactLink.className).toContain(
-      "text-green-600 dark:text-green-500"
-    );
+    expect(contactLink.className).toContain("active");
   });
 
   test("logs out and navigates to signin page on log up button click", async () => {

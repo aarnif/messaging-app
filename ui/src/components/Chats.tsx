@@ -3,7 +3,7 @@ import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { FaSearch } from "react-icons/fa";
 import { MdOpenInNew } from "react-icons/md";
 import { useQuery } from "@apollo/client/react";
-import { NavLink } from "react-router";
+import { NavLink, Outlet } from "react-router";
 import Spinner from "../ui/Spinner";
 import type { InputField } from "../types";
 import type { UserChat } from "../__generated__/graphql";
@@ -57,7 +57,11 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
   return (
     <NavLink
       to={`/chats/${id}`}
-      className="rounded-xl transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+      className={({ isActive }) =>
+        isActive
+          ? "rounded-xl bg-slate-100 transition-colors dark:bg-slate-700"
+          : "rounded-xl transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+      }
     >
       <div className="flex gap-4 p-2">
         <img
@@ -124,11 +128,7 @@ const ListMenu = () => {
 const Chats = () => (
   <div className="flex flex-grow">
     <ListMenu />
-    <div className="hidden flex-grow items-center justify-center sm:flex">
-      <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
-        Select Chat to Start Messaging.
-      </p>
-    </div>
+    <Outlet />
   </div>
 );
 
