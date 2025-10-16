@@ -1,4 +1,8 @@
-import { ME, ALL_CHATS_BY_USER } from "../graphql/queries";
+import {
+  ME,
+  ALL_CHATS_BY_USER,
+  ALL_CONTACTS_BY_USER,
+} from "../graphql/queries";
 import { CREATE_USER, LOGIN } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -10,6 +14,8 @@ import type {
   LoginMutationVariables,
   AllChatsByUserQuery,
   AllChatsByUserQueryVariables,
+  AllContactsByUserQuery,
+  AllContactsByUserQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -214,6 +220,54 @@ export const allChatsByUser: MockLink.MockedResponse<
   result: {
     data: {
       allChatsByUser: userChatsMock,
+    },
+  },
+};
+
+export const allContactsByUserEmpty: MockLink.MockedResponse<
+  AllContactsByUserQuery,
+  AllContactsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CONTACTS_BY_USER,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      allContactsByUser: [],
+    },
+  },
+};
+
+export const userContactsMock = [
+  {
+    id: "1",
+    isBlocked: false,
+    contactDetails: {
+      id: "2",
+      username: "user2",
+      name: "User 2",
+      about: "Hi! My name is User 2!",
+      avatar: null,
+    },
+  },
+];
+
+export const allContactsByUser: MockLink.MockedResponse<
+  AllContactsByUserQuery,
+  AllContactsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CONTACTS_BY_USER,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      allContactsByUser: userContactsMock,
     },
   },
 };

@@ -31,3 +31,18 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
     }
   }
 }`);
+
+export const ALL_CONTACTS_BY_USER =
+  gql(`query AllContactsByUser($search: String) {
+  allContactsByUser(search: $search) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

@@ -5,6 +5,7 @@ import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Chats from "./components/Chats";
+import Contacts from "./components/Contacts";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
@@ -40,26 +41,29 @@ const App = () => {
           />
         </Route>
 
-        <Route
-          path="/contacts"
-          element={
-            currentUser ? (
-              <p>Contacts Page</p>
-            ) : (
-              <Navigate to="/signin" replace />
-            )
-          }
-        />
-        <Route
-          path="/contacts/:id"
-          element={
-            currentUser ? (
-              <p>Contact with ID {matchContact?.id}</p>
-            ) : (
-              <Navigate to="/signin" replace />
-            )
-          }
-        />
+        <Route path="/contacts" element={<Contacts />}>
+          <Route
+            index
+            element={
+              <div className="hidden flex-grow items-center justify-center sm:flex">
+                <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
+                  Select a contact for further information.
+                </p>
+              </div>
+            }
+          />
+          <Route
+            path="/contacts/:id"
+            element={
+              currentUser ? (
+                <p>Contact with ID {matchContact?.id}</p>
+              ) : (
+                <Navigate to="/signin" replace />
+              )
+            }
+          />
+        </Route>
+
         <Route
           path="/profile"
           element={

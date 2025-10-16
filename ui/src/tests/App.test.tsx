@@ -75,7 +75,7 @@ describe("<App />", () => {
     renderComponent(["/contacts"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Contacts Page")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
     });
   });
 
