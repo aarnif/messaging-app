@@ -54,36 +54,12 @@ const App = () => {
           />
           <Route
             path="/contacts/:id"
-            element={
-              currentUser ? (
-                <p>Contact with ID {matchContact?.id}</p>
-              ) : (
-                <Navigate to="/signin" replace />
-              )
-            }
+            element={<p>Contact with ID {matchContact?.id}</p>}
           />
         </Route>
 
-        <Route
-          path="/profile"
-          element={
-            currentUser ? (
-              <p>Profile Page</p>
-            ) : (
-              <Navigate to="/signin" replace />
-            )
-          }
-        />
-        <Route
-          path="/settings"
-          element={
-            currentUser ? (
-              <p>Settings Page</p>
-            ) : (
-              <Navigate to="/signin" replace />
-            )
-          }
-        />
+        <Route path="/profile" element={<p>Profile Page</p>} />
+        <Route path="/settings" element={<p>Settings Page</p>} />
       </Route>
 
       <Route
