@@ -42,11 +42,13 @@ type ChatMember {
   role: String
 }
 
+scalar Date
+
 type Message {
   id: ID!
   sender: User
   content: String
-  createdAt: String
+  createdAt: Date
 }
 
 type Contact {
