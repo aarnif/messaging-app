@@ -71,7 +71,7 @@ const ListMenu = () => {
           <Spinner />
         </div>
       ) : hasContacts ? (
-        <div className="flex flex-col gap-2 p-2">
+        <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
           {contacts.map(
             (contact) =>
               contact && <ContactItem key={contact.id} contact={contact} />
