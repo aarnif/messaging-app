@@ -45,7 +45,10 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdNull]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chat not found!")).toBeDefined();
+      expect(screen.getByText("Chat not found.")).toBeDefined();
+      expect(
+        screen.getByText("It may have been deleted or the link is incorrect.")
+      ).toBeDefined();
     });
   });
 });
