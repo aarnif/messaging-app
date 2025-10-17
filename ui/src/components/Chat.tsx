@@ -4,7 +4,7 @@ import { FIND_CHAT_BY_ID } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
 import { IoChevronBack } from "react-icons/io5";
-import type { Chat } from "../__generated__/graphql";
+import type { Chat, User } from "../__generated__/graphql";
 
 const Header = ({
   name,
@@ -53,7 +53,13 @@ const ChatNotFound = () => (
   </div>
 );
 
-const ChatContent = ({ chat }: { chat: Chat | null | undefined }) => {
+const ChatContent = ({
+  currentUser,
+  chat,
+}: {
+  currentUser: User;
+  chat: Chat | null | undefined;
+}) => {
   if (!chat) {
     return <ChatNotFound />;
   }
@@ -61,13 +67,15 @@ const ChatContent = ({ chat }: { chat: Chat | null | undefined }) => {
   const { name, members } = chat;
 
   const membersString = members
-    ?.map((member) => (member?.username === "test" ? "You" : member?.name))
+    ?.map((member) =>
+      member?.username === currentUser.username ? "You" : member?.name
+    )
     .join(", ");
 
   return <Header name={name ?? ""} membersString={membersString ?? ""} />;
 };
 
-const Chat = () => {
+const Chat = ({ currentUser }: { currentUser: User }) => {
   const match = useMatch("/chats/:id")?.params;
   const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
     variables: {
@@ -82,7 +90,7 @@ const Chat = () => {
           <Spinner />
         </div>
       ) : (
-        <ChatContent chat={data?.findChatById} />
+        <ChatContent currentUser={currentUser} chat={data?.findChatById} />
       )}
     </div>
   );

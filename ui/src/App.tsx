@@ -7,6 +7,7 @@ import SignUp from "./components/SignUp";
 import Chats from "./components/Chats";
 import Contacts from "./components/Contacts";
 import Chat from "./components/Chat";
+import type { User } from "./__generated__/graphql";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
@@ -35,7 +36,10 @@ const App = () => {
               </div>
             }
           />
-          <Route path="/chats/:id" element={<Chat />} />
+          <Route
+            path="/chats/:id"
+            element={<Chat currentUser={currentUser as User} />}
+          />
         </Route>
 
         <Route path="/contacts" element={<Contacts />}>
