@@ -4,6 +4,7 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import { allChatsByUserEmpty, allChatsByUser, userChatsMock } from "./mocks";
 import Chats from "../components/Chats";
+import { formatDisplayDate, truncateText } from "../helpers";
 
 const renderComponent = (mocks = [allChatsByUser]) =>
   render(
@@ -45,9 +46,12 @@ describe("<Chats />", () => {
         expect(
           screen.getByText(new RegExp(`${latestMessage.sender.name}:`))
         ).toBeDefined();
-        expect(screen.getByText(latestMessage.createdAt)).toBeDefined();
+        const formattedDate = formatDisplayDate(latestMessage.createdAt);
+        if (formattedDate) {
+          expect(screen.getByText(formattedDate)).toBeDefined();
+        }
         expect(
-          screen.getByText(new RegExp(latestMessage.content.slice(0, 24)))
+          screen.getByText(truncateText(latestMessage.content))
         ).toBeDefined();
       });
     });

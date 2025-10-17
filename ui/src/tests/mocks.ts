@@ -86,7 +86,7 @@ export const CHAT_DETAILS = {
         avatar: null,
       },
       content: "This is a chat message.",
-      createdAt: "1759094100000",
+      createdAt: 1759094100000,
     },
   ],
 };

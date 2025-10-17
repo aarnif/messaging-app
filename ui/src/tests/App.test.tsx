@@ -2,10 +2,14 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
+import type { MockLink } from "@apollo/client/testing";
 import App from "../App";
-import { meMock, meNullMock } from "./mocks";
+import { meMock, meNullMock, findChatById, CHAT_DETAILS } from "./mocks";
 
-const renderComponent = (initialEntries = ["/"], mocks = [meMock]) =>
+const renderComponent = (
+  initialEntries = ["/"],
+  mocks: MockLink.MockedResponse[] = [meMock]
+) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={initialEntries}>
@@ -64,10 +68,12 @@ describe("<App />", () => {
   });
 
   test("renders chat page", async () => {
-    renderComponent(["/chats/1"]);
+    renderComponent(["/chats/1"], [meMock, findChatById]);
 
     await waitFor(() => {
-      expect(screen.getByText("Chat with ID 1")).toBeDefined();
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
     });
   });
 
