@@ -144,6 +144,10 @@ export const resolvers: Resolvers = {
             },
           },
         ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+        ],
       });
 
       if (!chat) {
