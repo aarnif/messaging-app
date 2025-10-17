@@ -76,7 +76,7 @@ const ListMenu = () => {
 
   return (
     <div
-      className={`flex flex-grow flex-col bg-white sm:max-w-[360px] dark:bg-slate-800 ${
+      className={`flex flex-grow flex-col border-r border-slate-200 bg-white sm:max-w-[360px] dark:border-slate-700 dark:bg-slate-800 ${
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
