@@ -4,6 +4,7 @@ import { FIND_CHAT_BY_ID } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
 import { IoChevronBack } from "react-icons/io5";
+import type { Chat } from "../__generated__/graphql";
 
 const Header = ({
   name,
@@ -52,16 +53,7 @@ const ChatNotFound = () => (
   </div>
 );
 
-const Chat = () => {
-  const match = useMatch("/chats/:id")?.params;
-  const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
-    variables: {
-      id: match?.id ?? "",
-    },
-  });
-
-  const chat = data?.findChatById;
-
+const ChatContent = ({ chat }: { chat: Chat | null | undefined }) => {
   if (!chat) {
     return <ChatNotFound />;
   }
@@ -72,6 +64,17 @@ const Chat = () => {
     ?.map((member) => (member?.username === "test" ? "You" : member?.name))
     .join(", ");
 
+  return <Header name={name ?? ""} membersString={membersString ?? ""} />;
+};
+
+const Chat = () => {
+  const match = useMatch("/chats/:id")?.params;
+  const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
+    variables: {
+      id: match?.id ?? "",
+    },
+  });
+
   return (
     <div className="flex flex-grow flex-col">
       {loading ? (
@@ -79,7 +82,7 @@ const Chat = () => {
           <Spinner />
         </div>
       ) : (
-        <Header name={name ?? ""} membersString={membersString ?? ""} />
+        <ChatContent chat={data?.findChatById} />
       )}
     </div>
   );

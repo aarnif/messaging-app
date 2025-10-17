@@ -48,6 +48,11 @@ describe("<Chat />", () => {
     });
   });
 
+  test("displays loading state", () => {
+    renderComponent();
+    expect(screen.getByTestId("spinner")).toBeDefined();
+  });
+
   test("displays chat not found if chat does not exists", async () => {
     renderComponent([findChatByIdNull]);
 
