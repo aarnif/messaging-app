@@ -46,3 +46,32 @@ export const ALL_CONTACTS_BY_USER =
     }
   }
 }`);
+
+export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
+  findChatById(id: $id) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+    }
+  }
+}`);

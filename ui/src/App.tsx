@@ -6,10 +6,10 @@ import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
 import Chats from "./components/Chats";
 import Contacts from "./components/Contacts";
+import Chat from "./components/Chat";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
-  const matchChat = useMatch("/chats/:id")?.params;
   const matchContact = useMatch("/contacts/:id")?.params;
 
   if (loading) {
@@ -35,10 +35,7 @@ const App = () => {
               </div>
             }
           />
-          <Route
-            path="/chats/:id"
-            element={<p>Chat with ID {matchChat?.id}</p>}
-          />
+          <Route path="/chats/:id" element={<Chat />} />
         </Route>
 
         <Route path="/contacts" element={<Contacts />}>
