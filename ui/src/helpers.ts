@@ -20,3 +20,6 @@ export const formatDisplayDate = (
 
   return format(date, "dd.MM.yyyy");
 };
+
+export const truncateText = (text: string, maxLength: number = 20): string =>
+  text.length > maxLength ? text.slice(0, maxLength) + "..." : text;

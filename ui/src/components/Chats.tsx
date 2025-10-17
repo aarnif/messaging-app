@@ -5,7 +5,7 @@ import { NavLink, Outlet, useLocation } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { UserChat } from "../__generated__/graphql";
-import { formatDisplayDate } from "../helpers";
+import { formatDisplayDate, truncateText } from "../helpers";
 
 const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { id, name, messages } = chat;
@@ -16,7 +16,7 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
   }
 
   const { sender, content, createdAt } = latestMessage;
-  const messagePreview = content ? `${content.slice(0, 24)}...` : "";
+  const messagePreview = content ? truncateText(content) : "";
 
   const formattedTime = formatDisplayDate(createdAt);
 
