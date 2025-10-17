@@ -1,8 +1,14 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter, useMatch } from "react-router";
-import { findChatById, findChatByIdNull, CHAT_DETAILS } from "./mocks";
+import {
+  mockNavigate,
+  findChatById,
+  findChatByIdNull,
+  CHAT_DETAILS,
+} from "./mocks";
 import Chat from "../components/Chat";
 
 vi.mock("react-router", async () => {
@@ -10,6 +16,7 @@ vi.mock("react-router", async () => {
   return {
     ...actual,
     useMatch: vi.fn(),
+    useNavigate: () => mockNavigate,
   };
 });
 
@@ -49,6 +56,20 @@ describe("<Chat />", () => {
       expect(
         screen.getByText("It may have been deleted or the link is incorrect.")
       ).toBeDefined();
+    });
+  });
+
+  test("navigates back to chats on go back link click", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      await user.click(screen.getByTestId("go-back"));
+      expect(mockNavigate).toHaveBeenCalledWith("/");
     });
   });
 });

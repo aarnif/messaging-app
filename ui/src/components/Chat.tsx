@@ -1,8 +1,9 @@
-import { useMatch } from "react-router";
+import { useMatch, useNavigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { FIND_CHAT_BY_ID } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
+import { IoChevronBack } from "react-icons/io5";
 
 const Header = ({
   name,
@@ -11,8 +12,16 @@ const Header = ({
   name: string;
   membersString: string;
 }) => {
+  const navigate = useNavigate();
   return (
-    <div className="flex items-center justify-center bg-white p-2 dark:bg-slate-800">
+    <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
+      <button
+        data-testid="go-back"
+        className="absolute left-2 cursor-pointer sm:hidden"
+        onClick={() => navigate("/")}
+      >
+        <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-100 dark:hover:text-slate-300" />
+      </button>
       <button
         className="flex cursor-pointer items-center justify-center gap-3"
         onClick={() => console.log("Chat info clicked!")}
