@@ -33,6 +33,11 @@ describe("<Chat />", () => {
       expect(
         screen.getByRole("heading", { name: "Test Chat 1" })
       ).toBeDefined();
+      expect(
+        screen.getByText(
+          CHAT_DETAILS.members.map((member) => member.name).join(", ")
+        )
+      ).toBeDefined();
     });
   });
 
