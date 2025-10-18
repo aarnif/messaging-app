@@ -22,6 +22,8 @@ vi.mock("react-router", async () => {
   };
 });
 
+Element.prototype.scrollIntoView = vi.fn();
+
 const renderComponent = (mocks = [findChatById]) =>
   render(
     <MockedProvider mocks={mocks}>

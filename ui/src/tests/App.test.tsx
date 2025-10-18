@@ -1,10 +1,12 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import type { MockLink } from "@apollo/client/testing";
 import App from "../App";
 import { meMock, meNullMock, findChatById, CHAT_DETAILS } from "./mocks";
+
+Element.prototype.scrollIntoView = vi.fn();
 
 const renderComponent = (
   initialEntries = ["/"],

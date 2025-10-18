@@ -6,6 +6,7 @@ import Spinner from "../ui/Spinner";
 import { IoChevronBack } from "react-icons/io5";
 import type { Maybe, Chat, User, Message } from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
+import { useEffect, useRef } from "react";
 
 const Header = ({
   name,
@@ -119,17 +120,26 @@ const ChatMessages = ({
 }: {
   currentUser: User;
   messages: Maybe<Maybe<Message>[]> | undefined;
-}) => (
-  <div className="flex h-0 flex-grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
-    {messages?.map((message) => (
-      <ChatMessage
-        key={message?.id}
-        currentUser={currentUser}
-        message={message}
-      />
-    ))}
-  </div>
-);
+}) => {
+  const messagesEndRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    messagesEndRef.current?.scrollIntoView({ behavior: "auto" });
+  }, [messages]);
+
+  return (
+    <div className="flex h-0 flex-grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
+      {messages?.map((message) => (
+        <ChatMessage
+          key={message?.id}
+          currentUser={currentUser}
+          message={message}
+        />
+      ))}
+      <div ref={messagesEndRef} />
+    </div>
+  );
+};
 
 const ChatContent = ({
   currentUser,
