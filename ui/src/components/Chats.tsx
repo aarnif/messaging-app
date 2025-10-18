@@ -25,8 +25,8 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
       to={`/chats/${id}`}
       className={({ isActive }) =>
         isActive
-          ? "rounded-xl bg-slate-100 transition-colors dark:bg-slate-700"
-          : "rounded-xl transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+          ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
+          : "rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
       }
     >
       <div className="flex gap-4 p-2">
