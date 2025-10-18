@@ -85,8 +85,32 @@ export const CHAT_DETAILS = {
         about: null,
         avatar: null,
       },
-      content: "This is a chat message.",
+      content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
+    },
+    {
+      id: "2",
+      sender: {
+        id: USER_TWO_DETAILS.id,
+        username: USER_TWO_DETAILS.username,
+        name: USER_TWO_DETAILS.name,
+        about: null,
+        avatar: null,
+      },
+      content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
+      createdAt: 1759094100000 + 86400000,
+    },
+    {
+      id: "3",
+      sender: {
+        id: USER_THREE_DETAILS.id,
+        username: USER_THREE_DETAILS.username,
+        name: USER_THREE_DETAILS.name,
+        about: null,
+        avatar: null,
+      },
+      content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
+      createdAt: 1759094100000 + 2 * 86400000,
     },
   ],
 };
