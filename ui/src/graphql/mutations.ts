@@ -19,3 +19,33 @@ export const CREATE_USER = gql(`
     }
   }
 `);
+
+export const SEND_MESSAGE =
+  gql(`mutation SendMessage($input: SendMessageInput!) {
+  sendMessage(input: $input) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+    }
+  }
+}`);

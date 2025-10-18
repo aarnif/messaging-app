@@ -7,6 +7,11 @@ import { IoChevronBack } from "react-icons/io5";
 import type { Maybe, Chat, User, Message } from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
 import { useEffect, useRef } from "react";
+import useField from "../hooks/useField";
+import { FaRegSmile } from "react-icons/fa";
+import { MdSend } from "react-icons/md";
+import { SEND_MESSAGE } from "../graphql/mutations";
+import { useMutation } from "@apollo/client/react";
 
 const Header = ({
   name,
@@ -141,6 +146,68 @@ const ChatMessages = ({
   );
 };
 
+const NewMessageBox = ({ id }: { id: string }) => {
+  const message = useField("New Message", "text", "New Message...");
+  const [sendMessage] = useMutation(SEND_MESSAGE, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const handleSendMessage = async () => {
+    if (!message.value) {
+      console.log("Do not send empty message!");
+      return;
+    }
+
+    await sendMessage({
+      variables: {
+        input: {
+          id: id,
+          content: message.value,
+        },
+      },
+    });
+
+    message.onReset();
+  };
+
+  const { name, type, value, placeholder, onChange, onReset } = message;
+
+  return (
+    <div className="flex gap-2 bg-white p-2 dark:bg-slate-800">
+      <button
+        className="cursor-pointer"
+        onClick={() => console.log("Clicked add emoji button")}
+      >
+        <FaRegSmile className="h-6 w-6 fill-current text-green-600 hover:text-green-700 dark:text-green-500 dark:hover:text-green-600" />
+      </button>
+      <label
+        htmlFor={name}
+        className="flex w-full items-center rounded-full border-[1.5px] border-slate-100 bg-slate-100 p-1 transition-all focus-within:border-purple-500 hover:border-purple-500 dark:border-slate-700 dark:bg-slate-700 focus-within:dark:border-purple-400 hover:dark:border-purple-400"
+      >
+        <input
+          id={name}
+          name={name}
+          className="peer focus:bg-opacity-0 inset-0 w-full px-3 font-normal text-slate-900 placeholder:text-slate-800 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-300"
+          type={type}
+          value={value}
+          placeholder={placeholder}
+          onChange={onChange}
+          onReset={onReset}
+        />
+      </label>
+      <button
+        data-testid="send-message-button"
+        className="cursor-pointer"
+        onClick={handleSendMessage}
+      >
+        <MdSend className="h-6 w-6 fill-current text-green-600 hover:text-green-700 dark:text-green-500 dark:hover:text-green-600" />
+      </button>
+    </div>
+  );
+};
+
 const ChatContent = ({
   currentUser,
   chat,
@@ -152,7 +219,7 @@ const ChatContent = ({
     return <ChatNotFound />;
   }
 
-  const { name, members } = chat;
+  const { id, name, members } = chat;
 
   const membersString = members
     ?.map((member) =>
@@ -164,6 +231,7 @@ const ChatContent = ({
     <>
       <Header name={name ?? ""} membersString={membersString ?? ""} />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
+      <NewMessageBox id={id} />
     </>
   );
 };

@@ -4,7 +4,7 @@ import {
   ALL_CONTACTS_BY_USER,
   FIND_CHAT_BY_ID,
 } from "../graphql/queries";
-import { CREATE_USER, LOGIN } from "../graphql/mutations";
+import { CREATE_USER, LOGIN, SEND_MESSAGE } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
   MeQuery,
@@ -19,6 +19,8 @@ import type {
   AllContactsByUserQueryVariables,
   FindChatByIdQuery,
   FindChatByIdQueryVariables,
+  SendMessageMutation,
+  SendMessageMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -113,6 +115,19 @@ export const CHAT_DETAILS = {
       createdAt: 1759094100000 + 2 * 86400000,
     },
   ],
+};
+
+export const MESSAGE_DETAILS = {
+  id: "4",
+  sender: {
+    id: USER_ONE_DETAILS.id,
+    username: USER_ONE_DETAILS.username,
+    name: USER_ONE_DETAILS.name,
+    about: null,
+    avatar: null,
+  },
+  content: "This is a new message.",
+  createdAt: 1759094100000 + 3 * 86400000,
 };
 
 export const invalidUsername = {
@@ -369,7 +384,7 @@ export const findChatByIdNull: MockLink.MockedResponse<
   request: {
     query: FIND_CHAT_BY_ID,
     variables: {
-      id: "1",
+      id: "",
     },
   },
   result: {
@@ -377,6 +392,35 @@ export const findChatByIdNull: MockLink.MockedResponse<
       findChatById: null,
     },
   },
+};
+
+export const sendMessage: MockLink.MockedResponse<
+  SendMessageMutation,
+  SendMessageMutationVariables
+> = {
+  request: {
+    query: SEND_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: MESSAGE_DETAILS.content,
+      },
+    },
+  },
+  result: {
+    data: {
+      sendMessage: {
+        ...CHAT_DETAILS,
+        messages: [
+          ...CHAT_DETAILS.messages,
+          {
+            ...MESSAGE_DETAILS,
+          },
+        ],
+      },
+    },
+  },
+  maxUsageCount: 2,
 };
 
 export const mockClient = {

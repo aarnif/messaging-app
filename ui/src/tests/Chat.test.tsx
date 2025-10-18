@@ -2,13 +2,16 @@ import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
+import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
   mockNavigate,
   findChatById,
   findChatByIdNull,
+  sendMessage,
   USER_ONE_DETAILS,
   CHAT_DETAILS,
+  MESSAGE_DETAILS,
 } from "./mocks";
 import Chat from "../components/Chat";
 import { formatDisplayDate } from "../helpers";
@@ -22,9 +25,28 @@ vi.mock("react-router", async () => {
   };
 });
 
+const mockSendMessage = vi.fn();
+
+vi.mock("@apollo/client/react", async () => {
+  const actual = await vi.importActual("@apollo/client/react");
+  return {
+    ...actual,
+    useMutation: vi.fn(() => [
+      mockSendMessage,
+      { loading: false, error: null },
+    ]),
+  };
+});
+
 Element.prototype.scrollIntoView = vi.fn();
 
-const renderComponent = (mocks = [findChatById]) =>
+const renderComponent = (
+  mocks: MockLink.MockedResponse[] = [
+    findChatById,
+    findChatByIdNull,
+    sendMessage,
+  ]
+) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
@@ -117,6 +139,63 @@ describe("<Chat />", () => {
     await waitFor(async () => {
       await user.click(screen.getByTestId("go-back"));
       expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+  });
+
+  test("does not send message when input is empty", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("send-message-button"));
+
+    await waitFor(() => {
+      expect(mockSendMessage).not.toHaveBeenCalledWith({
+        variables: {
+          input: {
+            id: CHAT_DETAILS.id,
+            content: MESSAGE_DETAILS.content,
+          },
+        },
+      });
+    });
+  });
+
+  test("sends message successfully and resets input", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+    });
+
+    const input = screen.getByPlaceholderText(
+      "New Message..."
+    ) as HTMLInputElement;
+    await user.type(input, MESSAGE_DETAILS.content);
+    await user.click(screen.getByTestId("send-message-button"));
+
+    await waitFor(() => {
+      expect(mockSendMessage).toHaveBeenCalledWith({
+        variables: {
+          input: {
+            id: CHAT_DETAILS.id,
+            content: MESSAGE_DETAILS.content,
+          },
+        },
+      });
+      expect(input.value).toBe("");
     });
   });
 });
