@@ -6,6 +6,9 @@ import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { UserChat } from "../__generated__/graphql";
 import { formatDisplayDate, truncateText } from "../helpers";
+import { useState } from "react";
+import { AnimatePresence } from "motion/react";
+import NewChatDropDownBox from "./NewChatDropDown";
 
 const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { id, name, messages } = chat;
@@ -55,7 +58,11 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
   );
 };
 
-const ListMenu = () => {
+const ListMenu = ({
+  setIsNewChatDropdownOpen,
+}: {
+  setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const searchWord = useField(
     "search-chats",
     "text",
@@ -80,7 +87,11 @@ const ListMenu = () => {
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
-      <MenuHeader title="Chats" searchWord={searchWord} />
+      <MenuHeader
+        title="Chats"
+        searchWord={searchWord}
+        callback={() => setIsNewChatDropdownOpen(true)}
+      />
       {loading ? (
         <div className="mt-8">
           <Spinner />
@@ -100,11 +111,22 @@ const ListMenu = () => {
   );
 };
 
-const Chats = () => (
-  <div className="flex flex-grow">
-    <ListMenu />
-    <Outlet />
-  </div>
-);
+const Chats = () => {
+  const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
+
+  return (
+    <div className="flex flex-grow">
+      <ListMenu setIsNewChatDropdownOpen={setIsNewChatDropdownOpen} />
+      <Outlet />
+      <AnimatePresence>
+        {isNewChatDropdownOpen && (
+          <NewChatDropDownBox
+            setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export default Chats;

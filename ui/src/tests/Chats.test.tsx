@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import { allChatsByUserEmpty, allChatsByUser, userChatsMock } from "./mocks";
@@ -54,6 +55,45 @@ describe("<Chats />", () => {
           screen.getByText(truncateText(latestMessage.content))
         ).toBeDefined();
       });
+    });
+  });
+
+  test("shows new chat dropdown when new chat button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button"));
+
+    await waitFor(async () => {
+      expect(screen.getByText("New Private Chat")).toBeDefined();
+      expect(screen.getByText("New Group Chat")).toBeDefined();
+    });
+  });
+
+  test("closes new chat dropdown when clicking outside", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button"));
+
+    await waitFor(async () => {
+      expect(screen.getByText("New Private Chat")).toBeDefined();
+      expect(screen.getByText("New Group Chat")).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("overlay"));
+
+    await waitFor(() => {
+      expect(screen.queryByText("New Private Chat")).toBeNull();
+      expect(screen.queryByText("New Group Chat")).toBeNull();
     });
   });
 });

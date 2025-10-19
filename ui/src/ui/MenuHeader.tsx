@@ -5,9 +5,11 @@ import type { InputField } from "../types";
 const MenuHeader = ({
   title,
   searchWord,
+  callback = () => {},
 }: {
   title: string;
   searchWord: InputField;
+  callback?: () => void;
 }) => {
   const { name, type, value, placeholder, onChange, onReset } = searchWord;
   return (
@@ -16,10 +18,7 @@ const MenuHeader = ({
         <h1 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
           {title}
         </h1>
-        <button
-          onClick={() => console.log("New chat clicked!")}
-          className="cursor-pointer"
-        >
+        <button onClick={callback} className="cursor-pointer">
           <MdOpenInNew className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
         </button>
       </div>
