@@ -4,7 +4,14 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import type { MockLink } from "@apollo/client/testing";
 import App from "../App";
-import { meMock, meNullMock, findChatById, CHAT_DETAILS } from "./mocks";
+import {
+  meMock,
+  meNullMock,
+  allChatsByUser,
+  allContactsByUser,
+  findChatById,
+  CHAT_DETAILS,
+} from "./mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
 
@@ -46,7 +53,7 @@ describe("<App />", () => {
   });
 
   test("redirects to home page from sign in when authenticated", async () => {
-    renderComponent(["/signin"], [meMock]);
+    renderComponent(["/signin"], [meMock, allChatsByUser]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -54,7 +61,7 @@ describe("<App />", () => {
   });
 
   test("redirects to home page from sign up when authenticated", async () => {
-    renderComponent(["/signup"], [meMock]);
+    renderComponent(["/signup"], [meMock, allChatsByUser]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -62,7 +69,7 @@ describe("<App />", () => {
   });
 
   test("renders home page", async () => {
-    renderComponent(["/"]);
+    renderComponent(["/"], [meMock, allChatsByUser]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -70,7 +77,7 @@ describe("<App />", () => {
   });
 
   test("renders chat page", async () => {
-    renderComponent(["/chats/1"], [meMock, findChatById]);
+    renderComponent(["/chats/1"], [meMock, allChatsByUser, findChatById]);
 
     await waitFor(() => {
       expect(
@@ -80,7 +87,7 @@ describe("<App />", () => {
   });
 
   test("renders contacts page", async () => {
-    renderComponent(["/contacts"]);
+    renderComponent(["/contacts"], [meMock, allContactsByUser]);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
@@ -88,7 +95,7 @@ describe("<App />", () => {
   });
 
   test("renders contact page", async () => {
-    renderComponent(["/contacts/1"]);
+    renderComponent(["/contacts/1"], [meMock, allContactsByUser]);
 
     await waitFor(() => {
       expect(screen.getByText("Contact with ID 1")).toBeDefined();

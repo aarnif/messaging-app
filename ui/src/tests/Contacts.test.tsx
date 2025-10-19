@@ -43,7 +43,7 @@ describe("<Contacts />", () => {
     await waitFor(() => {
       userContactsMock.forEach((contact) => {
         const { username, name, about } = contact.contactDetails;
-        expect(screen.getByText(username)).toBeDefined();
+        expect(screen.getByText(`@${username}`)).toBeDefined();
         expect(screen.getByText(name)).toBeDefined();
         expect(screen.getByText(about ?? "")).toBeDefined();
       });
