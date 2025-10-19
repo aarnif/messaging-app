@@ -12,21 +12,25 @@ import type {
   ChatMember,
 } from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
-import { useEffect, useRef } from "react";
+import { useEffect, useRef, useState } from "react";
 import useField from "../hooks/useField";
 import { FaRegSmile } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
+import { FiEdit } from "react-icons/fi";
 import { SEND_MESSAGE } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
+import { motion, AnimatePresence } from "framer-motion";
 
 const Header = ({
   name,
   members,
   currentUser,
+  setIsChatInfoOpen,
 }: {
   name: string;
   members: Maybe<ChatMember>[];
   currentUser: User;
+  setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
 
@@ -39,15 +43,16 @@ const Header = ({
   return (
     <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
       <button
-        data-testid="go-back"
+        data-testid="go-back-button"
         className="absolute left-2 cursor-pointer sm:hidden"
         onClick={() => navigate("/")}
       >
         <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-100 dark:hover:text-slate-300" />
       </button>
       <button
+        data-testid="chat-info-button"
         className="flex cursor-pointer items-center justify-center gap-3"
-        onClick={() => console.log("Chat info clicked!")}
+        onClick={() => setIsChatInfoOpen(true)}
       >
         <img
           className="h-12 w-12 rounded-full"
@@ -223,12 +228,123 @@ const NewMessageBox = ({ id }: { id: string }) => {
   );
 };
 
-const ChatContent = ({
+const ChatMemberItem = ({
+  member,
+  currentUser,
+}: {
+  member: ChatMember;
+  currentUser: User;
+}) => {
+  const { name, username, about } = member;
+
+  return (
+    <div className="flex gap-4">
+      <img
+        className="h-12 w-12 rounded-full"
+        src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+      />
+      <div className="flex w-full flex-col gap-1 dark:border-slate-700">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+            {name === currentUser.name ? "You" : name}
+          </h2>
+          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+            @{username}
+          </p>
+        </div>
+        <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+          {about}
+        </p>
+      </div>
+    </div>
+  );
+};
+
+const ChatInfoModal = ({
   currentUser,
   chat,
+  setIsChatInfoOpen,
 }: {
   currentUser: User;
   chat: Chat | null | undefined;
+  setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  if (!chat) {
+    return null;
+  }
+
+  const { name, description, members } = chat;
+
+  return (
+    <motion.div
+      initial={{ x: "100vw" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100vw" }}
+      transition={{ type: "tween", duration: 0.3 }}
+      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+    >
+      <div className="flex w-full justify-between">
+        <button
+          data-testid="close-chat-info-button"
+          className="cursor-pointer"
+          onClick={() => setIsChatInfoOpen(false)}
+        >
+          <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
+        <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
+          Chat
+        </h2>
+        <button
+          data-testid="edit-chat-button"
+          className="cursor-pointer"
+          onClick={() => console.log("Edit Group Chat clicked!")}
+        >
+          <FiEdit className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
+      </div>
+      <div className="flex flex-col items-center gap-2.5">
+        <img
+          className="h-20 w-20 rounded-full"
+          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+        />
+        <div className="flex flex-col items-center gap-1">
+          <h4 className="font-oswald font-semibold text-slate-900 dark:text-slate-50">
+            {name}
+          </h4>
+          <p className="text-center text-xs font-normal text-slate-700 dark:text-slate-200">
+            {description}
+          </p>
+        </div>
+      </div>
+
+      <div className="flex w-full flex-col gap-2 p-2 sm:max-w-[360px]">
+        <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
+          {members?.length} members
+        </h4>
+        <div className="flex flex-col gap-4">
+          {members?.map((member) =>
+            member ? (
+              <ChatMemberItem
+                key={member.id}
+                member={member}
+                currentUser={currentUser}
+              />
+            ) : null
+          )}
+        </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const ChatContent = ({
+  currentUser,
+  chat,
+  setIsChatInfoOpen,
+}: {
+  currentUser: User;
+  chat: Chat | null | undefined;
+  setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   if (!chat) {
     return <ChatNotFound />;
@@ -242,6 +358,7 @@ const ChatContent = ({
         name={name ?? ""}
         members={members ?? []}
         currentUser={currentUser}
+        setIsChatInfoOpen={setIsChatInfoOpen}
       />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
       <NewMessageBox id={id} />
@@ -257,15 +374,30 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
     },
   });
 
+  const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
+
   return (
-    <div className="flex flex-grow flex-col">
+    <div className="relative flex flex-grow flex-col">
       {loading ? (
         <div className="flex flex-grow items-center justify-center">
           <Spinner />
         </div>
       ) : (
-        <ChatContent currentUser={currentUser} chat={data?.findChatById} />
+        <ChatContent
+          currentUser={currentUser}
+          chat={data?.findChatById}
+          setIsChatInfoOpen={setIsChatInfoOpen}
+        />
       )}
+      <AnimatePresence>
+        {isChatInfoOpen && (
+          <ChatInfoModal
+            currentUser={currentUser}
+            chat={data?.findChatById}
+            setIsChatInfoOpen={setIsChatInfoOpen}
+          />
+        )}
+      </AnimatePresence>
     </div>
   );
 };

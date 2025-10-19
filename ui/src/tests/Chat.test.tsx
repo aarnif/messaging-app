@@ -80,7 +80,7 @@ describe("<Chat />", () => {
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: "Test Chat 1" })
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
       ).toBeDefined();
       expect(
         screen.getByText(
@@ -137,8 +137,59 @@ describe("<Chat />", () => {
     renderComponent();
 
     await waitFor(async () => {
-      await user.click(screen.getByTestId("go-back"));
+      await user.click(screen.getByTestId("go-back-button"));
       expect(mockNavigate).toHaveBeenCalledWith("/");
+    });
+  });
+
+  test("shows chat info modal when chat info button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+  });
+
+  test("closes chat info modal when close button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("close-chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.queryByRole("heading", { name: "Chat" })).toBeNull();
+      expect(screen.queryByText(CHAT_DETAILS.description)).toBeNull();
     });
   });
 
