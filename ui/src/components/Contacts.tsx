@@ -35,7 +35,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
               {name}
             </h2>
             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-              {username}
+              @{username}
             </p>
           </div>
           <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
