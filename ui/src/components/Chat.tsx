@@ -4,7 +4,13 @@ import { FIND_CHAT_BY_ID } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
 import { IoChevronBack } from "react-icons/io5";
-import type { Maybe, Chat, User, Message } from "../__generated__/graphql";
+import type {
+  Maybe,
+  Chat,
+  User,
+  Message,
+  ChatMember,
+} from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
 import { useEffect, useRef } from "react";
 import useField from "../hooks/useField";
@@ -15,12 +21,21 @@ import { useMutation } from "@apollo/client/react";
 
 const Header = ({
   name,
-  membersString,
+  members,
+  currentUser,
 }: {
   name: string;
-  membersString: string;
+  members: Maybe<ChatMember>[];
+  currentUser: User;
 }) => {
   const navigate = useNavigate();
+
+  const membersDisplayString = members
+    ?.map((member) =>
+      member?.username === currentUser.username ? "You" : member?.name
+    )
+    .join(", ");
+
   return (
     <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
       <button
@@ -43,7 +58,7 @@ const Header = ({
             {name}
           </h2>
           <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {truncateText(membersString, 36)}
+            {truncateText(membersDisplayString, 36)}
           </p>
         </div>
       </button>
@@ -221,15 +236,13 @@ const ChatContent = ({
 
   const { id, name, members } = chat;
 
-  const membersString = members
-    ?.map((member) =>
-      member?.username === currentUser.username ? "You" : member?.name
-    )
-    .join(", ");
-
   return (
     <>
-      <Header name={name ?? ""} membersString={membersString ?? ""} />
+      <Header
+        name={name ?? ""}
+        members={members ?? []}
+        currentUser={currentUser}
+      />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
       <NewMessageBox id={id} />
     </>
