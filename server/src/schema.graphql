@@ -39,6 +39,7 @@ type ChatMember {
   username: String!
   name: String
   avatar: String
+  about: String
   role: String
 }
 

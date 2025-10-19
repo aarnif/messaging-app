@@ -33,6 +33,7 @@ const createUsers = async () => {
         passwordHash: await hash(user.password, 10),
         name: user.name,
         avatar: user.avatar,
+        about: user.about,
       }))
     )
   );

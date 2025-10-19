@@ -58,6 +58,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
       id
       username
       name
+      about
       avatar
       role
     }
