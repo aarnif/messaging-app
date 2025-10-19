@@ -7,6 +7,7 @@ import SignUp from "./components/SignUp";
 import Chats from "./components/Chats";
 import Contacts from "./components/Contacts";
 import Chat from "./components/Chat";
+import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
 const App = () => {
@@ -29,11 +30,7 @@ const App = () => {
           <Route
             index
             element={
-              <div className="hidden flex-grow items-center justify-center sm:flex">
-                <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
-                  Select Chat to Start Messaging.
-                </p>
-              </div>
+              <SelectionPrompt message="Select Chat to Start Messaging." />
             }
           />
           <Route
@@ -46,11 +43,7 @@ const App = () => {
           <Route
             index
             element={
-              <div className="hidden flex-grow items-center justify-center sm:flex">
-                <p className="rounded-xl bg-slate-200 p-2 font-semibold text-slate-800 dark:bg-slate-700 dark:text-slate-100">
-                  Select a contact for further information.
-                </p>
-              </div>
+              <SelectionPrompt message="Select a contact for further information." />
             }
           />
           <Route
