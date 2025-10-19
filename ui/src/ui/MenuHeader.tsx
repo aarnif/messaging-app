@@ -31,7 +31,7 @@ const MenuHeader = ({
         <input
           id={name}
           name={name}
-          className="peer focus:bg-opacity-0 inset-0 w-full px-3 font-normal text-slate-900 placeholder:text-slate-800 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-300"
+          className="peer focus:bg-opacity-0 inset-0 w-full px-3 text-sm font-normal text-slate-900 placeholder:text-sm placeholder:text-slate-800 focus:outline-none dark:text-slate-100 dark:placeholder:text-slate-300"
           type={type}
           value={value}
           placeholder={placeholder}
