@@ -36,3 +36,16 @@
 - Käyttöliittymän suunnittelu Figma-sovelluksella
 - Käyttöliittymän alustus (React + Vite + TypeScript + Tailwind CSS)
 - Reitityksen lisäys (React Router v7)
+
+## Viikko 4
+
+### Käyttöliittymä:
+
+- Käyttäjänhallinnan lisäys
+- Chats-näkymän lisäys
+- Contacts-näkymän lisäys
+- Uuden viestin lähetys chattiin
+
+**Testit**
+
+- Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
