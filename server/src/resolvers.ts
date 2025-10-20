@@ -32,6 +32,18 @@ const dateScalar = new GraphQLScalarType({
   },
 });
 
+const getChatName = (parent: Chat, currentUser: User | null): string | null => {
+  if (parent.type === "group") {
+    return parent.name;
+  }
+
+  const otherMember = parent?.members?.find(
+    (member) => member?.id?.toString() !== currentUser?.id?.toString()
+  );
+
+  return otherMember?.name || null;
+};
+
 export const resolvers: Resolvers = {
   Date: dateScalar,
   Query: {
@@ -106,6 +118,13 @@ export const resolvers: Resolvers = {
                 model: Message,
                 as: "messages",
                 include: [{ model: User, as: "sender" }],
+              },
+              {
+                model: User,
+                as: "members",
+                through: {
+                  attributes: ["role"],
+                },
               },
             ],
           },
@@ -269,6 +288,14 @@ export const resolvers: Resolvers = {
 
       return contact.isBlocked;
     },
+  },
+  UserChat: {
+    name: (parent: Chat, __, context: { currentUser: User | null }) =>
+      getChatName(parent, context.currentUser),
+  },
+  Chat: {
+    name: (parent: Chat, __, context: { currentUser: User | null }) =>
+      getChatName(parent, context.currentUser),
   },
   ChatMember: {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>

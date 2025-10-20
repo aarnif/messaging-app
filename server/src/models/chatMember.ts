@@ -10,6 +10,7 @@ class ChatMember extends Model<
   declare userId: number;
   declare chatId: number;
   declare role: "member" | "admin";
+  declare name?: string;
 }
 ChatMember.init(
   {
