@@ -149,7 +149,7 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-const currentUserMock = {
+export const currentUserMock = {
   id: USER_ONE_DETAILS.id,
   username: USER_ONE_DETAILS.username,
   name: USER_ONE_DETAILS.name,
@@ -424,6 +424,13 @@ export const sendMessage: MockLink.MockedResponse<
     },
   },
   maxUsageCount: 2,
+};
+
+export const NewPrivateChatDetails = {
+  name: null,
+  description: null,
+  members: [USER_ONE_DETAILS.id, USER_TWO_DETAILS.id],
+  avatar: null,
 };
 
 export const mockClient = {

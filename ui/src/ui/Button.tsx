@@ -9,9 +9,9 @@ const Button = ({
   variant: "primary" | "secondary" | "tertiary";
   text: string;
   disabled?: boolean;
-  onClick?: (
-    event: React.MouseEvent<HTMLButtonElement>
-  ) => void | Promise<void>;
+  onClick?:
+    | ((event: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>)
+    | (() => void | Promise<void>);
 }) => {
   const baseStyles =
     "w-full px-6 py-3 text-base font-bold border-2 rounded-2xl shadow-[0px_2px] active:shadow-[0px_0px] active:translate-y-[2px] transition cursor-pointer focus:outline-none";

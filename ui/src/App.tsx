@@ -26,7 +26,7 @@ const App = () => {
         path="/"
         element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
       >
-        <Route path="/" element={<Chats />}>
+        <Route path="/" element={<Chats currentUser={currentUser as User} />}>
           <Route
             index
             element={

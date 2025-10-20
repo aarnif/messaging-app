@@ -3,8 +3,10 @@ import Button from "../ui/Button";
 
 const NewChatDropDownBox = ({
   setIsNewChatDropdownOpen,
+  setIsNewChatModalOpen,
 }: {
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => (
   <motion.div
     data-testid="overlay"
@@ -24,7 +26,12 @@ const NewChatDropDownBox = ({
       transition={{ duration: 0.4, type: "tween" }}
     >
       <div className="flex flex-col items-center justify-center gap-4">
-        <Button type="button" variant="tertiary" text="New Private Chat" />
+        <Button
+          type="button"
+          variant="tertiary"
+          text="New Private Chat"
+          onClick={() => setIsNewChatModalOpen(true)}
+        />
         <Button type="button" variant="tertiary" text="New Group Chat" />
       </div>
     </motion.div>

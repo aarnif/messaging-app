@@ -4,11 +4,12 @@ import { useQuery } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
-import type { UserChat } from "../__generated__/graphql";
+import type { User, UserChat } from "../__generated__/graphql";
 import { formatDisplayDate, truncateText } from "../helpers";
 import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
+import NewChatModal from "./NewChatModal";
 
 const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { id, name, messages } = chat;
@@ -111,8 +112,9 @@ const ListMenu = ({
   );
 };
 
-const Chats = () => {
+const Chats = ({ currentUser }: { currentUser: User }) => {
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
+  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
 
   return (
     <div className="flex flex-grow">
@@ -122,6 +124,13 @@ const Chats = () => {
         {isNewChatDropdownOpen && (
           <NewChatDropDownBox
             setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
+            setIsNewChatModalOpen={setIsNewChatModalOpen}
+          />
+        )}
+        {isNewChatModalOpen && (
+          <NewChatModal
+            currentUser={currentUser}
+            setIsNewChatModalOpen={setIsNewChatModalOpen}
           />
         )}
       </AnimatePresence>
