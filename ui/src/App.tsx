@@ -7,6 +7,7 @@ import SignUp from "./components/SignUp";
 import Chats from "./components/Chats";
 import Contacts from "./components/Contacts";
 import Chat from "./components/Chat";
+import NewChat from "./components/NewChat";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
@@ -36,6 +37,11 @@ const App = () => {
           <Route
             path="/chats/:id"
             element={<Chat currentUser={currentUser as User} />}
+          />
+
+          <Route
+            path="/chats/new"
+            element={<NewChat currentUser={currentUser as User} />}
           />
         </Route>
 

@@ -86,6 +86,16 @@ describe("<App />", () => {
     });
   });
 
+  test("renders new chat preview page", async () => {
+    renderComponent(["/chats/new"], [meMock, allChatsByUser, findChatById]);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+  });
+
   test("renders contacts page", async () => {
     renderComponent(["/contacts"], [meMock, allContactsByUser]);
 

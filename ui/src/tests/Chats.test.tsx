@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
   within,
 } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
+import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
@@ -18,11 +18,20 @@ import {
   allContactsByUserEmpty,
   userContactsMock,
   NewPrivateChatDetails,
+  mockNavigate,
 } from "./mocks";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
 
 Object.defineProperty(global, "localStorage", { value: localStorage });
+
+vi.mock("react-router", async () => {
+  const actual = await vi.importActual("react-router");
+  return {
+    ...actual,
+    useNavigate: () => mockNavigate,
+  };
+});
 
 const renderComponent = (mocks = [allChatsByUser]) =>
   render(
@@ -282,7 +291,7 @@ describe("<Chats />", () => {
     });
   });
 
-  test("saves new private chat info for chat preview when new chat button is clicked", async () => {
+  test("saves new private chat info and navigates to chat preview when new chat button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([allChatsByUser, allContactsByUser]);
 
@@ -329,6 +338,7 @@ describe("<Chats />", () => {
         "new-chat-info",
         JSON.stringify(NewPrivateChatDetails)
       );
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
       expect(screen.queryByText("New Private Chat")).toBeNull();
     });
   });

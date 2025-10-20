@@ -7,3 +7,15 @@ export type InputField = {
   onChange: (event: React.ChangeEvent<HTMLInputElement>) => void;
   onReset: () => void;
 };
+
+export type NewChatMember = {
+  id: string;
+  username: string;
+  name: string;
+};
+
+export type NewChatDetails = {
+  name: string;
+  description: string | null;
+  members: NewChatMember[];
+};

@@ -427,9 +427,9 @@ export const sendMessage: MockLink.MockedResponse<
 };
 
 export const NewPrivateChatDetails = {
-  name: null,
+  name: userContactsMock[0].contactDetails.name,
   description: null,
-  members: [USER_ONE_DETAILS.id, USER_TWO_DETAILS.id],
+  members: [currentUserMock, userContactsMock[0].contactDetails],
   avatar: null,
 };
 

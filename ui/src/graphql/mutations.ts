@@ -49,3 +49,32 @@ export const SEND_MESSAGE =
     }
   }
 }`);
+
+export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
+  createChat(input: $input) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+    }
+  }
+}`);

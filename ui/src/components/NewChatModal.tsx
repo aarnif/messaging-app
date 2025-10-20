@@ -13,6 +13,7 @@ import type { Maybe, User, Contact } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
 import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
+import { useNavigate } from "react-router";
 
 const SelectContactItem = ({
   contact,
@@ -114,6 +115,7 @@ const PrivateChatContent = ({
   contacts: Maybe<Array<Maybe<Contact>>> | undefined;
   setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const { message, showMessage } = useNotifyMessage();
 
@@ -128,15 +130,14 @@ const PrivateChatContent = ({
     );
 
     const newPrivateChatInfo = {
-      name: null,
+      name: chosenContact?.contactDetails?.name,
       description: null,
-      members: [currentUser.id, chosenContact?.contactDetails?.id],
-      avatar: chosenContact?.contactDetails?.avatar,
+      members: [currentUser, chosenContact?.contactDetails],
+      avatar: null,
     };
 
-    console.log("New private chat info:", newPrivateChatInfo);
-
     localStorage.setItem("new-chat-info", JSON.stringify(newPrivateChatInfo));
+    navigate("/chats/new");
     setIsNewChatModalOpen(false);
   };
 
