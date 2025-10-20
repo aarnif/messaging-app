@@ -58,7 +58,7 @@ describe("<Chats />", () => {
     await waitFor(() => {
       userChatsMock.forEach((chat) => {
         const { name, messages } = chat;
-        const latestMessage = messages[messages.length - 1];
+        const latestMessage = messages[0];
 
         expect(screen.getByText(name)).toBeDefined();
         expect(

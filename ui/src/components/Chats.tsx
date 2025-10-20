@@ -13,7 +13,7 @@ import NewChatModal from "./NewChatModal";
 
 const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { id, name, messages } = chat;
-  const latestMessage = messages?.[messages.length - 1];
+  const latestMessage = messages?.[0];
 
   if (!latestMessage) {
     return null;
