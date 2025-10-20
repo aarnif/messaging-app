@@ -39,8 +39,6 @@ vi.mock("@apollo/client/react", async () => {
   };
 });
 
-Object.defineProperty(global, "localStorage", { value: localStorage });
-
 const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
   render(
     <MockedProvider mocks={mocks}>

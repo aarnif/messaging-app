@@ -23,8 +23,6 @@ import {
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
 
-Object.defineProperty(global, "localStorage", { value: localStorage });
-
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
   return {
