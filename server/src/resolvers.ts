@@ -98,6 +98,7 @@ export const resolvers: Resolvers = {
       const whereClause = search
         ? {
             [Op.or]: [
+              { type: "private" },
               { name: { [Op.iLike]: `%${search}%` } },
               { description: { [Op.iLike]: `%${search}%` } },
             ],
@@ -139,7 +140,15 @@ export const resolvers: Resolvers = {
         ],
       });
 
-      return user?.chats || [];
+      // Temporarily filter private chats afterwards until a better solution is available.
+      return !search
+        ? user?.chats || []
+        : user?.chats?.filter((chat) => {
+            if (chat.type === "group") return true;
+            return chat.members?.some((member) =>
+              member.name?.toLowerCase().includes(search.toLowerCase())
+            );
+          }) || [];
     },
     findChatById: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
