@@ -1,6 +1,6 @@
 import { useMatch, useNavigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
-import { FIND_CHAT_BY_ID } from "../graphql/queries";
+import { FIND_CHAT_BY_ID, ALL_CHATS_BY_USER } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
 import { IoChevronBack } from "react-icons/io5";
@@ -172,6 +172,7 @@ const NewMessageBox = ({ id }: { id: string }) => {
     onError: (error) => {
       console.log(error);
     },
+    refetchQueries: [ALL_CHATS_BY_USER],
   });
 
   const handleSendMessage = async () => {
