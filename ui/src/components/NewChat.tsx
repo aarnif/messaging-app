@@ -4,6 +4,7 @@ import { IoChevronBack } from "react-icons/io5";
 import type { User } from "../__generated__/graphql";
 import type { NewChatDetails, NewChatMember } from "../types";
 import useField from "../hooks/useField";
+import ChatNotFound from "../ui/ChatNotFound";
 import { FaRegSmile } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
@@ -56,15 +57,6 @@ const Header = ({
     </div>
   );
 };
-
-const ChatNotFound = () => (
-  <div className="flex flex-grow flex-col justify-center">
-    <p className="text-center font-bold text-red-600">Chat not found.</p>
-    <p className="text-center font-bold text-red-600">
-      It may have been deleted or the link is incorrect.
-    </p>
-  </div>
-);
 
 const NewMessageBox = ({
   chatName,

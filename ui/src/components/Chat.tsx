@@ -3,6 +3,7 @@ import { useQuery } from "@apollo/client/react";
 import { FIND_CHAT_BY_ID, ALL_CHATS_BY_USER } from "../graphql/queries";
 import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
+import ChatNotFound from "../ui/ChatNotFound";
 import { IoChevronBack } from "react-icons/io5";
 import type {
   Maybe,
@@ -70,15 +71,6 @@ const Header = ({
     </div>
   );
 };
-
-const ChatNotFound = () => (
-  <div className="flex flex-grow flex-col justify-center">
-    <p className="text-center font-bold text-red-600">Chat not found.</p>
-    <p className="text-center font-bold text-red-600">
-      It may have been deleted or the link is incorrect.
-    </p>
-  </div>
-);
 
 const ChatMessage = ({
   currentUser,
