@@ -24,6 +24,7 @@ let url: string;
 
 const user1Details = {
   id: "1",
+  name: "User1",
   username: "user1",
   password: "password",
   confirmPassword: "password",
@@ -31,19 +32,21 @@ const user1Details = {
 
 const user2Details = {
   ...user1Details,
+  name: "User2",
   id: "2",
   username: "user2",
 };
 
 const user3Details = {
   ...user1Details,
+  name: "User3",
   id: "3",
   username: "user3",
 };
 
-const { id: _, ...user1Input } = user1Details;
-const { id: _id, ...user2Input } = user2Details;
-const { id: _id2, ...user3Input } = user3Details;
+const { id: _, name: _name1, ...user1Input } = user1Details;
+const { id: _id, name: _name2, ...user2Input } = user2Details;
+const { id: _id2, name: _name3, ...user3Input } = user3Details;
 
 const privateChatDetails = {
   name: null,
@@ -796,7 +799,7 @@ void describe("GraphQL API", () => {
       });
     });
 
-    void describe.only("Find user by ID", () => {
+    void describe("Find user by ID", () => {
       let token: string;
       let user2Id: string;
 
@@ -1705,7 +1708,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(chat, "Chat should be defined");
         assert.strictEqual(chat.type, "private");
-        assert.strictEqual(chat.name, null);
+        assert.strictEqual(chat.name, user2Details.name);
         assert.strictEqual(chat.description, null);
         assert.strictEqual(chat.avatar, null);
         assert.strictEqual(chat.members?.length, 2);
