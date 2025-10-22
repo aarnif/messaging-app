@@ -3,6 +3,7 @@ import {
   ALL_CHATS_BY_USER,
   ALL_CONTACTS_BY_USER,
   FIND_CHAT_BY_ID,
+  CONTACTS_WITHOUT_PRIVATE_CHAT,
 } from "../graphql/queries";
 import { CREATE_USER, LOGIN, SEND_MESSAGE } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
@@ -21,6 +22,8 @@ import type {
   FindChatByIdQueryVariables,
   SendMessageMutation,
   SendMessageMutationVariables,
+  ContactsWithoutPrivateChatQuery,
+  ContactsWithoutPrivateChatQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -431,6 +434,40 @@ export const NewPrivateChatDetails = {
   description: null,
   members: [currentUserMock, userContactsMock[0].contactDetails],
   avatar: null,
+};
+
+export const contactsWithoutPrivateChats: MockLink.MockedResponse<
+  ContactsWithoutPrivateChatQuery,
+  ContactsWithoutPrivateChatQueryVariables
+> = {
+  request: {
+    query: CONTACTS_WITHOUT_PRIVATE_CHAT,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      contactsWithoutPrivateChat: userContactsMock,
+    },
+  },
+};
+
+export const contactsWithoutPrivateChatsEmpty: MockLink.MockedResponse<
+  ContactsWithoutPrivateChatQuery,
+  ContactsWithoutPrivateChatQueryVariables
+> = {
+  request: {
+    query: CONTACTS_WITHOUT_PRIVATE_CHAT,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      contactsWithoutPrivateChat: [],
+    },
+  },
 };
 
 export const mockClient = {
