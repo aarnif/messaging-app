@@ -1,7 +1,6 @@
-import { useMatch, useNavigate } from "react-router";
+import { useMatch } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { FIND_CHAT_BY_ID, ALL_CHATS_BY_USER } from "../graphql/queries";
-import { truncateText } from "../helpers";
 import Spinner from "../ui/Spinner";
 import ChatNotFound from "../ui/ChatNotFound";
 import { IoChevronBack } from "react-icons/io5";
@@ -21,56 +20,7 @@ import { FiEdit } from "react-icons/fi";
 import { SEND_MESSAGE } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
-
-const Header = ({
-  name,
-  members,
-  currentUser,
-  setIsChatInfoOpen,
-}: {
-  name: string;
-  members: Maybe<ChatMember>[];
-  currentUser: User;
-  setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
-}) => {
-  const navigate = useNavigate();
-
-  const membersDisplayString = members
-    ?.map((member) =>
-      member?.username === currentUser.username ? "You" : member?.name
-    )
-    .join(", ");
-
-  return (
-    <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
-      <button
-        data-testid="go-back-button"
-        className="absolute left-2 cursor-pointer sm:hidden"
-        onClick={() => navigate("/")}
-      >
-        <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-100 dark:hover:text-slate-300" />
-      </button>
-      <button
-        data-testid="chat-info-button"
-        className="flex cursor-pointer items-center justify-center gap-3"
-        onClick={() => setIsChatInfoOpen(true)}
-      >
-        <img
-          className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
-        />
-        <div>
-          <h2 className="text-left text-sm font-bold text-slate-900 dark:text-slate-50">
-            {name}
-          </h2>
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {truncateText(membersDisplayString, 36)}
-          </p>
-        </div>
-      </button>
-    </div>
-  );
-};
+import ChatHeader from "../ui/ChatHeader";
 
 const ChatMessage = ({
   currentUser,
@@ -347,11 +297,11 @@ const ChatContent = ({
 
   return (
     <>
-      <Header
+      <ChatHeader
         name={name ?? ""}
         members={members ?? []}
         currentUser={currentUser}
-        setIsChatInfoOpen={setIsChatInfoOpen}
+        callBack={() => setIsChatInfoOpen(true)}
       />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
       <NewMessageBox id={id} />

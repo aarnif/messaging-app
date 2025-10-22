@@ -1,6 +1,4 @@
 import { useNavigate } from "react-router";
-import { truncateText } from "../helpers";
-import { IoChevronBack } from "react-icons/io5";
 import type { User } from "../__generated__/graphql";
 import type { NewChatDetails, NewChatMember } from "../types";
 import useField from "../hooks/useField";
@@ -10,53 +8,7 @@ import { MdSend } from "react-icons/md";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { CREATE_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
-
-const Header = ({
-  name,
-  members,
-  currentUser,
-}: {
-  name: string;
-  members: NewChatMember[];
-  currentUser: User;
-}) => {
-  const navigate = useNavigate();
-
-  const membersDisplayString = members
-    ?.map((member) =>
-      member?.username === currentUser.username ? "You" : member?.name
-    )
-    .join(", ");
-
-  return (
-    <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
-      <button
-        data-testid="go-back-button"
-        className="absolute left-2 cursor-pointer sm:hidden"
-        onClick={() => navigate("/")}
-      >
-        <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 sm:h-7 sm:w-7 dark:text-slate-100 dark:hover:text-slate-300" />
-      </button>
-      <div
-        data-testid="chat-info-button"
-        className="flex items-center justify-center gap-3"
-      >
-        <img
-          className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
-        />
-        <div>
-          <h2 className="text-left text-sm font-bold text-slate-900 dark:text-slate-50">
-            {name}
-          </h2>
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {truncateText(membersDisplayString, 36)}
-          </p>
-        </div>
-      </div>
-    </div>
-  );
-};
+import ChatHeader from "../ui/ChatHeader";
 
 const NewMessageBox = ({
   chatName,
@@ -150,7 +102,7 @@ const NewChatContent = ({
 
   return (
     <>
-      <Header name={name} members={members} currentUser={currentUser} />
+      <ChatHeader name={name} members={members} currentUser={currentUser} />
       <div className="flex-grow"></div>
       <NewMessageBox
         chatName={name ?? null}
