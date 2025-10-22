@@ -132,9 +132,9 @@ describe("<NewChat />", () => {
       expect(mockCreateChat).toHaveBeenCalledWith({
         variables: {
           input: {
-            name: null,
+            name: NewPrivateChatDetails.name,
             members: [NewPrivateChatDetails.members[1].id],
-            description: null,
+            description: NewPrivateChatDetails.description,
             initialMessage: MESSAGE_DETAILS.content,
           },
         },

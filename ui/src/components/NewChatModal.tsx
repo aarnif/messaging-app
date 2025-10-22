@@ -344,8 +344,8 @@ const GroupChatContent = ({
       .map((contact) => contact.contactDetails);
 
     const newGroupChatInfo = {
-      name: name.value,
-      description: description.value,
+      name: name.value || null,
+      description: description.value || null,
       members: [currentUser, ...selectedChatMembers],
       avatar: null,
     };
