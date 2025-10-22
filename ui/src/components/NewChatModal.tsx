@@ -1,12 +1,12 @@
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { motion, AnimatePresence } from "framer-motion";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import useField from "../hooks/useField";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import SearchBox from "../ui/SearchBox";
-import type { InputField } from "../types";
+import type { InputField, UserContact } from "../types";
 import {
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
@@ -192,6 +192,92 @@ const PrivateChatContent = ({
   );
 };
 
+const SelectContactsItem = ({
+  contact,
+  setContacts,
+}: {
+  contact: UserContact;
+  setContacts: React.Dispatch<React.SetStateAction<UserContact[]>>;
+}) => {
+  if (!contact || !contact?.contactDetails) {
+    return null;
+  }
+
+  const { username, name, about } = contact.contactDetails;
+
+  return (
+    <button
+      data-testid={contact.isSelected && "selected"}
+      onClick={() => {
+        setContacts((prevState) =>
+          prevState.map((prevContact) =>
+            prevContact.id === contact.id
+              ? { ...prevContact, isSelected: !prevContact.isSelected }
+              : prevContact
+          )
+        );
+      }}
+      className="flex w-full cursor-pointer items-center"
+    >
+      <div className="flex flex-grow gap-4 p-2">
+        <img
+          className="h-12 w-12 rounded-full"
+          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+        />
+        <div className="flex w-full flex-col gap-1 border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+              {name}
+            </h2>
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+              @{username}
+            </p>
+          </div>
+          <p className="text-left text-xs font-medium text-slate-700 dark:text-slate-200">
+            {about}
+          </p>
+        </div>
+      </div>
+
+      {contact.isSelected ? (
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-green-600 bg-green-600">
+          <MdCheck size={20} className="text-white" />
+        </div>
+      ) : (
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300"></div>
+      )}
+    </button>
+  );
+};
+
+export const SelectContactsList = ({
+  contacts,
+  setContacts,
+}: {
+  contacts: UserContact[];
+  setContacts: React.Dispatch<React.SetStateAction<UserContact[]>>;
+}) => {
+  if (!contacts?.length) {
+    return (
+      <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
+        No contacts found
+      </p>
+    );
+  }
+
+  return (
+    <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
+      {contacts.map((contact) => (
+        <SelectContactsItem
+          key={contact?.id}
+          contact={contact}
+          setContacts={setContacts}
+        />
+      ))}
+    </div>
+  );
+};
+
 const GroupChatContent = ({
   searchWord,
   setIsNewChatModalOpen,
@@ -203,6 +289,7 @@ const GroupChatContent = ({
     React.SetStateAction<"private" | "group" | null>
   >;
 }) => {
+  const [contacts, setContacts] = useState<UserContact[]>([]);
   const { message } = useNotifyMessage();
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
@@ -211,9 +298,20 @@ const GroupChatContent = ({
     },
   });
 
-  const contacts = data?.allContactsByUser;
-
-  console.log("Contacts", contacts);
+  useEffect(() => {
+    if (data?.allContactsByUser) {
+      const filteredContacts = data.allContactsByUser.filter(
+        (contact): contact is Contact =>
+          contact !== null && contact !== undefined
+      );
+      setContacts(
+        filteredContacts.map((contact) => ({
+          ...contact,
+          isSelected: false,
+        }))
+      );
+    }
+  }, [data]);
 
   const handleCreateGroupChat = async () => {
     setIsNewChatModalOpen(false);
@@ -245,7 +343,11 @@ const GroupChatContent = ({
         {message && <Notify message={message} />}
       </AnimatePresence>
       <SearchBox searchWord={searchWord} />
-      {loading ? <Spinner /> : <div className="flex-grow"></div>}
+      {loading ? (
+        <Spinner />
+      ) : (
+        <SelectContactsList contacts={contacts} setContacts={setContacts} />
+      )}
     </>
   );
 };

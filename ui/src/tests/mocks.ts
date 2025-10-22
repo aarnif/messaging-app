@@ -347,6 +347,17 @@ export const userContactsMock = [
       avatar: null,
     },
   },
+  {
+    id: "2",
+    isBlocked: false,
+    contactDetails: {
+      id: "3",
+      username: "user3",
+      name: "User 3",
+      about: "Hi! My name is User 3!",
+      avatar: null,
+    },
+  },
 ];
 
 export const allContactsByUser: MockLink.MockedResponse<

@@ -1,3 +1,5 @@
+import type { Contact } from "./__generated__/graphql";
+
 export type InputField = {
   name: string;
   type: string;
@@ -19,3 +21,7 @@ export type NewChatDetails = {
   description: string | null;
   members: NewChatMember[];
 };
+
+export interface UserContact extends Contact {
+  isSelected: boolean;
+}
