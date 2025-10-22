@@ -76,3 +76,18 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
     }
   }
 }`);
+
+export const CONTACTS_WITHOUT_PRIVATE_CHAT =
+  gql(`query ContactsWithoutPrivateChat($search: String) {
+  contactsWithoutPrivateChat(search: $search) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

@@ -7,7 +7,7 @@ import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import SearchBox from "../ui/SearchBox";
 import type { InputField } from "../types";
-import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
+import { CONTACTS_WITHOUT_PRIVATE_CHAT } from "../graphql/queries";
 import { useQuery } from "@apollo/client/react";
 import type { Maybe, User, Contact } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
@@ -193,10 +193,11 @@ const NewChatModal = ({
   );
   const width = useResponsiveWidth();
 
-  const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
+  const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
     variables: {
       search: searchWord.value,
     },
+    fetchPolicy: "network-only",
   });
 
   const isMobileScreen = width <= 640;
@@ -228,7 +229,7 @@ const NewChatModal = ({
           currentUser={currentUser}
           searchWord={searchWord}
           loading={loading}
-          contacts={data?.allContactsByUser}
+          contacts={data?.contactsWithoutPrivateChat}
           setIsNewChatModalOpen={setIsNewChatModalOpen}
         />
       </motion.div>
