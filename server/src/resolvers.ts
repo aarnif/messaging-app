@@ -189,6 +189,85 @@ export const resolvers: Resolvers = {
       }
       return chat;
     },
+    contactsWithoutPrivateChat: async (
+      _,
+      { search },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const whereClause = search
+        ? {
+            [Op.or]: [
+              { username: { [Op.iLike]: `%${search}%` } },
+              { name: { [Op.iLike]: `%${search}%` } },
+            ],
+          }
+        : {};
+
+      const userPrivateChats = await User.findByPk(context.currentUser.id, {
+        include: [
+          {
+            model: Chat,
+            as: "chats",
+            where: {
+              type: "private",
+            },
+            attributes: ["id"],
+            through: {
+              attributes: [],
+            },
+            include: [
+              {
+                model: User,
+                as: "members",
+                where: {
+                  id: {
+                    [Op.not]: context.currentUser.id,
+                  },
+                },
+                attributes: ["id", "name"],
+                through: {
+                  attributes: [],
+                },
+              },
+            ],
+          },
+        ],
+      });
+
+      const userContacts = await User.findByPk(context.currentUser.id, {
+        include: [
+          {
+            model: Contact,
+            as: "contacts",
+            include: [
+              {
+                model: User,
+                as: "contactDetails",
+                where: whereClause,
+              },
+            ],
+          },
+        ],
+      });
+
+      const chatMemberIds = userPrivateChats?.chats?.map(
+        (chat) => chat?.members?.[0]?.id
+      );
+
+      const contactsWithoutPrivateChat = userContacts
+        ?.toJSON()
+        .contacts?.filter(
+          (contact) => !chatMemberIds?.includes(contact?.contactDetails?.id)
+        );
+
+      return contactsWithoutPrivateChat || [];
+    },
     allContactsByUser: async (
       _,
       { search },

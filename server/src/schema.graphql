@@ -6,6 +6,7 @@ type Query {
   allContactsByUser(search: String): [Contact]
   nonContactUsers(search: String): [User]
   findChatById(id: ID!): Chat
+  contactsWithoutPrivateChat(search: String): [Contact]
   isBlockedByUser(id: ID!): Boolean
 }
 

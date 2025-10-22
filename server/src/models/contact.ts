@@ -10,6 +10,7 @@ class Contact extends Model<
   declare userId: number;
   declare contactId: number;
   declare isBlocked: boolean;
+  declare contactDetails?: Contact;
 }
 Contact.init(
   {
