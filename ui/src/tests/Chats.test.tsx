@@ -16,6 +16,7 @@ import {
   userChatsMock,
   contactsWithoutPrivateChats,
   contactsWithoutPrivateChatsEmpty,
+  allContactsByUser,
   userContactsMock,
   NewPrivateChatDetails,
   mockNavigate,
@@ -355,6 +356,34 @@ describe("<Chats />", () => {
           JSON.stringify(NewPrivateChatDetails)
         );
         expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
+        expect(screen.queryByText("New Private Chat")).toBeNull();
+      });
+    });
+  });
+
+  describe("creating a group chat", () => {
+    test("shows new group chat modal when new group chat button is clicked", async () => {
+      const user = userEvent.setup();
+      renderComponent([allChatsByUser, allContactsByUser]);
+
+      await waitFor(async () => {
+        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button"));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button", { name: "New Group Chat" }));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+        expect(
+          screen.getByPlaceholderText("Search by name or username...")
+        ).toBeDefined();
         expect(screen.queryByText("New Private Chat")).toBeNull();
       });
     });

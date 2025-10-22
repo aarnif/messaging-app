@@ -7,7 +7,10 @@ import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import SearchBox from "../ui/SearchBox";
 import type { InputField } from "../types";
-import { CONTACTS_WITHOUT_PRIVATE_CHAT } from "../graphql/queries";
+import {
+  ALL_CONTACTS_BY_USER,
+  CONTACTS_WITHOUT_PRIVATE_CHAT,
+} from "../graphql/queries";
 import { useQuery } from "@apollo/client/react";
 import type { Maybe, User, Contact } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
@@ -105,19 +108,28 @@ export const SelectContactList = ({
 const PrivateChatContent = ({
   currentUser,
   searchWord,
-  loading,
-  contacts,
   setIsNewChatModalOpen,
+  setNewChatModalType,
 }: {
   currentUser: User;
   searchWord: InputField;
-  loading: boolean;
-  contacts: Maybe<Array<Maybe<Contact>>> | undefined;
   setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setNewChatModalType: React.Dispatch<
+    React.SetStateAction<"private" | "group" | null>
+  >;
 }) => {
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const { message, showMessage } = useNotifyMessage();
+
+  const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
+    variables: {
+      search: searchWord.value,
+    },
+    fetchPolicy: "network-only",
+  });
+
+  const contacts = data?.contactsWithoutPrivateChat;
 
   const handleCreatePrivateChat = async () => {
     if (!selectedContact) {
@@ -139,6 +151,7 @@ const PrivateChatContent = ({
     localStorage.setItem("new-chat-info", JSON.stringify(newPrivateChatInfo));
     navigate("/chats/new");
     setIsNewChatModalOpen(false);
+    setNewChatModalType(null);
   };
 
   return (
@@ -179,12 +192,76 @@ const PrivateChatContent = ({
   );
 };
 
+const GroupChatContent = ({
+  searchWord,
+  setIsNewChatModalOpen,
+  setNewChatModalType,
+}: {
+  searchWord: InputField;
+  setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setNewChatModalType: React.Dispatch<
+    React.SetStateAction<"private" | "group" | null>
+  >;
+}) => {
+  const { message } = useNotifyMessage();
+
+  const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
+    variables: {
+      search: searchWord.value,
+    },
+  });
+
+  const contacts = data?.allContactsByUser;
+
+  console.log("Contacts", contacts);
+
+  const handleCreateGroupChat = async () => {
+    setIsNewChatModalOpen(false);
+    setNewChatModalType(null);
+  };
+
+  return (
+    <>
+      <div className="flex w-full justify-between">
+        <button
+          data-testid="close-modal-button"
+          className="cursor-pointer"
+          onClick={() => setIsNewChatModalOpen(false)}
+        >
+          <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
+        <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
+          New Group Chat
+        </h2>
+        <button
+          data-testid="create-chat-button"
+          className="cursor-pointer"
+          onClick={handleCreateGroupChat}
+        >
+          <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
+      </div>
+      <AnimatePresence>
+        {message && <Notify message={message} />}
+      </AnimatePresence>
+      <SearchBox searchWord={searchWord} />
+      {loading ? <Spinner /> : <div className="flex-grow"></div>}
+    </>
+  );
+};
+
 const NewChatModal = ({
   currentUser,
+  newChatModalType,
   setIsNewChatModalOpen,
+  setNewChatModalType,
 }: {
   currentUser: User;
+  newChatModalType: "private" | "group" | null;
   setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setNewChatModalType: React.Dispatch<
+    React.SetStateAction<"private" | "group" | null>
+  >;
 }) => {
   const searchWord = useField(
     "search-contacts",
@@ -192,13 +269,6 @@ const NewChatModal = ({
     "Search by name or username..."
   );
   const width = useResponsiveWidth();
-
-  const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
-    variables: {
-      search: searchWord.value,
-    },
-    fetchPolicy: "network-only",
-  });
 
   const isMobileScreen = width <= 640;
 
@@ -225,13 +295,20 @@ const NewChatModal = ({
         }}
         transition={{ type: "tween" }}
       >
-        <PrivateChatContent
-          currentUser={currentUser}
-          searchWord={searchWord}
-          loading={loading}
-          contacts={data?.contactsWithoutPrivateChat}
-          setIsNewChatModalOpen={setIsNewChatModalOpen}
-        />
+        {newChatModalType === "private" ? (
+          <PrivateChatContent
+            currentUser={currentUser}
+            searchWord={searchWord}
+            setIsNewChatModalOpen={setIsNewChatModalOpen}
+            setNewChatModalType={setNewChatModalType}
+          />
+        ) : (
+          <GroupChatContent
+            searchWord={searchWord}
+            setIsNewChatModalOpen={setIsNewChatModalOpen}
+            setNewChatModalType={setNewChatModalType}
+          />
+        )}
       </motion.div>
     </motion.div>
   );

@@ -115,6 +115,20 @@ const ListMenu = ({
 const Chats = ({ currentUser }: { currentUser: User }) => {
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
+  const [newChatModalType, setNewChatModalType] = useState<
+    "private" | "group" | null
+  >(null);
+
+  const handleOpenNewChatModal = (event: React.BaseSyntheticEvent) => {
+    const clickedButtonText = event.target.textContent;
+
+    if (clickedButtonText === "New Private Chat") {
+      setNewChatModalType("private");
+    } else {
+      setNewChatModalType("group");
+    }
+    setIsNewChatModalOpen(true);
+  };
 
   return (
     <div className="flex flex-grow">
@@ -124,13 +138,15 @@ const Chats = ({ currentUser }: { currentUser: User }) => {
         {isNewChatDropdownOpen && (
           <NewChatDropDownBox
             setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
-            setIsNewChatModalOpen={setIsNewChatModalOpen}
+            handleOpenNewChatModal={handleOpenNewChatModal}
           />
         )}
         {isNewChatModalOpen && (
           <NewChatModal
             currentUser={currentUser}
+            newChatModalType={newChatModalType}
             setIsNewChatModalOpen={setIsNewChatModalOpen}
+            setNewChatModalType={setNewChatModalType}
           />
         )}
       </AnimatePresence>

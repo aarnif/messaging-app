@@ -3,10 +3,10 @@ import Button from "../ui/Button";
 
 const NewChatDropDownBox = ({
   setIsNewChatDropdownOpen,
-  setIsNewChatModalOpen,
+  handleOpenNewChatModal,
 }: {
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  handleOpenNewChatModal: (event: React.SyntheticEvent) => void;
 }) => (
   <motion.div
     data-testid="overlay"
@@ -30,9 +30,14 @@ const NewChatDropDownBox = ({
           type="button"
           variant="tertiary"
           text="New Private Chat"
-          onClick={() => setIsNewChatModalOpen(true)}
+          onClick={(event) => handleOpenNewChatModal(event)}
         />
-        <Button type="button" variant="tertiary" text="New Group Chat" />
+        <Button
+          type="button"
+          variant="tertiary"
+          text="New Group Chat"
+          onClick={(event) => handleOpenNewChatModal(event)}
+        />
       </div>
     </motion.div>
   </motion.div>
