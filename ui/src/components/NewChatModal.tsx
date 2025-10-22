@@ -194,10 +194,10 @@ const PrivateChatContent = ({
 
 const SelectContactsItem = ({
   contact,
-  setContacts,
+  setSelectedIds,
 }: {
   contact: UserContact;
-  setContacts: React.Dispatch<React.SetStateAction<UserContact[]>>;
+  setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
 }) => {
   if (!contact || !contact?.contactDetails) {
     return null;
@@ -205,18 +205,22 @@ const SelectContactsItem = ({
 
   const { username, name, about } = contact.contactDetails;
 
+  const handleSelectContact = () => {
+    setSelectedIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(contact.id)) {
+        newSet.delete(contact.id);
+      } else {
+        newSet.add(contact.id);
+      }
+      return newSet;
+    });
+  };
+
   return (
     <button
       data-testid={contact.isSelected && "selected"}
-      onClick={() => {
-        setContacts((prevState) =>
-          prevState.map((prevContact) =>
-            prevContact.id === contact.id
-              ? { ...prevContact, isSelected: !prevContact.isSelected }
-              : prevContact
-          )
-        );
-      }}
+      onClick={handleSelectContact}
       className="flex w-full cursor-pointer items-center"
     >
       <div className="flex flex-grow gap-4 p-2">
@@ -252,10 +256,10 @@ const SelectContactsItem = ({
 
 export const SelectContactsList = ({
   contacts,
-  setContacts,
+  setSelectedIds,
 }: {
   contacts: UserContact[];
-  setContacts: React.Dispatch<React.SetStateAction<UserContact[]>>;
+  setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
 }) => {
   if (!contacts?.length) {
     return (
@@ -271,7 +275,7 @@ export const SelectContactsList = ({
         <SelectContactsItem
           key={contact?.id}
           contact={contact}
-          setContacts={setContacts}
+          setSelectedIds={setSelectedIds}
         />
       ))}
     </div>
@@ -290,6 +294,7 @@ const GroupChatContent = ({
   >;
 }) => {
   const [contacts, setContacts] = useState<UserContact[]>([]);
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { message } = useNotifyMessage();
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
@@ -307,11 +312,11 @@ const GroupChatContent = ({
       setContacts(
         filteredContacts.map((contact) => ({
           ...contact,
-          isSelected: false,
+          isSelected: selectedIds.has(contact.id),
         }))
       );
     }
-  }, [data]);
+  }, [data, selectedIds]);
 
   const handleCreateGroupChat = async () => {
     setIsNewChatModalOpen(false);
@@ -346,7 +351,10 @@ const GroupChatContent = ({
       {loading ? (
         <Spinner />
       ) : (
-        <SelectContactsList contacts={contacts} setContacts={setContacts} />
+        <SelectContactsList
+          contacts={contacts}
+          setSelectedIds={setSelectedIds}
+        />
       )}
     </>
   );
