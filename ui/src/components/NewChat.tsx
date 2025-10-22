@@ -66,7 +66,15 @@ const ChatNotFound = () => (
   </div>
 );
 
-const NewMessageBox = ({ members }: { members: NewChatMember[] }) => {
+const NewMessageBox = ({
+  chatName,
+  chatDescription,
+  chatMembers,
+}: {
+  chatName: string | null;
+  chatDescription: string | null;
+  chatMembers: NewChatMember[];
+}) => {
   const navigate = useNavigate();
   const message = useField("New Message", "text", "New Message...");
   const [createChat] = useMutation(CREATE_CHAT, {
@@ -85,9 +93,9 @@ const NewMessageBox = ({ members }: { members: NewChatMember[] }) => {
     const newChat = await createChat({
       variables: {
         input: {
-          name: null,
-          members: members?.map((member) => member?.id) ?? [],
-          description: null,
+          name: chatName,
+          members: chatMembers?.map((member) => member?.id) ?? [],
+          description: chatDescription,
           initialMessage: message.value,
         },
       },
@@ -146,14 +154,16 @@ const NewChatContent = ({
     return <ChatNotFound />;
   }
 
-  const { name, members } = chat;
+  const { name, description, members } = chat;
 
   return (
     <>
       <Header name={name} members={members} currentUser={currentUser} />
       <div className="flex-grow"></div>
       <NewMessageBox
-        members={
+        chatName={name ?? null}
+        chatDescription={description ?? null}
+        chatMembers={
           members?.filter((member) => member?.id !== currentUser.id) ?? []
         }
       />

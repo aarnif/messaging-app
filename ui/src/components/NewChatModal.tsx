@@ -16,6 +16,7 @@ import type { Maybe, User, Contact } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
 import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
+import FormField from "../ui/FormField";
 import { useNavigate } from "react-router";
 
 const SelectContactItem = ({
@@ -283,19 +284,28 @@ export const SelectContactsList = ({
 };
 
 const GroupChatContent = ({
+  currentUser,
   searchWord,
   setIsNewChatModalOpen,
   setNewChatModalType,
 }: {
+  currentUser: User;
   searchWord: InputField;
   setIsNewChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setNewChatModalType: React.Dispatch<
     React.SetStateAction<"private" | "group" | null>
   >;
 }) => {
+  const navigate = useNavigate();
+  const name = useField("name", "text", "Enter name here...");
+  const description = useField(
+    "description",
+    "text",
+    "Enter description here..."
+  );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { message } = useNotifyMessage();
+  const { message, showMessage } = useNotifyMessage();
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
@@ -319,6 +329,29 @@ const GroupChatContent = ({
   }, [data, selectedIds]);
 
   const handleCreateGroupChat = async () => {
+    if (name.value.length < 3) {
+      showMessage("Chat name must be at least three characters long");
+      return;
+    }
+
+    if (selectedIds.size < 2) {
+      showMessage("Chat must have at least two members");
+      return;
+    }
+
+    const selectedChatMembers = contacts
+      .filter((contact) => contact.isSelected)
+      .map((contact) => contact.contactDetails);
+
+    const newGroupChatInfo = {
+      name: name.value,
+      description: description.value,
+      members: [currentUser, ...selectedChatMembers],
+      avatar: null,
+    };
+
+    localStorage.setItem("new-chat-info", JSON.stringify(newGroupChatInfo));
+    navigate("/chats/new");
     setIsNewChatModalOpen(false);
     setNewChatModalType(null);
   };
@@ -356,6 +389,11 @@ const GroupChatContent = ({
           setSelectedIds={setSelectedIds}
         />
       )}
+      <FormField field={name} />
+      <FormField field={description} />
+      <p className="-my-1.5 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
+        {selectedIds.size} contacts selected
+      </p>
     </>
   );
 };
@@ -414,6 +452,7 @@ const NewChatModal = ({
           />
         ) : (
           <GroupChatContent
+            currentUser={currentUser}
             searchWord={searchWord}
             setIsNewChatModalOpen={setIsNewChatModalOpen}
             setNewChatModalType={setNewChatModalType}

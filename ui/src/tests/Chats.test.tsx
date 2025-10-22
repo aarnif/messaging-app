@@ -19,6 +19,7 @@ import {
   allContactsByUser,
   userContactsMock,
   NewPrivateChatDetails,
+  NewGroupChatDetails,
   mockNavigate,
   allContactsByUserEmpty,
 } from "./mocks";
@@ -491,6 +492,160 @@ describe("<Chats />", () => {
         expect(
           within(selectedContacts[1]).getByText(`@${contact2username}`)
         ).toBeDefined();
+      });
+    });
+
+    test("displays error if chat name is not given", async () => {
+      const user = userEvent.setup();
+      renderComponent([allChatsByUser, allContactsByUser]);
+
+      await waitFor(async () => {
+        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button"));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button", { name: "New Group Chat" }));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+        expect(
+          screen.getByPlaceholderText("Search by name or username...")
+        ).toBeDefined();
+        userContactsMock.forEach((contact) => {
+          const { name, username, about } = contact.contactDetails;
+          expect(screen.getByText(name)).toBeDefined();
+          expect(screen.getByText(`@${username}`)).toBeDefined();
+          expect(screen.getByText(about)).toBeDefined();
+        });
+      });
+
+      await user.click(screen.getByTestId("create-chat-button"));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Chat name must be at least three characters long")
+        ).toBeDefined();
+      });
+
+      await waitForElementToBeRemoved(
+        () =>
+          screen.queryByText(
+            "Chat name must be at least three characters long"
+          ),
+        { timeout: 3500 }
+      );
+    });
+
+    test("displays error if not at least two contacts has been selected", async () => {
+      const user = userEvent.setup();
+      renderComponent([allChatsByUser, allContactsByUser]);
+
+      await waitFor(async () => {
+        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button"));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button", { name: "New Group Chat" }));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+        expect(
+          screen.getByPlaceholderText("Search by name or username...")
+        ).toBeDefined();
+        userContactsMock.forEach((contact) => {
+          const { name, username, about } = contact.contactDetails;
+          expect(screen.getByText(name)).toBeDefined();
+          expect(screen.getByText(`@${username}`)).toBeDefined();
+          expect(screen.getByText(about)).toBeDefined();
+        });
+      });
+
+      await user.type(screen.getByLabelText("Name"), "Group Chat");
+
+      await user.click(screen.getByTestId("create-chat-button"));
+
+      await waitFor(() => {
+        expect(
+          screen.getByText("Chat must have at least two members")
+        ).toBeDefined();
+      });
+
+      await waitForElementToBeRemoved(
+        () => screen.queryByText("Chat must have at least two members"),
+        { timeout: 3500 }
+      );
+    });
+
+    test("saves new group chat info and navigates to chat preview when new chat button is clicked", async () => {
+      const user = userEvent.setup();
+      renderComponent([allChatsByUser, allContactsByUser]);
+
+      await waitFor(async () => {
+        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button"));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button", { name: "New Group Chat" }));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+        expect(
+          screen.getByPlaceholderText("Search by name or username...")
+        ).toBeDefined();
+        expect(screen.queryByText("New Private Chat")).toBeNull();
+        userContactsMock.forEach((contact) => {
+          const { name, username, about } = contact.contactDetails;
+
+          expect(screen.getByText(name)).toBeDefined();
+          expect(screen.getByText(`@${username}`)).toBeDefined();
+          expect(screen.getByText(about)).toBeDefined();
+        });
+      });
+
+      await user.click(screen.getByText(`@${contact1username}`));
+      await user.click(screen.getByText(`@${contact2username}`));
+
+      await waitFor(async () => {
+        const selectedContacts = screen.getAllByTestId("selected");
+        expect(selectedContacts[0]).toBeDefined();
+        expect(
+          within(selectedContacts[0]).getByText(`@${contact1username}`)
+        ).toBeDefined();
+        expect(selectedContacts[1]).toBeDefined();
+        expect(
+          within(selectedContacts[1]).getByText(`@${contact2username}`)
+        ).toBeDefined();
+      });
+
+      await user.type(screen.getByLabelText("Name"), NewGroupChatDetails.name);
+
+      await user.click(screen.getByTestId("create-chat-button"));
+
+      await waitFor(async () => {
+        expect(localStorage.setItem).toHaveBeenCalledWith(
+          "new-chat-info",
+          JSON.stringify(NewGroupChatDetails)
+        );
+        expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
+        expect(screen.queryByText("New Group Chat")).toBeNull();
       });
     });
   });

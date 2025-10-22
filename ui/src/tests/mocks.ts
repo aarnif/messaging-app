@@ -447,6 +447,17 @@ export const NewPrivateChatDetails = {
   avatar: null,
 };
 
+export const NewGroupChatDetails = {
+  name: "Group Chat",
+  description: null,
+  members: [
+    currentUserMock,
+    userContactsMock[0].contactDetails,
+    userContactsMock[1].contactDetails,
+  ],
+  avatar: null,
+};
+
 export const contactsWithoutPrivateChats: MockLink.MockedResponse<
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables
