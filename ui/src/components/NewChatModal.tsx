@@ -162,10 +162,6 @@ const SelectContactsItem = ({
   contact: UserContact;
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
 }) => {
-  if (!contact || !contact?.contactDetails) {
-    return null;
-  }
-
   const handleSelectContact = () => {
     setSelectedIds((prev) => {
       const newSet = new Set(prev);
