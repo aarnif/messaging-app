@@ -25,6 +25,7 @@ import {
 } from "./mocks";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
+import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -34,7 +35,7 @@ vi.mock("react-router", async () => {
   };
 });
 
-const renderComponent = (mocks = [allChatsByUser]) =>
+const renderComponent = (mocks: MockLink.MockedResponse[] = [allChatsByUser]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
