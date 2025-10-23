@@ -241,15 +241,13 @@ const ChatInfoModal = ({
           {members?.length} members
         </h4>
         <div className="flex flex-col gap-4">
-          {members?.map((member) =>
-            member ? (
-              <ChatMemberItem
-                key={member.id}
-                member={member}
-                currentUser={currentUser}
-              />
-            ) : null
-          )}
+          {members?.map((member) => (
+            <ChatMemberItem
+              key={member.id}
+              member={member}
+              currentUser={currentUser}
+            />
+          ))}
         </div>
       </div>
     </motion.div>
