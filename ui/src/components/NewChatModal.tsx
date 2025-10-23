@@ -47,7 +47,7 @@ export const SelectContactList = ({
   selectedContact: string | null;
   setSelectedContact: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  if (!contacts?.length) {
+  if (contacts.length === 0) {
     return (
       <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
         No contacts found

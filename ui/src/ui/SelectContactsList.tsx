@@ -8,7 +8,7 @@ const SelectContactsList = ({
   contacts: UserContact[];
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
 }) => {
-  if (!contacts?.length) {
+  if (contacts.length === 0) {
     return (
       <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
         No contacts found
