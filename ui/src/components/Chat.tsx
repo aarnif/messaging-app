@@ -173,9 +173,16 @@ const ChatMemberItem = ({
             @{username}
           </p>
         </div>
-        <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-          {about}
-        </p>
+        <div className="flex justify-between">
+          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+            {about}
+          </p>
+          {member.role === "admin" && (
+            <p className="text-xs font-medium text-slate-900 dark:text-slate-50">
+              Admin
+            </p>
+          )}
+        </div>
       </div>
     </div>
   );
