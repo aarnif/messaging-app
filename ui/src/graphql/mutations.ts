@@ -78,3 +78,32 @@ export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
     }
   }
 }`);
+
+export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
+  editChat(input: $input) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+    }
+  }
+}`);

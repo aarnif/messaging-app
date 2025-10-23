@@ -1,7 +1,13 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import {
+  render,
+  screen,
+  waitFor,
+  waitForElementToBeRemoved,
+} from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { useMutation } from "@apollo/client/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
@@ -305,10 +311,122 @@ describe("<Chat />", () => {
       expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
     });
 
-    await user.click(screen.getByTestId("close-edit-chat-button"));
+    await user.click(screen.getByTestId("close-button"));
 
     await waitFor(async () => {
       expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
+    });
+  });
+
+  test("edit chat fails with empty name", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+    });
+
+    await user.clear(screen.getByPlaceholderText("Enter name here..."));
+
+    await user.click(screen.getByTestId("submit-button"));
+
+    await waitFor(() => {
+      expect(
+        screen.getByText("Chat name must be at least three characters long")
+      ).toBeDefined();
+    });
+
+    await waitForElementToBeRemoved(
+      () =>
+        screen.queryByText("Chat name must be at least three characters long"),
+      { timeout: 3500 }
+    );
+  });
+
+  test("edits chat name and description succesfully and closes modal", async () => {
+    const mockEditChat = vi.fn();
+    vi.mocked(useMutation).mockReturnValue([
+      mockEditChat,
+      {
+        data: undefined,
+        loading: false,
+        error: undefined,
+        called: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        client: {} as any,
+        reset: vi.fn(),
+      },
+    ]);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+    });
+
+    const nameInput = screen.getByPlaceholderText("Enter name here...");
+    const descriptionInput = screen.getByPlaceholderText(
+      "Enter description here..."
+    );
+
+    await user.clear(nameInput);
+    await user.clear(descriptionInput);
+
+    await user.type(nameInput, "New Name");
+    await user.type(descriptionInput, "New Description");
+
+    await user.click(screen.getByTestId("submit-button"));
+
+    await waitFor(() => {
+      expect(mockEditChat).toHaveBeenCalledWith({
+        variables: {
+          input: {
+            id: CHAT_DETAILS.id,
+            name: "New Name",
+            description: "New Description",
+            members: CHAT_DETAILS.members.map((member) => member.id),
+          },
+        },
+      });
     });
   });
 });

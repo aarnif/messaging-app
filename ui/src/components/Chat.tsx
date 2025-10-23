@@ -15,12 +15,15 @@ import type {
 import { formatDisplayDate } from "../helpers";
 import { useEffect, useRef, useState } from "react";
 import useField from "../hooks/useField";
+import useNotifyMessage from "../hooks/useNotifyMessage";
 import { FiEdit } from "react-icons/fi";
-import { SEND_MESSAGE } from "../graphql/mutations";
+import { SEND_MESSAGE, EDIT_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatHeader from "../ui/ChatHeader";
 import MessageBox from "../ui/MessageBox";
+import Notify from "../ui/Notify";
+import FormField from "../ui/FormField";
 
 const ChatMessage = ({
   currentUser,
@@ -250,21 +253,64 @@ const ChatInfoModal = ({
 };
 
 const EditChatModal = ({
+  chat,
   setIsEditChatOpen,
 }: {
+  chat: Chat | null | undefined;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const name = useField("name", "text", "Enter name here...", chat?.name ?? "");
+  const description = useField(
+    "description",
+    "text",
+    "Enter description here...",
+    chat?.description ?? ""
+  );
+  const { message, showMessage } = useNotifyMessage();
+
+  const [editChat] = useMutation(EDIT_CHAT, {
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  if (!chat) {
+    return null;
+  }
+
+  const handleEditChat = async () => {
+    if (name.value.length < 3) {
+      showMessage("Chat name must be at least three characters long");
+      return;
+    }
+
+    await editChat({
+      variables: {
+        input: {
+          id: chat.id,
+          name: name.value,
+          description: description.value ?? null,
+          members:
+            chat.members
+              ?.map((member) => member?.id)
+              .filter((id): id is string => id !== undefined) || [],
+        },
+      },
+    });
+    setIsEditChatOpen(false);
+  };
+
   return (
     <motion.div
       initial={{ x: "100vw" }}
       animate={{ x: 0 }}
       exit={{ x: "100vw" }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+      className="absolute inset-0 flex flex-grow flex-col items-center gap-6 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
       <div className="flex w-full justify-between">
         <button
-          data-testid="close-edit-chat-button"
+          data-testid="close-button"
           className="cursor-pointer"
           onClick={() => setIsEditChatOpen(false)}
         >
@@ -274,12 +320,19 @@ const EditChatModal = ({
           Edit Chat
         </h2>
         <button
-          data-testid="edit-chat-button"
+          data-testid="submit-button"
           className="cursor-pointer"
-          onClick={() => console.log("Edit Group Chat clicked!")}
+          onClick={handleEditChat}
         >
           <IoChevronForward className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
         </button>
+      </div>
+      <AnimatePresence>
+        {message && <Notify message={message} />}
+      </AnimatePresence>
+      <div className="flex w-full flex-col gap-4">
+        <FormField field={name} />
+        <FormField field={description} />
       </div>
     </motion.div>
   );
@@ -325,6 +378,8 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
   const [isEditChatOpen, setIsEditChatOpen] = useState(false);
 
+  const chat = data?.findChatById;
+
   return (
     <div className="relative flex flex-grow flex-col">
       {loading ? (
@@ -334,7 +389,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       ) : (
         <ChatContent
           currentUser={currentUser}
-          chat={data?.findChatById}
+          chat={chat}
           setIsChatInfoOpen={setIsChatInfoOpen}
         />
       )}
@@ -343,7 +398,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
           <ChatInfoModal
             key={"chat-info"}
             currentUser={currentUser}
-            chat={data?.findChatById}
+            chat={chat}
             setIsChatInfoOpen={setIsChatInfoOpen}
             setIsEditChatOpen={setIsEditChatOpen}
           />
@@ -352,6 +407,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
         {isEditChatOpen && (
           <EditChatModal
             key={"edit-chat"}
+            chat={chat}
             setIsEditChatOpen={setIsEditChatOpen}
           />
         )}
