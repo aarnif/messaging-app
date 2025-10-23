@@ -20,24 +20,6 @@ import { useNavigate } from "react-router";
 import SelectContactsList from "../ui/SelectContactsList";
 import SelectContactButton from "../ui/SelectContactButton";
 
-const SelectContactItem = ({
-  contact,
-  selectedContact,
-  setSelectedContact,
-}: {
-  contact: Contact;
-  selectedContact: string | null;
-  setSelectedContact: React.Dispatch<React.SetStateAction<string | null>>;
-}) => (
-  <SelectContactButton
-    contact={contact}
-    isSelected={contact.id === selectedContact}
-    callback={() => {
-      setSelectedContact(contact.id);
-    }}
-  />
-);
-
 export const SelectContactList = ({
   contacts,
   selectedContact,
@@ -58,11 +40,12 @@ export const SelectContactList = ({
   return (
     <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
-        <SelectContactItem
-          key={contact.id}
+        <SelectContactButton
           contact={contact}
-          selectedContact={selectedContact}
-          setSelectedContact={setSelectedContact}
+          isSelected={contact.id === selectedContact}
+          callback={() => {
+            setSelectedContact(contact.id);
+          }}
         />
       ))}
     </div>
