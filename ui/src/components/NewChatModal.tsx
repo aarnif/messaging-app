@@ -17,6 +17,7 @@ import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
 import { useNavigate } from "react-router";
+import SelectContactsList from "../ui/SelectContactsList";
 import SelectContactButton from "../ui/SelectContactButton";
 
 const SelectContactItem = ({
@@ -155,62 +156,6 @@ const PrivateChatContent = ({
   );
 };
 
-const SelectContactsItem = ({
-  contact,
-  setSelectedIds,
-}: {
-  contact: UserContact;
-  setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
-}) => {
-  const handleSelectContact = () => {
-    setSelectedIds((prev) => {
-      const newSet = new Set(prev);
-      if (newSet.has(contact.id)) {
-        newSet.delete(contact.id);
-      } else {
-        newSet.add(contact.id);
-      }
-      return newSet;
-    });
-  };
-
-  return (
-    <SelectContactButton
-      contact={contact}
-      isSelected={contact.isSelected}
-      callback={handleSelectContact}
-    />
-  );
-};
-
-export const SelectContactsList = ({
-  contacts,
-  setSelectedIds,
-}: {
-  contacts: UserContact[];
-  setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
-}) => {
-  if (!contacts?.length) {
-    return (
-      <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
-        No contacts found
-      </p>
-    );
-  }
-
-  return (
-    <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
-      {contacts.map((contact) => (
-        <SelectContactsItem
-          key={contact?.id}
-          contact={contact}
-          setSelectedIds={setSelectedIds}
-        />
-      ))}
-    </div>
-  );
-};
-
 const GroupChatContent = ({
   currentUser,
   searchWord,
@@ -242,15 +187,11 @@ const GroupChatContent = ({
   });
 
   useEffect(() => {
-    if (data?.allContactsByUser) {
-      const filteredContacts = data.allContactsByUser.filter(
-        (contact): contact is Contact =>
-          contact !== null && contact !== undefined
-      );
+    if (data) {
       setContacts(
-        filteredContacts.map((contact) => ({
+        data?.allContactsByUser?.map((contact) => ({
           ...contact,
-          isSelected: selectedIds.has(contact.id),
+          isSelected: selectedIds.has(contact.contactDetails.id),
         }))
       );
     }
