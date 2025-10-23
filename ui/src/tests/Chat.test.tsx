@@ -249,4 +249,66 @@ describe("<Chat />", () => {
       expect(input.value).toBe("");
     });
   });
+
+  test("shows edit chat modal when edit chat button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+    });
+  });
+
+  test("closes edit chat modal when close button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("close-edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
+    });
+  });
 });

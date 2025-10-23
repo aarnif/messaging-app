@@ -3,7 +3,8 @@ import { useQuery } from "@apollo/client/react";
 import { FIND_CHAT_BY_ID, ALL_CHATS_BY_USER } from "../graphql/queries";
 import Spinner from "../ui/Spinner";
 import ChatNotFound from "../ui/ChatNotFound";
-import { IoChevronBack } from "react-icons/io5";
+import { IoChevronBack, IoChevronForward } from "react-icons/io5";
+import { MdClose } from "react-icons/md";
 import type {
   Maybe,
   Chat,
@@ -173,10 +174,12 @@ const ChatInfoModal = ({
   currentUser,
   chat,
   setIsChatInfoOpen,
+  setIsEditChatOpen,
 }: {
   currentUser: User;
   chat: Chat | null | undefined;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   if (!chat) {
     return null;
@@ -206,7 +209,7 @@ const ChatInfoModal = ({
         <button
           data-testid="edit-chat-button"
           className="cursor-pointer"
-          onClick={() => console.log("Edit Group Chat clicked!")}
+          onClick={() => setIsEditChatOpen(true)}
         >
           <FiEdit className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
         </button>
@@ -241,6 +244,42 @@ const ChatInfoModal = ({
             ) : null
           )}
         </div>
+      </div>
+    </motion.div>
+  );
+};
+
+const EditChatModal = ({
+  setIsEditChatOpen,
+}: {
+  setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  return (
+    <motion.div
+      initial={{ x: "100vw" }}
+      animate={{ x: 0 }}
+      exit={{ x: "100vw" }}
+      transition={{ type: "tween", duration: 0.3 }}
+      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+    >
+      <div className="flex w-full justify-between">
+        <button
+          data-testid="close-edit-chat-button"
+          className="cursor-pointer"
+          onClick={() => setIsEditChatOpen(false)}
+        >
+          <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
+        <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
+          Edit Chat
+        </h2>
+        <button
+          data-testid="edit-chat-button"
+          className="cursor-pointer"
+          onClick={() => console.log("Edit Group Chat clicked!")}
+        >
+          <IoChevronForward className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        </button>
       </div>
     </motion.div>
   );
@@ -284,6 +323,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   });
 
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
+  const [isEditChatOpen, setIsEditChatOpen] = useState(false);
 
   return (
     <div className="relative flex flex-grow flex-col">
@@ -301,9 +341,18 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       <AnimatePresence>
         {isChatInfoOpen && (
           <ChatInfoModal
+            key={"chat-info"}
             currentUser={currentUser}
             chat={data?.findChatById}
             setIsChatInfoOpen={setIsChatInfoOpen}
+            setIsEditChatOpen={setIsEditChatOpen}
+          />
+        )}
+
+        {isEditChatOpen && (
+          <EditChatModal
+            key={"edit-chat"}
+            setIsEditChatOpen={setIsEditChatOpen}
           />
         )}
       </AnimatePresence>
