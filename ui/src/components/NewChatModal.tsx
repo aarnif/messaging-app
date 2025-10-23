@@ -12,7 +12,7 @@ import {
   CONTACTS_WITHOUT_PRIVATE_CHAT,
 } from "../graphql/queries";
 import { useQuery } from "@apollo/client/react";
-import type { Maybe, User, Contact } from "../__generated__/graphql";
+import type { User, Contact } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
 import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
@@ -24,14 +24,10 @@ const SelectContactItem = ({
   selectedContact,
   setSelectedContact,
 }: {
-  contact: Maybe<Contact> | undefined;
+  contact: Contact;
   selectedContact: string | null;
   setSelectedContact: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  if (!contact || !contact?.contactDetails) {
-    return null;
-  }
-
   const { username, name, about } = contact.contactDetails;
 
   const isSelected = contact.id === selectedContact;
@@ -80,7 +76,7 @@ export const SelectContactList = ({
   selectedContact,
   setSelectedContact,
 }: {
-  contacts: Maybe<Array<Maybe<Contact>>> | undefined;
+  contacts: Contact[];
   selectedContact: string | null;
   setSelectedContact: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
@@ -96,7 +92,7 @@ export const SelectContactList = ({
     <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
         <SelectContactItem
-          key={contact?.id}
+          key={contact.id}
           contact={contact}
           selectedContact={selectedContact}
           setSelectedContact={setSelectedContact}
@@ -139,11 +135,11 @@ const PrivateChatContent = ({
     }
 
     const chosenContact = contacts?.find(
-      (contact) => contact?.id === selectedContact
+      (contact) => contact.id === selectedContact
     );
 
     const newPrivateChatInfo = {
-      name: chosenContact?.contactDetails?.name,
+      name: chosenContact?.contactDetails.name,
       description: null,
       members: [currentUser, chosenContact?.contactDetails],
       avatar: null,
@@ -184,7 +180,7 @@ const PrivateChatContent = ({
         <Spinner />
       ) : (
         <SelectContactList
-          contacts={contacts}
+          contacts={contacts ?? []}
           selectedContact={selectedContact}
           setSelectedContact={setSelectedContact}
         />
