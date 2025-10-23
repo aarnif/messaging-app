@@ -194,6 +194,9 @@ const ChatInfoModal = ({
 }) => {
   const { name, description, members } = chat;
 
+  const isAdmin =
+    currentUser.id === members?.find((member) => member.role === "admin")?.id;
+
   return (
     <motion.div
       initial={{ x: "100vw" }}
@@ -202,10 +205,12 @@ const ChatInfoModal = ({
       transition={{ type: "tween", duration: 0.3 }}
       className="absolute inset-0 flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
-      <div className="flex w-full justify-between">
+      <div
+        className={`flex w-full items-center ${!isAdmin ? "relative justify-center" : "justify-between"}`}
+      >
         <button
           data-testid="close-chat-info-button"
-          className="cursor-pointer"
+          className={`cursor-pointer ${!isAdmin && "absolute left-0"}`}
           onClick={() => setIsChatInfoOpen(false)}
         >
           <IoChevronBack className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
@@ -213,13 +218,15 @@ const ChatInfoModal = ({
         <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
           Chat
         </h2>
-        <button
-          data-testid="edit-chat-button"
-          className="cursor-pointer"
-          onClick={() => setIsEditChatOpen(true)}
-        >
-          <FiEdit className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-        </button>
+        {isAdmin && (
+          <button
+            data-testid="edit-chat-button"
+            className="cursor-pointer"
+            onClick={() => setIsEditChatOpen(true)}
+          >
+            <FiEdit className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+          </button>
+        )}
       </div>
       <div className="flex flex-col items-center gap-2.5">
         <img
