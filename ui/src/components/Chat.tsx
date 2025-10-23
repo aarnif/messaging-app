@@ -1,10 +1,15 @@
 import { useMatch } from "react-router";
 import { useQuery } from "@apollo/client/react";
-import { FIND_CHAT_BY_ID, ALL_CHATS_BY_USER } from "../graphql/queries";
+import {
+  FIND_CHAT_BY_ID,
+  ALL_CHATS_BY_USER,
+  ALL_CONTACTS_BY_USER,
+} from "../graphql/queries";
 import Spinner from "../ui/Spinner";
 import ChatNotFound from "../ui/ChatNotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import type { UserContact } from "../types";
 import type {
   Maybe,
   Chat,
@@ -14,8 +19,10 @@ import type {
 } from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
 import { useEffect, useRef, useState } from "react";
+import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
+import { MdCheck } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
 import { SEND_MESSAGE, EDIT_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
@@ -24,6 +31,7 @@ import ChatHeader from "../ui/ChatHeader";
 import MessageBox from "../ui/MessageBox";
 import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
+import SearchBox from "../ui/SearchBox";
 
 const ChatMessage = ({
   currentUser,
@@ -180,14 +188,10 @@ const ChatInfoModal = ({
   setIsEditChatOpen,
 }: {
   currentUser: User;
-  chat: Chat | null | undefined;
+  chat: Chat;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  if (!chat) {
-    return null;
-  }
-
   const { name, description, members } = chat;
 
   return (
@@ -256,9 +260,17 @@ const EditChatModal = ({
   chat,
   setIsEditChatOpen,
 }: {
-  chat: Chat | null | undefined;
+  chat: Chat;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const width = useResponsiveWidth();
+  const isMobileScreen = width <= 640;
+  const { message, showMessage } = useNotifyMessage();
+  const searchWord = useField(
+    "search-contacts",
+    "text",
+    "Search by name or username..."
+  );
   const name = useField("name", "text", "Enter name here...", chat?.name ?? "");
   const description = useField(
     "description",
@@ -266,7 +278,18 @@ const EditChatModal = ({
     "Enter description here...",
     chat?.description ?? ""
   );
-  const { message, showMessage } = useNotifyMessage();
+
+  const { data } = useQuery(ALL_CONTACTS_BY_USER, {
+    variables: {
+      search: searchWord.value,
+    },
+  });
+
+  const [selectedIds, setSelectedIds] = useState<Set<string>>(
+    new Set([...chat.members.map((member) => member.id)])
+  );
+  const [contacts, setContacts] = useState<UserContact[]>([]);
+  const selectedContacts = contacts.filter((contact) => contact.isSelected);
 
   const [editChat] = useMutation(EDIT_CHAT, {
     onError: (error) => {
@@ -274,9 +297,16 @@ const EditChatModal = ({
     },
   });
 
-  if (!chat) {
-    return null;
-  }
+  useEffect(() => {
+    if (data) {
+      setContacts(
+        data?.allContactsByUser?.map((contact) => ({
+          ...contact,
+          isSelected: selectedIds.has(contact.contactDetails.id),
+        }))
+      );
+    }
+  }, [data, selectedIds]);
 
   const handleEditChat = async () => {
     if (name.value.length < 3) {
@@ -290,10 +320,7 @@ const EditChatModal = ({
           id: chat.id,
           name: name.value,
           description: description.value ?? null,
-          members:
-            chat.members
-              ?.map((member) => member?.id)
-              .filter((id): id is string => id !== undefined) || [],
+          members: selectedContacts.map((contact) => contact.contactDetails.id),
         },
       },
     });
@@ -302,39 +329,152 @@ const EditChatModal = ({
 
   return (
     <motion.div
-      initial={{ x: "100vw" }}
-      animate={{ x: 0 }}
-      exit={{ x: "100vw" }}
-      transition={{ type: "tween", duration: 0.3 }}
-      className="absolute inset-0 flex flex-grow flex-col items-center gap-6 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+      data-testid="overlay"
+      key={"Overlay"}
+      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
+      onClick={() => setIsEditChatOpen(false)}
+      initial={{ x: "100vw", opacity: 0 }}
+      animate={{ x: 0, opacity: 1 }}
+      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
+      transition={{ type: "tween" }}
     >
-      <div className="flex w-full justify-between">
-        <button
-          data-testid="close-button"
-          className="cursor-pointer"
-          onClick={() => setIsEditChatOpen(false)}
-        >
-          <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-        </button>
-        <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-          Edit Chat
-        </h2>
-        <button
-          data-testid="submit-button"
-          className="cursor-pointer"
-          onClick={handleEditChat}
-        >
-          <IoChevronForward className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-        </button>
-      </div>
-      <AnimatePresence>
-        {message && <Notify message={message} />}
-      </AnimatePresence>
-      <div className="flex w-full flex-col gap-4">
-        <FormField field={name} />
-        <FormField field={description} />
-      </div>
+      <motion.div
+        data-testid="edit-chat-modal"
+        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-[500px] sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        onClick={(e) => e.stopPropagation()}
+        initial={{
+          y: isMobileScreen ? "100vh" : -50,
+          opacity: isMobileScreen ? 1 : 0,
+        }}
+        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
+        exit={{
+          y: isMobileScreen ? "100vh" : -50,
+          opacity: isMobileScreen ? 1 : 0,
+        }}
+        transition={{ type: "tween" }}
+      >
+        <div className="flex w-full justify-between">
+          <button
+            data-testid="close-button"
+            className="cursor-pointer"
+            onClick={() => setIsEditChatOpen(false)}
+          >
+            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+          </button>
+          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
+            Edit Chat
+          </h2>
+          <button
+            data-testid="submit-button"
+            className="cursor-pointer"
+            onClick={handleEditChat}
+          >
+            <IoChevronForward className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+          </button>
+        </div>
+        <AnimatePresence>
+          {message && <Notify message={message} />}
+        </AnimatePresence>
+        <SearchBox searchWord={searchWord} />
+        <SelectContactsList
+          contacts={contacts}
+          setSelectedIds={setSelectedIds}
+        />
+        <div className="flex w-full flex-col gap-4">
+          <FormField field={name} />
+          <FormField field={description} />
+        </div>
+        <p className="-my-1.5 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
+          {selectedContacts.length} contacts selected
+        </p>
+      </motion.div>
     </motion.div>
+  );
+};
+
+const SelectContactsItem = ({
+  contact,
+  handleSelectContact,
+}: {
+  contact: UserContact;
+  handleSelectContact: (id: string) => void;
+}) => {
+  const { id, username, name, about } = contact.contactDetails;
+
+  return (
+    <button
+      data-testid={contact.isSelected && "selected"}
+      onClick={() => handleSelectContact(id)}
+      className="flex w-full cursor-pointer items-center"
+    >
+      <div className="flex flex-grow gap-4 p-2">
+        <img
+          className="h-12 w-12 rounded-full"
+          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+        />
+        <div className="flex w-full flex-col gap-1 border-slate-200 dark:border-slate-700">
+          <div className="flex items-center justify-between">
+            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+              {name}
+            </h2>
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+              @{username}
+            </p>
+          </div>
+          <p className="text-left text-xs font-medium text-slate-700 dark:text-slate-200">
+            {about}
+          </p>
+        </div>
+      </div>
+
+      {contact.isSelected ? (
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-green-600 bg-green-600">
+          <MdCheck size={20} className="text-white" />
+        </div>
+      ) : (
+        <div className="flex h-6 w-6 items-center justify-center rounded-full border border-slate-300"></div>
+      )}
+    </button>
+  );
+};
+
+const SelectContactsList = ({
+  contacts,
+  setSelectedIds,
+}: {
+  contacts: UserContact[];
+  setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
+}) => {
+  if (!contacts?.length) {
+    return (
+      <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
+        No contacts found
+      </p>
+    );
+  }
+
+  const handleSelectContact = (id: string) => {
+    setSelectedIds((prev) => {
+      const newSet = new Set(prev);
+      if (newSet.has(id)) {
+        newSet.delete(id);
+      } else {
+        newSet.add(id);
+      }
+      return newSet;
+    });
+  };
+
+  return (
+    <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
+      {contacts.map((contact) => (
+        <SelectContactsItem
+          key={contact.id}
+          contact={contact}
+          handleSelectContact={handleSelectContact}
+        />
+      ))}
+    </div>
   );
 };
 
@@ -344,13 +484,9 @@ const ChatContent = ({
   setIsChatInfoOpen,
 }: {
   currentUser: User;
-  chat: Chat | null | undefined;
+  chat: Chat;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  if (!chat) {
-    return <ChatNotFound />;
-  }
-
   const { id, name, members } = chat;
 
   return (
@@ -386,32 +522,36 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
         <div className="flex flex-grow items-center justify-center">
           <Spinner />
         </div>
+      ) : !chat ? (
+        <ChatNotFound />
       ) : (
-        <ChatContent
-          currentUser={currentUser}
-          chat={chat}
-          setIsChatInfoOpen={setIsChatInfoOpen}
-        />
-      )}
-      <AnimatePresence>
-        {isChatInfoOpen && (
-          <ChatInfoModal
-            key={"chat-info"}
+        <>
+          <ChatContent
             currentUser={currentUser}
             chat={chat}
             setIsChatInfoOpen={setIsChatInfoOpen}
-            setIsEditChatOpen={setIsEditChatOpen}
           />
-        )}
+          <AnimatePresence>
+            {isChatInfoOpen && (
+              <ChatInfoModal
+                key={"chat-info"}
+                currentUser={currentUser}
+                chat={chat}
+                setIsChatInfoOpen={setIsChatInfoOpen}
+                setIsEditChatOpen={setIsEditChatOpen}
+              />
+            )}
 
-        {isEditChatOpen && (
-          <EditChatModal
-            key={"edit-chat"}
-            chat={chat}
-            setIsEditChatOpen={setIsEditChatOpen}
-          />
-        )}
-      </AnimatePresence>
+            {isEditChatOpen && (
+              <EditChatModal
+                key={"edit-chat"}
+                chat={chat}
+                setIsEditChatOpen={setIsEditChatOpen}
+              />
+            )}
+          </AnimatePresence>
+        </>
+      )}
     </div>
   );
 };

@@ -3,6 +3,7 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
+  within,
 } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -15,6 +16,7 @@ import {
   findChatById,
   findChatByIdNull,
   sendMessage,
+  allContactsByUser,
   USER_ONE_DETAILS,
   CHAT_DETAILS,
   MESSAGE_DETAILS,
@@ -262,7 +264,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -290,7 +292,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -313,9 +315,14 @@ describe("<Chat />", () => {
 
     await user.click(screen.getByTestId("close-button"));
 
-    await waitFor(async () => {
-      expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
-    });
+    await waitFor(
+      async () => {
+        expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
+      },
+      {
+        timeout: 1500,
+      }
+    );
   });
 
   test("edit chat fails with empty name", async () => {
@@ -324,7 +331,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -362,6 +369,60 @@ describe("<Chat />", () => {
     );
   });
 
+  test("selects contact when contact button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatById, allContactsByUser]);
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("edit-chat-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+      expect(
+        screen.getByPlaceholderText("Search by name or username...")
+      ).toBeDefined();
+    });
+
+    const modal = screen.getByTestId("edit-chat-modal");
+
+    const chatMember1 = CHAT_DETAILS.members[1].username;
+    const chatMember2 = CHAT_DETAILS.members[2].username;
+
+    const contactToBeUnSelected = within(modal).getByText(`@${chatMember1}`);
+
+    await waitFor(() => {
+      expect(contactToBeUnSelected).toBeDefined();
+    });
+
+    await user.click(contactToBeUnSelected);
+
+    await waitFor(async () => {
+      const selectedContacts = screen.getAllByTestId("selected");
+      expect(selectedContacts.length).toBe(1);
+      expect(screen.getAllByText("1 contacts selected"));
+      expect(selectedContacts[0]).toBeDefined();
+      expect(
+        within(selectedContacts[0]).getByText(`@${chatMember2}`)
+      ).toBeDefined();
+    });
+  });
+
   test("edits chat name and description succesfully and closes modal", async () => {
     const mockEditChat = vi.fn();
     vi.mocked(useMutation).mockReturnValue([
@@ -382,7 +443,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -423,7 +484,7 @@ describe("<Chat />", () => {
             id: CHAT_DETAILS.id,
             name: "New Name",
             description: "New Description",
-            members: CHAT_DETAILS.members.map((member) => member.id),
+            members: CHAT_DETAILS.members.slice(1).map((member) => member.id),
           },
         },
       });
