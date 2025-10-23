@@ -2,11 +2,11 @@ type Query {
   countDocuments: Int!
   me: User
   findUserById(id: ID!): User
-  allChatsByUser(search: String): [UserChat]
-  allContactsByUser(search: String): [Contact]
-  nonContactUsers(search: String): [User]
+  allChatsByUser(search: String): [UserChat!]!
+  allContactsByUser(search: String): [Contact!]!
+  nonContactUsers(search: String): [User!]!
   findChatById(id: ID!): Chat
-  contactsWithoutPrivateChat(search: String): [Contact]
+  contactsWithoutPrivateChat(search: String): [Contact!]!
   isBlockedByUser(id: ID!): Boolean
 }
 
@@ -31,7 +31,7 @@ type Chat {
   name: String
   description: String
   avatar: String
-  members: [ChatMember]
+  members: [ChatMember!]!
   messages: [Message]
 }
 
@@ -56,7 +56,7 @@ type Message {
 type Contact {
   id: ID!
   isBlocked: Boolean!
-  contactDetails: User
+  contactDetails: User!
 }
 
 type Mutation {
