@@ -18,6 +18,7 @@ import {
   sendMessage,
   allContactsByUser,
   USER_ONE_DETAILS,
+  USER_TWO_DETAILS,
   CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
@@ -53,12 +54,13 @@ const renderComponent = (
     findChatById,
     findChatByIdNull,
     sendMessage,
-  ]
+  ],
+  currentUser = USER_ONE_DETAILS
 ) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
-        <Chat currentUser={USER_ONE_DETAILS} />
+        <Chat currentUser={currentUser} />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -488,6 +490,81 @@ describe("<Chat />", () => {
           },
         },
       });
+    });
+  });
+
+  test("hides leave chat button for admin users", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatById, allContactsByUser]);
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.queryByRole("button", { name: "Leave Chat" })).toBeNull();
+    });
+  });
+
+  test("leaves chat and navigates to home page when clicking leave chat button", async () => {
+    const mockLeaveChat = vi.fn().mockResolvedValue({
+      data: {
+        leaveChat: { id: CHAT_DETAILS.id },
+      },
+    });
+
+    vi.mocked(useMutation).mockReturnValue([
+      mockLeaveChat,
+      {
+        data: undefined,
+        loading: false,
+        error: undefined,
+        called: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        client: {} as any,
+        reset: vi.fn(),
+      },
+    ]);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatById, allContactsByUser], USER_TWO_DETAILS);
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Leave Chat" }));
+
+    await waitFor(async () => {
+      expect(mockLeaveChat).toHaveBeenCalledWith({
+        variables: {
+          id: CHAT_DETAILS.id,
+        },
+      });
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
     });
   });
 });

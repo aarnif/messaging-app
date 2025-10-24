@@ -1,4 +1,4 @@
-import { useMatch } from "react-router";
+import { useMatch, useNavigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import {
   FIND_CHAT_BY_ID,
@@ -23,7 +23,7 @@ import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import { FiEdit } from "react-icons/fi";
-import { SEND_MESSAGE, EDIT_CHAT } from "../graphql/mutations";
+import { SEND_MESSAGE, EDIT_CHAT, LEAVE_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatHeader from "../ui/ChatHeader";
@@ -32,6 +32,7 @@ import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
 import SearchBox from "../ui/SearchBox";
 import SelectContactsList from "../ui/SelectContactsList";
+import Button from "../ui/Button";
 
 const ChatMessage = ({
   currentUser,
@@ -199,7 +200,25 @@ const ChatInfoModal = ({
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { name, description, members } = chat;
+  const navigate = useNavigate();
+  const { id, name, description, members } = chat;
+
+  const [leaveChat] = useMutation(LEAVE_CHAT, {
+    onError: (error) => {
+      console.log(error);
+    },
+    refetchQueries: [ALL_CHATS_BY_USER],
+  });
+
+  const handleLeaveChat = async () => {
+    const data = await leaveChat({
+      variables: { id },
+    });
+
+    if (data?.data?.leaveChat) {
+      navigate("/chats/left");
+    }
+  };
 
   const isAdmin =
     currentUser.id === members?.find((member) => member.role === "admin")?.id;
@@ -210,7 +229,7 @@ const ChatInfoModal = ({
       animate={{ x: 0 }}
       exit={{ x: "100vw" }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
       <div
         className={`flex w-full items-center ${!isAdmin ? "relative justify-center" : "justify-between"}`}
@@ -250,7 +269,7 @@ const ChatInfoModal = ({
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-2 p-2 sm:max-w-[360px]">
+      <div className="flex w-full flex-grow flex-col gap-2 p-2 sm:max-w-[360px]">
         <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
           {members?.length} members
         </h4>
@@ -264,6 +283,15 @@ const ChatInfoModal = ({
           ))}
         </div>
       </div>
+
+      {!isAdmin && (
+        <Button
+          type="button"
+          variant="danger"
+          text="Leave Chat"
+          onClick={handleLeaveChat}
+        />
+      )}
     </motion.div>
   );
 };

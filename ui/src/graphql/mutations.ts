@@ -107,3 +107,32 @@ export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
     }
   }
 }`);
+
+export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
+  leaveChat(id: $id) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+    }
+  }
+}`);
