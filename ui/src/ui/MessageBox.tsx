@@ -1,4 +1,3 @@
-import { FaRegSmile } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 import type { InputField } from "../types";
 
@@ -13,12 +12,6 @@ const MessageBox = ({
 
   return (
     <div className="flex gap-2 bg-white p-2 dark:bg-slate-800">
-      <button
-        className="cursor-pointer"
-        onClick={() => console.log("Clicked add emoji button")}
-      >
-        <FaRegSmile className="h-6 w-6 fill-current text-green-600 hover:text-green-700 dark:text-green-500 dark:hover:text-green-600" />
-      </button>
       <label
         htmlFor={name}
         className="flex w-full items-center rounded-full border-[1.5px] border-slate-100 bg-slate-100 p-1 transition-all focus-within:border-purple-500 hover:border-purple-500 dark:border-slate-700 dark:bg-slate-700 focus-within:dark:border-purple-400 hover:dark:border-purple-400"
