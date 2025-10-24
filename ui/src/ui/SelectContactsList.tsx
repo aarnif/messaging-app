@@ -32,6 +32,7 @@ const SelectContactsList = ({
     <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
         <SelectContactButton
+          key={contact.id}
           contact={contact}
           isSelected={contact.isSelected}
           callback={() => handleSelectContact(contact.contactDetails.id)}
