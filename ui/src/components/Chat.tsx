@@ -440,6 +440,10 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
   const [isEditChatOpen, setIsEditChatOpen] = useState(false);
 
+  useEffect(() => {
+    setIsChatInfoOpen(false);
+  }, [match?.id]);
+
   const chat = data?.findChatById;
 
   return (
