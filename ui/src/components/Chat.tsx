@@ -435,6 +435,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
     variables: {
       id: match?.id ?? "",
     },
+    fetchPolicy: "cache-and-network",
   });
 
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
