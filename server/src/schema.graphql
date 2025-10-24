@@ -8,6 +8,7 @@ type Query {
   findChatById(id: ID!): Chat
   contactsWithoutPrivateChat(search: String): [Contact!]!
   isBlockedByUser(id: ID!): Boolean
+  findContactById(id: ID!): Contact
 }
 
 type User {

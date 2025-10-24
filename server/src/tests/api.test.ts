@@ -404,6 +404,22 @@ const ALL_CHATS_BY_USER = `
   }
 `;
 
+const FIND_CONTACT_BY_ID = `
+  query FindContactById($id: ID!) {
+    findContactById(id: $id) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const makeRequest = async <Variables>(
   query: string,
   variables: Variables,
@@ -500,6 +516,9 @@ const allChatsByUser = async (
   token: string
 ): Promise<Response> =>
   await makeRequest(ALL_CHATS_BY_USER, search ? { search } : {}, token);
+
+const findContactById = async (id: string, token: string): Promise<Response> =>
+  await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
@@ -1744,6 +1763,95 @@ void describe("GraphQL API", () => {
         const contact = contacts[0];
         assert.ok(contact, "Contact should exist");
         assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+      });
+    });
+
+    void describe("Find contact by ID", () => {
+      let token: string;
+      let contactId: string;
+
+      beforeEach(async () => {
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
+
+        const response = await addContact(user2Details.id, user1Token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+
+        const contact = responseBody.data?.addContact;
+        assert.ok(contact?.id, "Contact ID should be defined");
+        contactId = contact.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await findContactById(contactId, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactById: Contact;
+        }>;
+        const contact = responseBody.data?.findContactById;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent user ID", async () => {
+        const response = await findContactById("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactById: Contact;
+        }>;
+        const contact = responseBody.data?.findContactById;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds with valid contact ID", async () => {
+        const response = await findContactById(contactId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactById: Contact;
+        }>;
+        console.log("responseBody", responseBody);
+        const contact = responseBody.data?.findContactById;
+
+        assert.ok(contact, "Contact should be defined");
+        assert.strictEqual(contact.id, contactId);
+        const user = contact.contactDetails;
+        assert.strictEqual(user.username, user2Details.username);
+        assert.strictEqual(
+          user.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
       });
     });
   });
