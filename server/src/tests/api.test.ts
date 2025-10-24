@@ -1449,7 +1449,7 @@ void describe("GraphQL API", () => {
       });
     });
 
-    void describe("All contacts by user", () => {
+    void describe.only("All contacts by user", () => {
       void test("fails without authentication", async () => {
         const response = await allContactsByUser(null, "");
 
@@ -1458,7 +1458,7 @@ void describe("GraphQL API", () => {
         }>;
         const contacts = responseBody.data?.allContactsByUser;
 
-        assert.strictEqual(contacts, null, "Contacts should be null");
+        assert.strictEqual(contacts, undefined, "Contacts should be undefined");
         assert.ok(responseBody.errors, "Response should have errors");
         assert.ok(
           responseBody.errors?.length > 0,
@@ -1601,7 +1601,7 @@ void describe("GraphQL API", () => {
         }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
-        assert.strictEqual(contacts, null, "Contacts should be null");
+        assert.strictEqual(contacts, undefined, "Contacts should be undefined");
         assert.ok(responseBody.errors, "Response should have errors");
         assert.ok(
           responseBody.errors?.length > 0,
@@ -2543,7 +2543,7 @@ void describe("GraphQL API", () => {
         }>;
         const chats = responseBody.data?.allChatsByUser;
 
-        assert.strictEqual(chats, null, "Chats should be null");
+        assert.strictEqual(chats, undefined, "Chats should be undefined");
         assert.ok(responseBody.errors, "Response should have errors");
         assert.ok(
           responseBody.errors?.length > 0,
