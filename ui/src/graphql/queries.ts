@@ -91,3 +91,17 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT =
     }
   }
 }`);
+
+export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
+  findContactById(id: $id) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

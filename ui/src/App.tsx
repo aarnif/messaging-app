@@ -1,4 +1,4 @@
-import { Routes, Route, useMatch, Navigate } from "react-router";
+import { Routes, Route, Navigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
 import Home from "./components/Home";
@@ -8,12 +8,12 @@ import Chats from "./components/Chats";
 import Contacts from "./components/Contacts";
 import Chat from "./components/Chat";
 import NewChat from "./components/NewChat";
+import Contact from "./components/Contact";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
-  const matchContact = useMatch("/contacts/:id")?.params;
 
   if (loading) {
     return null;
@@ -62,10 +62,7 @@ const App = () => {
               <SelectionPrompt message="Select a contact for further information." />
             }
           />
-          <Route
-            path="/contacts/:id"
-            element={<p>Contact with ID {matchContact?.id}</p>}
-          />
+          <Route path="/contacts/:id" element={<Contact />} />
         </Route>
 
         <Route path="/profile" element={<p>Profile Page</p>} />

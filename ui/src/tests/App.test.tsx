@@ -11,6 +11,7 @@ import {
   allContactsByUser,
   findChatById,
   CHAT_DETAILS,
+  findContactById,
 } from "./mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -105,7 +106,10 @@ describe("<App />", () => {
   });
 
   test("renders contact page", async () => {
-    renderComponent(["/contacts/1"], [meMock, allContactsByUser]);
+    renderComponent(
+      ["/contacts/1"],
+      [meMock, allContactsByUser, findContactById]
+    );
 
     await waitFor(() => {
       expect(screen.getByText("Contact with ID 1")).toBeDefined();

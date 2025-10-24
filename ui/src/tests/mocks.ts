@@ -4,6 +4,7 @@ import {
   ALL_CONTACTS_BY_USER,
   FIND_CHAT_BY_ID,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
+  FIND_CONTACT_BY_ID,
 } from "../graphql/queries";
 import { CREATE_USER, LOGIN, SEND_MESSAGE } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
@@ -24,6 +25,8 @@ import type {
   SendMessageMutationVariables,
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables,
+  FindContactByIdQuery,
+  FindContactByIdQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -134,6 +137,18 @@ export const MESSAGE_DETAILS = {
   },
   content: "This is a new message.",
   createdAt: 1759094100000 + 3 * 86400000,
+};
+
+export const CONTACT_DETAILS = {
+  id: "1",
+  isBlocked: false,
+  contactDetails: {
+    id: USER_TWO_DETAILS.id,
+    username: USER_TWO_DETAILS.username,
+    name: USER_TWO_DETAILS.name,
+    about: null,
+    avatar: null,
+  },
 };
 
 export const invalidUsername = {
@@ -488,6 +503,40 @@ export const contactsWithoutPrivateChatsEmpty: MockLink.MockedResponse<
   result: {
     data: {
       contactsWithoutPrivateChat: [],
+    },
+  },
+};
+
+export const findContactById: MockLink.MockedResponse<
+  FindContactByIdQuery,
+  FindContactByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CONTACT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findContactById: CONTACT_DETAILS,
+    },
+  },
+};
+
+export const findContactByIdNull: MockLink.MockedResponse<
+  FindContactByIdQuery,
+  FindContactByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CONTACT_BY_ID,
+    variables: {
+      id: "999",
+    },
+  },
+  result: {
+    data: {
+      findContactById: null,
     },
   },
 };
