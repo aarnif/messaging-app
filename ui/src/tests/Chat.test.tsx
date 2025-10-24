@@ -567,4 +567,79 @@ describe("<Chat />", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
     });
   });
+
+  test("hides delete chat button for non admin users", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatById, allContactsByUser], USER_TWO_DETAILS);
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.queryByRole("button", { name: "Delete Chat" })).toBeNull();
+    });
+  });
+
+  test("deletes chat and navigates to home page when clicking delete chat button", async () => {
+    const mockDeleteChat = vi.fn().mockResolvedValue({
+      data: {
+        deleteChat: { id: CHAT_DETAILS.id },
+      },
+    });
+
+    vi.mocked(useMutation).mockReturnValue([
+      mockDeleteChat,
+      {
+        data: undefined,
+        loading: false,
+        error: undefined,
+        called: false,
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
+        client: {} as any,
+        reset: vi.fn(),
+      },
+    ]);
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatById, allContactsByUser], USER_ONE_DETAILS);
+
+    await waitFor(async () => {
+      expect(
+        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("chat-info-button"));
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Delete Chat" }));
+
+    await waitFor(async () => {
+      expect(mockDeleteChat).toHaveBeenCalledWith({
+        variables: {
+          id: CHAT_DETAILS.id,
+        },
+      });
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
+    });
+  });
 });

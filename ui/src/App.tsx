@@ -48,6 +48,11 @@ const App = () => {
             path="/chats/left"
             element={<SelectionPrompt message="You left the chat." />}
           />
+
+          <Route
+            path="/chats/deleted"
+            element={<SelectionPrompt message="You deleted the chat." />}
+          />
         </Route>
 
         <Route path="/contacts" element={<Contacts />}>

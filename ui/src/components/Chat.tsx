@@ -23,7 +23,12 @@ import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import { FiEdit } from "react-icons/fi";
-import { SEND_MESSAGE, EDIT_CHAT, LEAVE_CHAT } from "../graphql/mutations";
+import {
+  SEND_MESSAGE,
+  EDIT_CHAT,
+  LEAVE_CHAT,
+  DELETE_CHAT,
+} from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
 import ChatHeader from "../ui/ChatHeader";
@@ -210,6 +215,13 @@ const ChatInfoModal = ({
     refetchQueries: [ALL_CHATS_BY_USER],
   });
 
+  const [deleteChat] = useMutation(DELETE_CHAT, {
+    onError: (error) => {
+      console.log(error);
+    },
+    refetchQueries: [ALL_CHATS_BY_USER],
+  });
+
   const handleLeaveChat = async () => {
     const data = await leaveChat({
       variables: { id },
@@ -217,6 +229,16 @@ const ChatInfoModal = ({
 
     if (data?.data?.leaveChat) {
       navigate("/chats/left");
+    }
+  };
+
+  const handleDeleteChat = async () => {
+    const data = await deleteChat({
+      variables: { id },
+    });
+
+    if (data?.data?.deleteChat) {
+      navigate("/chats/deleted");
     }
   };
 
@@ -284,12 +306,19 @@ const ChatInfoModal = ({
         </div>
       </div>
 
-      {!isAdmin && (
+      {!isAdmin ? (
         <Button
           type="button"
           variant="danger"
           text="Leave Chat"
           onClick={handleLeaveChat}
+        />
+      ) : (
+        <Button
+          type="button"
+          variant="danger"
+          text="Delete Chat"
+          onClick={handleDeleteChat}
         />
       )}
     </motion.div>
