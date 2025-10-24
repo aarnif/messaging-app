@@ -31,6 +31,8 @@ const renderComponent = (
     </MockedProvider>
   );
 
+const contactDetails = CONTACT_DETAILS.contactDetails;
+
 describe("<Contact />", () => {
   test("shows loading spinner during data fetch", () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -63,9 +65,12 @@ describe("<Contact />", () => {
     });
     renderComponent();
     await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Contact" })).toBeDefined();
       expect(
-        screen.getByText(`Contact with ID ${CONTACT_DETAILS.id}`)
+        screen.getByRole("heading", { name: contactDetails.name })
       ).toBeDefined();
+      expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
+      expect(screen.getByText(contactDetails.about)).toBeDefined();
     });
   });
 });

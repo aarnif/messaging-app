@@ -146,7 +146,7 @@ export const CONTACT_DETAILS = {
     id: USER_TWO_DETAILS.id,
     username: USER_TWO_DETAILS.username,
     name: USER_TWO_DETAILS.name,
-    about: null,
+    about: "Hi! My name is User 2!",
     avatar: null,
   },
 };
