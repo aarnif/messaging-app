@@ -2,7 +2,7 @@ import { useNavigate } from "react-router";
 import type { User } from "../__generated__/graphql";
 import type { NewChatDetails, NewChatMember } from "../types";
 import useField from "../hooks/useField";
-import ChatNotFound from "../ui/ChatNotFound";
+import NotFound from "../ui/NotFound";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { CREATE_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
@@ -61,7 +61,7 @@ const NewChatContent = ({
   chat: NewChatDetails;
 }) => {
   if (!chat) {
-    return <ChatNotFound />;
+    return <NotFound entity="Chat" />;
   }
 
   const { name, description, members } = chat;

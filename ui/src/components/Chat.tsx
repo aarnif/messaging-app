@@ -6,7 +6,7 @@ import {
   ALL_CONTACTS_BY_USER,
 } from "../graphql/queries";
 import Spinner from "../ui/Spinner";
-import ChatNotFound from "../ui/ChatNotFound";
+import NotFound from "../ui/NotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import type { UserContact } from "../types";
@@ -511,7 +511,7 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
           <Spinner />
         </div>
       ) : !chat ? (
-        <ChatNotFound />
+        <NotFound entity="Chat" />
       ) : (
         <>
           <ChatContent
