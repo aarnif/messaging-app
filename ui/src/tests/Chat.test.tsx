@@ -408,9 +408,12 @@ describe("<Chat />", () => {
 
     const contactToBeUnSelected = within(modal).getByText(`@${chatMember1}`);
 
-    await waitFor(() => {
-      expect(contactToBeUnSelected).toBeDefined();
-    });
+    await waitFor(
+      () => {
+        expect(contactToBeUnSelected).toBeDefined();
+      },
+      { timeout: 1000 }
+    );
 
     await user.click(contactToBeUnSelected);
 
