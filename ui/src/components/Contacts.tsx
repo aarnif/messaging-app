@@ -7,13 +7,9 @@ import MenuHeader from "../ui/MenuHeader";
 import type { Contact } from "../__generated__/graphql";
 
 const ContactItem = ({ contact }: { contact: Contact }) => {
-  const contactDetails = contact?.contactDetails;
+  const { id, contactDetails } = contact;
 
-  if (!contactDetails) {
-    return null;
-  }
-
-  const { id, name, username, about } = contactDetails;
+  const { name, username, about } = contactDetails;
 
   return (
     <NavLink
