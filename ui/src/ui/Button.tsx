@@ -13,8 +13,7 @@ const Button = ({
     | ((event: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>)
     | (() => void | Promise<void>);
 }) => {
-  const baseStyles =
-    "w-full px-6 py-3 text-base font-bold border-2 rounded-2xl shadow-[0px_2px] active:shadow-[0px_0px] active:translate-y-[2px] transition cursor-pointer focus:outline-none";
+  const baseStyles = `w-full px-6 py-3 text-base font-bold border-2 rounded-2xl shadow-[0px_2px] transition focus:outline-none ${disabled ? "cursor-default" : "cursor-pointer active:shadow-[0px_0px] active:translate-y-[2px]"}`;
 
   const variantStyles = {
     primary:
@@ -29,6 +28,9 @@ const Button = ({
     danger:
       "border-1 text-sm shadow-red-900 text-red-600 border-red-600 dark:border-red-500 \
       dark:text-red-500 hover:text-red-700 hover:border-red-700 dark:hover:text-red-600 dark:hover:border-red-600",
+    disabled:
+      "border-1 text-sm text-slate-500 border-slate-500 dark:border-slate-400 \
+      dark:text-slate-400 shadow-slate-600",
   };
 
   return (
@@ -36,7 +38,7 @@ const Button = ({
       type={type}
       onClick={onClick}
       disabled={disabled}
-      className={`${baseStyles} ${variantStyles[variant]}`}
+      className={`${baseStyles} ${variantStyles[disabled ? "disabled" : variant]}`}
     >
       {text}
     </button>
