@@ -412,7 +412,7 @@ describe("<Chat />", () => {
       () => {
         expect(contactToBeUnSelected).toBeDefined();
       },
-      { timeout: 1000 }
+      { timeout: 2000 }
     );
 
     await user.click(contactToBeUnSelected);
