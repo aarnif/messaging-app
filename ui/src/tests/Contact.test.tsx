@@ -1,13 +1,19 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
+  currentUserMock,
   findContactById,
   findContactByIdNull,
+  findPrivateChatWithContact,
+  findPrivateChatWithContactNull,
   mockNavigate,
   CONTACT_DETAILS,
+  FIND_PRIVATE_CHAT_DETAILS,
+  NewPrivateChatDetails,
 } from "./mocks";
 import Contact from "../components/Contact";
 
@@ -26,7 +32,7 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/contacts/1"]}>
-        <Contact />
+        <Contact currentUser={currentUserMock} />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -71,6 +77,69 @@ describe("<Contact />", () => {
       ).toBeDefined();
       expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
       expect(screen.getByText(contactDetails.about)).toBeDefined();
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+  });
+
+  test("navigates to existing private chat when clicking chat button", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactById, findPrivateChatWithContact]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Chat" }));
+
+    await waitFor(async () => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/chats/${FIND_PRIVATE_CHAT_DETAILS.id}`
+      );
+    });
+  });
+
+  test("navigates to existing private chat when chat button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactById, findPrivateChatWithContact]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Chat" }));
+
+    await waitFor(async () => {
+      expect(mockNavigate).toHaveBeenCalledWith(
+        `/chats/${FIND_PRIVATE_CHAT_DETAILS.id}`
+      );
+    });
+  });
+
+  test("saves new private chat info and navigates to chat preview when chat button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactById, findPrivateChatWithContactNull]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Chat" }));
+
+    await waitFor(async () => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "new-chat-info",
+        JSON.stringify(NewPrivateChatDetails)
+      );
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
     });
   });
 });

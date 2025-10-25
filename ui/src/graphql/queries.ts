@@ -105,3 +105,22 @@ export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
     }
   }
 }`);
+
+export const FIND_PRIVATE_CHAT_WITH_CONTACT =
+  gql(`query FindPrivateChatWithContact($id: ID!) {
+  findPrivateChatWithContact(id: $id) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      about
+      avatar
+      role
+    }
+  }
+}`);

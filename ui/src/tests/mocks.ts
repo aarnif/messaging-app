@@ -5,6 +5,7 @@ import {
   FIND_CHAT_BY_ID,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   FIND_CONTACT_BY_ID,
+  FIND_PRIVATE_CHAT_WITH_CONTACT,
 } from "../graphql/queries";
 import { CREATE_USER, LOGIN, SEND_MESSAGE } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
@@ -27,6 +28,8 @@ import type {
   ContactsWithoutPrivateChatQueryVariables,
   FindContactByIdQuery,
   FindContactByIdQueryVariables,
+  FindPrivateChatWithContactQuery,
+  FindPrivateChatWithContactQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -122,6 +125,32 @@ export const CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
       createdAt: 1759094100000 + 2 * 86400000,
+    },
+  ],
+};
+
+export const FIND_PRIVATE_CHAT_DETAILS = {
+  id: "1",
+  type: "private",
+  name: "User2",
+  description: null,
+  avatar: null,
+  members: [
+    {
+      id: USER_ONE_DETAILS.id,
+      username: USER_ONE_DETAILS.username,
+      name: USER_ONE_DETAILS.name,
+      about: null,
+      avatar: null,
+      role: "admin",
+    },
+    {
+      id: USER_TWO_DETAILS.id,
+      username: USER_TWO_DETAILS.username,
+      name: USER_TWO_DETAILS.name,
+      about: null,
+      avatar: null,
+      role: "member",
     },
   ],
 };
@@ -537,6 +566,40 @@ export const findContactByIdNull: MockLink.MockedResponse<
   result: {
     data: {
       findContactById: null,
+    },
+  },
+};
+
+export const findPrivateChatWithContact: MockLink.MockedResponse<
+  FindPrivateChatWithContactQuery,
+  FindPrivateChatWithContactQueryVariables
+> = {
+  request: {
+    query: FIND_PRIVATE_CHAT_WITH_CONTACT,
+    variables: {
+      id: USER_TWO_DETAILS.id,
+    },
+  },
+  result: {
+    data: {
+      findPrivateChatWithContact: FIND_PRIVATE_CHAT_DETAILS,
+    },
+  },
+};
+
+export const findPrivateChatWithContactNull: MockLink.MockedResponse<
+  FindPrivateChatWithContactQuery,
+  FindPrivateChatWithContactQueryVariables
+> = {
+  request: {
+    query: FIND_PRIVATE_CHAT_WITH_CONTACT,
+    variables: {
+      id: USER_TWO_DETAILS.id,
+    },
+  },
+  result: {
+    data: {
+      findPrivateChatWithContact: null,
     },
   },
 };

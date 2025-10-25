@@ -1,14 +1,54 @@
 import { useMatch, useNavigate } from "react-router";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
-import { FIND_CONTACT_BY_ID } from "../graphql/queries";
+import {
+  FIND_CONTACT_BY_ID,
+  FIND_PRIVATE_CHAT_WITH_CONTACT,
+} from "../graphql/queries";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
-import type { Contact } from "../__generated__/graphql";
+import Button from "../ui/Button";
+import type { User, Contact } from "../__generated__/graphql";
 
-const ContactContent = ({ contact }: { contact: Contact }) => {
+const ContactContent = ({
+  currentUser,
+  contact,
+}: {
+  currentUser: User;
+  contact: Contact;
+}) => {
   const navigate = useNavigate();
-  const { name, username, about } = contact.contactDetails;
+  const { id, name, username, about } = contact.contactDetails;
+
+  const [data] = useLazyQuery(FIND_PRIVATE_CHAT_WITH_CONTACT, {
+    fetchPolicy: "network-only",
+  });
+
+  const handleChatWithContact = async () => {
+    const hasChatWithContact = await data({
+      variables: {
+        id,
+      },
+    });
+
+    const chat = hasChatWithContact.data?.findPrivateChatWithContact;
+
+    if (chat) {
+      navigate(`/chats/${chat.id}`);
+      return;
+    }
+
+    const newPrivateChatInfo = {
+      name: name,
+      description: null,
+      members: [currentUser, contact.contactDetails],
+      avatar: null,
+    };
+
+    localStorage.setItem("new-chat-info", JSON.stringify(newPrivateChatInfo));
+    navigate("/chats/new");
+  };
+
   return (
     <div className="flex w-full flex-grow flex-col items-center gap-4 overflow-y-auto px-2 py-4 sm:gap-8">
       <div className="flex w-full justify-center">
@@ -23,7 +63,7 @@ const ContactContent = ({ contact }: { contact: Contact }) => {
           Contact
         </h2>
       </div>
-      <div className="flex flex-col items-center gap-2.5">
+      <div className="flex flex-grow flex-col items-center gap-2.5">
         <img
           className="h-20 w-20 rounded-full"
           src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
@@ -42,11 +82,17 @@ const ContactContent = ({ contact }: { contact: Contact }) => {
           </p>
         </div>
       </div>
+      <Button
+        type="button"
+        variant="tertiary"
+        text="Chat"
+        onClick={handleChatWithContact}
+      />
     </div>
   );
 };
 
-const Contact = () => {
+const Contact = ({ currentUser }: { currentUser: User }) => {
   const match = useMatch("/contacts/:id")?.params;
   const { data, loading } = useQuery(FIND_CONTACT_BY_ID, {
     variables: {
@@ -65,7 +111,7 @@ const Contact = () => {
       ) : !contact ? (
         <NotFound entity="Contact" />
       ) : (
-        <ContactContent contact={contact} />
+        <ContactContent currentUser={currentUser} contact={contact} />
       )}
     </div>
   );
