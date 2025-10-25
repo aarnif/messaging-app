@@ -2827,7 +2827,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
       });
 
-      void test("fails with non-existent chat ID", async () => {
+      void test("returns null with non-existent chat ID", async () => {
         const response = await findPrivateChatWithContact("999", token);
 
         const responseBody = response.body as HTTPGraphQLResponse<{
@@ -2836,15 +2836,6 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.findPrivateChatWithContact;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Chat not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
       });
 
       void test("succeeds finding chat", async () => {

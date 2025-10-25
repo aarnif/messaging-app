@@ -6,6 +6,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import { sequelize } from "./db";
 
 // Date scalar implementation from Apollo Server documentation
 // https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar
@@ -417,7 +418,7 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const chat = await Chat.findOne({
+      const chats = await Chat.findAll({
         where: {
           type: "private",
         },
@@ -427,7 +428,7 @@ export const resolvers: Resolvers = {
             as: "members",
             where: {
               id: {
-                [Op.in]: [context.currentUser.id, Number(id)],
+                [Op.in]: [Number(context.currentUser.id), Number(id)],
               },
             },
             through: {
@@ -436,17 +437,9 @@ export const resolvers: Resolvers = {
           },
         ],
       });
+      const chat = chats.find((c) => c.members && c.members.length === 2);
 
-      if (!chat || !chat.members || chat.members.length < 2) {
-        throw new GraphQLError("Chat not found", {
-          extensions: {
-            code: "NOT_FOUND",
-            invalidArgs: id,
-          },
-        });
-      }
-
-      return chat;
+      return chat || null;
     },
   },
   UserChat: {
