@@ -12,6 +12,7 @@ import {
   findChatById,
   CHAT_DETAILS,
   findContactById,
+  CONTACT_DETAILS,
 } from "./mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -112,7 +113,11 @@ describe("<App />", () => {
     );
 
     await waitFor(() => {
-      expect(screen.getByText("Contact with ID 1")).toBeDefined();
+      expect(
+        screen.getByRole("heading", {
+          name: CONTACT_DETAILS.contactDetails.name,
+        })
+      ).toBeDefined();
     });
   });
 
