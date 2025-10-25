@@ -124,3 +124,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
     }
   }
 }`);
+
+export const IS_BLOCKED_BY_USER = gql(`query IsBlockedByUser($id: ID!) {
+  isBlockedByUser(id: $id)
+}`);

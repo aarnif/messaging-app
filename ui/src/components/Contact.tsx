@@ -5,6 +5,7 @@ import {
   ALL_CONTACTS_BY_USER,
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
+  IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
 import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../graphql/mutations";
 import Spinner from "../ui/Spinner";
@@ -16,16 +17,21 @@ import { useState } from "react";
 const ContactContent = ({
   currentUser,
   contact,
+  isBlockedByUser,
 }: {
   currentUser: User;
   contact: Contact;
+  isBlockedByUser: boolean;
 }) => {
   const navigate = useNavigate();
   const { id, name, username, about } = contact.contactDetails;
 
-  const [data] = useLazyQuery(FIND_PRIVATE_CHAT_WITH_CONTACT, {
-    fetchPolicy: "network-only",
-  });
+  const [findPrivateChatWithContact] = useLazyQuery(
+    FIND_PRIVATE_CHAT_WITH_CONTACT,
+    {
+      fetchPolicy: "network-only",
+    }
+  );
 
   const [toggleBlockContact] = useMutation(TOGGLE_BLOCK_CONTACT);
   const [removeContact] = useMutation(REMOVE_CONTACT, {
@@ -35,7 +41,7 @@ const ContactContent = ({
   const [isBlocked, setIsBlocked] = useState(contact.isBlocked);
 
   const handleChatWithContact = async () => {
-    const hasChatWithContact = await data({
+    const hasChatWithContact = await findPrivateChatWithContact({
       variables: {
         id,
       },
@@ -119,6 +125,11 @@ const ContactContent = ({
               You have blocked the contact.
             </p>
           )}
+          {isBlockedByUser && (
+            <p className="font-semibold text-red-600 dark:text-red-500">
+              Contact has blocked you.
+            </p>
+          )}
         </div>
       </div>
 
@@ -127,6 +138,7 @@ const ContactContent = ({
           type="button"
           variant="tertiary"
           text="Chat"
+          disabled={isBlockedByUser}
           onClick={handleChatWithContact}
         />
         <Button
@@ -148,13 +160,29 @@ const ContactContent = ({
 
 const Contact = ({ currentUser }: { currentUser: User }) => {
   const match = useMatch("/contacts/:id")?.params;
-  const { data, loading } = useQuery(FIND_CONTACT_BY_ID, {
-    variables: {
-      id: match?.id ?? "",
-    },
-  });
 
-  const contact = data?.findContactById;
+  const { data: contactData, loading: contactLoading } = useQuery(
+    FIND_CONTACT_BY_ID,
+    {
+      variables: {
+        id: match?.id ?? "",
+      },
+    }
+  );
+
+  const { data: blockedData, loading: blockedLoading } = useQuery(
+    IS_BLOCKED_BY_USER,
+    {
+      variables: {
+        id: match?.id ?? "",
+      },
+    }
+  );
+
+  const contact = contactData?.findContactById;
+  const isBlockedByUser = blockedData?.isBlockedByUser;
+
+  const loading = contactLoading || blockedLoading;
 
   return (
     <div className="flex flex-grow flex-col items-center justify-center bg-white dark:bg-slate-800">
@@ -165,7 +193,11 @@ const Contact = ({ currentUser }: { currentUser: User }) => {
       ) : !contact ? (
         <NotFound entity="Contact" />
       ) : (
-        <ContactContent currentUser={currentUser} contact={contact} />
+        <ContactContent
+          currentUser={currentUser}
+          contact={contact}
+          isBlockedByUser={isBlockedByUser ? true : false}
+        />
       )}
     </div>
   );

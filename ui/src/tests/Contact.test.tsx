@@ -18,6 +18,9 @@ import {
   toggleBlockContactTrue,
   toggleBlockContactFalse,
   removeContact,
+  isBlockedByUserTrue,
+  isBlockedByUserFalse,
+  isBlockedByUserNull,
 } from "./mocks";
 import Contact from "../components/Contact";
 
@@ -31,7 +34,7 @@ vi.mock("react-router", async () => {
 });
 
 const renderComponent = (
-  mocks: MockLink.MockedResponse[] = [findContactById]
+  mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse]
 ) =>
   render(
     <MockedProvider mocks={mocks}>
@@ -58,7 +61,7 @@ describe("<Contact />", () => {
     (useMatch as any).mockReturnValue({
       params: { id: "999" },
     });
-    renderComponent([findContactByIdNull]);
+    renderComponent([findContactByIdNull, isBlockedByUserNull]);
 
     await waitFor(() => {
       expect(screen.getByText("Contact not found.")).toBeDefined();
@@ -85,13 +88,31 @@ describe("<Contact />", () => {
     });
   });
 
+  test("chat button is disabled if contact has blocked the current user", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+
+    renderComponent([findContactById, isBlockedByUserTrue]);
+    await waitFor(() => {
+      const button = screen.getByRole("button", { name: "Chat" });
+      expect(button).toBeDisabled();
+      expect(screen.getByText("Contact has blocked you."));
+    });
+  });
+
   test("navigates to existing private chat when clicking chat button", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactById, findPrivateChatWithContact]);
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      findPrivateChatWithContact,
+    ]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
@@ -111,7 +132,11 @@ describe("<Contact />", () => {
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactById, findPrivateChatWithContact]);
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      findPrivateChatWithContact,
+    ]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
@@ -131,7 +156,11 @@ describe("<Contact />", () => {
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactById, findPrivateChatWithContactNull]);
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      findPrivateChatWithContactNull,
+    ]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
@@ -153,7 +182,11 @@ describe("<Contact />", () => {
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactById, toggleBlockContactTrue]);
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      toggleBlockContactTrue,
+    ]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
@@ -171,7 +204,11 @@ describe("<Contact />", () => {
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactByIdBlocked, toggleBlockContactFalse]);
+    renderComponent([
+      findContactByIdBlocked,
+      isBlockedByUserFalse,
+      toggleBlockContactFalse,
+    ]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
@@ -189,7 +226,7 @@ describe("<Contact />", () => {
       params: { id: CONTACT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findContactById, removeContact]);
+    renderComponent([findContactById, isBlockedByUserFalse, removeContact]);
     await waitFor(() => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });

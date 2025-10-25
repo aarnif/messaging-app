@@ -6,6 +6,7 @@ import {
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
+  IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
 import {
   CREATE_USER,
@@ -40,6 +41,8 @@ import type {
   ToggleBlockContactMutationVariables,
   RemoveContactMutation,
   RemoveContactMutationVariables,
+  IsBlockedByUserQuery,
+  IsBlockedByUserQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -699,6 +702,57 @@ export const removeContact: MockLink.MockedResponse<
   result: {
     data: {
       removeContact: CONTACT_DETAILS,
+    },
+  },
+};
+
+export const isBlockedByUserTrue: MockLink.MockedResponse<
+  IsBlockedByUserQuery,
+  IsBlockedByUserQueryVariables
+> = {
+  request: {
+    query: IS_BLOCKED_BY_USER,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      isBlockedByUser: true,
+    },
+  },
+};
+
+export const isBlockedByUserFalse: MockLink.MockedResponse<
+  IsBlockedByUserQuery,
+  IsBlockedByUserQueryVariables
+> = {
+  request: {
+    query: IS_BLOCKED_BY_USER,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      isBlockedByUser: false,
+    },
+  },
+};
+
+export const isBlockedByUserNull: MockLink.MockedResponse<
+  IsBlockedByUserQuery,
+  IsBlockedByUserQueryVariables
+> = {
+  request: {
+    query: IS_BLOCKED_BY_USER,
+    variables: {
+      id: "999",
+    },
+  },
+  result: {
+    data: {
+      isBlockedByUser: null,
     },
   },
 };
