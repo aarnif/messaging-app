@@ -179,3 +179,17 @@ export const TOGGLE_BLOCK_CONTACT = gql(`mutation ToggleBlockContact($id: ID!) {
     }
   }
 }`);
+
+export const REMOVE_CONTACT = gql(`mutation RemoveContact($id: ID!) {
+  removeContact(id: $id) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

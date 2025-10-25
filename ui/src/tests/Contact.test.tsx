@@ -17,6 +17,7 @@ import {
   NewPrivateChatDetails,
   toggleBlockContactTrue,
   toggleBlockContactFalse,
+  removeContact,
 } from "./mocks";
 import Contact from "../components/Contact";
 
@@ -179,6 +180,24 @@ describe("<Contact />", () => {
 
     await waitFor(async () => {
       expect(screen.queryByText("You have blocked the contact.")).toBeNull();
+    });
+  });
+
+  test("removes contact and navigates to contacts page when remove contact button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactById, removeContact]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Remove Contact" }));
+
+    await waitFor(async () => {
+      expect(mockNavigate).toHaveBeenCalledWith("/contacts/deleted");
     });
   });
 });

@@ -10,6 +10,7 @@ import {
 import {
   CREATE_USER,
   LOGIN,
+  REMOVE_CONTACT,
   SEND_MESSAGE,
   TOGGLE_BLOCK_CONTACT,
 } from "../graphql/mutations";
@@ -37,6 +38,8 @@ import type {
   FindPrivateChatWithContactQueryVariables,
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables,
+  RemoveContactMutation,
+  RemoveContactMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -679,6 +682,23 @@ export const toggleBlockContactFalse: MockLink.MockedResponse<
         ...CONTACT_DETAILS,
         isBlocked: false,
       },
+    },
+  },
+};
+
+export const removeContact: MockLink.MockedResponse<
+  RemoveContactMutation,
+  RemoveContactMutationVariables
+> = {
+  request: {
+    query: REMOVE_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      removeContact: CONTACT_DETAILS,
     },
   },
 };

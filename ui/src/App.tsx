@@ -66,6 +66,10 @@ const App = () => {
             path="/contacts/:id"
             element={<Contact currentUser={currentUser as User} />}
           />
+          <Route
+            path="/contacts/deleted"
+            element={<SelectionPrompt message="You deleted the contact." />}
+          />
         </Route>
 
         <Route path="/profile" element={<p>Profile Page</p>} />

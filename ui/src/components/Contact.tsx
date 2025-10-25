@@ -2,10 +2,11 @@ import { useMatch, useNavigate } from "react-router";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
 import {
+  ALL_CONTACTS_BY_USER,
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
 } from "../graphql/queries";
-import { TOGGLE_BLOCK_CONTACT } from "../graphql/mutations";
+import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../graphql/mutations";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
@@ -26,7 +27,10 @@ const ContactContent = ({
     fetchPolicy: "network-only",
   });
 
-  const [mutate] = useMutation(TOGGLE_BLOCK_CONTACT);
+  const [toggleBlockContact] = useMutation(TOGGLE_BLOCK_CONTACT);
+  const [removeContact] = useMutation(REMOVE_CONTACT, {
+    refetchQueries: [ALL_CONTACTS_BY_USER],
+  });
 
   const [isBlocked, setIsBlocked] = useState(contact.isBlocked);
 
@@ -56,7 +60,7 @@ const ContactContent = ({
   };
 
   const handleToggleBlockContact = async () => {
-    const data = await mutate({
+    const data = await toggleBlockContact({
       variables: {
         id: contact.id,
       },
@@ -64,6 +68,18 @@ const ContactContent = ({
 
     if (data) {
       setIsBlocked((prev) => !prev);
+    }
+  };
+
+  const handleRemoveContact = async () => {
+    const data = await removeContact({
+      variables: {
+        id: contact.id,
+      },
+    });
+
+    if (data) {
+      navigate("/contacts/deleted");
     }
   };
 
@@ -118,6 +134,12 @@ const ContactContent = ({
           variant={!isBlocked ? "danger" : "tertiary"}
           text={!isBlocked ? "Block Contact" : "Unblock Contact"}
           onClick={handleToggleBlockContact}
+        />
+        <Button
+          type="button"
+          variant="danger"
+          text="Remove Contact"
+          onClick={handleRemoveContact}
         />
       </div>
     </div>
