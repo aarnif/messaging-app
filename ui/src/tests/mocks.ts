@@ -7,7 +7,12 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
 } from "../graphql/queries";
-import { CREATE_USER, LOGIN, SEND_MESSAGE } from "../graphql/mutations";
+import {
+  CREATE_USER,
+  LOGIN,
+  SEND_MESSAGE,
+  TOGGLE_BLOCK_CONTACT,
+} from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
   MeQuery,
@@ -30,6 +35,8 @@ import type {
   FindContactByIdQueryVariables,
   FindPrivateChatWithContactQuery,
   FindPrivateChatWithContactQueryVariables,
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -570,6 +577,26 @@ export const findContactByIdNull: MockLink.MockedResponse<
   },
 };
 
+export const findContactByIdBlocked: MockLink.MockedResponse<
+  FindContactByIdQuery,
+  FindContactByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CONTACT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findContactById: {
+        ...CONTACT_DETAILS,
+        isBlocked: true,
+      },
+    },
+  },
+};
+
 export const findPrivateChatWithContact: MockLink.MockedResponse<
   FindPrivateChatWithContactQuery,
   FindPrivateChatWithContactQueryVariables
@@ -613,6 +640,46 @@ export const mockClient = {
     readQuery: vi.fn(),
     evict: vi.fn(),
     identify: vi.fn(),
+  },
+};
+
+export const toggleBlockContactTrue: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      toggleBlockContact: {
+        ...CONTACT_DETAILS,
+        isBlocked: true,
+      },
+    },
+  },
+};
+
+export const toggleBlockContactFalse: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      toggleBlockContact: {
+        ...CONTACT_DETAILS,
+        isBlocked: false,
+      },
+    },
   },
 };
 

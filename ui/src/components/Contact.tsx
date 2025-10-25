@@ -1,14 +1,16 @@
 import { useMatch, useNavigate } from "react-router";
-import { useQuery, useLazyQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
 import {
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
 } from "../graphql/queries";
+import { TOGGLE_BLOCK_CONTACT } from "../graphql/mutations";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
 import type { User, Contact } from "../__generated__/graphql";
+import { useState } from "react";
 
 const ContactContent = ({
   currentUser,
@@ -23,6 +25,10 @@ const ContactContent = ({
   const [data] = useLazyQuery(FIND_PRIVATE_CHAT_WITH_CONTACT, {
     fetchPolicy: "network-only",
   });
+
+  const [mutate] = useMutation(TOGGLE_BLOCK_CONTACT);
+
+  const [isBlocked, setIsBlocked] = useState(contact.isBlocked);
 
   const handleChatWithContact = async () => {
     const hasChatWithContact = await data({
@@ -47,6 +53,18 @@ const ContactContent = ({
 
     localStorage.setItem("new-chat-info", JSON.stringify(newPrivateChatInfo));
     navigate("/chats/new");
+  };
+
+  const handleToggleBlockContact = async () => {
+    const data = await mutate({
+      variables: {
+        id: contact.id,
+      },
+    });
+
+    if (data) {
+      setIsBlocked((prev) => !prev);
+    }
   };
 
   return (
@@ -80,14 +98,28 @@ const ContactContent = ({
           <p className="text-center text-xs font-normal text-slate-700 dark:text-slate-200">
             {about}
           </p>
+          {isBlocked && (
+            <p className="font-semibold text-red-600 dark:text-red-500">
+              You have blocked the contact.
+            </p>
+          )}
         </div>
       </div>
-      <Button
-        type="button"
-        variant="tertiary"
-        text="Chat"
-        onClick={handleChatWithContact}
-      />
+
+      <div className="flex w-full flex-col gap-4">
+        <Button
+          type="button"
+          variant="tertiary"
+          text="Chat"
+          onClick={handleChatWithContact}
+        />
+        <Button
+          type="button"
+          variant={!isBlocked ? "danger" : "tertiary"}
+          text={!isBlocked ? "Block Contact" : "Unblock Contact"}
+          onClick={handleToggleBlockContact}
+        />
+      </div>
     </div>
   );
 };

@@ -8,12 +8,15 @@ import {
   currentUserMock,
   findContactById,
   findContactByIdNull,
+  findContactByIdBlocked,
   findPrivateChatWithContact,
   findPrivateChatWithContactNull,
   mockNavigate,
   CONTACT_DETAILS,
   FIND_PRIVATE_CHAT_DETAILS,
   NewPrivateChatDetails,
+  toggleBlockContactTrue,
+  toggleBlockContactFalse,
 } from "./mocks";
 import Contact from "../components/Contact";
 
@@ -140,6 +143,42 @@ describe("<Contact />", () => {
         JSON.stringify(NewPrivateChatDetails)
       );
       expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
+    });
+  });
+
+  test("blocks contact when block contact button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactById, toggleBlockContactTrue]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Block Contact" }));
+
+    await waitFor(async () => {
+      expect(screen.getByText("You have blocked the contact."));
+    });
+  });
+
+  test("unblocks contact when unblock contact button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: CONTACT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findContactByIdBlocked, toggleBlockContactFalse]);
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Unblock Contact" }));
+
+    await waitFor(async () => {
+      expect(screen.queryByText("You have blocked the contact.")).toBeNull();
     });
   });
 });

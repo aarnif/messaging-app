@@ -165,3 +165,17 @@ export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
     }
   }
 }`);
+
+export const TOGGLE_BLOCK_CONTACT = gql(`mutation ToggleBlockContact($id: ID!) {
+  toggleBlockContact(id: $id) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);
