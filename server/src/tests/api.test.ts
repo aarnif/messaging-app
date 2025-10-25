@@ -420,6 +420,26 @@ const FIND_CONTACT_BY_ID = `
   }
 `;
 
+const FIND_PRIVATE_CHAT_WITH_CONTACT = `
+  query FindPrivateChatWithContact($id: ID!) {
+    findPrivateChatWithContact(id: $id) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        about
+        role
+      }
+    }
+  }
+`;
+
 const makeRequest = async <Variables>(
   query: string,
   variables: Variables,
@@ -519,6 +539,12 @@ const allChatsByUser = async (
 
 const findContactById = async (id: string, token: string): Promise<Response> =>
   await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
+
+const findPrivateChatWithContact = async (
+  id: string,
+  token: string
+): Promise<Response> =>
+  await makeRequest(FIND_PRIVATE_CHAT_WITH_CONTACT, { id }, token);
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
@@ -2752,6 +2778,98 @@ void describe("GraphQL API", () => {
         const chat = chats[0];
         assert.ok(chat, "Chat should exist");
         assert.strictEqual(chat.name, groupChatDetails.name);
+      });
+    });
+
+    void describe("Find private with contact", () => {
+      let userId: string;
+      let chatId: string;
+
+      beforeEach(async () => {
+        const contactResponse = await addContact(user2Details.id, token);
+        const contactResponseBody =
+          contactResponse.body as HTTPGraphQLResponse<{
+            addContact: Contact;
+          }>;
+        assert.ok(
+          contactResponseBody.data?.addContact.id,
+          "Contact ID should be defined"
+        );
+        userId = contactResponseBody.data.addContact.contactDetails.id;
+
+        const chatResponse = await createChat(privateChatDetails, token);
+        const chatResponseBody = chatResponse.body as HTTPGraphQLResponse<{
+          createChat: Chat;
+        }>;
+        assert.ok(
+          chatResponseBody.data?.createChat.id,
+          "Chat ID should be defined"
+        );
+        chatId = chatResponseBody.data.createChat.id;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await findPrivateChatWithContact(userId, "");
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findPrivateChatWithContact: Chat;
+        }>;
+        const chat = responseBody.data?.findPrivateChatWithContact;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent chat ID", async () => {
+        const response = await findPrivateChatWithContact("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findPrivateChatWithContact: Chat;
+        }>;
+        const chat = responseBody.data?.findPrivateChatWithContact;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Chat not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds finding chat", async () => {
+        const response = await findPrivateChatWithContact(userId, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findPrivateChatWithContact: Chat;
+        }>;
+        const chat = responseBody.data?.findPrivateChatWithContact;
+
+        assert.ok(chat, "Chat should be defined");
+        assert.strictEqual(chat.id, chatId);
+        assert.strictEqual(chat.type, "private");
+        assert.strictEqual(chat.name, user2Details.name);
+        assert.strictEqual(chat.description, null);
+        assert.strictEqual(chat.avatar, null);
+        assert.strictEqual(chat.members?.length, 2);
+
+        const creator = chat.members?.find((m) => m?.id === user1Details.id);
+        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
+
+        assert.ok(creator, "Creator should be in members");
+        assert.ok(member1, "Member 1 should be in members");
+        assert.strictEqual(creator.role, "admin");
+        assert.strictEqual(member1.role, "member");
       });
     });
   });

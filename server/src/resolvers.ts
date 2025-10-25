@@ -406,6 +406,48 @@ export const resolvers: Resolvers = {
       }
       return contact;
     },
+    findPrivateChatWithContact: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const chat = await Chat.findOne({
+        where: {
+          type: "private",
+        },
+        include: [
+          {
+            model: User,
+            as: "members",
+            where: {
+              id: {
+                [Op.in]: [context.currentUser.id, Number(id)],
+              },
+            },
+            through: {
+              attributes: ["role"],
+            },
+          },
+        ],
+      });
+
+      if (!chat || !chat.members || chat.members.length < 2) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      return chat;
+    },
   },
   UserChat: {
     name: (parent: Chat, __, context: { currentUser: User | null }) =>
