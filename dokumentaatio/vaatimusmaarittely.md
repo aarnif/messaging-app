@@ -28,16 +28,23 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 
 - [ ] **Chatit ja viestit**
 
-  - [ ] Käyttäjä näkee päänäkymän, jossa on listattuna käyttäjän chatit
-  - [ ] Käyttäjä voi luoda uuden ryhmä- tai kahdenkeskisen chatin
-  - [ ] Käyttäjä voi admin-roolissa muokata ryhmächatin tietoja
-  - [ ] Käyttäjä voi liittyä olemassa olevaan ryhmächattiin
-  - [ ] Käyttäjä voi lähettää tekstipohjaisia viestejä sovelluksessa
+  - [x] Käyttäjä näkee päänäkymän, jossa on listattuna käyttäjän chatit
+  - [x] Käyttäjä voi luoda uuden ryhmä- tai kahdenkeskisen chatin
+  - [x] Käyttäjä voi admin-roolissa muokata ryhmächatin tietoja
+  - [x] Käyttäjä voi admin-roolissa poistaa chatin
+  - [x] Käyttäjä voi lähettää tekstipohjaisia viestejä sovelluksessa
+  - [x] Käyttäjä voi poistua chatista
+  - [ ] Käyttäjä saa tiedon uusista viesteitä reaaliaikaisesti
 
-- [ ] **Kontaktit**
+- [x] **Kontaktit**
 
-  - [ ] Käyttäjä voi lisätä uuden kontaktin
-  - [ ] Käyttäjä voi poistaa kontakteja
-  - [ ] Käyttäjä voi blokata kontaktin
+  - [x] Käyttäjä voi lisätä uuden kontaktin
+  - [x] Käyttäjä voi poistaa kontaktin
+  - [x] Käyttäjä voi blokata kontaktin
+
+- [ ] **Profiili**
+
+  - [ ] Käyttäjä voi vaihtaa päivittää tietojaan, kuten nimensä ja salasanan
+  - [ ] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
 
 - [x] **Käyttäjä voi kirjautua ulos järjestelmästä**
