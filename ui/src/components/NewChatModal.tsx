@@ -10,8 +10,9 @@ import type { InputField, UserContact } from "../types";
 import {
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
+  IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery } from "@apollo/client/react";
 import type { User, Contact } from "../__generated__/graphql";
 import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
@@ -77,6 +78,8 @@ const PrivateChatContent = ({
     fetchPolicy: "network-only",
   });
 
+  const [isBlockedByUser] = useLazyQuery(IS_BLOCKED_BY_USER);
+
   const contacts = data?.contactsWithoutPrivateChat;
 
   const handleCreatePrivateChat = async () => {
@@ -88,6 +91,17 @@ const PrivateChatContent = ({
     const chosenContact = contacts?.find(
       (contact) => contact.id === selectedContact
     );
+
+    const isBlockedByContact = await isBlockedByUser({
+      variables: {
+        id: chosenContact?.contactDetails.id ?? "",
+      },
+    });
+
+    if (isBlockedByContact.data?.isBlockedByUser) {
+      showMessage("Contact has blocked you.");
+      return;
+    }
 
     const newPrivateChatInfo = {
       name: chosenContact?.contactDetails.name,

@@ -22,6 +22,8 @@ import {
   NewGroupChatDetails,
   mockNavigate,
   allContactsByUserEmpty,
+  isBlockedByUserTrue,
+  isBlockedByUserFalse,
 } from "./mocks";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
@@ -269,6 +271,64 @@ describe("<Chats />", () => {
       );
     });
 
+    test("displays error if contact has blocked the user", async () => {
+      const user = userEvent.setup();
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        isBlockedByUserTrue,
+      ]);
+
+      await waitFor(async () => {
+        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+      });
+
+      await user.click(screen.getByRole("button"));
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(screen.getByText("New Group Chat")).toBeDefined();
+      });
+
+      await user.click(
+        screen.getByRole("button", { name: "New Private Chat" })
+      );
+
+      await waitFor(async () => {
+        expect(screen.getByText("New Private Chat")).toBeDefined();
+        expect(
+          screen.getByPlaceholderText("Search by name or username...")
+        ).toBeDefined();
+        userContactsMock.forEach((contact) => {
+          const { name, username, about } = contact.contactDetails;
+          expect(screen.getByText(name)).toBeDefined();
+          expect(screen.getByText(`@${username}`)).toBeDefined();
+          expect(screen.getByText(about)).toBeDefined();
+        });
+      });
+
+      await user.click(screen.getByText(`@${contact1username}`));
+
+      await waitFor(async () => {
+        const selectedContact = screen.getByTestId("selected");
+        expect(selectedContact).toBeDefined();
+        expect(
+          within(selectedContact).getByText(`@${contact1username}`)
+        ).toBeDefined();
+      });
+
+      await user.click(screen.getByTestId("create-chat-button"));
+
+      await waitFor(() => {
+        expect(screen.getByText("Contact has blocked you.")).toBeDefined();
+      });
+
+      await waitForElementToBeRemoved(
+        () => screen.queryByText("Contact has blocked you."),
+        { timeout: 3500 }
+      );
+    });
+
     test("selects contact when contact button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
@@ -316,7 +376,11 @@ describe("<Chats />", () => {
 
     test("saves new private chat info and navigates to chat preview when new chat button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        isBlockedByUserFalse,
+      ]);
 
       await waitFor(async () => {
         expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
