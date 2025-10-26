@@ -128,3 +128,13 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
 export const IS_BLOCKED_BY_USER = gql(`query IsBlockedByUser($id: ID!) {
   isBlockedByUser(id: $id)
 }`);
+
+export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
+  nonContactUsers(search: $search) {
+    id
+    username
+    name
+    about
+    avatar
+  }
+}`);

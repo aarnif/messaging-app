@@ -193,3 +193,17 @@ export const REMOVE_CONTACT = gql(`mutation RemoveContact($id: ID!) {
     }
   }
 }`);
+
+export const ADD_CONTACTS = gql(`mutation AddContacts($ids: [ID!]!) {
+  addContacts(ids: $ids) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

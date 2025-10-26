@@ -7,8 +7,10 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
+  NON_CONTACT_USERS,
 } from "../graphql/queries";
 import {
+  ADD_CONTACTS,
   CREATE_USER,
   LOGIN,
   REMOVE_CONTACT,
@@ -43,6 +45,10 @@ import type {
   RemoveContactMutationVariables,
   IsBlockedByUserQuery,
   IsBlockedByUserQueryVariables,
+  NonContactUsersQuery,
+  NonContactUsersQueryVariables,
+  AddContactsMutation,
+  AddContactsMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -68,6 +74,20 @@ export const USER_THREE_DETAILS = {
   id: "3",
   name: "User3",
   username: "user3",
+};
+
+export const USER_FOUR_DETAILS = {
+  ...USER_THREE_DETAILS,
+  id: "4",
+  name: "User4",
+  username: "user4",
+};
+
+export const USER_FIVE_DETAILS = {
+  ...USER_FOUR_DETAILS,
+  id: "5",
+  name: "User5",
+  username: "user5",
 };
 
 export const CHAT_DETAILS = {
@@ -432,6 +452,7 @@ export const allContactsByUser: MockLink.MockedResponse<
       allContactsByUser: userContactsMock,
     },
   },
+  maxUsageCount: 2,
 };
 
 export const findChatById: MockLink.MockedResponse<
@@ -753,6 +774,116 @@ export const isBlockedByUserNull: MockLink.MockedResponse<
   result: {
     data: {
       isBlockedByUser: null,
+    },
+  },
+};
+
+export const nonContactUsersMock = [
+  {
+    id: USER_FOUR_DETAILS.id,
+    username: USER_FOUR_DETAILS.username,
+    name: USER_FOUR_DETAILS.name,
+    about: "Hi! My name is User 4!",
+    avatar: null,
+  },
+  {
+    id: USER_FIVE_DETAILS.id,
+    username: USER_FIVE_DETAILS.username,
+    name: USER_FIVE_DETAILS.name,
+    about: "Hi! My name is User 5!",
+    avatar: null,
+  },
+];
+
+export const nonContactUsers: MockLink.MockedResponse<
+  NonContactUsersQuery,
+  NonContactUsersQueryVariables
+> = {
+  request: {
+    query: NON_CONTACT_USERS,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      nonContactUsers: nonContactUsersMock,
+    },
+  },
+};
+
+export const nonContactUsersEmpty: MockLink.MockedResponse<
+  NonContactUsersQuery,
+  NonContactUsersQueryVariables
+> = {
+  request: {
+    query: NON_CONTACT_USERS,
+    variables: {
+      search: "",
+    },
+  },
+  result: {
+    data: {
+      nonContactUsers: [],
+    },
+  },
+};
+
+export const ADDED_CONTACTS = [
+  {
+    id: "2",
+    isBlocked: false,
+    contactDetails: {
+      id: USER_FOUR_DETAILS.id,
+      username: USER_FOUR_DETAILS.username,
+      name: USER_FOUR_DETAILS.name,
+      about: "Hi! My name is User 4!",
+      avatar: null,
+    },
+  },
+  {
+    id: "3",
+    isBlocked: false,
+    contactDetails: {
+      id: USER_FIVE_DETAILS.id,
+      username: USER_FIVE_DETAILS.username,
+      name: USER_FIVE_DETAILS.name,
+      about: "Hi! My name is User 5!",
+      avatar: null,
+    },
+  },
+];
+
+export const addContacts: MockLink.MockedResponse<
+  AddContactsMutation,
+  AddContactsMutationVariables
+> = {
+  request: {
+    query: ADD_CONTACTS,
+    variables: {
+      ids: nonContactUsersMock.map((user) => user.id),
+    },
+  },
+  result: {
+    data: {
+      addContacts: ADDED_CONTACTS,
+    },
+  },
+};
+
+export const addContactsEmpty: MockLink.MockedResponse<
+  AddContactsMutation,
+  AddContactsMutationVariables
+> = {
+  request: {
+    query: ADD_CONTACTS,
+    variables: {
+      ids: [],
+    },
+  },
+  result: {
+    data: {
+      addContacts: [],
     },
   },
 };
