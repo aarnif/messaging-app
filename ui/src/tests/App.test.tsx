@@ -12,6 +12,7 @@ import {
   findChatById,
   CHAT_DETAILS,
   findContactById,
+  isBlockedByUserFalse,
   CONTACT_DETAILS,
 } from "./mocks";
 
@@ -109,7 +110,7 @@ describe("<App />", () => {
   test("renders contact page", async () => {
     renderComponent(
       ["/contacts/1"],
-      [meMock, allContactsByUser, findContactById]
+      [meMock, allContactsByUser, findContactById, isBlockedByUserFalse]
     );
 
     await waitFor(() => {
