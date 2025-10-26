@@ -1,9 +1,10 @@
 import { useMatch, useNavigate } from "react-router";
-import { useQuery } from "@apollo/client/react";
+import { useQuery, useLazyQuery } from "@apollo/client/react";
 import {
   FIND_CHAT_BY_ID,
   ALL_CHATS_BY_USER,
   ALL_CONTACTS_BY_USER,
+  IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
@@ -16,6 +17,8 @@ import type {
   User,
   Message,
   ChatMember,
+  IsBlockedByUserQuery,
+  Exact,
 } from "../__generated__/graphql";
 import { formatDisplayDate } from "../helpers";
 import { useEffect, useRef, useState } from "react";
@@ -125,7 +128,18 @@ const ChatMessages = ({
   );
 };
 
-const NewMessageBox = ({ id }: { id: string }) => {
+const NewMessageBox = ({
+  id,
+  userId,
+  checkIsBlocked,
+}: {
+  id: string;
+  userId: string | null;
+  checkIsBlocked: useLazyQuery.ExecFunction<
+    IsBlockedByUserQuery,
+    Exact<{ id: string }>
+  >;
+}) => {
   const message = useField("New Message", "text", "New Message...");
   const [sendMessage] = useMutation(SEND_MESSAGE, {
     onError: (error) => {
@@ -138,6 +152,19 @@ const NewMessageBox = ({ id }: { id: string }) => {
     if (!message.value) {
       console.log("Do not send empty message!");
       return;
+    }
+
+    if (userId) {
+      const isBlockedByContact = await checkIsBlocked({
+        variables: {
+          id: userId,
+        },
+      });
+
+      if (isBlockedByContact.data?.isBlockedByUser) {
+        console.log("Contact has blocked you.");
+        return;
+      }
     }
 
     await sendMessage({
@@ -470,7 +497,16 @@ const ChatContent = ({
   chat: Chat;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { id, name, members } = chat;
+  const [checkIsBlocked] = useLazyQuery(IS_BLOCKED_BY_USER, {
+    fetchPolicy: "network-only",
+  });
+
+  const { id, type, name, members } = chat;
+
+  const otherChatMember =
+    type === "private"
+      ? members.find((member) => member.id !== currentUser.id)
+      : null;
 
   return (
     <>
@@ -481,7 +517,11 @@ const ChatContent = ({
         callBack={() => setIsChatInfoOpen(true)}
       />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
-      <NewMessageBox id={id} />
+      <NewMessageBox
+        id={id}
+        userId={otherChatMember ? otherChatMember.id : null}
+        checkIsBlocked={checkIsBlocked}
+      />
     </>
   );
 };
