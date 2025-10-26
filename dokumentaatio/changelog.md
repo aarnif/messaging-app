@@ -49,3 +49,19 @@
 **Testit**
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
+
+## Viikko 5
+
+### Käyttöliittymä:
+
+- Uuden chatin lisäys
+- Chatin muokkaus
+- Chatin poisto
+- Chatista poistuminen
+- Uuden kontaktin lisäys
+- Kontaktin blokkaus
+- Kontaktin poisto
+
+**Testit**
+
+- Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
