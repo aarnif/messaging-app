@@ -65,6 +65,7 @@ type Mutation {
   createUser(input: CreateUserInput!): User
   login(input: LoginInput!): Token
   addContact(id: ID!): Contact
+  addContacts(ids: [ID!]!): [Contact!]!
   removeContact(id: ID!): Contact
   toggleBlockContact(id: ID!): Contact
   editProfile(input: EditProfileInput!): User

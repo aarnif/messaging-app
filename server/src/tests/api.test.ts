@@ -116,6 +116,22 @@ const ADD_CONTACT = `
   }
 `;
 
+const ADD_CONTACTS = `
+  mutation AddContacts($ids: [ID!]!) {
+    addContacts(ids: $ids) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const REMOVE_CONTACT = `
   mutation RemoveContact($id: ID!) {
     removeContact(id: $id) {
@@ -471,6 +487,9 @@ const getMe = async (token?: string, expectedCode = 200): Promise<Response> =>
 
 const addContact = async (id: string, token: string): Promise<Response> =>
   await makeRequest(ADD_CONTACT, { id }, token);
+
+const addContacts = async (ids: string[], token: string): Promise<Response> =>
+  await makeRequest(ADD_CONTACTS, { ids }, token);
 
 const removeContact = async (id: string, token: string): Promise<Response> =>
   await makeRequest(REMOVE_CONTACT, { id }, token);
@@ -1201,6 +1220,70 @@ void describe("GraphQL API", () => {
         const error = responseBody.errors[0];
         assert.strictEqual(error.message, "Contact already exists");
         assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+    });
+
+    void describe("Add contacts", () => {
+      void test("fails without authentication", async () => {
+        const response = await addContacts(
+          [user2Details.id, user3Details.id],
+          ""
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContacts: Contact[];
+        }>;
+        const contacts = responseBody.data?.addContacts;
+
+        assert.strictEqual(contacts, undefined, "Contacts should be undefined");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("succeeds with valid user IDs", async () => {
+        const response = await addContacts(
+          [user2Details.id, user3Details.id],
+          user1Token
+        );
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContacts: Contact[];
+        }>;
+
+        const contacts = responseBody.data?.addContacts;
+
+        assert.ok(contacts, "Contacts should be defined");
+        assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
+
+        const expectedUsers = [user2Details, user3Details];
+
+        contacts.forEach((contact, index) => {
+          const expected = expectedUsers[index];
+          assert.ok(contact, `Contact ${index} should be defined`);
+          assert.strictEqual(contact.isBlocked, false);
+          assert.ok(
+            contact.contactDetails,
+            `Contact details ${index} should be defined`
+          );
+          assert.strictEqual(contact.contactDetails.id, expected.id);
+          assert.strictEqual(
+            contact.contactDetails.username,
+            expected.username
+          );
+          assert.strictEqual(
+            contact.contactDetails.name,
+            expected.username[0].toUpperCase() + expected.username.slice(1)
+          );
+          assert.strictEqual(contact.contactDetails.about, null);
+          assert.strictEqual(contact.contactDetails.avatar, null);
+        });
       });
     });
 

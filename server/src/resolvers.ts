@@ -606,6 +606,49 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    addContacts: async (_, { ids }, context: { currentUser: User | null }) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+      const currentUserId = Number(context?.currentUser?.id);
+      const userIds = ids.map((id) => Number(id));
+
+      try {
+        await Contact.bulkCreate(
+          userIds.map((id) => ({
+            userId: currentUserId,
+            contactId: Number(id),
+            isBlocked: false,
+          }))
+        );
+
+        return await Contact.findAll({
+          where: {
+            userId: currentUserId,
+          },
+          include: [
+            {
+              model: User,
+              as: "contactDetails",
+              where: {
+                "$contactDetails.id$": {
+                  [Op.in]: userIds,
+                },
+              },
+            },
+          ],
+        });
+      } catch (error) {
+        throw new GraphQLError("Failed to create contacts", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
     removeContact: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
