@@ -1,16 +1,16 @@
-import type { Contact } from "../__generated__/graphql";
+import type { User } from "../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
 
-const SelectContactButton = ({
-  contact,
+const SelectUserButton = ({
+  user,
   isSelected,
   callback,
 }: {
-  contact: Contact;
+  user: User;
   isSelected: boolean;
   callback: () => void;
 }) => {
-  const { name, username, about } = contact.contactDetails;
+  const { name, username, about } = user;
   return (
     <button
       data-testid={isSelected && "selected"}
@@ -48,4 +48,4 @@ const SelectContactButton = ({
   );
 };
 
-export default SelectContactButton;
+export default SelectUserButton;

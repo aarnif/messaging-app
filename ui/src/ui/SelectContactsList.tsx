@@ -1,5 +1,5 @@
 import type { UserContact } from "../types";
-import SelectContactButton from "./SelectContactButton";
+import SelectUserButton from "./SelectUserButton";
 
 const SelectContactsList = ({
   contacts,
@@ -31,9 +31,9 @@ const SelectContactsList = ({
   return (
     <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
-        <SelectContactButton
+        <SelectUserButton
           key={contact.id}
-          contact={contact}
+          user={contact.contactDetails}
           isSelected={contact.isSelected}
           callback={() => handleSelectContact(contact.contactDetails.id)}
         />

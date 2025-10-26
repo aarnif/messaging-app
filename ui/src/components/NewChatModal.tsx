@@ -18,7 +18,7 @@ import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
 import { useNavigate } from "react-router";
 import SelectContactsList from "../ui/SelectContactsList";
-import SelectContactButton from "../ui/SelectContactButton";
+import SelectUserButton from "../ui/SelectUserButton";
 
 export const SelectContactList = ({
   contacts,
@@ -40,9 +40,9 @@ export const SelectContactList = ({
   return (
     <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
-        <SelectContactButton
+        <SelectUserButton
           key={contact.id}
-          contact={contact}
+          user={contact.contactDetails}
           isSelected={contact.id === selectedContact}
           callback={() => {
             setSelectedContact(contact.id);
