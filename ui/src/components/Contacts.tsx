@@ -2,9 +2,70 @@ import useField from "../hooks/useField";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
 import { useQuery } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
+import { useState } from "react";
+import { motion, AnimatePresence } from "framer-motion";
+import { IoChevronForward } from "react-icons/io5";
+import { MdClose } from "react-icons/md";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { Contact } from "../__generated__/graphql";
+import useResponsiveWidth from "../hooks/useResponsiveWidth";
+
+const AddContactsModal = ({
+  setIsAddContactsModalOpen,
+}: {
+  setIsAddContactsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
+  const width = useResponsiveWidth();
+
+  const isMobileScreen = width <= 640;
+
+  return (
+    <motion.div
+      data-testid="overlay"
+      key={"Overlay"}
+      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
+      onClick={() => setIsAddContactsModalOpen(false)}
+      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
+      transition={{ type: "tween" }}
+    >
+      <motion.div
+        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-[500px] sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        onClick={(e) => e.stopPropagation()}
+        initial={{
+          y: isMobileScreen ? "100vh" : -50,
+          opacity: isMobileScreen ? 1 : 0,
+        }}
+        animate={{ y: 0, opacity: 1 }}
+        exit={{
+          y: isMobileScreen ? "100vh" : -50,
+          opacity: isMobileScreen ? 1 : 0,
+        }}
+        transition={{ type: "tween" }}
+      >
+        <div className="flex w-full justify-between">
+          <button
+            data-testid="close-modal-button"
+            className="cursor-pointer"
+            onClick={() => setIsAddContactsModalOpen(false)}
+          >
+            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+          </button>
+          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
+            Add Contacts
+          </h2>
+          <button
+            data-testid="create-chat-button"
+            className="cursor-pointer"
+            onClick={() => console.log("Add contacts")}
+          >
+            <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+          </button>
+        </div>
+      </motion.div>
+    </motion.div>
+  );
+};
 
 const ContactItem = ({ contact }: { contact: Contact }) => {
   const { id, contactDetails } = contact;
@@ -43,7 +104,11 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
   );
 };
 
-const ListMenu = () => {
+const ListMenu = ({
+  setIsAddContactsModalOpen,
+}: {
+  setIsAddContactsModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+}) => {
   const searchWord = useField(
     "search-contacts",
     "text",
@@ -68,7 +133,11 @@ const ListMenu = () => {
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
-      <MenuHeader title="Contacts" searchWord={searchWord} />
+      <MenuHeader
+        title="Contacts"
+        searchWord={searchWord}
+        callback={() => setIsAddContactsModalOpen(true)}
+      />
       {loading ? (
         <div className="mt-8">
           <Spinner />
@@ -91,11 +160,21 @@ const ListMenu = () => {
   );
 };
 
-const Contacts = () => (
-  <div className="flex flex-grow">
-    <ListMenu />
-    <Outlet />
-  </div>
-);
+const Contacts = () => {
+  const [isAddContactsModalOpen, setIsAddContactsModalOpen] = useState(false);
+  return (
+    <div className="flex flex-grow">
+      <ListMenu setIsAddContactsModalOpen={setIsAddContactsModalOpen} />
+      <Outlet />
+      <AnimatePresence>
+        {isAddContactsModalOpen && (
+          <AddContactsModal
+            setIsAddContactsModalOpen={setIsAddContactsModalOpen}
+          />
+        )}
+      </AnimatePresence>
+    </div>
+  );
+};
 
 export default Contacts;

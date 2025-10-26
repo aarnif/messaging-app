@@ -1,5 +1,6 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
+import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
@@ -47,6 +48,21 @@ describe("<Contacts />", () => {
         expect(screen.getByText(name)).toBeDefined();
         expect(screen.getByText(about ?? "")).toBeDefined();
       });
+    });
+  });
+
+  test("shows add contacts modal when new add contacts button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(async () => {
+      expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button"));
+
+    await waitFor(async () => {
+      expect(screen.getByText("Add Contacts")).toBeDefined();
     });
   });
 });
