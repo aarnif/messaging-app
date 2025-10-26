@@ -734,7 +734,7 @@ export const isBlockedByUserTrue: MockLink.MockedResponse<
   request: {
     query: IS_BLOCKED_BY_USER,
     variables: {
-      id: "1",
+      id: USER_TWO_DETAILS.id,
     },
   },
   result: {
@@ -751,7 +751,7 @@ export const isBlockedByUserFalse: MockLink.MockedResponse<
   request: {
     query: IS_BLOCKED_BY_USER,
     variables: {
-      id: "1",
+      id: USER_TWO_DETAILS.id,
     },
   },
   result: {

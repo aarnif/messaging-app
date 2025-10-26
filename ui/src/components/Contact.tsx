@@ -12,7 +12,7 @@ import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
 import type { User, Contact } from "../__generated__/graphql";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 const ContactContent = ({
   currentUser,
@@ -170,17 +170,23 @@ const Contact = ({ currentUser }: { currentUser: User }) => {
     }
   );
 
-  const { data: blockedData, loading: blockedLoading } = useQuery(
-    IS_BLOCKED_BY_USER,
-    {
-      variables: {
-        id: match?.id ?? "",
-      },
-    }
-  );
+  const [checkIsBlocked, { data: blockedData, loading: blockedLoading }] =
+    useLazyQuery(IS_BLOCKED_BY_USER, {
+      fetchPolicy: "network-only",
+    });
 
   const contact = contactData?.findContactById;
   const isBlockedByUser = blockedData?.isBlockedByUser;
+
+  useEffect(() => {
+    if (contact?.contactDetails?.id) {
+      checkIsBlocked({
+        variables: {
+          id: contact.contactDetails.id,
+        },
+      });
+    }
+  }, [contact, checkIsBlocked]);
 
   const loading = contactLoading || blockedLoading;
 
