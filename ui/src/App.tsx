@@ -9,6 +9,7 @@ import Contacts from "./components/Contacts";
 import Chat from "./components/Chat";
 import NewChat from "./components/NewChat";
 import Contact from "./components/Contact";
+import Settings from "./components/Settings";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
@@ -73,7 +74,25 @@ const App = () => {
         </Route>
 
         <Route path="/profile" element={<p>Profile Page</p>} />
-        <Route path="/settings" element={<p>Settings Page</p>} />
+
+        <Route path="/settings" element={<Settings />}>
+          <Route
+            index
+            element={<p className="hidden sm:flex">Edit Profile</p>}
+          />
+          <Route
+            path="edit-profile"
+            element={<p data-testid="edit-profile">Edit Profile</p>}
+          />
+          <Route
+            path="appearance"
+            element={<p data-testid="appearance">Appearance</p>}
+          />
+          <Route
+            path="change-password"
+            element={<p data-testid="change-password">Change Password</p>}
+          />
+        </Route>
       </Route>
 
       <Route

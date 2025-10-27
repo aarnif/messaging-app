@@ -134,7 +134,45 @@ describe("<App />", () => {
     renderComponent(["/settings"]);
 
     await waitFor(() => {
-      expect(screen.getByText("Settings Page")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Settings" })).toBeDefined();
+    });
+  });
+
+  test("renders edit profile page", async () => {
+    renderComponent(
+      ["/settings/edit-profile"],
+      [meMock, allChatsByUser, findChatById]
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("link", { name: "Edit Profile" })).toBeDefined();
+      expect(screen.getByTestId("edit-profile")).toBeDefined();
+    });
+  });
+
+  test("renders appearance page", async () => {
+    renderComponent(
+      ["/settings/appearance"],
+      [meMock, allChatsByUser, findChatById]
+    );
+
+    await waitFor(() => {
+      expect(screen.getByRole("link", { name: "Appearance" })).toBeDefined();
+      expect(screen.getByTestId("appearance")).toBeDefined();
+    });
+  });
+
+  test("renders change password page", async () => {
+    renderComponent(
+      ["/settings/change-password"],
+      [meMock, allChatsByUser, findChatById]
+    );
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("link", { name: "Change Password" })
+      ).toBeDefined();
+      expect(screen.getByTestId("change-password")).toBeDefined();
     });
   });
 
