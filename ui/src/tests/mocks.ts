@@ -12,6 +12,7 @@ import {
 import {
   ADD_CONTACTS,
   CREATE_USER,
+  EDIT_PROFILE,
   LOGIN,
   REMOVE_CONTACT,
   SEND_MESSAGE,
@@ -49,6 +50,8 @@ import type {
   NonContactUsersQueryVariables,
   AddContactsMutation,
   AddContactsMutationVariables,
+  EditProfileMutation,
+  EditProfileMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -885,6 +888,51 @@ export const addContactsEmpty: MockLink.MockedResponse<
   result: {
     data: {
       addContacts: [],
+    },
+  },
+};
+
+export const editProfile24h: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserMock.name,
+        about: currentUserMock.about,
+        is24HourClock: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: currentUserMock,
+    },
+  },
+};
+
+export const editProfile12h: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserMock.name,
+        about: currentUserMock.about,
+        is24HourClock: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: {
+        ...currentUserMock,
+        is24HourClock: false,
+      },
     },
   },
 };

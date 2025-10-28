@@ -85,7 +85,10 @@ const App = () => {
             path="edit-profile"
             element={<p data-testid="edit-profile">Edit Profile</p>}
           />
-          <Route path="appearance" element={<Appearance />} />
+          <Route
+            path="appearance"
+            element={<Appearance currentUser={currentUser as User} />}
+          />
           <Route
             path="change-password"
             element={<p data-testid="change-password">Change Password</p>}

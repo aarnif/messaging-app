@@ -1,9 +1,16 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import Appearance from "../components/Appearance";
-import { mockNavigate, windowMockContent } from "./mocks";
+import {
+  currentUserMock,
+  editProfile24h,
+  editProfile12h,
+  mockNavigate,
+  windowMockContent,
+} from "./mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -16,11 +23,13 @@ vi.mock("react-router", async () => {
 
 Object.defineProperty(window, "matchMedia", windowMockContent);
 
-const renderComponent = () =>
+const renderComponent = (mocks = [editProfile24h]) =>
   render(
-    <MemoryRouter>
-      <Appearance />
-    </MemoryRouter>
+    <MockedProvider mocks={mocks}>
+      <MemoryRouter>
+        <Appearance currentUser={currentUserMock} />
+      </MemoryRouter>
+    </MockedProvider>
   );
 
 describe("<Appearance />", () => {
@@ -30,6 +39,7 @@ describe("<Appearance />", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
       expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
+      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
     });
   });
 
@@ -40,6 +50,7 @@ describe("<Appearance />", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
       expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
+      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
     });
 
     await user.click(screen.getByTestId("go-back-button"));
@@ -56,18 +67,46 @@ describe("<Appearance />", () => {
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
       expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
+      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
     });
 
-    await user.click(screen.getByTestId("toggle-dark-mode"));
+    const darkModeToggle = screen.getByTestId("toggle-dark-mode");
+
+    await user.click(darkModeToggle);
 
     await waitFor(() => {
-      expect(screen.getByTestId("close-mark")).toBeDefined();
+      expect(within(darkModeToggle).getByTestId("close-mark")).toBeDefined();
     });
 
-    await user.click(screen.getByTestId("toggle-dark-mode"));
+    await user.click(darkModeToggle);
 
     await waitFor(() => {
-      expect(screen.getByTestId("check-mark")).toBeDefined();
+      expect(within(darkModeToggle).getByTestId("check-mark")).toBeDefined();
+    });
+  });
+
+  test("toggles clock mode succesfully", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfile24h, editProfile12h]);
+
+    await waitFor(() => {
+      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
+      expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
+      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
+    });
+
+    const clockModeToggle = screen.getByTestId("toggle-clock-mode");
+
+    await user.click(clockModeToggle);
+
+    await waitFor(() => {
+      expect(within(clockModeToggle).getByTestId("close-mark")).toBeDefined();
+    });
+
+    await user.click(clockModeToggle);
+
+    await waitFor(() => {
+      expect(within(clockModeToggle).getByTestId("check-mark")).toBeDefined();
     });
   });
 });

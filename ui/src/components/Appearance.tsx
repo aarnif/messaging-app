@@ -1,8 +1,11 @@
 import { useNavigate } from "react-router";
+import { useMutation } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { useState } from "react";
+import type { User } from "../__generated__/graphql";
+import { EDIT_PROFILE } from "../graphql/mutations";
 
 const SettingsToggle = ({
   label,
@@ -52,7 +55,7 @@ const SettingsToggle = ({
   );
 };
 
-const Appearance = () => {
+const Appearance = ({ currentUser }: { currentUser: User }) => {
   const navigate = useNavigate();
   const [theme, setTheme] = useState(
     localStorage.theme === "dark" ||
@@ -61,11 +64,29 @@ const Appearance = () => {
       ? "dark"
       : "light"
   );
+  const [is24HourClock, setIs24HourClock] = useState(currentUser.is24HourClock);
+
+  const [mutate] = useMutation(EDIT_PROFILE);
 
   const handleToggleDarkMode = () => {
     const newTheme = theme === "dark" ? "light" : "dark";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark");
+  };
+
+  const handleToggleClock = async () => {
+    const updatedClock = !is24HourClock;
+    setIs24HourClock(updatedClock);
+
+    await mutate({
+      variables: {
+        input: {
+          name: currentUser.name,
+          about: currentUser.about,
+          is24HourClock: updatedClock,
+        },
+      },
+    });
   };
 
   return (
@@ -88,6 +109,12 @@ const Appearance = () => {
           buttonTestId="toggle-dark-mode"
           isActive={theme === "dark"}
           onClick={handleToggleDarkMode}
+        />
+        <SettingsToggle
+          label={"24-Hour Clock"}
+          buttonTestId="toggle-clock-mode"
+          isActive={is24HourClock}
+          onClick={handleToggleClock}
         />
       </div>
     </div>
