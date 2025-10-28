@@ -133,15 +133,15 @@ describe("<App />", () => {
     });
   });
 
-  test("renders edit profile page", async () => {
+  test("renders profile page", async () => {
     renderComponent(
-      ["/settings/edit-profile"],
+      ["/settings/profile"],
       [meMock, allChatsByUser, findChatById]
     );
 
     await waitFor(() => {
-      expect(screen.getByRole("link", { name: "Edit Profile" })).toBeDefined();
-      expect(screen.getByTestId("edit-profile")).toBeDefined();
+      expect(screen.getByRole("link", { name: "Profile" })).toBeDefined();
+      expect(screen.getByTestId("profile")).toBeDefined();
     });
   });
 

@@ -24,7 +24,7 @@ describe("<Settings />", () => {
     renderComponent();
 
     expect(screen.getByRole("heading", { name: "Settings" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Edit Profile" })).toBeDefined();
+    expect(screen.getByRole("link", { name: "Profile" })).toBeDefined();
     expect(screen.getByRole("link", { name: "Appearance" })).toBeDefined();
     expect(screen.getByRole("link", { name: "Change Password" })).toBeDefined();
   });

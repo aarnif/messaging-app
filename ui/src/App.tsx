@@ -75,13 +75,10 @@ const App = () => {
         </Route>
 
         <Route path="/settings" element={<Settings />}>
+          <Route index element={<p className="hidden sm:flex">Profile</p>} />
           <Route
-            index
-            element={<p className="hidden sm:flex">Edit Profile</p>}
-          />
-          <Route
-            path="edit-profile"
-            element={<p data-testid="edit-profile">Edit Profile</p>}
+            path="profile"
+            element={<p data-testid="profile">Profile</p>}
           />
           <Route
             path="appearance"

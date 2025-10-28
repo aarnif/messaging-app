@@ -36,8 +36,8 @@ const ListMenu = () => {
 
   const settingsItems = [
     {
-      title: "Edit Profile",
-      path: isMobile ? "/edit-profile" : "",
+      title: "Profile",
+      path: isMobile ? "/profile" : "",
       end: true,
     },
     {
