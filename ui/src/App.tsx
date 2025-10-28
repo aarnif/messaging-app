@@ -10,6 +10,7 @@ import Chat from "./components/Chat";
 import NewChat from "./components/NewChat";
 import Contact from "./components/Contact";
 import Settings from "./components/Settings";
+import Profile from "./components/Profile";
 import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
@@ -75,10 +76,13 @@ const App = () => {
         </Route>
 
         <Route path="/settings" element={<Settings />}>
-          <Route index element={<p className="hidden sm:flex">Profile</p>} />
+          <Route
+            index
+            element={<Profile currentUser={currentUser as User} />}
+          />
           <Route
             path="profile"
-            element={<p data-testid="profile">Profile</p>}
+            element={<Profile currentUser={currentUser as User} />}
           />
           <Route
             path="appearance"
