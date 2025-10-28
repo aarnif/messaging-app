@@ -12,8 +12,6 @@ const SettingsToggle = ({
   buttonTestId,
   isActive,
   onClick,
-  activeColor = "#22c55e",
-  inactiveColor = "#94a3b8",
 }: {
   label: string;
   buttonTestId: string;
@@ -28,13 +26,13 @@ const SettingsToggle = ({
         {label}
       </p>
 
-      <button onClick={onClick} data-testid={buttonTestId}>
+      <button
+        onClick={onClick}
+        data-testid={buttonTestId}
+        className="cursor-pointer"
+      >
         <div
-          style={{
-            backgroundColor: isActive ? activeColor : inactiveColor,
-            justifyContent: isActive ? "flex-end" : "flex-start",
-          }}
-          className="flex h-7 w-14 justify-center rounded-full sm:h-8 sm:w-16"
+          className={`flex h-7 w-14 rounded-full sm:h-8 sm:w-16 ${isActive ? "justify-end bg-green-500" : "justify-start bg-slate-400"}`}
         >
           <div className="m-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 sm:h-6 sm:w-6">
             {isActive ? (
