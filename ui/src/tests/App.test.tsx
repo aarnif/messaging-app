@@ -158,7 +158,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(screen.getByRole("link", { name: "Appearance" })).toBeDefined();
-      expect(screen.getByTestId("appearance")).toBeDefined();
+      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
     });
   });
 

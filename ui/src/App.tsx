@@ -10,6 +10,7 @@ import Chat from "./components/Chat";
 import NewChat from "./components/NewChat";
 import Contact from "./components/Contact";
 import Settings from "./components/Settings";
+import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
@@ -84,10 +85,7 @@ const App = () => {
             path="edit-profile"
             element={<p data-testid="edit-profile">Edit Profile</p>}
           />
-          <Route
-            path="appearance"
-            element={<p data-testid="appearance">Appearance</p>}
-          />
+          <Route path="appearance" element={<Appearance />} />
           <Route
             path="change-password"
             element={<p data-testid="change-password">Change Password</p>}
