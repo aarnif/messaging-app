@@ -889,3 +889,17 @@ export const addContactsEmpty: MockLink.MockedResponse<
 };
 
 export const mockNavigate = vi.fn();
+
+export const windowMockContent = {
+  writable: true,
+  value: vi.fn().mockImplementation((query) => ({
+    matches: query === "(prefers-color-scheme: dark)" ? true : false,
+    media: query,
+    onchange: null,
+    addListener: vi.fn(),
+    removeListener: vi.fn(),
+    addEventListener: vi.fn(),
+    removeEventListener: vi.fn(),
+    dispatchEvent: vi.fn(),
+  })),
+};

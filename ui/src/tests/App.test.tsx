@@ -14,9 +14,12 @@ import {
   findContactById,
   isBlockedByUserFalse,
   CONTACT_DETAILS,
+  windowMockContent,
 } from "./mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
+
+Object.defineProperty(window, "matchMedia", windowMockContent);
 
 const renderComponent = (
   initialEntries = ["/"],
