@@ -8,6 +8,7 @@ export const ME = gql(`
       name
       about
       avatar
+      is24HourClock
     }
   }
 `);

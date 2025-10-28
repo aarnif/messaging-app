@@ -507,6 +507,7 @@ export const resolvers: Resolvers = {
           username,
           passwordHash,
           name: username[0].toUpperCase() + username.slice(1),
+          is24HourClock: true,
         });
       } catch (error) {
         throw new GraphQLError("Failed to create user", {
@@ -739,15 +740,16 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const { name, about } = input;
+      const { name, about, is24HourClock } = input;
 
       const editProfileInputSchema = z.object({
         name: z.string().min(3, "Name must be at least 3 characters long"),
         about: z.string().nullable(),
+        is24HourClock: z.boolean(),
       });
 
       try {
-        editProfileInputSchema.parse({ name, about });
+        editProfileInputSchema.parse({ name, about, is24HourClock });
       } catch (error) {
         if (error instanceof z.ZodError) {
           throw new GraphQLError("Input validation failed", {
@@ -773,6 +775,7 @@ export const resolvers: Resolvers = {
       try {
         user.name = name;
         user.about = about || null;
+        user.is24HourClock = is24HourClock;
 
         await user.save();
         return user;

@@ -235,6 +235,7 @@ export const currentUserMock = {
   name: USER_ONE_DETAILS.name,
   about: null,
   avatar: null,
+  is24HourClock: true,
 };
 
 export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {

@@ -15,9 +15,10 @@ type Query {
 type User {
   id: ID!
   username: String!
-  name: String
+  name: String!
   about: String
   avatar: String
+  is24HourClock: Boolean!
 }
 
 type UserChat {
@@ -90,6 +91,7 @@ input LoginInput {
 input EditProfileInput {
   name: String!
   about: String
+  is24HourClock: Boolean!
 }
 
 input CreateChatInput {

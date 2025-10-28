@@ -11,6 +11,7 @@ class User extends Model<InferAttributes<User>, InferCreationAttributes<User>> {
   declare name: string;
   declare about: string | null;
   declare avatar: string | null;
+  declare is24HourClock: boolean;
   declare chats?: Chat[];
   declare contacts?: Contact[];
 }
@@ -41,6 +42,11 @@ User.init(
     avatar: {
       type: DataTypes.STRING,
       allowNull: true,
+    },
+    is24HourClock: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: true,
+      allowNull: false,
     },
   },
   {

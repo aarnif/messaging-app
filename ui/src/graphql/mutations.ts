@@ -16,6 +16,7 @@ export const CREATE_USER = gql(`
       name
       about
       avatar
+      is24HourClock
     }
   }
 `);
@@ -207,3 +208,16 @@ export const ADD_CONTACTS = gql(`mutation AddContacts($ids: [ID!]!) {
     }
   }
 }`);
+
+export const EDIT_PROFILE =
+  gql(`mutation EditProfile($input: EditProfileInput!) {
+  editProfile(input: $input) {
+    id
+    username
+    name
+    about
+    avatar
+    is24HourClock
+  }
+}
+`);
