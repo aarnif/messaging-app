@@ -36,7 +36,6 @@ describe("<Menu />", () => {
 
     expect(screen.getByRole("link", { name: "Chats" })).toBeDefined();
     expect(screen.getByRole("link", { name: "Contacts" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Profile" })).toBeDefined();
     expect(screen.getByRole("link", { name: "Settings" })).toBeDefined();
     expect(screen.getByRole("button", { name: "Log Out" })).toBeDefined();
   });

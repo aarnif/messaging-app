@@ -125,14 +125,6 @@ describe("<App />", () => {
     });
   });
 
-  test("renders profile page", async () => {
-    renderComponent(["/profile"]);
-
-    await waitFor(() => {
-      expect(screen.getByText("Profile Page")).toBeDefined();
-    });
-  });
-
   test("renders settings page", async () => {
     renderComponent(["/settings"]);
 

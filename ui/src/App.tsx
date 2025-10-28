@@ -74,8 +74,6 @@ const App = () => {
           />
         </Route>
 
-        <Route path="/profile" element={<p>Profile Page</p>} />
-
         <Route path="/settings" element={<Settings />}>
           <Route
             index

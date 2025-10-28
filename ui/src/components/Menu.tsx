@@ -1,10 +1,4 @@
-import {
-  FaComments,
-  FaAddressBook,
-  FaUserCircle,
-  FaCog,
-  FaSignOutAlt,
-} from "react-icons/fa";
+import { FaComments, FaAddressBook, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { useApolloClient } from "@apollo/client/react";
 import { useNavigate, NavLink } from "react-router";
 
@@ -42,11 +36,6 @@ const Menu = () => {
       title: "Contacts",
       path: "/contacts",
       icon: <FaAddressBook className={styles.icon} />,
-    },
-    {
-      title: "Profile",
-      path: "/profile",
-      icon: <FaUserCircle className={styles.icon} />,
     },
     {
       title: "Settings",
