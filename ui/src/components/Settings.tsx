@@ -44,10 +44,6 @@ const ListMenu = () => {
       title: "Appearance",
       path: "/appearance",
     },
-    {
-      title: "Change Password",
-      path: "/change-password",
-    },
   ];
 
   return (

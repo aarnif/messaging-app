@@ -157,20 +157,6 @@ describe("<App />", () => {
     });
   });
 
-  test("renders change password page", async () => {
-    renderComponent(
-      ["/settings/change-password"],
-      [meMock, allChatsByUser, findChatById]
-    );
-
-    await waitFor(() => {
-      expect(
-        screen.getByRole("link", { name: "Change Password" })
-      ).toBeDefined();
-      expect(screen.getByTestId("change-password")).toBeDefined();
-    });
-  });
-
   test("renders not found page for unknown routes", async () => {
     renderComponent(["/unknown"]);
 

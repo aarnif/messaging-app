@@ -88,10 +88,6 @@ const App = () => {
             path="appearance"
             element={<Appearance currentUser={currentUser as User} />}
           />
-          <Route
-            path="change-password"
-            element={<p data-testid="change-password">Change Password</p>}
-          />
         </Route>
       </Route>
 
