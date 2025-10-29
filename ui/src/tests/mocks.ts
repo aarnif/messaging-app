@@ -17,6 +17,7 @@ import {
   REMOVE_CONTACT,
   SEND_MESSAGE,
   TOGGLE_BLOCK_CONTACT,
+  CHANGE_PASSWORD,
 } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -52,6 +53,8 @@ import type {
   AddContactsMutationVariables,
   EditProfileMutation,
   EditProfileMutationVariables,
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -954,6 +957,63 @@ export const editProfileUpdate: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: currentUserMock,
+    },
+  },
+};
+
+export const changePassword: MockLink.MockedResponse<
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables
+> = {
+  request: {
+    query: CHANGE_PASSWORD,
+    variables: {
+      input: {
+        currentPassword: "password",
+        newPassword: "newpassword",
+        confirmNewPassword: "newpassword",
+      },
+    },
+  },
+  result: {
+    data: {
+      changePassword: currentUserMock,
+    },
+  },
+};
+
+export const changePasswordError: MockLink.MockedResponse<
+  ChangePasswordMutation,
+  ChangePasswordMutationVariables
+> = {
+  request: {
+    query: CHANGE_PASSWORD,
+    variables: {
+      input: {
+        currentPassword: "wrong",
+        newPassword: "newpassword",
+        confirmNewPassword: "newpassword",
+      },
+    },
+  },
+  result: {
+    errors: [
+      {
+        message: "Current password do not match",
+        locations: [
+          {
+            line: 2,
+            column: 3,
+          },
+        ],
+        path: ["changePassword"],
+        extensions: {
+          code: "BAD_USER_INPUT",
+        },
+      },
+    ],
+    data: {
+      changePassword: null,
     },
   },
 };

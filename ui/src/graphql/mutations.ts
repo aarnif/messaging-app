@@ -221,3 +221,15 @@ export const EDIT_PROFILE =
   }
 }
 `);
+
+export const CHANGE_PASSWORD =
+  gql(`mutation ChangePassword($input: ChangePasswordInput!) {
+  changePassword(input: $input) {
+    id
+    username
+    name
+    about
+    avatar
+    is24HourClock
+  }
+}`);
