@@ -12,6 +12,7 @@ import type {
   CreateChatInput,
   EditChatInput,
   SendMessageInput,
+  ChangePasswordInput,
 } from "~/types/graphql";
 
 import { sequelize } from "../db";
@@ -456,6 +457,17 @@ const FIND_PRIVATE_CHAT_WITH_CONTACT = `
   }
 `;
 
+const CHANGE_PASSWORD = `mutation ChangePassword($input: ChangePasswordInput!) {
+  changePassword(input: $input) {
+    id
+    username
+    name
+    about
+    avatar
+    is24HourClock
+  }
+}`;
+
 const makeRequest = async <Variables>(
   query: string,
   variables: Variables,
@@ -564,6 +576,11 @@ const findPrivateChatWithContact = async (
   token: string
 ): Promise<Response> =>
   await makeRequest(FIND_PRIVATE_CHAT_WITH_CONTACT, { id }, token);
+
+const changePassword = async (
+  input: ChangePasswordInput,
+  token: string
+): Promise<Response> => await makeRequest(CHANGE_PASSWORD, { input }, token);
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
@@ -1102,6 +1119,181 @@ void describe("GraphQL API", () => {
         assert.strictEqual(user.avatar, null);
       });
     });
+
+    void describe("Change password", () => {
+      let token: string;
+
+      beforeEach(async () => {
+        await createUser(user1Input);
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await changePassword(
+          {
+            currentPassword: user1Details.password,
+            newPassword: "newpassword",
+            confirmNewPassword: "newpassword",
+          },
+          ""
+        );
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          changePassword: User;
+        }>;
+        const user = responseBody.data?.changePassword;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with wrong current password", async () => {
+        const response = await changePassword(
+          {
+            currentPassword: "wrong",
+            newPassword: "newpassword",
+            confirmNewPassword: "newpassword",
+          },
+          token
+        );
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          changePassword: User;
+        }>;
+        const user = responseBody.data?.changePassword;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Current password do not match");
+        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+      });
+
+      void test("fails with new password shorter than 6 characters", async () => {
+        const response = await changePassword(
+          {
+            currentPassword: user1Details.password,
+            newPassword: "short",
+            confirmNewPassword: "short",
+          },
+          token
+        );
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          changePassword: User;
+        }>;
+        const user = responseBody.data?.changePassword;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].message,
+          "Input validation failed"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].extensions?.code,
+          "BAD_USER_INPUT"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
+          "Password must be at least 6 characters long"
+        );
+      });
+
+      void test("fails with new passwords not matching", async () => {
+        const response = await changePassword(
+          {
+            currentPassword: user1Details.password,
+            newPassword: "password",
+            confirmNewPassword: "different",
+          },
+          token
+        );
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          changePassword: User;
+        }>;
+        const user = responseBody.data?.changePassword;
+
+        assert.strictEqual(user, null, "User should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].message,
+          "Input validation failed"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].extensions?.code,
+          "BAD_USER_INPUT"
+        );
+        assert.strictEqual(
+          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
+          "Passwords do not match"
+        );
+      });
+
+      void test("succeeds changing password", async () => {
+        const response = await changePassword(
+          {
+            currentPassword: user1Details.password,
+            newPassword: "newpassword",
+            confirmNewPassword: "newpassword",
+          },
+          token
+        );
+
+        assert.strictEqual(response.error, false);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          changePassword: User;
+        }>;
+        const user = responseBody.data?.changePassword;
+
+        assert.ok(user, "User should be defined");
+        assert.strictEqual(user.id, user1Details.id);
+        assert.strictEqual(user.username, user1Details.username);
+        assert.strictEqual(user.name, user1Details.name);
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
+      });
+    });
   });
 
   void describe("Contacts", () => {
@@ -1581,7 +1773,7 @@ void describe("GraphQL API", () => {
       });
     });
 
-    void describe.only("All contacts by user", () => {
+    void describe("All contacts by user", () => {
       void test("fails without authentication", async () => {
         const response = await allContactsByUser(null, "");
 

@@ -75,6 +75,7 @@ type Mutation {
   editChat(input: EditChatInput!): Chat
   leaveChat(id: ID!): Chat
   sendMessage(input: SendMessageInput!): Chat
+  changePassword(input: ChangePasswordInput!): User
 }
 
 input CreateUserInput {
@@ -111,6 +112,12 @@ input EditChatInput {
 input SendMessageInput {
   id: ID!
   content: String!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
 }
 
 type Token {

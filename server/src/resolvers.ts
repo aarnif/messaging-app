@@ -1160,5 +1160,77 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    changePassword: async (
+      _,
+      { input },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { currentPassword, newPassword, confirmNewPassword } = input;
+
+      const changePasswordInputSchema = z
+        .object({
+          currentPassword: z.string(),
+          newPassword: z
+            .string()
+            .min(6, "Password must be at least 6 characters long"),
+          confirmNewPassword: z.string(),
+        })
+        .refine((data) => data.newPassword === data.confirmNewPassword, {
+          message: "Passwords do not match",
+          path: ["confirmPassword"],
+        });
+
+      try {
+        changePasswordInputSchema.parse({
+          currentPassword,
+          newPassword,
+          confirmNewPassword,
+        });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      const userExists = await User.findOne({
+        where: { username: context.currentUser?.username },
+      });
+
+      if (
+        !userExists ||
+        !(await bcrypt.compare(currentPassword, userExists.passwordHash))
+      ) {
+        throw new GraphQLError("Current password do not match", {
+          extensions: {
+            code: "BAD_USER_INPUT",
+          },
+        });
+      }
+
+      try {
+        userExists.passwordHash = await bcrypt.hash(newPassword, 10);
+        await userExists.save();
+
+        return userExists;
+      } catch (error) {
+        throw new GraphQLError("Failed to change password", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
 };
