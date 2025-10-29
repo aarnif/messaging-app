@@ -998,6 +998,7 @@ void describe("GraphQL API", () => {
           {
             name: "Updated Name",
             about: "Updated about",
+            is24HourClock: true,
           },
           ""
         );
@@ -1024,6 +1025,7 @@ void describe("GraphQL API", () => {
           {
             name: "AB",
             about: "Valid about text",
+            is24HourClock: true,
           },
           token
         );
@@ -1057,6 +1059,7 @@ void describe("GraphQL API", () => {
           {
             name: updatedName,
             about: updatedAbout,
+            is24HourClock: true,
           },
           token
         );
@@ -1081,6 +1084,7 @@ void describe("GraphQL API", () => {
           {
             name: updatedName,
             about: null,
+            is24HourClock: true,
           },
           token
         );
@@ -1666,6 +1670,7 @@ void describe("GraphQL API", () => {
           {
             name: newName,
             about: null,
+            is24HourClock: true,
           },
           user2Token
         );
@@ -1818,6 +1823,7 @@ void describe("GraphQL API", () => {
           {
             name: newName,
             about: null,
+            is24HourClock: true,
           },
           user2Token
         );
