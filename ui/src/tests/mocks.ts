@@ -937,6 +937,27 @@ export const editProfile12h: MockLink.MockedResponse<
   },
 };
 
+export const editProfileUpdate: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: "New Profile Name",
+        about: "New About Text",
+        is24HourClock: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: currentUserMock,
+    },
+  },
+};
+
 export const mockNavigate = vi.fn();
 
 export const windowMockContent = {

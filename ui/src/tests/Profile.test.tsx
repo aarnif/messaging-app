@@ -7,10 +7,15 @@ import {
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
-import { useMutation } from "@apollo/client/react";
 import { MemoryRouter } from "react-router";
-import { currentUserMock, editProfile24h, mockNavigate } from "./mocks";
+import {
+  currentUserMock,
+  editProfile24h,
+  editProfileUpdate,
+  mockNavigate,
+} from "./mocks";
 import Profile from "../components/Profile";
+import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -21,22 +26,9 @@ vi.mock("react-router", async () => {
   };
 });
 
-const mockEditProfile = vi.fn();
-
-vi.mock("@apollo/client/react", async () => {
-  const actual = await vi.importActual("@apollo/client/react");
-  return {
-    ...actual,
-    useMutation: vi.fn(() => [
-      mockEditProfile,
-      { loading: false, error: null },
-    ]),
-  };
-});
-
 const { name, username } = currentUserMock;
 
-const renderComponent = (mocks = [editProfile24h]) =>
+const renderComponent = (mocks: MockLink.MockedResponse[] = [editProfile24h]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
@@ -176,22 +168,8 @@ describe("<Profile />", () => {
   });
 
   test("edits profile name and about text succesfully and closes modal", async () => {
-    const mockEditProfile = vi.fn();
-    vi.mocked(useMutation).mockReturnValue([
-      mockEditProfile,
-      {
-        data: undefined,
-        loading: false,
-        error: undefined,
-        called: false,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        client: {} as any,
-        reset: vi.fn(),
-      },
-    ]);
-
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([editProfileUpdate]);
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
@@ -225,15 +203,9 @@ describe("<Profile />", () => {
     await user.click(screen.getByTestId("submit-edit-profile-button"));
 
     await waitFor(() => {
-      expect(mockEditProfile).toHaveBeenCalledWith({
-        variables: {
-          input: {
-            name: newProfileName,
-            about: newAboutText,
-            is24HourClock: currentUserMock.is24HourClock,
-          },
-        },
-      });
+      expect(
+        screen.queryByRole("heading", { name: "Edit Profile" })
+      ).toBeNull();
     });
   });
 });
