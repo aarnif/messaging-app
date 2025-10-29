@@ -22,7 +22,7 @@ const SettingsToggle = ({
 }) => {
   return (
     <div className="flex w-full items-center justify-between rounded-2xl bg-slate-200 px-4 py-2 dark:bg-slate-900">
-      <p className="text-mobile font-semibold text-slate-800 lg:text-base dark:text-slate-100">
+      <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
         {label}
       </p>
 
@@ -32,10 +32,10 @@ const SettingsToggle = ({
         className="cursor-pointer"
       >
         <div
-          className={`flex h-7 w-14 rounded-full sm:h-8 sm:w-16 ${isActive ? "bg-green-500" : "bg-slate-400"}`}
+          className={`flex h-8 w-16 rounded-full ${isActive ? "bg-green-500" : "bg-slate-400"}`}
         >
           <div
-            className={`m-1 flex h-5 w-5 items-center justify-center rounded-full bg-slate-100 transition-all sm:h-6 sm:w-6 ${isActive ? "translate-x-8" : "translate-x-0"}`}
+            className={`m-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 transition-all ${isActive ? "translate-x-8" : "translate-x-0"}`}
           >
             {isActive ? (
               <FaCheck
