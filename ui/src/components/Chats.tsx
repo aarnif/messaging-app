@@ -11,7 +11,13 @@ import { AnimatePresence } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
 
-const ChatItem = ({ chat }: { chat: UserChat }) => {
+const ChatItem = ({
+  currentUser,
+  chat,
+}: {
+  currentUser: User;
+  chat: UserChat;
+}) => {
   const { id, name, messages } = chat;
   const latestMessage = messages?.[0];
 
@@ -22,7 +28,7 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
 
-  const formattedTime = formatDisplayDate(createdAt);
+  const formattedTime = formatDisplayDate(createdAt, currentUser.is24HourClock);
 
   return (
     <NavLink
@@ -60,8 +66,10 @@ const ChatItem = ({ chat }: { chat: UserChat }) => {
 };
 
 const ListMenu = ({
+  currentUser,
   setIsNewChatDropdownOpen,
 }: {
+  currentUser: User;
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const searchWord = useField(
@@ -99,7 +107,12 @@ const ListMenu = ({
         </div>
       ) : hasChats ? (
         <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
-          {chats.map((chat) => chat && <ChatItem key={chat.id} chat={chat} />)}
+          {chats.map(
+            (chat) =>
+              chat && (
+                <ChatItem key={chat.id} currentUser={currentUser} chat={chat} />
+              )
+          )}
         </div>
       ) : (
         <div className="px-4 py-2">
@@ -132,7 +145,10 @@ const Chats = ({ currentUser }: { currentUser: User }) => {
 
   return (
     <div className="flex flex-grow">
-      <ListMenu setIsNewChatDropdownOpen={setIsNewChatDropdownOpen} />
+      <ListMenu
+        currentUser={currentUser}
+        setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
+      />
       <Outlet />
       <AnimatePresence>
         {isNewChatDropdownOpen && (

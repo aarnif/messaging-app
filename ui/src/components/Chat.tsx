@@ -83,7 +83,7 @@ const ChatMessage = ({
               : "text-slate-700 dark:text-slate-200"
           }`}
         >
-          {formatDisplayDate(message?.createdAt)}
+          {formatDisplayDate(message?.createdAt, currentUser.is24HourClock)}
         </p>
         <div
           className={`absolute bottom-0 border-t-[16px] border-t-transparent ${isCurrentUser ? "-right-2 border-l-[16px] border-l-green-300" : "-left-2 border-r-[16px] border-r-slate-200 dark:border-r-slate-700"}`}
