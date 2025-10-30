@@ -10,6 +10,7 @@ type Query {
   isBlockedByUser(id: ID!): Boolean
   findContactById(id: ID!): Contact
   findPrivateChatWithContact(id: ID!): Chat
+  findContactByUserId(id: ID!): Contact
 }
 
 type User {

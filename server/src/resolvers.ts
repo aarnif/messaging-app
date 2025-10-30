@@ -440,6 +440,39 @@ export const resolvers: Resolvers = {
 
       return chat || null;
     },
+    findContactByUserId: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const contact = await Contact.findOne({
+        where: {
+          contactId: Number(id),
+        },
+        include: [
+          {
+            model: User,
+            as: "contactDetails",
+          },
+        ],
+      });
+
+      if (!contact) {
+        throw new GraphQLError("Contact not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+      return contact;
+    },
   },
   UserChat: {
     name: (parent: Chat, __, context: { currentUser: User | null }) =>

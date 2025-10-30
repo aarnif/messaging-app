@@ -468,6 +468,22 @@ const CHANGE_PASSWORD = `mutation ChangePassword($input: ChangePasswordInput!) {
   }
 }`;
 
+const FIND_CONTACT_BY_USER_ID = `
+  query FindContactByUserId($id: ID!) {
+    findContactByUserId(id: $id) {
+      id
+      isBlocked
+      contactDetails {
+        id
+        username
+        name
+        about
+        avatar
+      }
+    }
+  }
+`;
+
 const makeRequest = async <Variables>(
   query: string,
   variables: Variables,
@@ -581,6 +597,12 @@ const changePassword = async (
   input: ChangePasswordInput,
   token: string
 ): Promise<Response> => await makeRequest(CHANGE_PASSWORD, { input }, token);
+
+const findContactByUserId = async (
+  id: string,
+  token: string
+): Promise<Response> =>
+  await makeRequest(FIND_CONTACT_BY_USER_ID, { id }, token);
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
@@ -2145,12 +2167,97 @@ void describe("GraphQL API", () => {
         const responseBody = response.body as HTTPGraphQLResponse<{
           findContactById: Contact;
         }>;
-        console.log("responseBody", responseBody);
         const contact = responseBody.data?.findContactById;
 
         assert.ok(contact, "Contact should be defined");
         assert.strictEqual(contact.id, contactId);
         const user = contact.contactDetails;
+        assert.strictEqual(user.username, user2Details.username);
+        assert.strictEqual(
+          user.name,
+          user2Details.username[0].toUpperCase() +
+            user2Details.username.slice(1)
+        );
+        assert.strictEqual(user.about, null);
+        assert.strictEqual(user.avatar, null);
+      });
+    });
+
+    void describe("Find contact by user ID", () => {
+      let token: string;
+
+      beforeEach(async () => {
+        const loginResponse = await login({
+          username: user1Details.username,
+          password: user1Details.password,
+        });
+
+        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
+          login: { value: string };
+        }>;
+        assert.ok(loginBody.data, "Login token value should be defined");
+        token = loginBody.data.login.value;
+
+        const response = await addContact(user2Details.id, user1Token);
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          addContact: Contact;
+        }>;
+
+        const contact = responseBody.data?.addContact;
+        assert.ok(contact, "Contact should be defined");
+      });
+
+      void test("fails without authentication", async () => {
+        const response = await findContactByUserId(user2Details.id, "");
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactByUserId: Contact;
+        }>;
+        const contact = responseBody.data?.findContactByUserId;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Not authenticated");
+        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent user ID", async () => {
+        const response = await findContactByUserId("999", token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactByUserId: Contact;
+        }>;
+        const contact = responseBody.data?.findContactByUserId;
+
+        assert.strictEqual(contact, null, "Contact should be null");
+        assert.ok(responseBody.errors, "Response should have errors");
+        assert.ok(
+          responseBody.errors?.length > 0,
+          "Should have at least one error"
+        );
+
+        const error = responseBody.errors[0];
+        assert.strictEqual(error.message, "Contact not found");
+        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+      });
+
+      void test("succeeds with valid user ID", async () => {
+        const response = await findContactByUserId(user2Details.id, token);
+
+        const responseBody = response.body as HTTPGraphQLResponse<{
+          findContactByUserId: Contact;
+        }>;
+        const contact = responseBody.data?.findContactByUserId;
+
+        assert.ok(contact, "Contact should be defined");
+        const user = contact.contactDetails;
+        assert.strictEqual(user.id, user2Details.id);
         assert.strictEqual(user.username, user2Details.username);
         assert.strictEqual(
           user.name,
