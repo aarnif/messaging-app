@@ -17,8 +17,8 @@ import {
   findChatByIdNull,
   sendMessage,
   allContactsByUser,
+  currentUserMock,
   USER_ONE_DETAILS,
-  USER_TWO_DETAILS,
   CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
@@ -54,13 +54,12 @@ const renderComponent = (
     findChatById,
     findChatByIdNull,
     sendMessage,
-  ],
-  currentUser = USER_ONE_DETAILS
+  ]
 ) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
-        <Chat currentUser={currentUser} />
+        <Chat currentUser={currentUserMock} />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -544,7 +543,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser], USER_TWO_DETAILS);
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -577,7 +576,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser], USER_TWO_DETAILS);
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -619,7 +618,7 @@ describe("<Chat />", () => {
       params: { id: CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser], USER_ONE_DETAILS);
+    renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
