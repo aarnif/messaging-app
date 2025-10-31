@@ -10,7 +10,7 @@ import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
-  currentUserMock,
+  currentUserChatAdminMock,
   allChatsByUserEmpty,
   allChatsByUser,
   userChatsMock,
@@ -41,7 +41,7 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [allChatsByUser]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Chats currentUser={currentUserMock} />
+        <Chats currentUser={currentUserChatAdminMock} />
       </MemoryRouter>
     </MockedProvider>
   );

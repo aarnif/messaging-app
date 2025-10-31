@@ -5,7 +5,7 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import Appearance from "../components/Appearance";
 import {
-  currentUserMock,
+  currentUserChatAdminMock,
   editProfile24h,
   editProfile12h,
   mockNavigate,
@@ -27,7 +27,7 @@ const renderComponent = (mocks = [editProfile24h]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Appearance currentUser={currentUserMock} />
+        <Appearance currentUser={currentUserChatAdminMock} />
       </MemoryRouter>
     </MockedProvider>
   );

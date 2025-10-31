@@ -9,7 +9,7 @@ import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
-  currentUserMock,
+  currentUserChatAdminMock,
   editProfile24h,
   editProfileUpdate,
   changePassword,
@@ -28,13 +28,13 @@ vi.mock("react-router", async () => {
   };
 });
 
-const { name, username } = currentUserMock;
+const { name, username } = currentUserChatAdminMock;
 
 const renderComponent = (mocks: MockLink.MockedResponse[] = [editProfile24h]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Profile currentUser={currentUserMock} />
+        <Profile currentUser={currentUserChatAdminMock} />
       </MemoryRouter>
     </MockedProvider>
   );

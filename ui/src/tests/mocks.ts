@@ -235,10 +235,19 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-export const currentUserMock = {
+export const currentUserChatAdminMock = {
   id: USER_ONE_DETAILS.id,
   username: USER_ONE_DETAILS.username,
   name: USER_ONE_DETAILS.name,
+  about: null,
+  avatar: null,
+  is24HourClock: true,
+};
+
+export const currentUserChatMemberMock = {
+  id: USER_TWO_DETAILS.id,
+  username: USER_TWO_DETAILS.username,
+  name: USER_TWO_DETAILS.name,
   about: null,
   avatar: null,
   is24HourClock: true,
@@ -250,7 +259,7 @@ export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
   },
   result: {
     data: {
-      me: currentUserMock,
+      me: currentUserChatAdminMock,
     },
   },
 };
@@ -284,7 +293,7 @@ export const createUserMock: MockLink.MockedResponse<
   },
   result: {
     data: {
-      createUser: currentUserMock,
+      createUser: currentUserChatAdminMock,
     },
   },
 };
@@ -528,7 +537,7 @@ export const sendMessage: MockLink.MockedResponse<
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,
-  members: [currentUserMock, userContactsMock[0].contactDetails],
+  members: [currentUserChatAdminMock, userContactsMock[0].contactDetails],
   avatar: null,
 };
 
@@ -536,7 +545,7 @@ export const NewGroupChatDetails = {
   name: "Group Chat",
   description: null,
   members: [
-    currentUserMock,
+    currentUserChatAdminMock,
     userContactsMock[0].contactDetails,
     userContactsMock[1].contactDetails,
   ],
@@ -903,15 +912,15 @@ export const editProfile24h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserMock.name,
-        about: currentUserMock.about,
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
         is24HourClock: true,
       },
     },
   },
   result: {
     data: {
-      editProfile: currentUserMock,
+      editProfile: currentUserChatAdminMock,
     },
   },
 };
@@ -924,8 +933,8 @@ export const editProfile12h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserMock.name,
-        about: currentUserMock.about,
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
         is24HourClock: false,
       },
     },
@@ -933,7 +942,7 @@ export const editProfile12h: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: {
-        ...currentUserMock,
+        ...currentUserChatAdminMock,
         is24HourClock: false,
       },
     },
@@ -956,7 +965,7 @@ export const editProfileUpdate: MockLink.MockedResponse<
   },
   result: {
     data: {
-      editProfile: currentUserMock,
+      editProfile: currentUserChatAdminMock,
     },
   },
 };
@@ -977,7 +986,7 @@ export const changePassword: MockLink.MockedResponse<
   },
   result: {
     data: {
-      changePassword: currentUserMock,
+      changePassword: currentUserChatAdminMock,
     },
   },
 };

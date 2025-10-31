@@ -5,7 +5,7 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
-  currentUserMock,
+  currentUserChatAdminMock,
   findContactById,
   findContactByIdNull,
   findContactByIdBlocked,
@@ -39,7 +39,7 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/contacts/1"]}>
-        <Contact currentUser={currentUserMock} />
+        <Contact currentUser={currentUserChatAdminMock} />
       </MemoryRouter>
     </MockedProvider>
   );
