@@ -13,7 +13,7 @@ import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
   mockNavigate,
-  findChatById,
+  findChatByIdGroup,
   findChatByIdNull,
   sendMessage,
   allContactsByUser,
@@ -52,7 +52,7 @@ Element.prototype.scrollIntoView = vi.fn();
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
-    findChatById,
+    findChatByIdGroup,
     findChatByIdNull,
     sendMessage,
   ],
@@ -267,7 +267,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -295,7 +295,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -334,7 +334,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -378,7 +378,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -449,7 +449,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -505,7 +505,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
@@ -548,7 +548,7 @@ describe("<Chat />", () => {
     });
     const user = userEvent.setup();
     renderComponent(
-      [findChatById, allContactsByUser],
+      [findChatByIdGroup, allContactsByUser],
       currentUserChatMemberMock
     );
 
@@ -584,7 +584,7 @@ describe("<Chat />", () => {
     });
     const user = userEvent.setup();
     renderComponent(
-      [findChatById, allContactsByUser],
+      [findChatByIdGroup, allContactsByUser],
       currentUserChatMemberMock
     );
 
@@ -628,7 +628,7 @@ describe("<Chat />", () => {
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatById, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await waitFor(async () => {
       expect(

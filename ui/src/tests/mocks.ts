@@ -471,7 +471,7 @@ export const allContactsByUser: MockLink.MockedResponse<
   maxUsageCount: 2,
 };
 
-export const findChatById: MockLink.MockedResponse<
+export const findChatByIdGroup: MockLink.MockedResponse<
   FindChatByIdQuery,
   FindChatByIdQueryVariables
 > = {
@@ -484,6 +484,23 @@ export const findChatById: MockLink.MockedResponse<
   result: {
     data: {
       findChatById: GROUP_CHAT_DETAILS,
+    },
+  },
+};
+
+export const findChatByIdPrivate: MockLink.MockedResponse<
+  FindChatByIdQuery,
+  FindChatByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CHAT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findChatById: PRIVATE_CHAT_DETAILS,
     },
   },
 };

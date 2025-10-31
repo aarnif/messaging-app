@@ -6,7 +6,7 @@ import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter } from "react-router";
 import {
   mockNavigate,
-  findChatById,
+  findChatByIdGroup,
   findChatByIdNull,
   sendMessage,
   USER_ONE_DETAILS,
@@ -35,7 +35,7 @@ vi.mock("@apollo/client/react", async () => {
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
-    findChatById,
+    findChatByIdGroup,
     findChatByIdNull,
     sendMessage,
   ]

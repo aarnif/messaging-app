@@ -9,7 +9,7 @@ import {
   meNullMock,
   allChatsByUser,
   allContactsByUser,
-  findChatById,
+  findChatByIdGroup,
   GROUP_CHAT_DETAILS,
   findContactById,
   isBlockedByUserFalse,
@@ -83,7 +83,7 @@ describe("<App />", () => {
   });
 
   test("renders chat page", async () => {
-    renderComponent(["/chats/1"], [meMock, allChatsByUser, findChatById]);
+    renderComponent(["/chats/1"], [meMock, allChatsByUser, findChatByIdGroup]);
 
     await waitFor(() => {
       expect(
@@ -93,7 +93,10 @@ describe("<App />", () => {
   });
 
   test("renders new chat preview page", async () => {
-    renderComponent(["/chats/new"], [meMock, allChatsByUser, findChatById]);
+    renderComponent(
+      ["/chats/new"],
+      [meMock, allChatsByUser, findChatByIdGroup]
+    );
 
     await waitFor(() => {
       expect(
@@ -136,7 +139,7 @@ describe("<App />", () => {
   test("renders profile page", async () => {
     renderComponent(
       ["/settings/profile"],
-      [meMock, allChatsByUser, findChatById]
+      [meMock, allChatsByUser, findChatByIdGroup]
     );
 
     await waitFor(() => {
@@ -148,7 +151,7 @@ describe("<App />", () => {
   test("renders appearance page", async () => {
     renderComponent(
       ["/settings/appearance"],
-      [meMock, allChatsByUser, findChatById]
+      [meMock, allChatsByUser, findChatByIdGroup]
     );
 
     await waitFor(() => {
