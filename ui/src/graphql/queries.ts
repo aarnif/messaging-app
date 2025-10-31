@@ -139,3 +139,18 @@ export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
     avatar
   }
 }`);
+
+export const FIND_CONTACT_BY_USER_ID =
+  gql(`query FindContactByUserId($id: ID!) {
+  findContactByUserId(id: $id) {
+    id
+    isBlocked
+    contactDetails {
+      id
+      username
+      name
+      about
+      avatar
+    }
+  }
+}`);

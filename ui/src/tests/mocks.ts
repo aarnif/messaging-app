@@ -8,6 +8,7 @@ import {
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
   NON_CONTACT_USERS,
+  FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
 import {
   ADD_CONTACTS,
@@ -55,6 +56,8 @@ import type {
   EditProfileMutationVariables,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
+  FindContactByUserIdQuery,
+  FindContactByUserIdQueryVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -190,6 +193,32 @@ export const PRIVATE_CHAT_DETAILS = {
       about: null,
       avatar: null,
       role: "member",
+    },
+  ],
+  messages: [
+    {
+      id: "1",
+      sender: {
+        id: USER_ONE_DETAILS.id,
+        username: USER_ONE_DETAILS.username,
+        name: USER_ONE_DETAILS.name,
+        about: null,
+        avatar: null,
+      },
+      content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
+      createdAt: 1759094100000,
+    },
+    {
+      id: "2",
+      sender: {
+        id: USER_TWO_DETAILS.id,
+        username: USER_TWO_DETAILS.username,
+        name: USER_TWO_DETAILS.name,
+        about: null,
+        avatar: null,
+      },
+      content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
+      createdAt: 1759094100000 + 86400000,
     },
   ],
 };
@@ -1042,6 +1071,24 @@ export const changePasswordError: MockLink.MockedResponse<
       changePassword: null,
     },
   },
+};
+
+export const findContactByUserId: MockLink.MockedResponse<
+  FindContactByUserIdQuery,
+  FindContactByUserIdQueryVariables
+> = {
+  request: {
+    query: FIND_CONTACT_BY_USER_ID,
+    variables: {
+      id: "2",
+    },
+  },
+  result: {
+    data: {
+      findContactByUserId: CONTACT_DETAILS,
+    },
+  },
+  maxUsageCount: 2,
 };
 
 export const mockNavigate = vi.fn();

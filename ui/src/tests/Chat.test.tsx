@@ -14,13 +14,16 @@ import { MemoryRouter, useMatch } from "react-router";
 import {
   mockNavigate,
   findChatByIdGroup,
+  findChatByIdPrivate,
   findChatByIdNull,
   sendMessage,
   allContactsByUser,
+  findContactByUserId,
   currentUserChatAdminMock,
   currentUserChatMemberMock,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
+  PRIVATE_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
 import Chat from "../components/Chat";
@@ -153,7 +156,21 @@ describe("<Chat />", () => {
     });
   });
 
-  test("shows chat info modal when chat info button is clicked", async () => {
+  test("navigates to contact page when private chat info button is clicked", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: PRIVATE_CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent([findChatByIdPrivate, findContactByUserId]);
+
+    await waitFor(async () => {
+      await user.click(screen.getByTestId("chat-info-button"));
+      expect(mockNavigate).toHaveBeenCalledWith("/contacts/1");
+    });
+  });
+
+  test("shows chat info modal when group chat info button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: GROUP_CHAT_DETAILS.id },

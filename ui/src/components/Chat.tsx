@@ -5,6 +5,7 @@ import {
   ALL_CHATS_BY_USER,
   ALL_CONTACTS_BY_USER,
   IS_BLOCKED_BY_USER,
+  FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
@@ -497,7 +498,11 @@ const ChatContent = ({
   chat: Chat;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const navigate = useNavigate();
   const [checkIsBlocked] = useLazyQuery(IS_BLOCKED_BY_USER, {
+    fetchPolicy: "network-only",
+  });
+  const [findContactByUserId] = useLazyQuery(FIND_CONTACT_BY_USER_ID, {
     fetchPolicy: "network-only",
   });
 
@@ -508,13 +513,33 @@ const ChatContent = ({
       ? members.find((member) => member.id !== currentUser.id)
       : null;
 
+  const handleCallBack = async () => {
+    if (type === "group") {
+      setIsChatInfoOpen(true);
+      return;
+    }
+
+    const data = await findContactByUserId({
+      variables: {
+        id: otherChatMember?.id ?? "",
+      },
+    });
+
+    const contact = data?.data?.findContactByUserId;
+
+    if (contact) {
+      navigate(`/contacts/${contact.id}`);
+    }
+  };
+
   return (
     <>
       <ChatHeader
+        type={type}
         name={name ?? ""}
         members={members ?? []}
         currentUser={currentUser}
-        callBack={() => setIsChatInfoOpen(true)}
+        callBack={handleCallBack}
       />
       <ChatMessages currentUser={currentUser} messages={chat.messages} />
       <NewMessageBox

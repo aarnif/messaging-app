@@ -4,11 +4,13 @@ import { IoChevronBack } from "react-icons/io5";
 import type { Maybe, User, ChatMember } from "../__generated__/graphql";
 
 const ChatHeader = ({
+  type,
   name,
   members,
   currentUser,
   callBack,
 }: {
+  type: string | null;
   name: string;
   members: Maybe<ChatMember>[];
   currentUser: User;
@@ -16,11 +18,16 @@ const ChatHeader = ({
 }) => {
   const navigate = useNavigate();
 
-  const membersDisplayString = members
-    ?.map((member) =>
-      member?.username === currentUser.username ? "You" : member?.name
-    )
-    .join(", ");
+  const membersDisplayString =
+    type === "group"
+      ? members
+          ?.map((member) =>
+            member?.username === currentUser.username ? "You" : member?.name
+          )
+          .join(", ")
+      : type === "private"
+        ? "Click here for contact details."
+        : "";
 
   const hasCallBack = !!callBack;
 

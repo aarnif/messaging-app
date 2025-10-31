@@ -65,10 +65,16 @@ const NewChatContent = ({
   }
 
   const { name, description, members } = chat;
+  const type = members.length == 2 ? null : "group";
 
   return (
     <>
-      <ChatHeader name={name} members={members} currentUser={currentUser} />
+      <ChatHeader
+        type={type}
+        name={name}
+        members={members}
+        currentUser={currentUser}
+      />
       <div className="flex-grow"></div>
       <NewMessageBox
         chatName={name ?? null}

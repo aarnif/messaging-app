@@ -12,6 +12,7 @@ import {
   USER_ONE_DETAILS,
   MESSAGE_DETAILS,
   NewPrivateChatDetails,
+  NewGroupChatDetails,
 } from "./mocks";
 import NewChat from "../components/NewChat";
 
@@ -56,17 +57,40 @@ describe("<NewChat />", () => {
     );
   });
 
-  test("renders component", async () => {
+  test("shows new private chat name and not members", async () => {
     renderComponent();
     await waitFor(() => {
       expect(
         screen.getByRole("heading", { name: NewPrivateChatDetails.name })
       ).toBeDefined();
       expect(
-        screen.getByText(
+        screen.queryByText(
           NewPrivateChatDetails.members
-            .map((member) =>
-              member.name === USER_ONE_DETAILS.name ? "You" : member.name
+            ?.map((member) =>
+              member?.username === USER_ONE_DETAILS.username
+                ? "You"
+                : member?.name
+            )
+            .join(", ")
+        )
+      ).toBeNull();
+    });
+  });
+
+  test("shows new group chat name and members", async () => {
+    localStorage.setItem("new-chat-info", JSON.stringify(NewGroupChatDetails));
+    renderComponent();
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: NewGroupChatDetails.name })
+      ).toBeDefined();
+      expect(
+        screen.getByText(
+          NewGroupChatDetails.members
+            ?.map((member) =>
+              member?.username === USER_ONE_DETAILS.username
+                ? "You"
+                : member?.name
             )
             .join(", ")
         )
