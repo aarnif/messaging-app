@@ -20,7 +20,7 @@ import {
   currentUserChatAdminMock,
   currentUserChatMemberMock,
   USER_ONE_DETAILS,
-  CHAT_DETAILS,
+  GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
 import Chat from "../components/Chat";
@@ -86,23 +86,23 @@ describe("<Chat />", () => {
   test("renders chat header and messages when chat exists", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
       expect(
         screen.getByText(
-          CHAT_DETAILS.members
+          GROUP_CHAT_DETAILS.members
             .map((member) =>
               member.name === USER_ONE_DETAILS.name ? "You" : member.name
             )
             .join(", ")
         )
       ).toBeDefined();
-      CHAT_DETAILS.messages.forEach((message) => {
+      GROUP_CHAT_DETAILS.messages.forEach((message) => {
         const { sender, content, createdAt } = message;
         const { name } = sender;
         if (name === USER_ONE_DETAILS.name) {
@@ -122,7 +122,7 @@ describe("<Chat />", () => {
   test("applies correct message styles for current user vs contacts", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     renderComponent();
     await waitFor(() => {
@@ -142,7 +142,7 @@ describe("<Chat />", () => {
   test("navigates to chats list when back button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent();
@@ -156,14 +156,14 @@ describe("<Chat />", () => {
   test("shows chat info modal when chat info button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent();
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -171,21 +171,21 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
   });
 
   test("closes chat info modal when close button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent();
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -193,21 +193,21 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("close-chat-info-button"));
 
     await waitFor(async () => {
       expect(screen.queryByRole("heading", { name: "Chat" })).toBeNull();
-      expect(screen.queryByText(CHAT_DETAILS.description)).toBeNull();
+      expect(screen.queryByText(GROUP_CHAT_DETAILS.description)).toBeNull();
     });
   });
 
   test("does not send message when input is empty", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent();
@@ -222,7 +222,7 @@ describe("<Chat />", () => {
       expect(mockSendMessage).not.toHaveBeenCalledWith({
         variables: {
           input: {
-            id: CHAT_DETAILS.id,
+            id: GROUP_CHAT_DETAILS.id,
             content: MESSAGE_DETAILS.content,
           },
         },
@@ -233,7 +233,7 @@ describe("<Chat />", () => {
   test("sends message successfully and resets input", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent();
@@ -252,7 +252,7 @@ describe("<Chat />", () => {
       expect(mockSendMessage).toHaveBeenCalledWith({
         variables: {
           input: {
-            id: CHAT_DETAILS.id,
+            id: GROUP_CHAT_DETAILS.id,
             content: MESSAGE_DETAILS.content,
           },
         },
@@ -264,14 +264,14 @@ describe("<Chat />", () => {
   test("shows edit chat modal when edit chat button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -279,7 +279,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("edit-chat-button"));
@@ -292,14 +292,14 @@ describe("<Chat />", () => {
   test("closes edit chat modal when close button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -307,7 +307,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("edit-chat-button"));
@@ -331,14 +331,14 @@ describe("<Chat />", () => {
   test("edit chat fails with empty name", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -346,7 +346,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("edit-chat-button"));
@@ -375,14 +375,14 @@ describe("<Chat />", () => {
   test("selects contact when contact button is clicked", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -390,7 +390,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("edit-chat-button"));
@@ -404,8 +404,8 @@ describe("<Chat />", () => {
 
     const modal = screen.getByTestId("edit-chat-modal");
 
-    const chatMember1 = CHAT_DETAILS.members[1].username;
-    const chatMember2 = CHAT_DETAILS.members[2].username;
+    const chatMember1 = GROUP_CHAT_DETAILS.members[1].username;
+    const chatMember2 = GROUP_CHAT_DETAILS.members[2].username;
 
     const contactToBeUnSelected = within(modal).getByText(`@${chatMember1}`);
 
@@ -446,14 +446,14 @@ describe("<Chat />", () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -461,7 +461,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByTestId("edit-chat-button"));
@@ -487,10 +487,12 @@ describe("<Chat />", () => {
       expect(mockEditChat).toHaveBeenCalledWith({
         variables: {
           input: {
-            id: CHAT_DETAILS.id,
+            id: GROUP_CHAT_DETAILS.id,
             name: "New Name",
             description: "New Description",
-            members: CHAT_DETAILS.members.slice(1).map((member) => member.id),
+            members: GROUP_CHAT_DETAILS.members
+              .slice(1)
+              .map((member) => member.id),
           },
         },
       });
@@ -500,14 +502,14 @@ describe("<Chat />", () => {
   test("hides leave chat button for admin users", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -515,7 +517,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
       expect(screen.queryByRole("button", { name: "Leave Chat" })).toBeNull();
     });
   });
@@ -523,7 +525,7 @@ describe("<Chat />", () => {
   test("leaves chat and navigates to home page when clicking leave chat button", async () => {
     const mockLeaveChat = vi.fn().mockResolvedValue({
       data: {
-        leaveChat: { id: CHAT_DETAILS.id },
+        leaveChat: { id: GROUP_CHAT_DETAILS.id },
       },
     });
 
@@ -542,7 +544,7 @@ describe("<Chat />", () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent(
@@ -552,7 +554,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -560,7 +562,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByRole("button", { name: "Leave Chat" }));
@@ -568,7 +570,7 @@ describe("<Chat />", () => {
     await waitFor(async () => {
       expect(mockLeaveChat).toHaveBeenCalledWith({
         variables: {
-          id: CHAT_DETAILS.id,
+          id: GROUP_CHAT_DETAILS.id,
         },
       });
       expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
@@ -578,7 +580,7 @@ describe("<Chat />", () => {
   test("hides delete chat button for non admin users", async () => {
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent(
@@ -588,7 +590,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -596,7 +598,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
       expect(screen.queryByRole("button", { name: "Delete Chat" })).toBeNull();
     });
   });
@@ -604,7 +606,7 @@ describe("<Chat />", () => {
   test("deletes chat and navigates to home page when clicking delete chat button", async () => {
     const mockDeleteChat = vi.fn().mockResolvedValue({
       data: {
-        deleteChat: { id: CHAT_DETAILS.id },
+        deleteChat: { id: GROUP_CHAT_DETAILS.id },
       },
     });
 
@@ -623,14 +625,14 @@ describe("<Chat />", () => {
 
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
-      params: { id: CHAT_DETAILS.id },
+      params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent([findChatById, allContactsByUser]);
 
     await waitFor(async () => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
 
@@ -638,7 +640,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(CHAT_DETAILS.description)).toBeDefined();
+      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
     });
 
     await user.click(screen.getByRole("button", { name: "Delete Chat" }));
@@ -646,7 +648,7 @@ describe("<Chat />", () => {
     await waitFor(async () => {
       expect(mockDeleteChat).toHaveBeenCalledWith({
         variables: {
-          id: CHAT_DETAILS.id,
+          id: GROUP_CHAT_DETAILS.id,
         },
       });
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");

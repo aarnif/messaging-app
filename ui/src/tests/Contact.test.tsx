@@ -13,7 +13,7 @@ import {
   findPrivateChatWithContactNull,
   mockNavigate,
   CONTACT_DETAILS,
-  FIND_PRIVATE_CHAT_DETAILS,
+  PRIVATE_CHAT_DETAILS,
   NewPrivateChatDetails,
   toggleBlockContactTrue,
   toggleBlockContactFalse,
@@ -121,7 +121,7 @@ describe("<Contact />", () => {
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith(
-        `/chats/${FIND_PRIVATE_CHAT_DETAILS.id}`
+        `/chats/${PRIVATE_CHAT_DETAILS.id}`
       );
     });
   });
@@ -145,7 +145,7 @@ describe("<Contact />", () => {
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith(
-        `/chats/${FIND_PRIVATE_CHAT_DETAILS.id}`
+        `/chats/${PRIVATE_CHAT_DETAILS.id}`
       );
     });
   });

@@ -10,7 +10,7 @@ import {
   allChatsByUser,
   allContactsByUser,
   findChatById,
-  CHAT_DETAILS,
+  GROUP_CHAT_DETAILS,
   findContactById,
   isBlockedByUserFalse,
   CONTACT_DETAILS,
@@ -87,7 +87,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
   });
@@ -97,7 +97,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
       ).toBeDefined();
     });
   });

@@ -96,7 +96,7 @@ export const USER_FIVE_DETAILS = {
   username: "user5",
 };
 
-export const CHAT_DETAILS = {
+export const GROUP_CHAT_DETAILS = {
   id: "1",
   type: "group",
   name: "Test Chat 1",
@@ -168,7 +168,7 @@ export const CHAT_DETAILS = {
   ],
 };
 
-export const FIND_PRIVATE_CHAT_DETAILS = {
+export const PRIVATE_CHAT_DETAILS = {
   id: "1",
   type: "private",
   name: "User2",
@@ -387,10 +387,10 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
 
 export const userChatsMock = [
   {
-    id: CHAT_DETAILS.id,
-    name: CHAT_DETAILS.name,
+    id: GROUP_CHAT_DETAILS.id,
+    name: GROUP_CHAT_DETAILS.name,
     avatar: null,
-    messages: CHAT_DETAILS.messages,
+    messages: GROUP_CHAT_DETAILS.messages,
   },
 ];
 
@@ -483,7 +483,7 @@ export const findChatById: MockLink.MockedResponse<
   },
   result: {
     data: {
-      findChatById: CHAT_DETAILS,
+      findChatById: GROUP_CHAT_DETAILS,
     },
   },
 };
@@ -521,9 +521,9 @@ export const sendMessage: MockLink.MockedResponse<
   result: {
     data: {
       sendMessage: {
-        ...CHAT_DETAILS,
+        ...GROUP_CHAT_DETAILS,
         messages: [
-          ...CHAT_DETAILS.messages,
+          ...GROUP_CHAT_DETAILS.messages,
           {
             ...MESSAGE_DETAILS,
           },
@@ -652,7 +652,7 @@ export const findPrivateChatWithContact: MockLink.MockedResponse<
   },
   result: {
     data: {
-      findPrivateChatWithContact: FIND_PRIVATE_CHAT_DETAILS,
+      findPrivateChatWithContact: PRIVATE_CHAT_DETAILS,
     },
   },
 };
