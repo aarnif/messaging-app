@@ -8,6 +8,7 @@
     "dev": "npm run generate && vite",
     "build": "tsc -b && vite build",
     "test": "vitest run",
+    "typecheck": "tsc",
     "lint": "eslint .",
     "preview": "vite preview"
   },
