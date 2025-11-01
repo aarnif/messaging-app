@@ -14,7 +14,7 @@ import { MdClose } from "react-icons/md";
 import type { UserContact } from "../types";
 import type {
   Maybe,
-  Chat,
+  Chat as ChatType,
   User,
   Message,
   ChatMember,
@@ -229,7 +229,7 @@ const ChatInfoModal = ({
   setIsEditChatOpen,
 }: {
   currentUser: User;
-  chat: Chat;
+  chat: ChatType;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
@@ -357,7 +357,7 @@ const EditChatModal = ({
   chat,
   setIsEditChatOpen,
 }: {
-  chat: Chat;
+  chat: ChatType;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const width = useResponsiveWidth();
@@ -495,7 +495,7 @@ const ChatContent = ({
   setIsChatInfoOpen,
 }: {
   currentUser: User;
-  chat: Chat;
+  chat: ChatType;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const navigate = useNavigate();
