@@ -6,6 +6,7 @@ import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter } from "react-router";
 import {
   mockNavigate,
+  currentUserChatAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
   sendMessage,
@@ -44,7 +45,7 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <NewChat currentUser={USER_ONE_DETAILS} />
+        <NewChat currentUser={currentUserChatAdminMock} />
       </MemoryRouter>
     </MockedProvider>
   );
