@@ -42,9 +42,10 @@ type Chat {
 type ChatMember {
   id: ID!
   username: String!
-  name: String
-  avatar: String
+  name: String!
   about: String
+  avatar: String
+  is24HourClock: Boolean!
   role: String
 }
 
