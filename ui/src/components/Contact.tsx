@@ -11,7 +11,7 @@ import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../graphql/mutations";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
-import type { User, Contact } from "../__generated__/graphql";
+import type { User, Contact as ContactType } from "../__generated__/graphql";
 import { useState, useEffect } from "react";
 
 const ContactContent = ({
@@ -20,7 +20,7 @@ const ContactContent = ({
   isBlockedByUser,
 }: {
   currentUser: User;
-  contact: Contact;
+  contact: ContactType;
   isBlockedByUser: boolean;
 }) => {
   const navigate = useNavigate();
