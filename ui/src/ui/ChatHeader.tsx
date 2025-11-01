@@ -1,7 +1,8 @@
 import { useNavigate } from "react-router";
 import { truncateText } from "../helpers";
 import { IoChevronBack } from "react-icons/io5";
-import type { Maybe, User, ChatMember } from "../__generated__/graphql";
+import type { User, ChatMember } from "../__generated__/graphql";
+import type { NewChatMember } from "../types";
 
 const ChatHeader = ({
   type,
@@ -12,7 +13,7 @@ const ChatHeader = ({
 }: {
   type: string | null;
   name: string;
-  members: Maybe<ChatMember>[];
+  members: ChatMember[] | NewChatMember[];
   currentUser: User;
   callBack?: () => void;
 }) => {
