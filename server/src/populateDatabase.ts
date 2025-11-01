@@ -34,6 +34,7 @@ const createUsers = async () => {
         name: user.name,
         avatar: user.avatar,
         about: user.about,
+        is24HourClock: true,
       }))
     )
   );
