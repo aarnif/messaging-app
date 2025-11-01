@@ -112,6 +112,7 @@ export const GROUP_CHAT_DETAILS = {
       name: USER_ONE_DETAILS.name,
       about: null,
       avatar: null,
+      is24HourClock: true,
       role: "admin",
     },
     {
@@ -120,6 +121,7 @@ export const GROUP_CHAT_DETAILS = {
       name: USER_TWO_DETAILS.name,
       about: null,
       avatar: null,
+      is24HourClock: true,
       role: "member",
     },
     {
@@ -128,6 +130,7 @@ export const GROUP_CHAT_DETAILS = {
       name: USER_THREE_DETAILS.name,
       about: null,
       avatar: null,
+      is24HourClock: true,
       role: "member",
     },
   ],
@@ -140,6 +143,7 @@ export const GROUP_CHAT_DETAILS = {
         name: USER_ONE_DETAILS.name,
         about: null,
         avatar: null,
+        is24HourClock: true,
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
@@ -152,6 +156,7 @@ export const GROUP_CHAT_DETAILS = {
         name: USER_TWO_DETAILS.name,
         about: null,
         avatar: null,
+        is24HourClock: true,
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
@@ -164,6 +169,7 @@ export const GROUP_CHAT_DETAILS = {
         name: USER_THREE_DETAILS.name,
         about: null,
         avatar: null,
+        is24HourClock: true,
       },
       content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
       createdAt: 1759094100000 + 2 * 86400000,
@@ -184,6 +190,7 @@ export const PRIVATE_CHAT_DETAILS = {
       name: USER_ONE_DETAILS.name,
       about: null,
       avatar: null,
+      is24HourClock: true,
       role: "admin",
     },
     {
@@ -192,6 +199,7 @@ export const PRIVATE_CHAT_DETAILS = {
       name: USER_TWO_DETAILS.name,
       about: null,
       avatar: null,
+      is24HourClock: true,
       role: "member",
     },
   ],
@@ -204,6 +212,7 @@ export const PRIVATE_CHAT_DETAILS = {
         name: USER_ONE_DETAILS.name,
         about: null,
         avatar: null,
+        is24HourClock: true,
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
@@ -216,6 +225,7 @@ export const PRIVATE_CHAT_DETAILS = {
         name: USER_TWO_DETAILS.name,
         about: null,
         avatar: null,
+        is24HourClock: true,
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
@@ -231,6 +241,7 @@ export const MESSAGE_DETAILS = {
     name: USER_ONE_DETAILS.name,
     about: null,
     avatar: null,
+    is24HourClock: true,
   },
   content: "This is a new message.",
   createdAt: 1759094100000 + 3 * 86400000,
@@ -245,6 +256,7 @@ export const CONTACT_DETAILS = {
     name: USER_TWO_DETAILS.name,
     about: "Hi! My name is User 2!",
     avatar: null,
+    is24HourClock: true,
   },
 };
 
@@ -467,6 +479,7 @@ export const userContactsMock = [
       name: USER_TWO_DETAILS.name,
       about: "Hi! My name is User 2!",
       avatar: null,
+      is24HourClock: true,
     },
   },
   {
@@ -478,6 +491,7 @@ export const userContactsMock = [
       name: USER_THREE_DETAILS.name,
       about: "Hi! My name is User 3!",
       avatar: null,
+      is24HourClock: true,
     },
   },
 ];
@@ -847,6 +861,7 @@ export const nonContactUsersMock = [
     name: USER_FOUR_DETAILS.name,
     about: "Hi! My name is User 4!",
     avatar: null,
+    is24HourClock: true,
   },
   {
     id: USER_FIVE_DETAILS.id,
@@ -854,6 +869,7 @@ export const nonContactUsersMock = [
     name: USER_FIVE_DETAILS.name,
     about: "Hi! My name is User 5!",
     avatar: null,
+    is24HourClock: true,
   },
 ];
 
