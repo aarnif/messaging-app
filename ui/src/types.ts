@@ -29,3 +29,12 @@ export interface UserContact extends Contact {
 export interface AddContactOption extends User {
   isSelected: boolean;
 }
+
+export interface ModalOptions {
+  type: "alert";
+  title: string;
+  message: string;
+  close: string;
+  confirm?: string;
+  callback?: () => void;
+}
