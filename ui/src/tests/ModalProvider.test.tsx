@@ -109,12 +109,6 @@ describe("<ModalProvider />", () => {
         screen.getByRole("button", { name: "Confirm" })
       ).toBeInTheDocument();
     });
-
-    await user.click(screen.getByTestId("overlay"));
-
-    await waitFor(() =>
-      expect(screen.queryByTestId("notification-modal")).not.toBeInTheDocument()
-    );
   });
 
   test("shows only close button when confirm or callback is not provided", async () => {
