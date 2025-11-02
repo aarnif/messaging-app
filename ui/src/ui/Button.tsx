@@ -6,7 +6,7 @@ const Button = ({
   onClick,
 }: {
   type: "submit" | "reset" | "button" | undefined;
-  variant: "primary" | "secondary" | "tertiary" | "cancel" | "alert" | "danger";
+  variant: "primary" | "secondary" | "tertiary" | "cancel" | "alert" | "delete";
   text: string;
   disabled?: boolean;
   onClick?:
@@ -30,7 +30,7 @@ const Button = ({
     alert:
       "border-1 text-sm shadow-yellow-900 text-yellow-700 border-yellow-700 dark:border-yellow-600 \
       dark:text-yellow-800 hover:text-yellow-800 hover:border-yellow-800 dark:hover:text-yellow-800 dark:hover:border-yellow-800",
-    danger:
+    delete:
       "border-1 text-sm shadow-red-900 text-red-600 border-red-600 dark:border-red-500 \
       dark:text-red-500 hover:text-red-700 hover:border-red-700 dark:hover:text-red-600 dark:hover:border-red-600",
     disabled:

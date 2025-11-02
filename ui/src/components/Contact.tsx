@@ -143,13 +143,13 @@ const ContactContent = ({
         />
         <Button
           type="button"
-          variant={!isBlocked ? "danger" : "tertiary"}
+          variant={!isBlocked ? "delete" : "tertiary"}
           text={!isBlocked ? "Block Contact" : "Unblock Contact"}
           onClick={handleToggleBlockContact}
         />
         <Button
           type="button"
-          variant="danger"
+          variant="delete"
           text="Remove Contact"
           onClick={handleRemoveContact}
         />
