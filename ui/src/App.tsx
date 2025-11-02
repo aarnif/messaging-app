@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
+import ModalProvider from "./components/ModalProvider";
 import Home from "./components/Home";
 import SignIn from "./components/SignIn";
 import SignUp from "./components/SignUp";
@@ -25,84 +26,86 @@ const App = () => {
   const currentUser = data?.me;
 
   return (
-    <Routes>
-      <Route
-        path="/"
-        element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
-      >
-        <Route path="/" element={<Chats currentUser={currentUser as User} />}>
-          <Route
-            index
-            element={
-              <SelectionPrompt message="Select Chat to Start Messaging." />
-            }
-          />
-          <Route
-            path="/chats/:id"
-            element={<Chat currentUser={currentUser as User} />}
-          />
+    <ModalProvider>
+      <Routes>
+        <Route
+          path="/"
+          element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
+        >
+          <Route path="/" element={<Chats currentUser={currentUser as User} />}>
+            <Route
+              index
+              element={
+                <SelectionPrompt message="Select Chat to Start Messaging." />
+              }
+            />
+            <Route
+              path="/chats/:id"
+              element={<Chat currentUser={currentUser as User} />}
+            />
 
-          <Route
-            path="/chats/new"
-            element={<NewChat currentUser={currentUser as User} />}
-          />
+            <Route
+              path="/chats/new"
+              element={<NewChat currentUser={currentUser as User} />}
+            />
 
-          <Route
-            path="/chats/left"
-            element={<SelectionPrompt message="You left the chat." />}
-          />
+            <Route
+              path="/chats/left"
+              element={<SelectionPrompt message="You left the chat." />}
+            />
 
-          <Route
-            path="/chats/deleted"
-            element={<SelectionPrompt message="You deleted the chat." />}
-          />
+            <Route
+              path="/chats/deleted"
+              element={<SelectionPrompt message="You deleted the chat." />}
+            />
+          </Route>
+
+          <Route path="/contacts" element={<Contacts />}>
+            <Route
+              index
+              element={
+                <SelectionPrompt message="Select a contact for further information." />
+              }
+            />
+            <Route
+              path="/contacts/:id"
+              element={<Contact currentUser={currentUser as User} />}
+            />
+            <Route
+              path="/contacts/deleted"
+              element={<SelectionPrompt message="You deleted the contact." />}
+            />
+          </Route>
+
+          <Route path="/settings" element={<Settings />}>
+            <Route
+              index
+              element={<Profile currentUser={currentUser as User} />}
+            />
+            <Route
+              path="profile"
+              element={<Profile currentUser={currentUser as User} />}
+            />
+            <Route
+              path="appearance"
+              element={<Appearance currentUser={currentUser as User} />}
+            />
+          </Route>
         </Route>
 
-        <Route path="/contacts" element={<Contacts />}>
-          <Route
-            index
-            element={
-              <SelectionPrompt message="Select a contact for further information." />
-            }
-          />
-          <Route
-            path="/contacts/:id"
-            element={<Contact currentUser={currentUser as User} />}
-          />
-          <Route
-            path="/contacts/deleted"
-            element={<SelectionPrompt message="You deleted the contact." />}
-          />
-        </Route>
+        <Route
+          path="/signin"
+          element={currentUser ? <Navigate to="/" replace /> : <SignIn />}
+        />
 
-        <Route path="/settings" element={<Settings />}>
-          <Route
-            index
-            element={<Profile currentUser={currentUser as User} />}
-          />
-          <Route
-            path="profile"
-            element={<Profile currentUser={currentUser as User} />}
-          />
-          <Route
-            path="appearance"
-            element={<Appearance currentUser={currentUser as User} />}
-          />
-        </Route>
-      </Route>
+        <Route
+          path="/signup"
+          element={currentUser ? <Navigate to="/" replace /> : <SignUp />}
+        />
 
-      <Route
-        path="/signin"
-        element={currentUser ? <Navigate to="/" replace /> : <SignIn />}
-      />
-
-      <Route
-        path="/signup"
-        element={currentUser ? <Navigate to="/" replace /> : <SignUp />}
-      />
-
-      <Route path="/*" element={<p>Page Not Found</p>} />
-    </Routes>
+        <Route path="/*" element={<p>Page Not Found</p>} />
+      </Routes>
+    </ModalProvider>
   );
 };
 
