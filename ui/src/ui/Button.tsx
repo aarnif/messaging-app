@@ -13,7 +13,8 @@ const Button = ({
     | "cancel"
     | "alert"
     | "delete"
-    | "danger";
+    | "danger"
+    | "success";
   text: string;
   disabled?: boolean;
   onClick?:
@@ -43,6 +44,9 @@ const Button = ({
     danger:
       "border-1 text-sm shadow-red-900 text-red-700 border-red-700 dark:border-red-600 \
       dark:text-red-800 hover:text-red-800 hover:border-red-800 dark:hover:text-red-800 dark:hover:border-red-800",
+    success:
+      "border-1 text-sm shadow-green-900 text-green-700 border-green-700 dark:border-green-600 \
+      dark:text-green-800 hover:text-green-800 hover:border-green-800 dark:hover:text-green-800 dark:hover:border-green-800",
     disabled:
       "border-1 text-sm text-slate-500 border-slate-500 dark:border-slate-400 \
       dark:text-slate-400 shadow-slate-600",
