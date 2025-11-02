@@ -102,6 +102,31 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
+      expect(screen.queryByTestId("alert-modal")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Confirm" })
+      ).toBeInTheDocument();
+    });
+  });
+
+  test("opens danger modal when modal type is danger", async () => {
+    const user = userEvent.setup();
+
+    const dangerModalOptions: ModalOptions = {
+      ...alertModalOptions,
+      type: "danger",
+    };
+
+    renderComponent(dangerModalOptions);
+
+    await user.click(screen.getByRole("button", { name: "Open Modal" }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
+      expect(screen.queryByTestId("danger-modal")).toBeInTheDocument();
       expect(
         screen.getByRole("button", { name: "Cancel" })
       ).toBeInTheDocument();

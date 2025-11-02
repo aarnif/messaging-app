@@ -25,7 +25,6 @@ const ModalContent = ({
   const getVariantStyles = (type: ModalOptions["type"]) => {
     switch (type) {
       case "alert":
-      default:
         return {
           background: "bg-yellow-50",
           outerCircle: "bg-yellow-300",
@@ -33,6 +32,16 @@ const ModalContent = ({
           icon: "text-yellow-900",
           title: "text-yellow-900",
           message: "text-yellow-700",
+        };
+      case "danger":
+      default:
+        return {
+          background: "bg-red-50",
+          outerCircle: "bg-red-300",
+          innerCircle: "bg-red-100 border-red-400",
+          icon: "text-red-900",
+          title: "text-red-900",
+          message: "text-red-700",
         };
     }
   };
@@ -50,7 +59,7 @@ const ModalContent = ({
       exit={{ y: -50, opacity: 0 }}
       transition={{ duration: 0.4, type: "tween" }}
     >
-      <div className="flex w-full flex-col gap-6">
+      <div data-testid={`${type}-modal`} className="flex w-full flex-col gap-6">
         <div className="flex items-center justify-start gap-3">
           <div
             className={`flex h-10 w-10 items-center justify-center rounded-full ${styles.outerCircle}`}
