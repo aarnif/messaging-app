@@ -136,6 +136,30 @@ describe("<ModalProvider />", () => {
     });
   });
 
+  test("opens success modal when modal type is danger", async () => {
+    const user = userEvent.setup();
+
+    const successModalOptions: ModalOptions = {
+      ...alertModalOptions,
+      type: "success",
+    };
+
+    renderComponent(successModalOptions);
+
+    await user.click(screen.getByRole("button", { name: "Open Modal" }));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
+      expect(screen.queryByTestId("success-modal")).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Cancel" })
+      ).toBeInTheDocument();
+      expect(
+        screen.getByRole("button", { name: "Confirm" })
+      ).toBeInTheDocument();
+    });
+  });
+
   test("shows only close button when confirm or callback is not provided", async () => {
     const user = userEvent.setup();
 

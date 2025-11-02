@@ -34,7 +34,6 @@ const ModalContent = ({
           message: "text-yellow-700",
         };
       case "danger":
-      default:
         return {
           background: "bg-red-50",
           outerCircle: "bg-red-300",
@@ -42,6 +41,16 @@ const ModalContent = ({
           icon: "text-red-900",
           title: "text-red-900",
           message: "text-red-700",
+        };
+      case "success":
+      default:
+        return {
+          background: "bg-green-50",
+          outerCircle: "bg-green-300",
+          innerCircle: "bg-green-100 border-green-400",
+          icon: "text-green-900",
+          title: "text-green-900",
+          message: "text-green-700",
         };
     }
   };

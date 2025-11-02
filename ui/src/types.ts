@@ -31,7 +31,7 @@ export interface AddContactOption extends User {
 }
 
 export interface ModalOptions {
-  type: "alert" | "danger";
+  type: "alert" | "danger" | "success";
   title: string;
   message: string;
   close: string;
