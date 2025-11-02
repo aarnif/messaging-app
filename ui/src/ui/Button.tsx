@@ -6,7 +6,14 @@ const Button = ({
   onClick,
 }: {
   type: "submit" | "reset" | "button" | undefined;
-  variant: "primary" | "secondary" | "tertiary" | "cancel" | "alert" | "delete";
+  variant:
+    | "primary"
+    | "secondary"
+    | "tertiary"
+    | "cancel"
+    | "alert"
+    | "delete"
+    | "danger";
   text: string;
   disabled?: boolean;
   onClick?:
@@ -33,6 +40,9 @@ const Button = ({
     delete:
       "border-1 text-sm shadow-red-900 text-red-600 border-red-600 dark:border-red-500 \
       dark:text-red-500 hover:text-red-700 hover:border-red-700 dark:hover:text-red-600 dark:hover:border-red-600",
+    danger:
+      "border-1 text-sm shadow-red-900 text-red-700 border-red-700 dark:border-red-600 \
+      dark:text-red-800 hover:text-red-800 hover:border-red-800 dark:hover:text-red-800 dark:hover:border-red-800",
     disabled:
       "border-1 text-sm text-slate-500 border-slate-500 dark:border-slate-400 \
       dark:text-slate-400 shadow-slate-600",
