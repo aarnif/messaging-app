@@ -15,6 +15,13 @@ import type {
   ChangePasswordInput,
 } from "~/types/graphql";
 import {
+  user1Details,
+  user2Details,
+  user3Details,
+  privateChatDetails,
+  groupChatDetails,
+} from "./helpers/data";
+import {
   COUNT_DOCUMENTS,
   CREATE_USER,
   LOGIN,
@@ -49,45 +56,9 @@ import assert from "node:assert";
 
 let url: string;
 
-const user1Details = {
-  id: "1",
-  name: "User1",
-  username: "user1",
-  password: "password",
-  confirmPassword: "password",
-};
-
-const user2Details = {
-  ...user1Details,
-  name: "User2",
-  id: "2",
-  username: "user2",
-};
-
-const user3Details = {
-  ...user1Details,
-  name: "User3",
-  id: "3",
-  username: "user3",
-};
-
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;
 const { id: _id2, name: _name3, ...user3Input } = user3Details;
-
-const privateChatDetails = {
-  name: null,
-  description: null,
-  members: [user2Details.id],
-  initialMessage: "Hello world",
-};
-
-const groupChatDetails = {
-  name: "Group Chat",
-  description: "Test description",
-  members: [user2Details.id, user3Details.id],
-  initialMessage: "Hello world",
-};
 
 const makeRequest = async <Variables>(
   query: string,
