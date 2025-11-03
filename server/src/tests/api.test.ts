@@ -441,7 +441,21 @@ const findPrivateChatWithContact = async (
 const changePassword = async (
   input: ChangePasswordInput,
   token: string
-): Promise<Response> => await makeRequest(CHANGE_PASSWORD, { input }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    changePassword: User;
+  }>
+> => {
+  const response = await makeRequest(CHANGE_PASSWORD, { input }, token);
+
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    changePassword: User;
+  }>;
+
+  return responseBody;
+};
 
 const findContactByUserId = async (
   id: string,
@@ -915,7 +929,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await changePassword(
+        const responseBody = await changePassword(
           {
             currentPassword: user1Details.password,
             newPassword: "newpassword",
@@ -924,11 +938,6 @@ void describe("GraphQL API", () => {
           ""
         );
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          changePassword: User;
-        }>;
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
@@ -944,7 +953,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with wrong current password", async () => {
-        const response = await changePassword(
+        const responseBody = await changePassword(
           {
             currentPassword: "wrong",
             newPassword: "newpassword",
@@ -953,11 +962,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          changePassword: User;
-        }>;
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
@@ -973,7 +977,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with new password shorter than 6 characters", async () => {
-        const response = await changePassword(
+        const responseBody = await changePassword(
           {
             currentPassword: user1Details.password,
             newPassword: "short",
@@ -982,11 +986,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          changePassword: User;
-        }>;
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
@@ -1010,7 +1009,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with new passwords not matching", async () => {
-        const response = await changePassword(
+        const responseBody = await changePassword(
           {
             currentPassword: user1Details.password,
             newPassword: "password",
@@ -1019,11 +1018,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          changePassword: User;
-        }>;
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
@@ -1047,7 +1041,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds changing password", async () => {
-        const response = await changePassword(
+        const responseBody = await changePassword(
           {
             currentPassword: user1Details.password,
             newPassword: "newpassword",
@@ -1056,11 +1050,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          changePassword: User;
-        }>;
         const user = responseBody.data?.changePassword;
 
         assert.ok(user, "User should be defined");
