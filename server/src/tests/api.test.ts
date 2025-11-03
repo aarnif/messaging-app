@@ -149,8 +149,23 @@ const addContacts = async (
   return responseBody;
 };
 
-const removeContact = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(REMOVE_CONTACT, { id }, token);
+const removeContact = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    removeContact: Contact;
+  }>
+> => {
+  const response = await makeRequest(REMOVE_CONTACT, { id }, token);
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    removeContact: Contact;
+  }>;
+
+  return responseBody;
+};
 
 const toggleBlockContact = async (
   id: string,
@@ -1052,11 +1067,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await removeContact(contactId, "");
+        const responseBody = await removeContact(contactId, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          removeContact: Contact;
-        }>;
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1072,11 +1084,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const response = await removeContact("999", user1Token);
+        const responseBody = await removeContact("999", user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          removeContact: Contact;
-        }>;
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1092,11 +1101,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid contact ID", async () => {
-        const response = await removeContact(contactId, user1Token);
+        const responseBody = await removeContact(contactId, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          removeContact: Contact;
-        }>;
         const contact = responseBody.data?.removeContact;
 
         assert.ok(contact, "Contact should be defined");
@@ -1117,10 +1123,8 @@ void describe("GraphQL API", () => {
 
       void test("fails when trying to remove same contact twice", async () => {
         await removeContact(contactId, user1Token);
-        const response = await removeContact(contactId, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          removeContact: Contact;
-        }>;
+        const responseBody = await removeContact(contactId, user1Token);
+
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
