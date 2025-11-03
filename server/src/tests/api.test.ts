@@ -400,8 +400,22 @@ const allChatsByUser = async (
   return responseBody;
 };
 
-const findContactById = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
+const findContactById = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    findContactById: Contact;
+  }>
+> => {
+  const response = await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    findContactById: Contact;
+  }>;
+
+  return responseBody;
+};
 
 const findPrivateChatWithContact = async (
   id: string,
@@ -1737,11 +1751,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await findContactById(contactId, "");
+        const responseBody = await findContactById(contactId, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactById: Contact;
-        }>;
         const contact = responseBody.data?.findContactById;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1757,11 +1768,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const response = await findContactById("999", token);
+        const responseBody = await findContactById("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactById: Contact;
-        }>;
         const contact = responseBody.data?.findContactById;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1777,11 +1785,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid contact ID", async () => {
-        const response = await findContactById(contactId, token);
+        const responseBody = await findContactById(contactId, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactById: Contact;
-        }>;
         const contact = responseBody.data?.findContactById;
 
         assert.ok(contact, "Contact should be defined");
