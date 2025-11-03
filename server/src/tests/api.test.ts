@@ -204,7 +204,19 @@ const createChat = async (
 const editChat = async (
   input: EditChatInput,
   token: string
-): Promise<Response> => await makeRequest(EDIT_CHAT, { input }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    editChat: Chat;
+  }>
+> => {
+  const response = await makeRequest(EDIT_CHAT, { input }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    editChat: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const deleteChat = async (id: string, token: string): Promise<Response> =>
   await makeRequest(DELETE_CHAT, { id }, token);
@@ -1989,7 +2001,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "Updated Chat",
@@ -1999,9 +2011,6 @@ void describe("GraphQL API", () => {
           ""
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2017,7 +2026,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty chat name", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "",
@@ -2027,9 +2036,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2049,7 +2055,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with chat name shorter than 3 characters", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "AB",
@@ -2059,9 +2065,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2081,7 +2084,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: "999",
             name: "Updated Chat",
@@ -2091,9 +2094,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2109,7 +2109,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds updating chat name and description", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "Updated Group Chat",
@@ -2119,9 +2119,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.ok(chat, "Chat should be defined");
@@ -2144,7 +2141,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds removing member from chat", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "Updated Group Chat",
@@ -2154,9 +2151,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.ok(chat, "Chat should be defined");
@@ -2178,7 +2172,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with null description", async () => {
-        const response = await editChat(
+        const responseBody = await editChat(
           {
             id: chatId,
             name: "Chat with No Description",
@@ -2188,9 +2182,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editChat: Chat;
-        }>;
         const chat = responseBody.data?.editChat;
 
         assert.ok(chat, "Chat should be defined");
