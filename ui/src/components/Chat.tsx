@@ -363,7 +363,17 @@ const ChatInfoModal = ({
           type="button"
           variant="delete"
           text="Delete Chat"
-          onClick={handleDeleteChat}
+          onClick={() =>
+            modal({
+              type: "danger",
+              title: "Delete Chat?",
+              message:
+                "Delete this chat?\nThis will remove the chat and all messages for everyone.",
+              close: "Cancel",
+              confirm: "Delete",
+              callback: handleDeleteChat,
+            })
+          }
         />
       )}
     </motion.div>

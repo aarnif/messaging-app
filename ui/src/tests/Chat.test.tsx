@@ -708,6 +708,17 @@ describe("<Chat />", () => {
     await user.click(screen.getByRole("button", { name: "Delete Chat" }));
 
     await waitFor(async () => {
+      expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
+      expect(
+        screen.getByText(
+          /This will remove the chat and all messages for everyone\./i
+        )
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+
+    await waitFor(async () => {
       expect(mockDeleteChat).toHaveBeenCalledWith({
         variables: {
           id: GROUP_CHAT_DETAILS.id,
