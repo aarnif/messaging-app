@@ -99,8 +99,17 @@ const createUser = async (
   return responseBody;
 };
 
-const login = async (input: LoginInput): Promise<Response> =>
-  await makeRequest(LOGIN, { input });
+const login = async (
+  input: LoginInput
+): Promise<HTTPGraphQLResponse<{ login: { value: string } }>> => {
+  const response = await makeRequest(LOGIN, { input });
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    login: { value: string };
+  }>;
+  return responseBody;
+};
 
 const getMe = async (token?: string, expectedCode = 200): Promise<Response> =>
   await makeRequest(ME, {}, token, expectedCode);
@@ -331,16 +340,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent username", async () => {
-        const response = await login({
+        const responseBody = await login({
           username: "nonexistent",
           password: user1Details.password,
         });
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         const token = responseBody.data?.login;
 
         assert.strictEqual(token, null, "Token should be null");
@@ -356,16 +359,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with incorrect password", async () => {
-        const response = await login({
+        const responseBody = await login({
           username: user1Details.username,
           password: "wrongpassword",
         });
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         const token = responseBody.data?.login;
 
         assert.strictEqual(token, null, "Token should be null");
@@ -381,16 +378,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid credentials", async () => {
-        const response = await login({
+        const responseBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         const token = responseBody.data?.login;
 
         assert.ok(token, "Token should be defined");
@@ -405,14 +396,11 @@ void describe("GraphQL API", () => {
 
       beforeEach(async () => {
         await createUser(user1Input);
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
       });
@@ -495,14 +483,11 @@ void describe("GraphQL API", () => {
         assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
         user2Id = user2Body.data.createUser.id;
 
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
       });
@@ -573,14 +558,11 @@ void describe("GraphQL API", () => {
 
       beforeEach(async () => {
         await createUser(user1Input);
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
       });
@@ -700,14 +682,11 @@ void describe("GraphQL API", () => {
 
       beforeEach(async () => {
         await createUser(user1Input);
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
       });
@@ -880,28 +859,22 @@ void describe("GraphQL API", () => {
       await createUser(user2Input);
       await createUser(user3Input);
 
-      const loginResponse = await login({
+      const user1LoginBody = await login({
         username: user1Details.username,
         password: user1Details.password,
       });
 
-      const user1LoginBody = loginResponse.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
       assert.ok(
         user1LoginBody.data,
         "User1 login token value should be defined"
       );
       user1Token = user1LoginBody.data.login.value;
 
-      const user2LoginResponse = await login({
+      const user2LoginBody = await login({
         username: user2Details.username,
         password: user2Details.password,
       });
 
-      const user2LoginBody = user2LoginResponse.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
       assert.ok(user2LoginBody.data, "User2 login token should be defined");
       user2Token = user2LoginBody.data.login.value;
     });
@@ -1653,14 +1626,11 @@ void describe("GraphQL API", () => {
       let contactId: string;
 
       beforeEach(async () => {
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
@@ -1740,14 +1710,11 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        const loginResponse = await login({
+        const loginBody = await login({
           username: user1Details.username,
           password: user1Details.password,
         });
 
-        const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
@@ -1831,14 +1798,11 @@ void describe("GraphQL API", () => {
       await createUser(user2Input);
       await createUser(user3Input);
 
-      const loginResponse = await login({
+      const loginBody = await login({
         username: user1Details.username,
         password: user1Details.password,
       });
 
-      const loginBody = loginResponse.body as HTTPGraphQLResponse<{
-        login: { value: string };
-      }>;
       assert.ok(loginBody.data, "Login token value should be defined");
       token = loginBody.data.login.value;
     });
@@ -2539,14 +2503,11 @@ void describe("GraphQL API", () => {
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
 
-        const loginResponse = await login({
+        const loginResponseBody = await login({
           username: user2Details.username,
           password: user2Details.password,
         });
 
-        const loginResponseBody = loginResponse.body as HTTPGraphQLResponse<{
-          login: { value: string };
-        }>;
         assert.ok(
           loginResponseBody.data,
           "User2 login token value should be defined"
