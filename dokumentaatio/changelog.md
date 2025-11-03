@@ -65,3 +65,16 @@
 **Testit**
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
+
+## Viikko 6
+
+### Käyttöliittymä:
+
+- Profile-näkymä
+- Profiilitietojen muokkaus
+- Käyttäjäasetusten muokkaus
+- Käyttäjän salasanan muokkaus
+
+**Testit**
+
+- Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
