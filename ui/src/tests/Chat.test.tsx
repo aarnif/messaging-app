@@ -21,11 +21,13 @@ import {
   findContactByUserId,
   currentUserChatAdminMock,
   currentUserChatMemberMock,
+  isBlockedByUserTrue,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   PRIVATE_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
+import ModalProvider from "../components/ModalProvider";
 import Chat from "../components/Chat";
 import { formatDisplayDate } from "../helpers";
 
@@ -64,7 +66,9 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
-        <Chat currentUser={currentUser} />
+        <ModalProvider>
+          <Chat currentUser={currentUser} />
+        </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -240,6 +244,39 @@ describe("<Chat />", () => {
         variables: {
           input: {
             id: GROUP_CHAT_DETAILS.id,
+            content: MESSAGE_DETAILS.content,
+          },
+        },
+      });
+    });
+  });
+
+  test("does not send message in private chat if contact has blocked user", async () => {
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    (useMatch as any).mockReturnValue({
+      params: { id: PRIVATE_CHAT_DETAILS.id },
+    });
+    const user = userEvent.setup();
+    renderComponent(
+      [findChatByIdPrivate, findChatByIdNull, sendMessage, isBlockedByUserTrue],
+      currentUserChatAdminMock
+    );
+
+    await waitFor(async () => {
+      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+    });
+
+    const input = screen.getByPlaceholderText("New Message...");
+
+    await user.type(input, MESSAGE_DETAILS.content);
+    await user.click(screen.getByTestId("send-message-button"));
+
+    await waitFor(() => {
+      expect(screen.getByText("Contact has blocked you.")).toBeDefined();
+      expect(mockSendMessage).not.toHaveBeenCalledWith({
+        variables: {
+          input: {
+            id: PRIVATE_CHAT_DETAILS.id,
             content: MESSAGE_DETAILS.content,
           },
         },

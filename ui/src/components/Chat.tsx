@@ -26,6 +26,7 @@ import { useEffect, useRef, useState } from "react";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
+import useModal from "../hooks/useModal";
 import { FiEdit } from "react-icons/fi";
 import {
   SEND_MESSAGE,
@@ -141,6 +142,7 @@ const NewMessageBox = ({
     Exact<{ id: string }>
   >;
 }) => {
+  const modal = useModal();
   const message = useField("New Message", "text", "New Message...");
   const [sendMessage] = useMutation(SEND_MESSAGE, {
     onError: (error) => {
@@ -163,7 +165,12 @@ const NewMessageBox = ({
       });
 
       if (isBlockedByContact.data?.isBlockedByUser) {
-        console.log("Contact has blocked you.");
+        modal({
+          type: "danger",
+          title: "Blocked",
+          message: "Contact has blocked you.",
+          close: "Close",
+        });
         return;
       }
     }
