@@ -114,8 +114,22 @@ const login = async (
 const getMe = async (token?: string, expectedCode = 200): Promise<Response> =>
   await makeRequest(ME, {}, token, expectedCode);
 
-const addContact = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(ADD_CONTACT, { id }, token);
+const addContact = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    addContact: Contact;
+  }>
+> => {
+  const response = await makeRequest(ADD_CONTACT, { id }, token);
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    addContact: Contact;
+  }>;
+  return responseBody;
+};
 
 const addContacts = async (ids: string[], token: string): Promise<Response> =>
   await makeRequest(ADD_CONTACTS, { ids }, token);
@@ -881,11 +895,8 @@ void describe("GraphQL API", () => {
 
     void describe("Add contact", () => {
       void test("fails without authentication", async () => {
-        const response = await addContact(user1Details.id, "");
+        const responseBody = await addContact(user1Details.id, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -901,11 +912,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to add yourself as contact", async () => {
-        const response = await addContact(user1Details.id, user1Token);
+        const responseBody = await addContact(user1Details.id, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -921,11 +929,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const response = await addContact(user2Details.id, user1Token);
+        const responseBody = await addContact(user2Details.id, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
         const contact = responseBody.data?.addContact;
 
         assert.ok(contact, "Contact should be defined");
@@ -947,11 +952,8 @@ void describe("GraphQL API", () => {
 
       void test("fails when trying to add same contact twice", async () => {
         await addContact(user2Details.id, user1Token);
-        const response = await addContact(user2Details.id, user1Token);
+        const responseBody = await addContact(user2Details.id, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1034,10 +1036,7 @@ void describe("GraphQL API", () => {
     void describe("Remove contact", () => {
       let contactId: string;
       beforeEach(async () => {
-        const response = await addContact(user2Details.id, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
+        const responseBody = await addContact(user2Details.id, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -1133,10 +1132,7 @@ void describe("GraphQL API", () => {
       let contactId: string;
 
       beforeEach(async () => {
-        const response = await addContact(user2Details.id, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
+        const responseBody = await addContact(user2Details.id, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -1236,10 +1232,7 @@ void describe("GraphQL API", () => {
     void describe("Is blocked by user", () => {
       let contactId: string;
       beforeEach(async () => {
-        const response = await addContact(user2Details.id, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
+        const responseBody = await addContact(user2Details.id, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -1634,10 +1627,7 @@ void describe("GraphQL API", () => {
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
-        const response = await addContact(user2Details.id, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
+        const responseBody = await addContact(user2Details.id, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -1718,10 +1708,7 @@ void describe("GraphQL API", () => {
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
-        const response = await addContact(user2Details.id, user1Token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContact: Contact;
-        }>;
+        const responseBody = await addContact(user2Details.id, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact, "Contact should be defined");
@@ -2688,11 +2675,8 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const contactResponse = await addContact(user2Details.id, token);
-        const contactResponseBody =
-          contactResponse.body as HTTPGraphQLResponse<{
-            addContact: Contact;
-          }>;
+        const contactResponseBody = await addContact(user2Details.id, token);
+
         assert.ok(
           contactResponseBody.data?.addContact.id,
           "Contact ID should be defined"
