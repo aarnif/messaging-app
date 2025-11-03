@@ -218,8 +218,22 @@ const editChat = async (
   return responseBody;
 };
 
-const deleteChat = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(DELETE_CHAT, { id }, token);
+const deleteChat = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    deleteChat: Chat;
+  }>
+> => {
+  const response = await makeRequest(DELETE_CHAT, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    deleteChat: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const sendMessage = async (
   input: SendMessageInput,
@@ -2200,11 +2214,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await deleteChat(chatId, "");
+        const responseBody = await deleteChat(chatId, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          deleteChat: Chat;
-        }>;
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2220,11 +2231,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const response = await deleteChat("999", token);
+        const responseBody = await deleteChat("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          deleteChat: Chat;
-        }>;
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2240,11 +2248,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds deleting chat with valid ID", async () => {
-        const response = await deleteChat(chatId, token);
+        const responseBody = await deleteChat(chatId, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          deleteChat: Chat;
-        }>;
         const chat = responseBody.data?.deleteChat;
 
         assert.ok(chat, "Chat should be defined");
@@ -2256,11 +2261,8 @@ void describe("GraphQL API", () => {
 
       void test("fails when trying to delete same chat twice", async () => {
         await deleteChat(chatId, token);
-        const response = await deleteChat(chatId, token);
+        const responseBody = await deleteChat(chatId, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          deleteChat: Chat;
-        }>;
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
