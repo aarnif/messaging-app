@@ -83,8 +83,21 @@ const makeRequest = async <Variables>(
 const countDocuments = async (): Promise<Response> =>
   await makeRequest(COUNT_DOCUMENTS, {});
 
-const createUser = async (input: CreateUserInput): Promise<Response> =>
-  await makeRequest(CREATE_USER, { input });
+const createUser = async (
+  input: CreateUserInput
+): Promise<
+  HTTPGraphQLResponse<{
+    createUser: User;
+  }>
+> => {
+  const response = await makeRequest(CREATE_USER, { input });
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    createUser: User;
+  }>;
+  return responseBody;
+};
 
 const login = async (input: LoginInput): Promise<Response> =>
   await makeRequest(LOGIN, { input });
@@ -210,16 +223,11 @@ void describe("GraphQL API", () => {
   void describe("Users", () => {
     void describe("User creation", () => {
       void test("fails with username shorter than 3 characters", async () => {
-        const response = await createUser({
+        const responseBody = await createUser({
           ...user1Input,
           username: "us",
         });
 
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
@@ -239,16 +247,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with password shorter than 6 characters", async () => {
-        const response = await createUser({
+        const responseBody = await createUser({
           ...user1Input,
           password: "short",
         });
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
@@ -268,16 +270,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when passwords do not match", async () => {
-        const response = await createUser({
+        const responseBody = await createUser({
           ...user1Input,
           confirmPassword: "passwor",
         });
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
@@ -298,13 +294,7 @@ void describe("GraphQL API", () => {
 
       void test("fails if user already exists", async () => {
         await createUser(user1Input);
-        const response = await createUser(user1Input);
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
+        const responseBody = await createUser(user1Input);
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
@@ -320,13 +310,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid input", async () => {
-        const response = await createUser(user1Input);
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
+        const responseBody = await createUser(user1Input);
         const user = responseBody.data?.createUser;
 
         assert.ok(user, "User should be defined");
@@ -507,11 +491,7 @@ void describe("GraphQL API", () => {
 
       beforeEach(async () => {
         await createUser(user1Input);
-        const user2Response = await createUser(user2Input);
-
-        const user2Body = user2Response.body as HTTPGraphQLResponse<{
-          createUser: User;
-        }>;
+        const user2Body = await createUser(user2Input);
         assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
         user2Id = user2Body.data.createUser.id;
 
