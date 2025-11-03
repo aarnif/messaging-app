@@ -337,14 +337,14 @@ const ChatInfoModal = ({
       {!isAdmin ? (
         <Button
           type="button"
-          variant="danger"
+          variant="delete"
           text="Leave Chat"
           onClick={handleLeaveChat}
         />
       ) : (
         <Button
           type="button"
-          variant="danger"
+          variant="delete"
           text="Delete Chat"
           onClick={handleDeleteChat}
         />
