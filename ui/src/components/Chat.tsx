@@ -240,6 +240,7 @@ const ChatInfoModal = ({
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const modal = useModal();
   const navigate = useNavigate();
   const { id, name, description, members } = chat;
 
@@ -346,7 +347,16 @@ const ChatInfoModal = ({
           type="button"
           variant="delete"
           text="Leave Chat"
-          onClick={handleLeaveChat}
+          onClick={() =>
+            modal({
+              type: "alert",
+              title: "Leave Chat?",
+              message: "Are you sure you want to leave the chat?",
+              close: "Cancel",
+              confirm: "Leave",
+              callback: handleLeaveChat,
+            })
+          }
         />
       ) : (
         <Button

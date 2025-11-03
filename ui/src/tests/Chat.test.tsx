@@ -622,6 +622,14 @@ describe("<Chat />", () => {
     await user.click(screen.getByRole("button", { name: "Leave Chat" }));
 
     await waitFor(async () => {
+      expect(
+        screen.getByText("Are you sure you want to leave the chat?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Leave" }));
+
+    await waitFor(async () => {
       expect(mockLeaveChat).toHaveBeenCalledWith({
         variables: {
           id: GROUP_CHAT_DETAILS.id,
