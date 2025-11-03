@@ -320,8 +320,22 @@ const findChatById = async (
   return responseBody;
 };
 
-const isBlockedByUser = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(IS_BLOCKED_BY_USER, { id }, token);
+const isBlockedByUser = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    isBlockedByUser: boolean;
+  }>
+> => {
+  const response = await makeRequest(IS_BLOCKED_BY_USER, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    isBlockedByUser: boolean;
+  }>;
+
+  return responseBody;
+};
 
 const allContactsByUser = async (
   search: string | null,
@@ -1336,11 +1350,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await isBlockedByUser(user1Details.id, "");
+        const responseBody = await isBlockedByUser(user1Details.id, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          isBlockedByUser: boolean;
-        }>;
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, null, "IsBlocked should be null");
@@ -1356,11 +1367,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const response = await isBlockedByUser("999", user2Token);
+        const responseBody = await isBlockedByUser("999", user2Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          isBlockedByUser: boolean;
-        }>;
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, null, "IsBlocked should be null");
@@ -1376,11 +1384,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns false when not blocked", async () => {
-        const response = await isBlockedByUser(user1Details.id, user2Token);
+        const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          isBlockedByUser: boolean;
-        }>;
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, false, "Should not be blocked");
@@ -1393,11 +1398,8 @@ void describe("GraphQL API", () => {
 
       void test("returns true when blocked", async () => {
         await toggleBlockContact(contactId, user1Token);
-        const response = await isBlockedByUser(user1Details.id, user2Token);
+        const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          isBlockedByUser: boolean;
-        }>;
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, true, "Should be blocked");
