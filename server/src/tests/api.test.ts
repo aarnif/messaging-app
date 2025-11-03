@@ -80,6 +80,9 @@ const makeRequest = async <Variables>(
     .expect(expectedStatusCode);
 };
 
+const countDocuments = async (): Promise<Response> =>
+  await makeRequest(COUNT_DOCUMENTS, {});
+
 const createUser = async (input: CreateUserInput): Promise<Response> =>
   await makeRequest(CREATE_USER, { input });
 
@@ -193,13 +196,7 @@ void describe("GraphQL API", () => {
   });
 
   void test("returns document count from database", async () => {
-    const response = await request(url)
-      .post("/")
-      .send({
-        query: COUNT_DOCUMENTS,
-      })
-      .expect("Content-Type", /json/)
-      .expect(200);
+    const response = await countDocuments();
 
     assert.strictEqual(response.error, false);
 
