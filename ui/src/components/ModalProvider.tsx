@@ -61,7 +61,7 @@ const ModalContent = ({
   return (
     <motion.div
       data-testid="notification-modal"
-      className={`m-4 flex w-full flex-col items-center gap-4 rounded-xl p-4 sm:max-w-84 ${styles.background}`}
+      className={`m-4 flex w-full flex-col items-center gap-4 rounded-xl p-4 sm:max-w-100 ${styles.background}`}
       onClick={(e) => e.stopPropagation()}
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
@@ -85,7 +85,9 @@ const ModalContent = ({
             {title}
           </h2>
         </div>
-        <p className={`w-full text-base ${styles.message}`}>{message}</p>
+        <p className={`w-full text-base whitespace-pre-line ${styles.message}`}>
+          {message}
+        </p>
         <div className="flex items-center justify-between">
           <Button
             type="button"
