@@ -22,6 +22,7 @@ import {
   isBlockedByUserFalse,
   isBlockedByUserNull,
 } from "./mocks";
+import ModalProvider from "../components/ModalProvider";
 import Contact from "../components/Contact";
 
 vi.mock("react-router", async () => {
@@ -39,7 +40,9 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/contacts/1"]}>
-        <Contact currentUser={currentUserChatAdminMock} />
+        <ModalProvider>
+          <Contact currentUser={currentUserChatAdminMock} />
+        </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
   );
@@ -194,6 +197,14 @@ describe("<Contact />", () => {
     await user.click(screen.getByRole("button", { name: "Block Contact" }));
 
     await waitFor(async () => {
+      expect(
+        screen.getByText("Are you sure you want to block the contact?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Block" }));
+
+    await waitFor(async () => {
       expect(screen.getByText("You have blocked the contact."));
     });
   });
@@ -214,6 +225,14 @@ describe("<Contact />", () => {
     });
 
     await user.click(screen.getByRole("button", { name: "Unblock Contact" }));
+
+    await waitFor(async () => {
+      expect(
+        screen.getByText("Are you sure you want to unblock the contact?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Unblock" }));
 
     await waitFor(async () => {
       expect(screen.queryByText("You have blocked the contact.")).toBeNull();

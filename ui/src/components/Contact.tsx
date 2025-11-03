@@ -13,6 +13,7 @@ import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
 import type { User, Contact as ContactType } from "../__generated__/graphql";
 import { useState, useEffect } from "react";
+import useModal from "../hooks/useModal";
 
 const ContactContent = ({
   currentUser,
@@ -23,6 +24,7 @@ const ContactContent = ({
   contact: ContactType;
   isBlockedByUser: boolean;
 }) => {
+  const modal = useModal();
   const navigate = useNavigate();
   const { id, name, username, about } = contact.contactDetails;
 
@@ -145,7 +147,18 @@ const ContactContent = ({
           type="button"
           variant={!isBlocked ? "delete" : "tertiary"}
           text={!isBlocked ? "Block Contact" : "Unblock Contact"}
-          onClick={handleToggleBlockContact}
+          onClick={() =>
+            modal({
+              type: !isBlocked ? "danger" : "success",
+              title: !isBlocked ? "Block Contact?" : "Unblock Contact",
+              message: !isBlocked
+                ? "Are you sure you want to block the contact?"
+                : "Are you sure you want to unblock the contact?",
+              close: "Cancel",
+              confirm: !isBlocked ? "Block" : "Unblock",
+              callback: handleToggleBlockContact,
+            })
+          }
         />
         <Button
           type="button"
