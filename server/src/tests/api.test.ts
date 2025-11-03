@@ -252,8 +252,22 @@ const sendMessage = async (
   return responseBody;
 };
 
-const leaveChat = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(LEAVE_CHAT, { id }, token);
+const leaveChat = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    leaveChat: Chat;
+  }>
+> => {
+  const response = await makeRequest(LEAVE_CHAT, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    leaveChat: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const editProfile = async (
   input: EditProfileInput,
@@ -2490,11 +2504,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await leaveChat(chatId, "");
+        const responseBody = await leaveChat(chatId, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          leaveChat: Chat;
-        }>;
         const chat = responseBody.data?.leaveChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2510,11 +2521,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds when member leaves group chat", async () => {
-        const response = await leaveChat(chatId, token2);
+        const responseBody = await leaveChat(chatId, token2);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          leaveChat: Chat;
-        }>;
         const chat = responseBody.data?.leaveChat;
 
         assert.ok(chat, "Chat should be defined");
