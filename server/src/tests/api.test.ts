@@ -187,7 +187,19 @@ const toggleBlockContact = async (
 const createChat = async (
   input: CreateChatInput,
   token: string
-): Promise<Response> => await makeRequest(CREATE_CHAT, { input }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    createChat: Chat;
+  }>
+> => {
+  const response = await makeRequest(CREATE_CHAT, { input }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    createChat: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const editChat = async (
   input: EditChatInput,
@@ -1808,11 +1820,8 @@ void describe("GraphQL API", () => {
 
     void describe("Create chat", () => {
       void test("fails without authentication", async () => {
-        const response = await createChat(privateChatDetails, "");
+        const responseBody = await createChat(privateChatDetails, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -1828,7 +1837,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty initial message", async () => {
-        const response = await createChat(
+        const responseBody = await createChat(
           {
             ...privateChatDetails,
             initialMessage: "",
@@ -1836,9 +1845,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -1858,7 +1864,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with group chat without name", async () => {
-        const response = await createChat(
+        const responseBody = await createChat(
           {
             ...groupChatDetails,
             name: "",
@@ -1866,9 +1872,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -1888,7 +1891,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with group chat name shorter than 3 characters", async () => {
-        const response = await createChat(
+        const responseBody = await createChat(
           {
             ...groupChatDetails,
             name: "te",
@@ -1896,9 +1899,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -1918,11 +1918,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds creating private chat", async () => {
-        const response = await createChat(privateChatDetails, token);
+        const responseBody = await createChat(privateChatDetails, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.ok(chat, "Chat should be defined");
@@ -1948,11 +1945,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds creating group chat", async () => {
-        const response = await createChat(groupChatDetails, token);
+        const responseBody = await createChat(groupChatDetails, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
         const chat = responseBody.data?.createChat;
 
         assert.ok(chat, "Chat should be defined");
@@ -1989,10 +1983,7 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const response = await createChat(groupChatDetails, token);
-        const chatBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const chatBody = await createChat(groupChatDetails, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
@@ -2212,10 +2203,7 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const response = await createChat(groupChatDetails, token);
-        const chatBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const chatBody = await createChat(groupChatDetails, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
@@ -2301,10 +2289,7 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const response = await createChat(groupChatDetails, token);
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const responseBody = await createChat(groupChatDetails, token);
         assert.ok(
           responseBody.data?.createChat.id,
           "Chat ID should be defined"
@@ -2391,10 +2376,7 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const response = await createChat(privateChatDetails, token);
-        const chatBody = response.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const chatBody = await createChat(privateChatDetails, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
@@ -2495,10 +2477,7 @@ void describe("GraphQL API", () => {
       let token2: string;
 
       beforeEach(async () => {
-        const chatResponse = await createChat(groupChatDetails, token);
-        const chatBody = chatResponse.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const chatBody = await createChat(groupChatDetails, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
 
@@ -2695,10 +2674,7 @@ void describe("GraphQL API", () => {
         );
         userId = contactResponseBody.data.addContact.contactDetails.id;
 
-        const chatResponse = await createChat(privateChatDetails, token);
-        const chatResponseBody = chatResponse.body as HTTPGraphQLResponse<{
-          createChat: Chat;
-        }>;
+        const chatResponseBody = await createChat(privateChatDetails, token);
         assert.ok(
           chatResponseBody.data?.createChat.id,
           "Chat ID should be defined"
