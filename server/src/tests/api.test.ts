@@ -361,12 +361,23 @@ const allContactsByUser = async (
 const contactsWithoutPrivateChat = async (
   search: string | null,
   token: string
-): Promise<Response> =>
-  await makeRequest(
+): Promise<
+  HTTPGraphQLResponse<{
+    contactsWithoutPrivateChat: Contact[];
+  }>
+> => {
+  const response = await makeRequest(
     CONTACTS_WITHOUT_PRIVATE_CHAT,
     search ? { search } : {},
     token
   );
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    contactsWithoutPrivateChat: Contact[];
+  }>;
+
+  return responseBody;
+};
 
 const allChatsByUser = async (
   search: string | null,
@@ -1551,11 +1562,8 @@ void describe("GraphQL API", () => {
 
     void describe("Contacts without private chat", () => {
       void test("fails without authentication", async () => {
-        const response = await contactsWithoutPrivateChat(null, "");
+        const responseBody = await contactsWithoutPrivateChat(null, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
@@ -1571,11 +1579,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no contacts exist", async () => {
-        const response = await contactsWithoutPrivateChat(null, user1Token);
+        const responseBody = await contactsWithoutPrivateChat(null, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1592,11 +1597,8 @@ void describe("GraphQL API", () => {
         await addContact(user3Details.id, user1Token);
         await createChat(privateChatDetails, user1Token);
 
-        const response = await contactsWithoutPrivateChat(null, user1Token);
+        const responseBody = await contactsWithoutPrivateChat(null, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1615,14 +1617,11 @@ void describe("GraphQL API", () => {
         await addContact(user2Details.id, user1Token);
         await addContact(user3Details.id, user1Token);
 
-        const response = await contactsWithoutPrivateChat(
+        const responseBody = await contactsWithoutPrivateChat(
           user2Details.username,
           user1Token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1652,11 +1651,11 @@ void describe("GraphQL API", () => {
           user2Token
         );
 
-        const response = await contactsWithoutPrivateChat(newName, user1Token);
+        const responseBody = await contactsWithoutPrivateChat(
+          newName,
+          user1Token
+        );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1672,14 +1671,11 @@ void describe("GraphQL API", () => {
         await addContact(user2Details.id, user1Token);
         await addContact(user3Details.id, user1Token);
 
-        const response = await contactsWithoutPrivateChat(
+        const responseBody = await contactsWithoutPrivateChat(
           "nonexistent",
           user1Token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1689,11 +1685,11 @@ void describe("GraphQL API", () => {
       void test("search is case insensitive", async () => {
         await addContact(user2Details.id, user1Token);
 
-        const response = await contactsWithoutPrivateChat("USER2", user1Token);
+        const responseBody = await contactsWithoutPrivateChat(
+          "USER2",
+          user1Token
+        );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          contactsWithoutPrivateChat: Contact[];
-        }>;
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
