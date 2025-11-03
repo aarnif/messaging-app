@@ -87,7 +87,7 @@ const ContactContent = ({
     });
 
     if (data) {
-      navigate("/contacts/deleted");
+      navigate("/contacts/removed");
     }
   };
 

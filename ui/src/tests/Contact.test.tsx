@@ -261,7 +261,7 @@ describe("<Contact />", () => {
     await user.click(screen.getByRole("button", { name: "Remove" }));
 
     await waitFor(async () => {
-      expect(mockNavigate).toHaveBeenCalledWith("/contacts/deleted");
+      expect(mockNavigate).toHaveBeenCalledWith("/contacts/removed");
     });
   });
 });
