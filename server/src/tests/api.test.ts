@@ -340,8 +340,23 @@ const isBlockedByUser = async (
 const allContactsByUser = async (
   search: string | null,
   token: string
-): Promise<Response> =>
-  await makeRequest(ALL_CONTACTS_BY_USER, search ? { search } : {}, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    allContactsByUser: Contact[];
+  }>
+> => {
+  const response = await makeRequest(
+    ALL_CONTACTS_BY_USER,
+    search ? { search } : {},
+    token
+  );
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    allContactsByUser: Contact[];
+  }>;
+
+  return responseBody;
+};
 
 const contactsWithoutPrivateChat = async (
   search: string | null,
@@ -1413,11 +1428,8 @@ void describe("GraphQL API", () => {
 
     void describe("All contacts by user", () => {
       void test("fails without authentication", async () => {
-        const response = await allContactsByUser(null, "");
+        const responseBody = await allContactsByUser(null, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
@@ -1433,11 +1445,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no contacts exist", async () => {
-        const response = await allContactsByUser(null, user1Token);
+        const responseBody = await allContactsByUser(null, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1453,11 +1462,8 @@ void describe("GraphQL API", () => {
         await addContact(user2Details.id, user1Token);
         await addContact(user3Details.id, user1Token);
 
-        const response = await allContactsByUser(null, user1Token);
+        const responseBody = await allContactsByUser(null, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1468,14 +1474,11 @@ void describe("GraphQL API", () => {
         await addContact(user2Details.id, user1Token);
         await addContact(user3Details.id, user1Token);
 
-        const response = await allContactsByUser(
+        const responseBody = await allContactsByUser(
           user2Details.username,
           user1Token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1505,11 +1508,8 @@ void describe("GraphQL API", () => {
           user2Token
         );
 
-        const response = await allContactsByUser(newName, user1Token);
+        const responseBody = await allContactsByUser(newName, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1525,11 +1525,8 @@ void describe("GraphQL API", () => {
         await addContact(user2Details.id, user1Token);
         await addContact(user3Details.id, user1Token);
 
-        const response = await allContactsByUser("nonexistent", user1Token);
+        const responseBody = await allContactsByUser("nonexistent", user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
@@ -1539,11 +1536,8 @@ void describe("GraphQL API", () => {
       void test("search is case insensitive", async () => {
         await addContact(user2Details.id, user1Token);
 
-        const response = await allContactsByUser("USER2", user1Token);
+        const responseBody = await allContactsByUser("USER2", user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allContactsByUser: Contact[];
-        }>;
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
