@@ -272,7 +272,19 @@ const leaveChat = async (
 const editProfile = async (
   input: EditProfileInput,
   token: string
-): Promise<Response> => await makeRequest(EDIT_PROFILE, { input }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    editProfile: User;
+  }>
+> => {
+  const response = await makeRequest(EDIT_PROFILE, { input }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    editProfile: User;
+  }>;
+
+  return responseBody;
+};
 
 const findUserById = async (id: string, token: string): Promise<Response> =>
   await makeRequest(FIND_USER_BY_ID, { id }, token);
@@ -688,7 +700,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await editProfile(
+        const responseBody = await editProfile(
           {
             name: "Updated Name",
             about: "Updated about",
@@ -697,9 +709,6 @@ void describe("GraphQL API", () => {
           ""
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editProfile: User;
-        }>;
         const user = responseBody.data?.editProfile;
 
         assert.strictEqual(user, null, "User should be null");
@@ -715,7 +724,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with name shorter than 3 characters", async () => {
-        const response = await editProfile(
+        const responseBody = await editProfile(
           {
             name: "AB",
             about: "Valid about text",
@@ -724,9 +733,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editProfile: User;
-        }>;
         const user = responseBody.data?.editProfile;
 
         assert.strictEqual(user, null, "User should be null");
@@ -749,7 +755,7 @@ void describe("GraphQL API", () => {
         const updatedName = "Updated Name";
         const updatedAbout = "This is my updated about section";
 
-        const response = await editProfile(
+        const responseBody = await editProfile(
           {
             name: updatedName,
             about: updatedAbout,
@@ -758,9 +764,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editProfile: User;
-        }>;
         const user = responseBody.data?.editProfile;
 
         assert.ok(user, "User should be defined");
@@ -774,7 +777,7 @@ void describe("GraphQL API", () => {
       void test("succeeds updating name with null about", async () => {
         const updatedName = "Another Updated Name";
 
-        const response = await editProfile(
+        const responseBody = await editProfile(
           {
             name: updatedName,
             about: null,
@@ -783,9 +786,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          editProfile: User;
-        }>;
         const user = responseBody.data?.editProfile;
 
         assert.ok(user, "User should be defined");
