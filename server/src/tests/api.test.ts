@@ -176,6 +176,7 @@ const toggleBlockContact = async (
   }>
 > => {
   const response = await makeRequest(TOGGLE_BLOCK_CONTACT, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     toggleBlockContact: Contact;
@@ -193,6 +194,7 @@ const createChat = async (
   }>
 > => {
   const response = await makeRequest(CREATE_CHAT, { input }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     createChat: Chat;
@@ -210,6 +212,7 @@ const editChat = async (
   }>
 > => {
   const response = await makeRequest(EDIT_CHAT, { input }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     editChat: Chat;
@@ -227,6 +230,7 @@ const deleteChat = async (
   }>
 > => {
   const response = await makeRequest(DELETE_CHAT, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     deleteChat: Chat;
@@ -244,6 +248,7 @@ const sendMessage = async (
   }>
 > => {
   const response = await makeRequest(SEND_MESSAGE, { input }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     sendMessage: Chat;
@@ -261,6 +266,7 @@ const leaveChat = async (
   }>
 > => {
   const response = await makeRequest(LEAVE_CHAT, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     leaveChat: Chat;
@@ -278,6 +284,7 @@ const editProfile = async (
   }>
 > => {
   const response = await makeRequest(EDIT_PROFILE, { input }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     editProfile: User;
@@ -295,6 +302,7 @@ const findUserById = async (
   }>
 > => {
   const response = await makeRequest(FIND_USER_BY_ID, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     findUserById: User;
@@ -312,6 +320,7 @@ const findChatById = async (
   }>
 > => {
   const response = await makeRequest(FIND_CHAT_BY_ID, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     findChatById: Chat;
@@ -329,6 +338,7 @@ const isBlockedByUser = async (
   }>
 > => {
   const response = await makeRequest(IS_BLOCKED_BY_USER, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     isBlockedByUser: boolean;
@@ -350,6 +360,7 @@ const allContactsByUser = async (
     search ? { search } : {},
     token
   );
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     allContactsByUser: Contact[];
@@ -371,6 +382,7 @@ const contactsWithoutPrivateChat = async (
     search ? { search } : {},
     token
   );
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     contactsWithoutPrivateChat: Contact[];
@@ -392,6 +404,7 @@ const allChatsByUser = async (
     search ? { search } : {},
     token
   );
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     allChatsByUser: Chat[];
@@ -409,6 +422,7 @@ const findContactById = async (
   }>
 > => {
   const response = await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     findContactById: Contact;
@@ -430,6 +444,7 @@ const findPrivateChatWithContact = async (
     { id },
     token
   );
+  assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
     findPrivateChatWithContact: Chat;
@@ -447,7 +462,6 @@ const changePassword = async (
   }>
 > => {
   const response = await makeRequest(CHANGE_PASSWORD, { input }, token);
-
   assert.strictEqual(response.error, false);
 
   const responseBody = response.body as HTTPGraphQLResponse<{
