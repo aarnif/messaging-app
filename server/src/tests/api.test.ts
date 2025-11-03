@@ -303,8 +303,22 @@ const findUserById = async (
   return responseBody;
 };
 
-const findChatById = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(FIND_CHAT_BY_ID, { id }, token);
+const findChatById = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    findChatById: Chat;
+  }>
+> => {
+  const response = await makeRequest(FIND_CHAT_BY_ID, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    findChatById: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const isBlockedByUser = async (id: string, token: string): Promise<Response> =>
   await makeRequest(IS_BLOCKED_BY_USER, { id }, token);
@@ -2322,10 +2336,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await findChatById(chatId, "");
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findChatById: Chat;
-        }>;
+        const responseBody = await findChatById(chatId, "");
+
         const chat = responseBody.data?.findChatById;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2341,11 +2353,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const response = await findChatById("999", token);
+        const responseBody = await findChatById("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findChatById: Chat;
-        }>;
         const chat = responseBody.data?.findChatById;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2361,11 +2370,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds finding chat", async () => {
-        const response = await findChatById(chatId, token);
+        const responseBody = await findChatById(chatId, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findChatById: Chat;
-        }>;
         const chat = responseBody.data?.findChatById;
 
         assert.ok(chat, "Chat should be defined");
