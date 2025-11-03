@@ -131,8 +131,23 @@ const addContact = async (
   return responseBody;
 };
 
-const addContacts = async (ids: string[], token: string): Promise<Response> =>
-  await makeRequest(ADD_CONTACTS, { ids }, token);
+const addContacts = async (
+  ids: string[],
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    addContacts: Contact[];
+  }>
+> => {
+  const response = await makeRequest(ADD_CONTACTS, { ids }, token);
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    addContacts: Contact[];
+  }>;
+
+  return responseBody;
+};
 
 const removeContact = async (id: string, token: string): Promise<Response> =>
   await makeRequest(REMOVE_CONTACT, { id }, token);
@@ -971,14 +986,11 @@ void describe("GraphQL API", () => {
 
     void describe("Add contacts", () => {
       void test("fails without authentication", async () => {
-        const response = await addContacts(
+        const responseBody = await addContacts(
           [user2Details.id, user3Details.id],
           ""
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContacts: Contact[];
-        }>;
         const contacts = responseBody.data?.addContacts;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
@@ -994,14 +1006,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user IDs", async () => {
-        const response = await addContacts(
+        const responseBody = await addContacts(
           [user2Details.id, user3Details.id],
           user1Token
         );
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          addContacts: Contact[];
-        }>;
 
         const contacts = responseBody.data?.addContacts;
 
