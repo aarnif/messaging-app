@@ -42,9 +42,9 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
   - [x] Käyttäjä voi poistaa kontaktin
   - [x] Käyttäjä voi blokata kontaktin
 
-- [ ] **Profiili**
+- [x] **Profiili**
 
-  - [ ] Käyttäjä voi vaihtaa päivittää tietojaan, kuten nimensä ja salasanan
-  - [ ] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
+  - [x] Käyttäjä voi vaihtaa päivittää tietojaan, kuten nimensä ja salasanan
+  - [x] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
 
 - [x] **Käyttäjä voi kirjautua ulos järjestelmästä**
