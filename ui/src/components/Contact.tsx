@@ -164,7 +164,16 @@ const ContactContent = ({
           type="button"
           variant="delete"
           text="Remove Contact"
-          onClick={handleRemoveContact}
+          onClick={() =>
+            modal({
+              type: "danger",
+              title: "Remove Contact?",
+              message: "Are you sure you want to remove the contact?",
+              close: "Cancel",
+              confirm: "Remove",
+              callback: handleRemoveContact,
+            })
+          }
         />
       </div>
     </div>

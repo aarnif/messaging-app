@@ -253,6 +253,14 @@ describe("<Contact />", () => {
     await user.click(screen.getByRole("button", { name: "Remove Contact" }));
 
     await waitFor(async () => {
+      expect(
+        screen.getByText("Are you sure you want to remove the contact?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Remove" }));
+
+    await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/contacts/deleted");
     });
   });
