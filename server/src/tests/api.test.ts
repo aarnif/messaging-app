@@ -170,7 +170,19 @@ const removeContact = async (
 const toggleBlockContact = async (
   id: string,
   token: string
-): Promise<Response> => await makeRequest(TOGGLE_BLOCK_CONTACT, { id }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    toggleBlockContact: Contact;
+  }>
+> => {
+  const response = await makeRequest(TOGGLE_BLOCK_CONTACT, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    toggleBlockContact: Contact;
+  }>;
+
+  return responseBody;
+};
 
 const createChat = async (
   input: CreateChatInput,
@@ -1152,11 +1164,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await toggleBlockContact(contactId, "");
+        const responseBody = await toggleBlockContact(contactId, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          toggleBlockContact: Contact;
-        }>;
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1172,11 +1181,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const response = await toggleBlockContact("999", user1Token);
+        const responseBody = await toggleBlockContact("999", user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          toggleBlockContact: Contact;
-        }>;
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1192,11 +1198,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds blocking contact", async () => {
-        const response = await toggleBlockContact(contactId, user1Token);
+        const responseBody = await toggleBlockContact(contactId, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          toggleBlockContact: Contact;
-        }>;
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.ok(contact, "Contact should be defined");
@@ -1217,11 +1220,8 @@ void describe("GraphQL API", () => {
 
       void test("succeeds unblocking contact", async () => {
         await toggleBlockContact(contactId, user1Token);
-        const response = await toggleBlockContact(contactId, user1Token);
+        const responseBody = await toggleBlockContact(contactId, user1Token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          toggleBlockContact: Contact;
-        }>;
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.ok(contact, "Contact should be defined");
