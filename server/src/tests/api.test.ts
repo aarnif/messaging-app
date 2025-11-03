@@ -286,8 +286,22 @@ const editProfile = async (
   return responseBody;
 };
 
-const findUserById = async (id: string, token: string): Promise<Response> =>
-  await makeRequest(FIND_USER_BY_ID, { id }, token);
+const findUserById = async (
+  id: string,
+  token: string
+): Promise<
+  HTTPGraphQLResponse<{
+    findUserById: User;
+  }>
+> => {
+  const response = await makeRequest(FIND_USER_BY_ID, { id }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    findUserById: User;
+  }>;
+
+  return responseBody;
+};
 
 const findChatById = async (id: string, token: string): Promise<Response> =>
   await makeRequest(FIND_CHAT_BY_ID, { id }, token);
@@ -625,11 +639,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await findUserById(user2Id, "");
+        const responseBody = await findUserById(user2Id, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findUserById: User;
-        }>;
         const user = responseBody.data?.findUserById;
 
         assert.strictEqual(user, null, "User should be null");
@@ -645,11 +656,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const response = await findUserById("999", token);
+        const responseBody = await findUserById("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findUserById: User;
-        }>;
         const user = responseBody.data?.findUserById;
 
         assert.strictEqual(user, null, "User should be null");
@@ -665,11 +673,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const response = await findUserById(user2Id, token);
+        const responseBody = await findUserById(user2Id, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findUserById: User;
-        }>;
         const user = responseBody.data?.findUserById;
 
         assert.ok(user, "User should be defined");
