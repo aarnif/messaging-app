@@ -460,8 +460,21 @@ const changePassword = async (
 const findContactByUserId = async (
   id: string,
   token: string
-): Promise<Response> =>
-  await makeRequest(FIND_CONTACT_BY_USER_ID, { id }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    findContactByUserId: Contact;
+  }>
+> => {
+  const response = await makeRequest(FIND_CONTACT_BY_USER_ID, { id }, token);
+
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    findContactByUserId: Contact;
+  }>;
+
+  return responseBody;
+};
 
 void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
@@ -1826,11 +1839,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await findContactByUserId(user2Details.id, "");
+        const responseBody = await findContactByUserId(user2Details.id, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactByUserId: Contact;
-        }>;
         const contact = responseBody.data?.findContactByUserId;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1846,11 +1856,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const response = await findContactByUserId("999", token);
+        const responseBody = await findContactByUserId("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactByUserId: Contact;
-        }>;
         const contact = responseBody.data?.findContactByUserId;
 
         assert.strictEqual(contact, null, "Contact should be null");
@@ -1866,11 +1873,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const response = await findContactByUserId(user2Details.id, token);
+        const responseBody = await findContactByUserId(user2Details.id, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findContactByUserId: Contact;
-        }>;
         const contact = responseBody.data?.findContactByUserId;
 
         assert.ok(contact, "Contact should be defined");
