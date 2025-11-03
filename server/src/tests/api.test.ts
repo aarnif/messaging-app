@@ -420,8 +420,23 @@ const findContactById = async (
 const findPrivateChatWithContact = async (
   id: string,
   token: string
-): Promise<Response> =>
-  await makeRequest(FIND_PRIVATE_CHAT_WITH_CONTACT, { id }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    findPrivateChatWithContact: Chat;
+  }>
+> => {
+  const response = await makeRequest(
+    FIND_PRIVATE_CHAT_WITH_CONTACT,
+    { id },
+    token
+  );
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    findPrivateChatWithContact: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const changePassword = async (
   input: ChangePasswordInput,
@@ -2692,10 +2707,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await findPrivateChatWithContact(userId, "");
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findPrivateChatWithContact: Chat;
-        }>;
+        const responseBody = await findPrivateChatWithContact(userId, "");
+
         const chat = responseBody.data?.findPrivateChatWithContact;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2711,22 +2724,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns null with non-existent chat ID", async () => {
-        const response = await findPrivateChatWithContact("999", token);
+        const responseBody = await findPrivateChatWithContact("999", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findPrivateChatWithContact: Chat;
-        }>;
         const chat = responseBody.data?.findPrivateChatWithContact;
 
         assert.strictEqual(chat, null, "Chat should be null");
       });
 
       void test("succeeds finding chat", async () => {
-        const response = await findPrivateChatWithContact(userId, token);
+        const responseBody = await findPrivateChatWithContact(userId, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          findPrivateChatWithContact: Chat;
-        }>;
         const chat = responseBody.data?.findPrivateChatWithContact;
 
         assert.ok(chat, "Chat should be defined");
