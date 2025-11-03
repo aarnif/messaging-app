@@ -382,8 +382,23 @@ const contactsWithoutPrivateChat = async (
 const allChatsByUser = async (
   search: string | null,
   token: string
-): Promise<Response> =>
-  await makeRequest(ALL_CHATS_BY_USER, search ? { search } : {}, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    allChatsByUser: Chat[];
+  }>
+> => {
+  const response = await makeRequest(
+    ALL_CHATS_BY_USER,
+    search ? { search } : {},
+    token
+  );
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    allChatsByUser: Chat[];
+  }>;
+
+  return responseBody;
+};
 
 const findContactById = async (id: string, token: string): Promise<Response> =>
   await makeRequest(FIND_CONTACT_BY_ID, { id }, token);
@@ -2557,11 +2572,8 @@ void describe("GraphQL API", () => {
 
     void describe("All chats by user", () => {
       void test("fails without authentication", async () => {
-        const response = await allChatsByUser(null, "");
+        const responseBody = await allChatsByUser(null, "");
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.strictEqual(chats, undefined, "Chats should be undefined");
@@ -2577,11 +2589,8 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no chats exist", async () => {
-        const response = await allChatsByUser(null, token);
+        const responseBody = await allChatsByUser(null, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.ok(Array.isArray(chats), "Chats should be an array");
@@ -2597,11 +2606,8 @@ void describe("GraphQL API", () => {
         await createChat(privateChatDetails, token);
         await createChat(groupChatDetails, token);
 
-        const response = await allChatsByUser(null, token);
+        const responseBody = await allChatsByUser(null, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.ok(Array.isArray(chats), "Chats should be an array");
@@ -2612,11 +2618,8 @@ void describe("GraphQL API", () => {
         await createChat(privateChatDetails, token);
         await createChat(groupChatDetails, token);
 
-        const response = await allChatsByUser(groupChatDetails.name, token);
+        const responseBody = await allChatsByUser(groupChatDetails.name, token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.ok(Array.isArray(chats), "Chats should be an array");
@@ -2631,14 +2634,11 @@ void describe("GraphQL API", () => {
         await createChat(privateChatDetails, token);
         await createChat(groupChatDetails, token);
 
-        const response = await allChatsByUser(
+        const responseBody = await allChatsByUser(
           groupChatDetails.description,
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.ok(Array.isArray(chats), "Chats should be an array");
@@ -2652,11 +2652,8 @@ void describe("GraphQL API", () => {
       void test("search is case insensitive", async () => {
         await createChat(groupChatDetails, token);
 
-        const response = await allChatsByUser("TEST", token);
+        const responseBody = await allChatsByUser("TEST", token);
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          allChatsByUser: Chat[];
-        }>;
         const chats = responseBody.data?.allChatsByUser;
 
         assert.ok(Array.isArray(chats), "Chats should be an array");
