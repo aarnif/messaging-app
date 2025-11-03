@@ -238,7 +238,19 @@ const deleteChat = async (
 const sendMessage = async (
   input: SendMessageInput,
   token: string
-): Promise<Response> => await makeRequest(SEND_MESSAGE, { input }, token);
+): Promise<
+  HTTPGraphQLResponse<{
+    sendMessage: Chat;
+  }>
+> => {
+  const response = await makeRequest(SEND_MESSAGE, { input }, token);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    sendMessage: Chat;
+  }>;
+
+  return responseBody;
+};
 
 const leaveChat = async (id: string, token: string): Promise<Response> =>
   await makeRequest(LEAVE_CHAT, { id }, token);
@@ -2375,7 +2387,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await sendMessage(
+        const responseBody = await sendMessage(
           {
             id: chatId,
             content: "Hello from unauthenticated user",
@@ -2383,9 +2395,6 @@ void describe("GraphQL API", () => {
           ""
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          sendMessage: Chat;
-        }>;
         const chat = responseBody.data?.sendMessage;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2401,7 +2410,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty message content", async () => {
-        const response = await sendMessage(
+        const responseBody = await sendMessage(
           {
             id: chatId,
             content: "",
@@ -2409,9 +2418,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          sendMessage: Chat;
-        }>;
         const chat = responseBody.data?.sendMessage;
 
         assert.strictEqual(chat, null, "Chat should be null");
@@ -2432,7 +2438,7 @@ void describe("GraphQL API", () => {
 
       void test("succeeds sending message to chat", async () => {
         const messageContent = "Hello from chat!";
-        const response = await sendMessage(
+        const responseBody = await sendMessage(
           {
             id: chatId,
             content: messageContent,
@@ -2440,9 +2446,6 @@ void describe("GraphQL API", () => {
           token
         );
 
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          sendMessage: Chat;
-        }>;
         const chat = responseBody.data?.sendMessage;
 
         assert.ok(chat, "Chat should be defined");
