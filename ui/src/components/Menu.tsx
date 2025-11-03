@@ -1,8 +1,10 @@
 import { FaComments, FaAddressBook, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { useApolloClient } from "@apollo/client/react";
 import { useNavigate, NavLink } from "react-router";
+import useModal from "../hooks/useModal";
 
 const Menu = () => {
+  const modal = useModal();
   const client = useApolloClient();
   const navigate = useNavigate();
 
@@ -67,7 +69,19 @@ const Menu = () => {
           <p className={styles.title}>{item.title}</p>
         </NavLink>
       ))}
-      <button className={styles.container.default} onClick={handleLogout}>
+      <button
+        className={styles.container.default}
+        onClick={() =>
+          modal({
+            type: "alert",
+            title: "Logout?",
+            message: "Are you sure you want to logout?",
+            close: "Cancel",
+            confirm: "Logout",
+            callback: handleLogout,
+          })
+        }
+      >
         <FaSignOutAlt className={styles.icon} />
         <p className={styles.title}>Log Out</p>
       </button>

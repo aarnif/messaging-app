@@ -1,7 +1,8 @@
-import { render, screen } from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
+import ModalProvider from "../components/ModalProvider";
 import Menu from "../components/Menu";
 import { mockClient, mockNavigate } from "./mocks";
 
@@ -26,7 +27,9 @@ Object.defineProperty(global, "localStorage", { value: localStorage });
 const renderComponent = () =>
   render(
     <MemoryRouter>
-      <Menu />
+      <ModalProvider>
+        <Menu />
+      </ModalProvider>
     </MemoryRouter>
   );
 
@@ -58,6 +61,14 @@ describe("<Menu />", () => {
     renderComponent();
 
     await user.click(screen.getByRole("button", { name: "Log Out" }));
+
+    await waitFor(async () => {
+      expect(
+        screen.getByText("Are you sure you want to logout?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Logout" }));
 
     expect(localStorage.clear).toHaveBeenCalled();
     expect(mockClient.resetStore).toHaveBeenCalled();
