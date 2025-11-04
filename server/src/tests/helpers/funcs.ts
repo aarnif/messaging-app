@@ -62,8 +62,19 @@ const makeRequest = async <Variables>(
     .expect(expectedStatusCode);
 };
 
-export const countDocuments = async (): Promise<Response> =>
-  await makeRequest(COUNT_DOCUMENTS, {});
+export const countDocuments = async (): Promise<
+  HTTPGraphQLResponse<{
+    countDocuments: number;
+  }>
+> => {
+  const response = await makeRequest(COUNT_DOCUMENTS, {});
+  assert.strictEqual(response.error, false);
+
+  const responseBody = response.body as HTTPGraphQLResponse<{
+    countDocuments: number;
+  }>;
+  return responseBody;
+};
 
 export const createUser = async (
   input: CreateUserInput

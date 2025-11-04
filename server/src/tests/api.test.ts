@@ -57,13 +57,7 @@ void describe("GraphQL API", () => {
   });
 
   void test("returns document count from database", async () => {
-    const response = await countDocuments();
-
-    assert.strictEqual(response.error, false);
-
-    const responseBody = response.body as HTTPGraphQLResponse<{
-      countDocuments: number;
-    }>;
+    const responseBody = await countDocuments();
     const count = responseBody.data?.countDocuments;
     assert.strictEqual(count, 0);
   });
