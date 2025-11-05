@@ -1,6 +1,17 @@
 import type { ApolloServer, BaseContext } from "@apollo/server";
 import type { HTTPGraphQLResponse } from "../types/other";
-import type { User } from "~/types/graphql";
+import type {
+  User,
+  Contact,
+  Chat,
+  CreateUserInput,
+  LoginInput,
+  EditProfileInput,
+  CreateChatInput,
+  EditChatInput,
+  SendMessageInput,
+  ChangePasswordInput,
+} from "~/types/graphql";
 import {
   user1Details,
   user2Details,
@@ -8,32 +19,32 @@ import {
   privateChatDetails,
   groupChatDetails,
 } from "./helpers/data";
+import { getMe, query } from "./helpers/funcs";
 import {
-  countDocuments,
-  createUser,
-  login,
-  getMe,
-  addContact,
-  addContacts,
-  removeContact,
-  toggleBlockContact,
-  createChat,
-  editChat,
-  deleteChat,
-  sendMessage,
-  leaveChat,
-  editProfile,
-  findUserById,
-  findChatById,
-  isBlockedByUser,
-  allContactsByUser,
-  contactsWithoutPrivateChat,
-  allChatsByUser,
-  findContactById,
-  findPrivateChatWithContact,
-  changePassword,
-  findContactByUserId,
-} from "./helpers/funcs";
+  COUNT_DOCUMENTS,
+  CREATE_USER,
+  LOGIN,
+  ADD_CONTACT,
+  ADD_CONTACTS,
+  REMOVE_CONTACT,
+  CREATE_CHAT,
+  EDIT_CHAT,
+  DELETE_CHAT,
+  TOGGLE_BLOCK_CONTACT,
+  SEND_MESSAGE,
+  LEAVE_CHAT,
+  EDIT_PROFILE,
+  FIND_USER_BY_ID,
+  FIND_CHAT_BY_ID,
+  IS_BLOCKED_BY_USER,
+  ALL_CONTACTS_BY_USER,
+  CONTACTS_WITHOUT_PRIVATE_CHAT,
+  ALL_CHATS_BY_USER,
+  FIND_CONTACT_BY_ID,
+  FIND_PRIVATE_CHAT_WITH_CONTACT,
+  CHANGE_PASSWORD,
+  FIND_CONTACT_BY_USER_ID,
+} from "./helpers/queries";
 import { sequelize } from "../db";
 import { start } from "../server";
 import { emptyDatabase, createDatabase } from "../populateDatabase";
@@ -57,7 +68,15 @@ void describe("GraphQL API", () => {
   });
 
   void test("returns document count from database", async () => {
-    const responseBody = await countDocuments();
+    const responseBody = await query<{ countDocuments: number }, {}>(
+      COUNT_DOCUMENTS,
+      {
+        input: {
+          ...user1Input,
+          username: "us",
+        },
+      }
+    );
     const count = responseBody.data?.countDocuments;
     assert.strictEqual(count, 0);
   });
@@ -65,9 +84,14 @@ void describe("GraphQL API", () => {
   void describe("Users", () => {
     void describe("User creation", () => {
       void test("fails with username shorter than 3 characters", async () => {
-        const responseBody = await createUser({
-          ...user1Input,
-          username: "us",
+        const responseBody = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, {
+          input: {
+            ...user1Input,
+            username: "us",
+          },
         });
 
         const user = responseBody.data?.createUser;
@@ -89,9 +113,14 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with password shorter than 6 characters", async () => {
-        const responseBody = await createUser({
-          ...user1Input,
-          password: "short",
+        const responseBody = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, {
+          input: {
+            ...user1Input,
+            password: "short",
+          },
         });
         const user = responseBody.data?.createUser;
 
@@ -112,9 +141,14 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when passwords do not match", async () => {
-        const responseBody = await createUser({
-          ...user1Input,
-          confirmPassword: "passwor",
+        const responseBody = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, {
+          input: {
+            ...user1Input,
+            confirmPassword: "passwor",
+          },
         });
         const user = responseBody.data?.createUser;
 
@@ -135,8 +169,14 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails if user already exists", async () => {
-        await createUser(user1Input);
-        const responseBody = await createUser(user1Input);
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
+        const responseBody = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, { input: user1Input });
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
@@ -152,7 +192,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid input", async () => {
-        const responseBody = await createUser(user1Input);
+        const responseBody = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, { input: user1Input });
         const user = responseBody.data?.createUser;
 
         assert.ok(user, "User should be defined");
@@ -169,13 +212,21 @@ void describe("GraphQL API", () => {
 
     void describe("User login", () => {
       beforeEach(async () => {
-        await createUser(user1Input);
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
       });
 
       void test("fails with non-existent username", async () => {
-        const responseBody = await login({
-          username: "nonexistent",
-          password: user1Details.password,
+        const responseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: "nonexistent",
+            password: user1Details.password,
+          },
         });
         const token = responseBody.data?.login;
 
@@ -192,9 +243,14 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with incorrect password", async () => {
-        const responseBody = await login({
-          username: user1Details.username,
-          password: "wrongpassword",
+        const responseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: "wrongpassword",
+          },
         });
         const token = responseBody.data?.login;
 
@@ -211,9 +267,14 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid credentials", async () => {
-        const responseBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        const responseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
         const token = responseBody.data?.login;
 
@@ -228,10 +289,18 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        await createUser(user1Input);
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
@@ -311,14 +380,25 @@ void describe("GraphQL API", () => {
       let user2Id: string;
 
       beforeEach(async () => {
-        await createUser(user1Input);
-        const user2Body = await createUser(user2Input);
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
+        const user2Body = await query<
+          { createUser: User },
+          { input: CreateUserInput }
+        >(CREATE_USER, { input: user2Input });
         assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
         user2Id = user2Body.data.createUser.id;
 
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
@@ -326,7 +406,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await findUserById(user2Id, "");
+        const responseBody = await query<
+          { findUserById: User },
+          { id: string }
+        >(FIND_USER_BY_ID, { id: user2Id }, "");
 
         const user = responseBody.data?.findUserById;
 
@@ -343,7 +426,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const responseBody = await findUserById("999", token);
+        const responseBody = await query<
+          { findUserById: User },
+          { id: string }
+        >(FIND_USER_BY_ID, { id: "999" }, token);
 
         const user = responseBody.data?.findUserById;
 
@@ -360,7 +446,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const responseBody = await findUserById(user2Id, token);
+        const responseBody = await query<
+          { findUserById: User },
+          { id: string }
+        >(FIND_USER_BY_ID, { id: user2Id }, token);
 
         const user = responseBody.data?.findUserById;
 
@@ -381,10 +470,18 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        await createUser(user1Input);
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
@@ -392,11 +489,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await editProfile(
+        const responseBody = await query<
+          { editProfile: User },
+          { input: EditProfileInput }
+        >(
+          EDIT_PROFILE,
           {
-            name: "Updated Name",
-            about: "Updated about",
-            is24HourClock: true,
+            input: {
+              name: "Updated Name",
+              about: "Updated about",
+              is24HourClock: true,
+            },
           },
           ""
         );
@@ -416,11 +519,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with name shorter than 3 characters", async () => {
-        const responseBody = await editProfile(
+        const responseBody = await query<
+          { editProfile: User },
+          { input: EditProfileInput }
+        >(
+          EDIT_PROFILE,
           {
-            name: "AB",
-            about: "Valid about text",
-            is24HourClock: true,
+            input: {
+              name: "AB",
+              about: "Valid about text",
+              is24HourClock: true,
+            },
           },
           token
         );
@@ -447,11 +556,17 @@ void describe("GraphQL API", () => {
         const updatedName = "Updated Name";
         const updatedAbout = "This is my updated about section";
 
-        const responseBody = await editProfile(
+        const responseBody = await query<
+          { editProfile: User },
+          { input: EditProfileInput }
+        >(
+          EDIT_PROFILE,
           {
-            name: updatedName,
-            about: updatedAbout,
-            is24HourClock: true,
+            input: {
+              name: updatedName,
+              about: updatedAbout,
+              is24HourClock: true,
+            },
           },
           token
         );
@@ -469,11 +584,17 @@ void describe("GraphQL API", () => {
       void test("succeeds updating name with null about", async () => {
         const updatedName = "Another Updated Name";
 
-        const responseBody = await editProfile(
+        const responseBody = await query<
+          { editProfile: User },
+          { input: EditProfileInput }
+        >(
+          EDIT_PROFILE,
           {
-            name: updatedName,
-            about: null,
-            is24HourClock: true,
+            input: {
+              name: updatedName,
+              about: null,
+              is24HourClock: true,
+            },
           },
           token
         );
@@ -493,10 +614,18 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        await createUser(user1Input);
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        await query<{ createUser: User }, { input: CreateUserInput }>(
+          CREATE_USER,
+          { input: user1Input }
+        );
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
@@ -504,11 +633,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await changePassword(
+        const responseBody = await query<
+          { changePassword: User },
+          { input: ChangePasswordInput }
+        >(
+          CHANGE_PASSWORD,
           {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
+            input: {
+              currentPassword: user1Details.password,
+              newPassword: "newpassword",
+              confirmNewPassword: "newpassword",
+            },
           },
           ""
         );
@@ -528,11 +663,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with wrong current password", async () => {
-        const responseBody = await changePassword(
+        const responseBody = await query<
+          { changePassword: User },
+          { input: ChangePasswordInput }
+        >(
+          CHANGE_PASSWORD,
           {
-            currentPassword: "wrong",
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
+            input: {
+              currentPassword: "wrong",
+              newPassword: "newpassword",
+              confirmNewPassword: "newpassword",
+            },
           },
           token
         );
@@ -552,11 +693,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with new password shorter than 6 characters", async () => {
-        const responseBody = await changePassword(
+        const responseBody = await query<
+          { changePassword: User },
+          { input: ChangePasswordInput }
+        >(
+          CHANGE_PASSWORD,
           {
-            currentPassword: user1Details.password,
-            newPassword: "short",
-            confirmNewPassword: "short",
+            input: {
+              currentPassword: user1Details.password,
+              newPassword: "short",
+              confirmNewPassword: "short",
+            },
           },
           token
         );
@@ -584,11 +731,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with new passwords not matching", async () => {
-        const responseBody = await changePassword(
+        const responseBody = await query<
+          { changePassword: User },
+          { input: ChangePasswordInput }
+        >(
+          CHANGE_PASSWORD,
           {
-            currentPassword: user1Details.password,
-            newPassword: "password",
-            confirmNewPassword: "different",
+            input: {
+              currentPassword: user1Details.password,
+              newPassword: "password",
+              confirmNewPassword: "different",
+            },
           },
           token
         );
@@ -616,11 +769,17 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds changing password", async () => {
-        const responseBody = await changePassword(
+        const responseBody = await query<
+          { changePassword: User },
+          { input: ChangePasswordInput }
+        >(
+          CHANGE_PASSWORD,
           {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
+            input: {
+              currentPassword: user1Details.password,
+              newPassword: "newpassword",
+              confirmNewPassword: "newpassword",
+            },
           },
           token
         );
@@ -642,13 +801,27 @@ void describe("GraphQL API", () => {
     let user2Token: string;
 
     beforeEach(async () => {
-      await createUser(user1Input);
-      await createUser(user2Input);
-      await createUser(user3Input);
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user1Input }
+      );
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user2Input }
+      );
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user3Input }
+      );
 
-      const user1LoginBody = await login({
-        username: user1Details.username,
-        password: user1Details.password,
+      const user1LoginBody = await query<
+        { login: { value: string } },
+        { input: LoginInput }
+      >(LOGIN, {
+        input: {
+          username: user1Details.username,
+          password: user1Details.password,
+        },
       });
 
       assert.ok(
@@ -657,9 +830,14 @@ void describe("GraphQL API", () => {
       );
       user1Token = user1LoginBody.data.login.value;
 
-      const user2LoginBody = await login({
-        username: user2Details.username,
-        password: user2Details.password,
+      const user2LoginBody = await query<
+        { login: { value: string } },
+        { input: LoginInput }
+      >(LOGIN, {
+        input: {
+          username: user2Details.username,
+          password: user2Details.password,
+        },
       });
 
       assert.ok(user2LoginBody.data, "User2 login token should be defined");
@@ -668,7 +846,10 @@ void describe("GraphQL API", () => {
 
     void describe("Add contact", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await addContact(user1Details.id, "");
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user1Details.id }, "");
 
         const contact = responseBody.data?.addContact;
 
@@ -685,7 +866,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to add yourself as contact", async () => {
-        const responseBody = await addContact(user1Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user1Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
 
@@ -702,7 +886,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
 
@@ -724,8 +911,15 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to add same contact twice", async () => {
-        await addContact(user2Details.id, user1Token);
-        const responseBody = await addContact(user2Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
 
@@ -744,10 +938,10 @@ void describe("GraphQL API", () => {
 
     void describe("Add contacts", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await addContacts(
-          [user2Details.id, user3Details.id],
-          ""
-        );
+        const responseBody = await query<
+          { addContacts: Contact[] },
+          { ids: string[] }
+        >(ADD_CONTACTS, { ids: [user2Details.id, user3Details.id] }, "");
 
         const contacts = responseBody.data?.addContacts;
 
@@ -764,8 +958,12 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user IDs", async () => {
-        const responseBody = await addContacts(
-          [user2Details.id, user3Details.id],
+        const responseBody = await query<
+          { addContacts: Contact[] },
+          { ids: string[] }
+        >(
+          ADD_CONTACTS,
+          { ids: [user2Details.id, user3Details.id] },
           user1Token
         );
 
@@ -802,7 +1000,10 @@ void describe("GraphQL API", () => {
     void describe("Remove contact", () => {
       let contactId: string;
       beforeEach(async () => {
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -810,7 +1011,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await removeContact(contactId, "");
+        const responseBody = await query<
+          { removeContact: Contact },
+          { id: string }
+        >(REMOVE_CONTACT, { id: contactId }, "");
 
         const contact = responseBody.data?.removeContact;
 
@@ -827,7 +1031,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const responseBody = await removeContact("999", user1Token);
+        const responseBody = await query<
+          { removeContact: Contact },
+          { id: string }
+        >(REMOVE_CONTACT, { id: "999" }, user1Token);
 
         const contact = responseBody.data?.removeContact;
 
@@ -844,7 +1051,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid contact ID", async () => {
-        const responseBody = await removeContact(contactId, user1Token);
+        const responseBody = await query<
+          { removeContact: Contact },
+          { id: string }
+        >(REMOVE_CONTACT, { id: contactId }, user1Token);
 
         const contact = responseBody.data?.removeContact;
 
@@ -865,8 +1075,15 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to remove same contact twice", async () => {
-        await removeContact(contactId, user1Token);
-        const responseBody = await removeContact(contactId, user1Token);
+        await query<{ removeContact: Contact }, { id: string }>(
+          REMOVE_CONTACT,
+          { id: contactId },
+          user1Token
+        );
+        const responseBody = await query<
+          { removeContact: Contact },
+          { id: string }
+        >(REMOVE_CONTACT, { id: contactId }, user1Token);
 
         const contact = responseBody.data?.removeContact;
 
@@ -887,7 +1104,10 @@ void describe("GraphQL API", () => {
       let contactId: string;
 
       beforeEach(async () => {
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -895,7 +1115,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await toggleBlockContact(contactId, "");
+        const responseBody = await query<
+          { toggleBlockContact: Contact },
+          { id: string }
+        >(TOGGLE_BLOCK_CONTACT, { id: contactId }, "");
 
         const contact = responseBody.data?.toggleBlockContact;
 
@@ -912,7 +1135,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const responseBody = await toggleBlockContact("999", user1Token);
+        const responseBody = await query<
+          { toggleBlockContact: Contact },
+          { id: string }
+        >(TOGGLE_BLOCK_CONTACT, { id: "999" }, user1Token);
 
         const contact = responseBody.data?.toggleBlockContact;
 
@@ -929,7 +1155,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds blocking contact", async () => {
-        const responseBody = await toggleBlockContact(contactId, user1Token);
+        const responseBody = await query<
+          { toggleBlockContact: Contact },
+          { id: string }
+        >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
 
         const contact = responseBody.data?.toggleBlockContact;
 
@@ -950,8 +1179,15 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds unblocking contact", async () => {
-        await toggleBlockContact(contactId, user1Token);
-        const responseBody = await toggleBlockContact(contactId, user1Token);
+        await query<{ toggleBlockContact: Contact }, { id: string }>(
+          TOGGLE_BLOCK_CONTACT,
+          { id: contactId },
+          user1Token
+        );
+        const responseBody = await query<
+          { toggleBlockContact: Contact },
+          { id: string }
+        >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
 
         const contact = responseBody.data?.toggleBlockContact;
 
@@ -975,16 +1211,26 @@ void describe("GraphQL API", () => {
     void describe("Is blocked by user", () => {
       let contactId: string;
       beforeEach(async () => {
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
         contactId = contact.id;
-        await addContact(user1Details.id, user2Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user1Details.id },
+          user2Token
+        );
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await isBlockedByUser(user1Details.id, "");
+        const responseBody = await query<
+          { isBlockedByUser: boolean },
+          { id: string }
+        >(IS_BLOCKED_BY_USER, { id: user1Details.id }, "");
 
         const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -1001,7 +1247,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent contact", async () => {
-        const responseBody = await isBlockedByUser("999", user2Token);
+        const responseBody = await query<
+          { isBlockedByUser: boolean },
+          { id: string }
+        >(IS_BLOCKED_BY_USER, { id: "999" }, user2Token);
 
         const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -1018,7 +1267,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns false when not blocked", async () => {
-        const responseBody = await isBlockedByUser(user1Details.id, user2Token);
+        const responseBody = await query<
+          { isBlockedByUser: boolean },
+          { id: string }
+        >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
 
         const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -1031,8 +1283,15 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns true when blocked", async () => {
-        await toggleBlockContact(contactId, user1Token);
-        const responseBody = await isBlockedByUser(user1Details.id, user2Token);
+        await query<{ toggleBlockContact: Contact }, { id: string }>(
+          TOGGLE_BLOCK_CONTACT,
+          { id: contactId },
+          user1Token
+        );
+        const responseBody = await query<
+          { isBlockedByUser: boolean },
+          { id: string }
+        >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
 
         const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -1047,7 +1306,10 @@ void describe("GraphQL API", () => {
 
     void describe("All contacts by user", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await allContactsByUser(null, "");
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, {}, "");
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1064,7 +1326,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no contacts exist", async () => {
-        const responseBody = await allContactsByUser(null, user1Token);
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, {}, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1078,10 +1343,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns all contacts when user has contacts", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
 
-        const responseBody = await allContactsByUser(null, user1Token);
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, {}, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1090,13 +1366,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters contacts by username search", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
-
-        const responseBody = await allContactsByUser(
-          user2Details.username,
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
           user1Token
         );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
+
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, { search: user2Details.username }, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1113,21 +1397,35 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters contacts by name search", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
 
         const newName = "New Name";
 
-        await editProfile(
+        await query<{ editProfile: User }, { input: EditProfileInput }>(
+          EDIT_PROFILE,
           {
-            name: newName,
-            about: null,
-            is24HourClock: true,
+            input: {
+              name: newName,
+              about: null,
+              is24HourClock: true,
+            },
           },
           user2Token
         );
 
-        const responseBody = await allContactsByUser(newName, user1Token);
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, { search: newName }, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1141,10 +1439,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when search has no matches", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
 
-        const responseBody = await allContactsByUser("nonexistent", user1Token);
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, { search: "nonexistent" }, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1153,9 +1462,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("search is case insensitive", async () => {
-        await addContact(user2Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
 
-        const responseBody = await allContactsByUser("USER2", user1Token);
+        const responseBody = await query<
+          { allContactsByUser: Contact[] },
+          { search?: string }
+        >(ALL_CONTACTS_BY_USER, { search: "USER2" }, user1Token);
 
         const contacts = responseBody.data?.allContactsByUser;
 
@@ -1170,7 +1486,10 @@ void describe("GraphQL API", () => {
 
     void describe("Contacts without private chat", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await contactsWithoutPrivateChat(null, "");
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, "");
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1187,7 +1506,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no contacts exist", async () => {
-        const responseBody = await contactsWithoutPrivateChat(null, user1Token);
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1201,11 +1523,26 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns all contacts without private chat when user has contacts", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
-        await createChat(privateChatDetails, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: privateChatDetails },
+          user1Token
+        );
 
-        const responseBody = await contactsWithoutPrivateChat(null, user1Token);
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1222,11 +1559,23 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters contacts by username search", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
 
-        const responseBody = await contactsWithoutPrivateChat(
-          user2Details.username,
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(
+          CONTACTS_WITHOUT_PRIVATE_CHAT,
+          { search: user2Details.username },
           user1Token
         );
 
@@ -1245,24 +1594,35 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters contacts by name search", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token
+        );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
 
         const newName = "New Name";
 
-        await editProfile(
+        await query<{ editProfile: User }, { input: EditProfileInput }>(
+          EDIT_PROFILE,
           {
-            name: newName,
-            about: null,
-            is24HourClock: true,
+            input: {
+              name: newName,
+              about: null,
+              is24HourClock: true,
+            },
           },
           user2Token
         );
 
-        const responseBody = await contactsWithoutPrivateChat(
-          newName,
-          user1Token
-        );
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: newName }, user1Token);
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1276,13 +1636,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when search has no matches", async () => {
-        await addContact(user2Details.id, user1Token);
-        await addContact(user3Details.id, user1Token);
-
-        const responseBody = await contactsWithoutPrivateChat(
-          "nonexistent",
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
           user1Token
         );
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user3Details.id },
+          user1Token
+        );
+
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "nonexistent" }, user1Token);
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1291,12 +1659,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("search is case insensitive", async () => {
-        await addContact(user2Details.id, user1Token);
-
-        const responseBody = await contactsWithoutPrivateChat(
-          "USER2",
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
           user1Token
         );
+
+        const responseBody = await query<
+          { contactsWithoutPrivateChat: Contact[] },
+          { search?: string }
+        >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "USER2" }, user1Token);
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -1314,15 +1686,23 @@ void describe("GraphQL API", () => {
       let contactId: string;
 
       beforeEach(async () => {
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact?.id, "Contact ID should be defined");
@@ -1330,7 +1710,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await findContactById(contactId, "");
+        const responseBody = await query<
+          { findContactById: Contact },
+          { id: string }
+        >(FIND_CONTACT_BY_ID, { id: contactId }, "");
 
         const contact = responseBody.data?.findContactById;
 
@@ -1347,7 +1730,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const responseBody = await findContactById("999", token);
+        const responseBody = await query<
+          { findContactById: Contact },
+          { id: string }
+        >(FIND_CONTACT_BY_ID, { id: "999" }, token);
 
         const contact = responseBody.data?.findContactById;
 
@@ -1364,7 +1750,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid contact ID", async () => {
-        const responseBody = await findContactById(contactId, token);
+        const responseBody = await query<
+          { findContactById: Contact },
+          { id: string }
+        >(FIND_CONTACT_BY_ID, { id: contactId }, token);
 
         const contact = responseBody.data?.findContactById;
 
@@ -1386,22 +1775,35 @@ void describe("GraphQL API", () => {
       let token: string;
 
       beforeEach(async () => {
-        const loginBody = await login({
-          username: user1Details.username,
-          password: user1Details.password,
+        const loginBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user1Details.username,
+            password: user1Details.password,
+          },
         });
 
         assert.ok(loginBody.data, "Login token value should be defined");
         token = loginBody.data.login.value;
 
-        const responseBody = await addContact(user2Details.id, user1Token);
+        const responseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, user1Token);
 
         const contact = responseBody.data?.addContact;
         assert.ok(contact, "Contact should be defined");
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await findContactByUserId(user2Details.id, "");
+        const responseBody = await query<
+          {
+            findContactByUserId: Contact;
+          },
+          { id: string }
+        >(FIND_CONTACT_BY_USER_ID, { id: user2Details.id }, "");
 
         const contact = responseBody.data?.findContactByUserId;
 
@@ -1418,7 +1820,12 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent user ID", async () => {
-        const responseBody = await findContactByUserId("999", token);
+        const responseBody = await query<
+          {
+            findContactByUserId: Contact;
+          },
+          { id: string }
+        >(FIND_CONTACT_BY_USER_ID, { id: "999" }, token);
 
         const contact = responseBody.data?.findContactByUserId;
 
@@ -1435,7 +1842,12 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid user ID", async () => {
-        const responseBody = await findContactByUserId(user2Details.id, token);
+        const responseBody = await query<
+          {
+            findContactByUserId: Contact;
+          },
+          { id: string }
+        >(FIND_CONTACT_BY_USER_ID, { id: user2Details.id }, token);
 
         const contact = responseBody.data?.findContactByUserId;
 
@@ -1458,13 +1870,27 @@ void describe("GraphQL API", () => {
     let token: string;
 
     beforeEach(async () => {
-      await createUser(user1Input);
-      await createUser(user2Input);
-      await createUser(user3Input);
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user1Input }
+      );
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user2Input }
+      );
+      await query<{ createUser: User }, { input: CreateUserInput }>(
+        CREATE_USER,
+        { input: user3Input }
+      );
 
-      const loginBody = await login({
-        username: user1Details.username,
-        password: user1Details.password,
+      const loginBody = await query<
+        { login: { value: string } },
+        { input: LoginInput }
+      >(LOGIN, {
+        input: {
+          username: user1Details.username,
+          password: user1Details.password,
+        },
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -1473,7 +1899,10 @@ void describe("GraphQL API", () => {
 
     void describe("Create chat", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await createChat(privateChatDetails, "");
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, "");
 
         const chat = responseBody.data?.createChat;
 
@@ -1490,10 +1919,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty initial message", async () => {
-        const responseBody = await createChat(
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(
+          CREATE_CHAT,
           {
-            ...privateChatDetails,
-            initialMessage: "",
+            input: {
+              ...privateChatDetails,
+              initialMessage: "",
+            },
           },
           token
         );
@@ -1517,10 +1952,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with group chat without name", async () => {
-        const responseBody = await createChat(
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(
+          CREATE_CHAT,
           {
-            ...groupChatDetails,
-            name: "",
+            input: {
+              ...groupChatDetails,
+              name: "",
+            },
           },
           token
         );
@@ -1544,10 +1985,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with group chat name shorter than 3 characters", async () => {
-        const responseBody = await createChat(
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(
+          CREATE_CHAT,
           {
-            ...groupChatDetails,
-            name: "te",
+            input: {
+              ...groupChatDetails,
+              name: "te",
+            },
           },
           token
         );
@@ -1571,7 +2018,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds creating private chat", async () => {
-        const responseBody = await createChat(privateChatDetails, token);
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
 
         const chat = responseBody.data?.createChat;
 
@@ -1598,7 +2048,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds creating group chat", async () => {
-        const responseBody = await createChat(groupChatDetails, token);
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: groupChatDetails }, token);
 
         const chat = responseBody.data?.createChat;
 
@@ -1636,18 +2089,27 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const chatBody = await createChat(groupChatDetails, token);
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: groupChatDetails }, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
+            input: {
+              id: chatId,
+              name: "Updated Chat",
+              description: "Updated description",
+              members: [user2Details.id],
+            },
           },
           ""
         );
@@ -1667,12 +2129,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty chat name", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
+            input: {
+              id: chatId,
+              name: "",
+              description: "Updated description",
+              members: [user2Details.id, user3Details.id],
+            },
           },
           token
         );
@@ -1696,12 +2164,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with chat name shorter than 3 characters", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "AB",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
+            input: {
+              id: chatId,
+              name: "AB",
+              description: "Updated description",
+              members: [user2Details.id, user3Details.id],
+            },
           },
           token
         );
@@ -1725,12 +2199,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: "999",
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
+            input: {
+              id: "999",
+              name: "Updated Chat",
+              description: "Updated description",
+              members: [user2Details.id],
+            },
           },
           token
         );
@@ -1750,12 +2230,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds updating chat name and description", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated test description",
-            members: [user2Details.id, user3Details.id],
+            input: {
+              id: chatId,
+              name: "Updated Group Chat",
+              description: "Updated test description",
+              members: [user2Details.id, user3Details.id],
+            },
           },
           token
         );
@@ -1782,12 +2268,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds removing member from chat", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated description",
-            members: [user2Details.id],
+            input: {
+              id: chatId,
+              name: "Updated Group Chat",
+              description: "Updated description",
+              members: [user2Details.id],
+            },
           },
           token
         );
@@ -1813,12 +2305,18 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with null description", async () => {
-        const responseBody = await editChat(
+        const responseBody = await query<
+          { editChat: Chat },
+          { input: EditChatInput }
+        >(
+          EDIT_CHAT,
           {
-            id: chatId,
-            name: "Chat with No Description",
-            description: null,
-            members: [user2Details.id, user3Details.id],
+            input: {
+              id: chatId,
+              name: "Chat with No Description",
+              description: null,
+              members: [user2Details.id, user3Details.id],
+            },
           },
           token
         );
@@ -1835,13 +2333,20 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const chatBody = await createChat(groupChatDetails, token);
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: groupChatDetails }, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await deleteChat(chatId, "");
+        const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
+          DELETE_CHAT,
+          { id: chatId },
+          ""
+        );
 
         const chat = responseBody.data?.deleteChat;
 
@@ -1858,7 +2363,11 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const responseBody = await deleteChat("999", token);
+        const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
+          DELETE_CHAT,
+          { id: "999" },
+          token
+        );
 
         const chat = responseBody.data?.deleteChat;
 
@@ -1875,7 +2384,11 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds deleting chat with valid ID", async () => {
-        const responseBody = await deleteChat(chatId, token);
+        const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
+          DELETE_CHAT,
+          { id: chatId },
+          token
+        );
 
         const chat = responseBody.data?.deleteChat;
 
@@ -1887,8 +2400,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails when trying to delete same chat twice", async () => {
-        await deleteChat(chatId, token);
-        const responseBody = await deleteChat(chatId, token);
+        await query<{ deleteChat: Chat }, { id: string }>(
+          DELETE_CHAT,
+          { id: chatId },
+          token
+        );
+        const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
+          DELETE_CHAT,
+          { id: chatId },
+          token
+        );
 
         const chat = responseBody.data?.deleteChat;
 
@@ -1909,7 +2430,10 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const responseBody = await createChat(groupChatDetails, token);
+        const responseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: groupChatDetails }, token);
         assert.ok(
           responseBody.data?.createChat.id,
           "Chat ID should be defined"
@@ -1918,7 +2442,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await findChatById(chatId, "");
+        const responseBody = await query<
+          { findChatById: Chat },
+          { id: string }
+        >(FIND_CHAT_BY_ID, { id: chatId }, "");
 
         const chat = responseBody.data?.findChatById;
 
@@ -1935,7 +2462,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with non-existent chat ID", async () => {
-        const responseBody = await findChatById("999", token);
+        const responseBody = await query<
+          { findChatById: Chat },
+          { id: string }
+        >(FIND_CHAT_BY_ID, { id: "999" }, token);
 
         const chat = responseBody.data?.findChatById;
 
@@ -1952,7 +2482,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds finding chat", async () => {
-        const responseBody = await findChatById(chatId, token);
+        const responseBody = await query<
+          { findChatById: Chat },
+          { id: string }
+        >(FIND_CHAT_BY_ID, { id: chatId }, token);
 
         const chat = responseBody.data?.findChatById;
 
@@ -1988,16 +2521,25 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const chatBody = await createChat(privateChatDetails, token);
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await sendMessage(
+        const responseBody = await query<
+          { sendMessage: Chat },
+          { input: SendMessageInput }
+        >(
+          SEND_MESSAGE,
           {
-            id: chatId,
-            content: "Hello from unauthenticated user",
+            input: {
+              id: chatId,
+              content: "Hello from unauthenticated user",
+            },
           },
           ""
         );
@@ -2017,10 +2559,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with empty message content", async () => {
-        const responseBody = await sendMessage(
+        const responseBody = await query<
+          { sendMessage: Chat },
+          { input: SendMessageInput }
+        >(
+          SEND_MESSAGE,
           {
-            id: chatId,
-            content: "",
+            input: {
+              id: chatId,
+              content: "",
+            },
           },
           token
         );
@@ -2045,10 +2593,16 @@ void describe("GraphQL API", () => {
 
       void test("succeeds sending message to chat", async () => {
         const messageContent = "Hello from chat!";
-        const responseBody = await sendMessage(
+        const responseBody = await query<
+          { sendMessage: Chat },
+          { input: SendMessageInput }
+        >(
+          SEND_MESSAGE,
           {
-            id: chatId,
-            content: messageContent,
+            input: {
+              id: chatId,
+              content: messageContent,
+            },
           },
           token
         );
@@ -2080,13 +2634,21 @@ void describe("GraphQL API", () => {
       let token2: string;
 
       beforeEach(async () => {
-        const chatBody = await createChat(groupChatDetails, token);
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: groupChatDetails }, token);
         assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
         chatId = chatBody.data.createChat.id;
 
-        const loginResponseBody = await login({
-          username: user2Details.username,
-          password: user2Details.password,
+        const loginResponseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user2Details.username,
+            password: user2Details.password,
+          },
         });
 
         assert.ok(
@@ -2097,7 +2659,11 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await leaveChat(chatId, "");
+        const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
+          LEAVE_CHAT,
+          { id: chatId },
+          ""
+        );
 
         const chat = responseBody.data?.leaveChat;
 
@@ -2114,7 +2680,11 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds when member leaves group chat", async () => {
-        const responseBody = await leaveChat(chatId, token2);
+        const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
+          LEAVE_CHAT,
+          { id: chatId },
+          token2
+        );
 
         const chat = responseBody.data?.leaveChat;
 
@@ -2147,7 +2717,10 @@ void describe("GraphQL API", () => {
 
     void describe("All chats by user", () => {
       void test("fails without authentication", async () => {
-        const responseBody = await allChatsByUser(null, "");
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, {}, "");
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2164,7 +2737,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns empty array when no chats exist", async () => {
-        const responseBody = await allChatsByUser(null, token);
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, {}, token);
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2178,10 +2754,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns all chats when user has chats", async () => {
-        await createChat(privateChatDetails, token);
-        await createChat(groupChatDetails, token);
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: privateChatDetails },
+          token
+        );
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: groupChatDetails },
+          token
+        );
 
-        const responseBody = await allChatsByUser(null, token);
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, {}, token);
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2190,10 +2777,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters chats by name search", async () => {
-        await createChat(privateChatDetails, token);
-        await createChat(groupChatDetails, token);
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: privateChatDetails },
+          token
+        );
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: groupChatDetails },
+          token
+        );
 
-        const responseBody = await allChatsByUser(groupChatDetails.name, token);
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, { search: groupChatDetails.name }, token);
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2206,13 +2804,21 @@ void describe("GraphQL API", () => {
       });
 
       void test("filters chats by description search", async () => {
-        await createChat(privateChatDetails, token);
-        await createChat(groupChatDetails, token);
-
-        const responseBody = await allChatsByUser(
-          groupChatDetails.description,
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: privateChatDetails },
           token
         );
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: groupChatDetails },
+          token
+        );
+
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, { search: groupChatDetails.description }, token);
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2225,9 +2831,16 @@ void describe("GraphQL API", () => {
       });
 
       void test("search is case insensitive", async () => {
-        await createChat(groupChatDetails, token);
+        await query<{ createChat: Chat }, { input: CreateChatInput }>(
+          CREATE_CHAT,
+          { input: groupChatDetails },
+          token
+        );
 
-        const responseBody = await allChatsByUser("TEST", token);
+        const responseBody = await query<
+          { allChatsByUser: Chat[] },
+          { search?: string }
+        >(ALL_CHATS_BY_USER, { search: "TEST" }, token);
 
         const chats = responseBody.data?.allChatsByUser;
 
@@ -2245,7 +2858,10 @@ void describe("GraphQL API", () => {
       let chatId: string;
 
       beforeEach(async () => {
-        const contactResponseBody = await addContact(user2Details.id, token);
+        const contactResponseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, token);
 
         assert.ok(
           contactResponseBody.data?.addContact.id,
@@ -2253,7 +2869,10 @@ void describe("GraphQL API", () => {
         );
         userId = contactResponseBody.data.addContact.contactDetails.id;
 
-        const chatResponseBody = await createChat(privateChatDetails, token);
+        const chatResponseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
         assert.ok(
           chatResponseBody.data?.createChat.id,
           "Chat ID should be defined"
@@ -2262,7 +2881,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const responseBody = await findPrivateChatWithContact(userId, "");
+        const responseBody = await query<
+          { findPrivateChatWithContact: Chat },
+          { id: string }
+        >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, "");
 
         const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -2279,7 +2901,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("returns null with non-existent chat ID", async () => {
-        const responseBody = await findPrivateChatWithContact("999", token);
+        const responseBody = await query<
+          { findPrivateChatWithContact: Chat },
+          { id: string }
+        >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: "999" }, token);
 
         const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -2287,7 +2912,10 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds finding chat", async () => {
-        const responseBody = await findPrivateChatWithContact(userId, token);
+        const responseBody = await query<
+          { findPrivateChatWithContact: Chat },
+          { id: string }
+        >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, token);
 
         const chat = responseBody.data?.findPrivateChatWithContact;
 
