@@ -25,14 +25,14 @@ const makeRequest = async <Variables>(
 };
 
 export const query = async <Data, Variables = Record<string, never>>(
-  queryString: string,
+  query: string,
   variables: Variables,
   token: string = "",
   expectedStatusCode: number = 200,
   skipErrorCheck: boolean = false
 ): Promise<HTTPGraphQLResponse<Data>> => {
   const response = await makeRequest(
-    queryString,
+    query,
     variables,
     token,
     expectedStatusCode
