@@ -68,7 +68,7 @@ void describe("GraphQL API", () => {
   });
 
   void test("returns document count from database", async () => {
-    const responseBody = await query<{ countDocuments: number }, {}>(
+    const responseBody = await query<{ countDocuments: number }, object>(
       COUNT_DOCUMENTS,
       {
         input: {
