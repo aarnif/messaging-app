@@ -8,7 +8,7 @@ export const query = async <Data, Variables = Record<string, never>>(
   variables: Variables,
   token: string = "",
   expectedStatusCode: number = 200,
-  skipErrorCheck: boolean = false
+  skipErrorCheck: boolean = false // Needed for testing invalid token
 ): Promise<HTTPGraphQLResponse<Data>> => {
   const response = request(config.SERVER_URL).post("/").send({
     query,
