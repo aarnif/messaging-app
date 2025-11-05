@@ -1,5 +1,4 @@
 import type { ApolloServer, BaseContext } from "@apollo/server";
-import type { HTTPGraphQLResponse } from "../types/other";
 import type {
   User,
   Contact,
@@ -19,9 +18,10 @@ import {
   privateChatDetails,
   groupChatDetails,
 } from "./helpers/data";
-import { getMe, query } from "./helpers/funcs";
+import { query } from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
+  ME,
   CREATE_USER,
   LOGIN,
   ADD_CONTACT,
@@ -308,13 +308,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails without authentication", async () => {
-        const response = await getMe();
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          me: User;
-        }>;
+        const responseBody = await query<{ me: User }>(ME, {}, "");
         const user = responseBody.data?.me;
 
         assert.strictEqual(user, null, "User should be null");
@@ -330,13 +324,7 @@ void describe("GraphQL API", () => {
       });
 
       void test("succeeds with valid token", async () => {
-        const response = await getMe(token);
-
-        assert.strictEqual(response.error, false);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          me: User;
-        }>;
+        const responseBody = await query<{ me: User }>(ME, {}, token);
         const user = responseBody.data?.me;
 
         assert.ok(user, "User should be defined");
@@ -352,11 +340,13 @@ void describe("GraphQL API", () => {
       });
 
       void test("fails with invalid token", async () => {
-        const response = await getMe("invalid-token", 500);
-
-        const responseBody = response.body as HTTPGraphQLResponse<{
-          me: User;
-        }>;
+        const responseBody = await query<{ me: User }>(
+          ME,
+          {},
+          "invalid-token",
+          500,
+          true
+        );
         const user = responseBody.data?.me;
 
         assert.strictEqual(user, undefined, "User should be null");
