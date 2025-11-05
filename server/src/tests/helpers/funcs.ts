@@ -1,15 +1,15 @@
 import request from "supertest";
-import type { Response } from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other";
 import config from "config";
 import assert from "node:assert";
 
-const makeRequest = async <Variables>(
+export const query = async <Data, Variables = Record<string, never>>(
   query: string,
   variables: Variables,
   token: string = "",
-  expectedStatusCode: number = 200
-): Promise<Response> => {
+  expectedStatusCode: number = 200,
+  skipErrorCheck: boolean = false
+): Promise<HTTPGraphQLResponse<Data>> => {
   const response = request(config.SERVER_URL).post("/").send({
     query,
     variables,
@@ -19,28 +19,13 @@ const makeRequest = async <Variables>(
     response.set("Authorization", `Bearer ${token}`);
   }
 
-  return await response
+  const result = await response
     .expect("Content-Type", /json/)
     .expect(expectedStatusCode);
-};
-
-export const query = async <Data, Variables = Record<string, never>>(
-  query: string,
-  variables: Variables,
-  token: string = "",
-  expectedStatusCode: number = 200,
-  skipErrorCheck: boolean = false
-): Promise<HTTPGraphQLResponse<Data>> => {
-  const response = await makeRequest(
-    query,
-    variables,
-    token,
-    expectedStatusCode
-  );
 
   if (!skipErrorCheck) {
-    assert.strictEqual(response.error, false);
+    assert.strictEqual(result.error, false);
   }
 
-  return response.body as HTTPGraphQLResponse<Data>;
+  return result.body as HTTPGraphQLResponse<Data>;
 };
