@@ -344,7 +344,7 @@ void describe("GraphQL API", () => {
         );
         const user = responseBody.data?.me;
 
-        assert.strictEqual(user, undefined, "User should be null");
+        assert.strictEqual(user, undefined, "User should be undefined");
         assert.ok(responseBody.errors, "Response should have errors");
         assert.ok(
           responseBody.errors?.length > 0,
@@ -1532,7 +1532,7 @@ void describe("GraphQL API", () => {
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
-        assert.strictEqual(contacts.length, 1, "Should have 1 contacts");
+        assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
         assert.ok(contact, "Contact should exist");
