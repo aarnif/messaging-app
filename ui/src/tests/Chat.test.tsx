@@ -76,6 +76,13 @@ const openChatInfoModal = async (user: UserEvent) => {
   });
 };
 
+const openEditChatModal = async (user: UserEvent) => {
+  await user.click(screen.getByTestId("edit-chat-button"));
+  await waitFor(async () => {
+    expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
+  });
+};
+
 const sendNewMessage = async (user: UserEvent, message: string) => {
   await waitFor(async () => {
     expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
@@ -254,12 +261,7 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await openChatInfoModal(user);
-
-    await user.click(screen.getByTestId("edit-chat-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
-    });
+    await openEditChatModal(user);
   });
 
   test("closes edit chat modal when close button is clicked", async () => {
@@ -267,12 +269,7 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await openChatInfoModal(user);
-
-    await user.click(screen.getByTestId("edit-chat-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
-    });
+    await openEditChatModal(user);
 
     await user.click(screen.getByTestId("close-button"));
 
@@ -291,12 +288,7 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await openChatInfoModal(user);
-
-    await user.click(screen.getByTestId("edit-chat-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
-    });
+    await openEditChatModal(user);
 
     await user.clear(screen.getByPlaceholderText("Enter name here..."));
 
@@ -320,15 +312,7 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
     await openChatInfoModal(user);
-
-    await user.click(screen.getByTestId("edit-chat-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Search by name or username...")
-      ).toBeDefined();
-    });
+    await openEditChatModal(user);
 
     const modal = screen.getByTestId("edit-chat-modal");
 
@@ -362,12 +346,7 @@ describe("<Chat />", () => {
     renderComponent([findChatByIdGroup, allContactsByUser, editChat]);
 
     await openChatInfoModal(user);
-
-    await user.click(screen.getByTestId("edit-chat-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
-    });
+    await openEditChatModal(user);
 
     const nameInput = screen.getByPlaceholderText("Enter name here...");
     const descriptionInput = screen.getByPlaceholderText(
