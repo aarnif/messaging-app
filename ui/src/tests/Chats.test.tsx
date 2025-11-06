@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
@@ -37,6 +38,9 @@ vi.mock("react-router", async () => {
   };
 });
 
+const contact1username = userContactsMock[0].contactDetails.username;
+const contact2username = userContactsMock[1].contactDetails.username;
+
 const renderComponent = (mocks: MockLink.MockedResponse[] = [allChatsByUser]) =>
   render(
     <MockedProvider mocks={mocks}>
@@ -46,8 +50,18 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [allChatsByUser]) =>
     </MockedProvider>
   );
 
-const contact1username = userContactsMock[0].contactDetails.username;
-const contact2username = userContactsMock[1].contactDetails.username;
+const openNewChatDropDownMenu = async (user: UserEvent) => {
+  await waitFor(async () => {
+    expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button"));
+
+  await waitFor(async () => {
+    expect(screen.getByText("New Private Chat")).toBeDefined();
+    expect(screen.getByText("New Group Chat")).toBeDefined();
+  });
+};
 
 describe("<Chats />", () => {
   describe("renders component with chat lists", () => {
@@ -98,32 +112,14 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent();
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
     });
 
     test("closes new chat dropdown when clicking outside", async () => {
       const user = userEvent.setup();
       renderComponent();
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByTestId("overlay"));
 
@@ -139,16 +135,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -174,16 +161,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -204,16 +182,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChatsEmpty]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -228,16 +197,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -279,16 +239,7 @@ describe("<Chats />", () => {
         isBlockedByUserTrue,
       ]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -333,16 +284,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -382,16 +324,7 @@ describe("<Chats />", () => {
         isBlockedByUserFalse,
       ]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(
         screen.getByRole("button", { name: "New Private Chat" })
@@ -440,16 +373,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -466,16 +390,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -494,16 +409,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUserEmpty]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -516,16 +422,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -564,16 +461,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -611,16 +499,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
@@ -657,16 +536,7 @@ describe("<Chats />", () => {
       const user = userEvent.setup();
       renderComponent([allChatsByUser, allContactsByUser]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
-      });
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("New Private Chat")).toBeDefined();
-        expect(screen.getByText("New Group Chat")).toBeDefined();
-      });
+      await openNewChatDropDownMenu(user);
 
       await user.click(screen.getByRole("button", { name: "New Group Chat" }));
 
