@@ -1244,7 +1244,7 @@ export const resolvers: Resolvers = {
         !userExists ||
         !(await bcrypt.compare(currentPassword, userExists.passwordHash))
       ) {
-        throw new GraphQLError("Current password do not match", {
+        throw new GraphQLError("Current password does not match", {
           extensions: {
             code: "BAD_USER_INPUT",
           },

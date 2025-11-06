@@ -673,7 +673,7 @@ void describe("GraphQL API", () => {
         );
 
         const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Current password do not match");
+        assert.strictEqual(error.message, "Current password does not match");
         assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
