@@ -1,5 +1,6 @@
 import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
@@ -31,6 +32,19 @@ const renderComponent = (mocks = [editProfile24h]) =>
       </MemoryRouter>
     </MockedProvider>
   );
+
+const toggleAndVerify = async (
+  user: UserEvent,
+  toggleTestId: string,
+  expectedMark: "check-mark" | "close-mark"
+) => {
+  const toggle = screen.getByTestId(toggleTestId);
+  await user.click(toggle);
+
+  await waitFor(() => {
+    expect(within(toggle).getByTestId(expectedMark)).toBeDefined();
+  });
+};
 
 describe("<Appearance />", () => {
   test("renders page", async () => {
@@ -70,19 +84,8 @@ describe("<Appearance />", () => {
       expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
     });
 
-    const darkModeToggle = screen.getByTestId("toggle-dark-mode");
-
-    await user.click(darkModeToggle);
-
-    await waitFor(() => {
-      expect(within(darkModeToggle).getByTestId("close-mark")).toBeDefined();
-    });
-
-    await user.click(darkModeToggle);
-
-    await waitFor(() => {
-      expect(within(darkModeToggle).getByTestId("check-mark")).toBeDefined();
-    });
+    await toggleAndVerify(user, "toggle-dark-mode", "close-mark");
+    await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
   });
 
   test("toggles clock mode succesfully", async () => {
@@ -95,18 +98,7 @@ describe("<Appearance />", () => {
       expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
     });
 
-    const clockModeToggle = screen.getByTestId("toggle-clock-mode");
-
-    await user.click(clockModeToggle);
-
-    await waitFor(() => {
-      expect(within(clockModeToggle).getByTestId("close-mark")).toBeDefined();
-    });
-
-    await user.click(clockModeToggle);
-
-    await waitFor(() => {
-      expect(within(clockModeToggle).getByTestId("check-mark")).toBeDefined();
-    });
+    await toggleAndVerify(user, "toggle-clock-mode", "close-mark");
+    await toggleAndVerify(user, "toggle-clock-mode", "check-mark");
   });
 });
