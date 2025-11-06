@@ -8,7 +8,6 @@ import {
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
-import { useMutation } from "@apollo/client/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter, useMatch } from "react-router";
 import {
@@ -22,6 +21,9 @@ import {
   currentUserChatAdminMock,
   currentUserChatMemberMock,
   isBlockedByUserTrue,
+  editChat,
+  leaveChat,
+  deleteChat,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   PRIVATE_CHAT_DETAILS,
@@ -37,19 +39,6 @@ vi.mock("react-router", async () => {
     ...actual,
     useMatch: vi.fn(),
     useNavigate: () => mockNavigate,
-  };
-});
-
-const mockSendMessage = vi.fn();
-
-vi.mock("@apollo/client/react", async () => {
-  const actual = await vi.importActual("@apollo/client/react");
-  return {
-    ...actual,
-    useMutation: vi.fn(() => [
-      mockSendMessage,
-      { loading: false, error: null },
-    ]),
   };
 });
 
@@ -226,6 +215,7 @@ describe("<Chat />", () => {
   });
 
   test("does not send message when input is empty", async () => {
+    const consoleLogSpy = vi.spyOn(console, "log");
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: GROUP_CHAT_DETAILS.id },
@@ -240,14 +230,7 @@ describe("<Chat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(mockSendMessage).not.toHaveBeenCalledWith({
-        variables: {
-          input: {
-            id: GROUP_CHAT_DETAILS.id,
-            content: MESSAGE_DETAILS.content,
-          },
-        },
-      });
+      expect(consoleLogSpy).toHaveBeenCalledWith("Do not send empty message!");
     });
   });
 
@@ -273,14 +256,6 @@ describe("<Chat />", () => {
 
     await waitFor(() => {
       expect(screen.getByText("Contact has blocked you.")).toBeDefined();
-      expect(mockSendMessage).not.toHaveBeenCalledWith({
-        variables: {
-          input: {
-            id: PRIVATE_CHAT_DETAILS.id,
-            content: MESSAGE_DETAILS.content,
-          },
-        },
-      });
     });
   });
 
@@ -303,14 +278,6 @@ describe("<Chat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(mockSendMessage).toHaveBeenCalledWith({
-        variables: {
-          input: {
-            id: GROUP_CHAT_DETAILS.id,
-            content: MESSAGE_DETAILS.content,
-          },
-        },
-      });
       expect(input.value).toBe("");
     });
   });
@@ -484,26 +451,12 @@ describe("<Chat />", () => {
   });
 
   test("edits chat name and description succesfully and closes modal", async () => {
-    const mockEditChat = vi.fn();
-    vi.mocked(useMutation).mockReturnValue([
-      mockEditChat,
-      {
-        data: undefined,
-        loading: false,
-        error: undefined,
-        called: false,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        client: {} as any,
-        reset: vi.fn(),
-      },
-    ]);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser, editChat]);
 
     await waitFor(async () => {
       expect(
@@ -537,20 +490,12 @@ describe("<Chat />", () => {
 
     await user.click(screen.getByTestId("submit-button"));
 
-    await waitFor(() => {
-      expect(mockEditChat).toHaveBeenCalledWith({
-        variables: {
-          input: {
-            id: GROUP_CHAT_DETAILS.id,
-            name: "New Name",
-            description: "New Description",
-            members: GROUP_CHAT_DETAILS.members
-              .slice(1)
-              .map((member) => member.id),
-          },
-        },
-      });
-    });
+    await waitFor(
+      async () => {
+        expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
+      },
+      { timeout: 1500 }
+    );
   });
 
   test("hides leave chat button for admin users", async () => {
@@ -577,32 +522,13 @@ describe("<Chat />", () => {
   });
 
   test("leaves chat and navigates to home page when clicking leave chat button", async () => {
-    const mockLeaveChat = vi.fn().mockResolvedValue({
-      data: {
-        leaveChat: { id: GROUP_CHAT_DETAILS.id },
-      },
-    });
-
-    vi.mocked(useMutation).mockReturnValue([
-      mockLeaveChat,
-      {
-        data: undefined,
-        loading: false,
-        error: undefined,
-        called: false,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        client: {} as any,
-        reset: vi.fn(),
-      },
-    ]);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdGroup, allContactsByUser],
+      [findChatByIdGroup, allContactsByUser, leaveChat],
       currentUserChatMemberMock
     );
 
@@ -630,11 +556,6 @@ describe("<Chat />", () => {
     await user.click(screen.getByRole("button", { name: "Leave" }));
 
     await waitFor(async () => {
-      expect(mockLeaveChat).toHaveBeenCalledWith({
-        variables: {
-          id: GROUP_CHAT_DETAILS.id,
-        },
-      });
       expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
     });
   });
@@ -666,31 +587,12 @@ describe("<Chat />", () => {
   });
 
   test("deletes chat and navigates to home page when clicking delete chat button", async () => {
-    const mockDeleteChat = vi.fn().mockResolvedValue({
-      data: {
-        deleteChat: { id: GROUP_CHAT_DETAILS.id },
-      },
-    });
-
-    vi.mocked(useMutation).mockReturnValue([
-      mockDeleteChat,
-      {
-        data: undefined,
-        loading: false,
-        error: undefined,
-        called: false,
-        // eslint-disable-next-line @typescript-eslint/no-explicit-any
-        client: {} as any,
-        reset: vi.fn(),
-      },
-    ]);
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     (useMatch as any).mockReturnValue({
       params: { id: GROUP_CHAT_DETAILS.id },
     });
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([findChatByIdGroup, allContactsByUser, deleteChat]);
 
     await waitFor(async () => {
       expect(
@@ -719,11 +621,6 @@ describe("<Chat />", () => {
     await user.click(screen.getByRole("button", { name: "Delete" }));
 
     await waitFor(async () => {
-      expect(mockDeleteChat).toHaveBeenCalledWith({
-        variables: {
-          id: GROUP_CHAT_DETAILS.id,
-        },
-      });
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
     });
   });

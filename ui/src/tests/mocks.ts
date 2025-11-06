@@ -19,6 +19,9 @@ import {
   SEND_MESSAGE,
   TOGGLE_BLOCK_CONTACT,
   CHANGE_PASSWORD,
+  EDIT_CHAT,
+  DELETE_CHAT,
+  LEAVE_CHAT,
 } from "../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -58,6 +61,12 @@ import type {
   ChangePasswordMutationVariables,
   FindContactByUserIdQuery,
   FindContactByUserIdQueryVariables,
+  EditChatMutation,
+  EditChatMutationVariables,
+  LeaveChatMutation,
+  LeaveChatMutationVariables,
+  DeleteChatMutation,
+  DeleteChatMutationVariables,
 } from "../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -1105,6 +1114,71 @@ export const findContactByUserId: MockLink.MockedResponse<
     },
   },
   maxUsageCount: 2,
+};
+
+export const editChat: MockLink.MockedResponse<
+  EditChatMutation,
+  EditChatMutationVariables
+> = {
+  request: {
+    query: EDIT_CHAT,
+    variables: {
+      input: {
+        id: "1",
+        name: "New Name",
+        description: "New Description",
+        members: ["2", "3"],
+      },
+    },
+  },
+  result: {
+    data: {
+      editChat: {
+        ...GROUP_CHAT_DETAILS,
+        name: "New Name",
+        description: "New Description",
+      },
+    },
+  },
+};
+
+export const leaveChat: MockLink.MockedResponse<
+  LeaveChatMutation,
+  LeaveChatMutationVariables
+> = {
+  request: {
+    query: LEAVE_CHAT,
+    variables: {
+      id: GROUP_CHAT_DETAILS.id,
+    },
+  },
+  result: {
+    data: {
+      leaveChat: {
+        ...GROUP_CHAT_DETAILS,
+        members: GROUP_CHAT_DETAILS.members.filter(
+          (member) => member.id !== "2"
+        ),
+      },
+    },
+  },
+};
+
+export const deleteChat: MockLink.MockedResponse<
+  DeleteChatMutation,
+  DeleteChatMutationVariables
+> = {
+  request: {
+    query: DELETE_CHAT,
+    variables: {
+      id: GROUP_CHAT_DETAILS.id,
+    },
+  },
+  result: {
+    data: {
+      deleteChat: GROUP_CHAT_DETAILS,
+    },
+  },
 };
 
 export const mockNavigate = vi.fn();
