@@ -7,6 +7,7 @@ import {
 } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter } from "react-router";
@@ -61,6 +62,19 @@ const renderComponent = (
       </MemoryRouter>
     </MockedProvider>
   );
+
+const openChatInfoModal = async (user: UserEvent) => {
+  await waitFor(async () => {
+    expect(
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+    ).toBeDefined();
+  });
+  await user.click(screen.getByTestId("chat-info-button"));
+  await waitFor(async () => {
+    expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
+    expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
+  });
+};
 
 describe("<Chat />", () => {
   beforeEach(() => {
@@ -165,36 +179,14 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
   });
 
   test("closes chat info modal when close button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("close-chat-info-button"));
 
@@ -265,18 +257,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("edit-chat-button"));
 
@@ -289,18 +270,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("edit-chat-button"));
 
@@ -324,18 +294,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("edit-chat-button"));
 
@@ -364,18 +323,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("edit-chat-button"));
 
@@ -417,18 +365,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser, editChat]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByTestId("edit-chat-button"));
 
@@ -461,19 +398,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-      expect(screen.queryByRole("button", { name: "Leave Chat" })).toBeNull();
-    });
+    expect(screen.queryByRole("button", { name: "Leave Chat" })).toBeNull();
   });
 
   test("leaves chat and navigates to home page when clicking leave chat button", async () => {
@@ -483,18 +410,7 @@ describe("<Chat />", () => {
       currentUserChatMemberMock
     );
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByRole("button", { name: "Leave Chat" }));
 
@@ -518,37 +434,16 @@ describe("<Chat />", () => {
       currentUserChatMemberMock
     );
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-      expect(screen.queryByRole("button", { name: "Delete Chat" })).toBeNull();
-    });
+    expect(screen.queryByRole("button", { name: "Delete Chat" })).toBeNull();
   });
 
   test("deletes chat and navigates to home page when clicking delete chat button", async () => {
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser, deleteChat]);
 
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("chat-info-button"));
-
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-      expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
-    });
+    await openChatInfoModal(user);
 
     await user.click(screen.getByRole("button", { name: "Delete Chat" }));
 
