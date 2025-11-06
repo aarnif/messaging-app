@@ -76,6 +76,18 @@ const openChatInfoModal = async (user: UserEvent) => {
   });
 };
 
+const sendNewMessage = async (user: UserEvent, message: string) => {
+  await waitFor(async () => {
+    expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+  });
+
+  if (message) {
+    await user.type(screen.getByPlaceholderText("New Message..."), message);
+  }
+
+  await user.click(screen.getByTestId("send-message-button"));
+};
+
 describe("<Chat />", () => {
   beforeEach(() => {
     mockMatch.mockReturnValue({
@@ -202,11 +214,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
-    });
-
-    await user.click(screen.getByTestId("send-message-button"));
+    await sendNewMessage(user, "");
 
     await waitFor(() => {
       expect(consoleLogSpy).toHaveBeenCalledWith("Do not send empty message!");
@@ -220,14 +228,7 @@ describe("<Chat />", () => {
       currentUserChatAdminMock
     );
 
-    await waitFor(async () => {
-      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
-    });
-
-    const input = screen.getByPlaceholderText("New Message...");
-
-    await user.type(input, MESSAGE_DETAILS.content);
-    await user.click(screen.getByTestId("send-message-button"));
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
 
     await waitFor(() => {
       expect(screen.getByText("Contact has blocked you.")).toBeDefined();
@@ -238,17 +239,12 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
-    });
-
-    const input = screen.getByPlaceholderText(
-      "New Message..."
-    ) as HTMLInputElement;
-    await user.type(input, MESSAGE_DETAILS.content);
-    await user.click(screen.getByTestId("send-message-button"));
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
 
     await waitFor(() => {
+      const input = screen.getByPlaceholderText(
+        "New Message..."
+      ) as HTMLInputElement;
       expect(input.value).toBe("");
     });
   });
