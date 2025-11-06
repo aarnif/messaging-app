@@ -33,6 +33,14 @@ const renderComponent = (mocks = [editProfile24h]) =>
     </MockedProvider>
   );
 
+const waitForPageRender = async () => {
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
+    expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
+    expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
+  });
+};
+
 const toggleAndVerify = async (
   user: UserEvent,
   toggleTestId: string,
@@ -49,54 +57,36 @@ const toggleAndVerify = async (
 describe("<Appearance />", () => {
   test("renders page", async () => {
     renderComponent();
-
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
-      expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
-      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
-    });
+    await waitForPageRender();
   });
 
   test("navigates to settings page when back button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
-      expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
-      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
-    });
-
+    await waitForPageRender();
     await user.click(screen.getByTestId("go-back-button"));
 
-    await waitFor(async () => {
+    await waitFor(() => {
       expect(mockNavigate).toHaveBeenCalledWith("/settings");
     });
   });
 
-  test("toggles dark mode succesfully", async () => {
+  test("toggles dark mode successfully", async () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
-      expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
-      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
-    });
+    await waitForPageRender();
 
     await toggleAndVerify(user, "toggle-dark-mode", "close-mark");
     await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
   });
 
-  test("toggles clock mode succesfully", async () => {
+  test("toggles clock mode successfully", async () => {
     const user = userEvent.setup();
     renderComponent([editProfile24h, editProfile12h]);
 
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Appearance" })).toBeDefined();
-      expect(screen.getByTestId("toggle-dark-mode")).toBeDefined();
-      expect(screen.getByTestId("toggle-clock-mode")).toBeDefined();
-    });
+    await waitForPageRender();
 
     await toggleAndVerify(user, "toggle-clock-mode", "close-mark");
     await toggleAndVerify(user, "toggle-clock-mode", "check-mark");
