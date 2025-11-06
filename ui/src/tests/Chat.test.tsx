@@ -9,9 +9,10 @@ import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
-import { MemoryRouter, useMatch } from "react-router";
+import { MemoryRouter } from "react-router";
 import {
   mockNavigate,
+  mockMatch,
   findChatByIdGroup,
   findChatByIdPrivate,
   findChatByIdNull,
@@ -26,7 +27,6 @@ import {
   deleteChat,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
-  PRIVATE_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./mocks";
 import ModalProvider from "../components/ModalProvider";
@@ -37,7 +37,7 @@ vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
   return {
     ...actual,
-    useMatch: vi.fn(),
+    useMatch: () => mockMatch(),
     useNavigate: () => mockNavigate,
   };
 });
@@ -63,12 +63,26 @@ const renderComponent = (
   );
 
 describe("<Chat />", () => {
+  beforeEach(() => {
+    mockMatch.mockReturnValue({
+      params: {
+        id: "1",
+      },
+    });
+  });
+
   test("shows loading spinner during data fetch", () => {
     renderComponent();
     expect(screen.getByTestId("spinner")).toBeDefined();
   });
 
   test("shows chat not found message for invalid chat ID", async () => {
+    mockMatch.mockReturnValue({
+      params: {
+        id: "",
+      },
+    });
+
     renderComponent([findChatByIdNull]);
 
     await waitFor(() => {
@@ -80,10 +94,6 @@ describe("<Chat />", () => {
   });
 
   test("renders chat header and messages when chat exists", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     renderComponent();
     await waitFor(() => {
       expect(
@@ -116,10 +126,6 @@ describe("<Chat />", () => {
   });
 
   test("applies correct message styles for current user vs contacts", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     renderComponent();
     await waitFor(() => {
       const currentUserMessages = screen.queryAllByTestId(
@@ -136,10 +142,6 @@ describe("<Chat />", () => {
   });
 
   test("navigates to chats list when back button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent();
 
@@ -150,10 +152,6 @@ describe("<Chat />", () => {
   });
 
   test("navigates to contact page when private chat info button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: PRIVATE_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdPrivate, findContactByUserId]);
 
@@ -164,10 +162,6 @@ describe("<Chat />", () => {
   });
 
   test("shows chat info modal when group chat info button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent();
 
@@ -186,10 +180,6 @@ describe("<Chat />", () => {
   });
 
   test("closes chat info modal when close button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent();
 
@@ -216,10 +206,7 @@ describe("<Chat />", () => {
 
   test("does not send message when input is empty", async () => {
     const consoleLogSpy = vi.spyOn(console, "log");
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
+
     const user = userEvent.setup();
     renderComponent();
 
@@ -235,10 +222,6 @@ describe("<Chat />", () => {
   });
 
   test("does not send message in private chat if contact has blocked user", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: PRIVATE_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent(
       [findChatByIdPrivate, findChatByIdNull, sendMessage, isBlockedByUserTrue],
@@ -260,10 +243,6 @@ describe("<Chat />", () => {
   });
 
   test("sends message successfully and resets input", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent();
 
@@ -283,10 +262,6 @@ describe("<Chat />", () => {
   });
 
   test("shows edit chat modal when edit chat button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
@@ -311,10 +286,6 @@ describe("<Chat />", () => {
   });
 
   test("closes edit chat modal when close button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
@@ -350,10 +321,6 @@ describe("<Chat />", () => {
   });
 
   test("edit chat fails with empty name", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
@@ -394,10 +361,6 @@ describe("<Chat />", () => {
   });
 
   test("selects contact when contact button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
@@ -451,10 +414,6 @@ describe("<Chat />", () => {
   });
 
   test("edits chat name and description succesfully and closes modal", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser, editChat]);
 
@@ -499,10 +458,6 @@ describe("<Chat />", () => {
   });
 
   test("hides leave chat button for admin users", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser]);
 
@@ -522,10 +477,6 @@ describe("<Chat />", () => {
   });
 
   test("leaves chat and navigates to home page when clicking leave chat button", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent(
       [findChatByIdGroup, allContactsByUser, leaveChat],
@@ -561,10 +512,6 @@ describe("<Chat />", () => {
   });
 
   test("hides delete chat button for non admin users", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent(
       [findChatByIdGroup, allContactsByUser],
@@ -587,10 +534,6 @@ describe("<Chat />", () => {
   });
 
   test("deletes chat and navigates to home page when clicking delete chat button", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: GROUP_CHAT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findChatByIdGroup, allContactsByUser, deleteChat]);
 
