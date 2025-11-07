@@ -3,7 +3,6 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  within,
 } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -19,7 +18,11 @@ import {
   addContacts,
   addContactsEmpty,
 } from "./helpers/mocks";
-import { assertContactsDisplayed } from "./helpers/funcs";
+import {
+  assertContactsDisplayed,
+  selectContacts,
+  assertContactsSelected,
+} from "./helpers/funcs";
 import Contacts from "../components/Contacts";
 import type { MockLink } from "@apollo/client/testing";
 import type { User } from "../__generated__/graphql";
@@ -169,19 +172,10 @@ describe("<Contacts />", () => {
         assertUsersDisplayed(nonContactUsersMock);
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
-      await user.click(screen.getByText(`@${contact2username}`));
+      await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
-        const selectedContacts = screen.getAllByTestId("selected");
-        expect(selectedContacts[0]).toBeDefined();
-        expect(
-          within(selectedContacts[0]).getByText(`@${contact1username}`)
-        ).toBeDefined();
-        expect(selectedContacts[1]).toBeDefined();
-        expect(
-          within(selectedContacts[1]).getByText(`@${contact2username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username, contact2username]);
       });
     });
 
@@ -200,19 +194,10 @@ describe("<Contacts />", () => {
         assertUsersDisplayed(nonContactUsersMock);
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
-      await user.click(screen.getByText(`@${contact2username}`));
+      await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
-        const selectedContacts = screen.getAllByTestId("selected");
-        expect(selectedContacts[0]).toBeDefined();
-        expect(
-          within(selectedContacts[0]).getByText(`@${contact1username}`)
-        ).toBeDefined();
-        expect(selectedContacts[1]).toBeDefined();
-        expect(
-          within(selectedContacts[1]).getByText(`@${contact2username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username, contact2username]);
       });
 
       await user.click(screen.getByTestId("add-contacts-button"));
