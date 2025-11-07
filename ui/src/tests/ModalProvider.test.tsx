@@ -2,6 +2,7 @@ import type { ModalOptions } from "../types";
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import useModal from "../hooks/useModal";
 
 import ModalProvider from "../components/ModalProvider";
@@ -36,6 +37,29 @@ const renderComponent = (modalOptions: ModalOptions = alertModalOptions) => {
   );
 };
 
+const openModal = async (
+  user: UserEvent,
+  modalOptions: ModalOptions = alertModalOptions
+) => {
+  await user.click(screen.getByRole("button", { name: "Open Modal" }));
+
+  const { type, close, confirm } = modalOptions;
+
+  await waitFor(() => {
+    expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
+    expect(screen.queryByTestId(`${type}-modal`)).toBeInTheDocument();
+    if (confirm) {
+      expect(screen.getByRole("button", { name: close })).toBeInTheDocument();
+      expect(screen.getByRole("button", { name: confirm })).toBeInTheDocument();
+    } else {
+      expect(screen.getByRole("button", { name: close })).toBeInTheDocument();
+      expect(
+        screen.queryByRole("button", { name: "Confirm" })
+      ).not.toBeInTheDocument();
+    }
+  });
+};
+
 describe("<ModalProvider />", () => {
   test("renders content", () => {
     renderComponent();
@@ -56,17 +80,7 @@ describe("<ModalProvider />", () => {
 
     expect(screen.getByText("Content")).toBeInTheDocument();
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user);
   });
 
   test("closes modal when clicking outside of it", async () => {
@@ -74,17 +88,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent();
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user);
 
     await user.click(screen.getByTestId("overlay"));
 
@@ -98,18 +102,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent(alertModalOptions);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(screen.queryByTestId("alert-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user, alertModalOptions);
   });
 
   test("opens danger modal when modal type is danger", async () => {
@@ -122,18 +115,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent(dangerModalOptions);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(screen.queryByTestId("danger-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user, dangerModalOptions);
   });
 
   test("opens success modal when modal type is success", async () => {
@@ -146,18 +128,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent(successModalOptions);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(screen.queryByTestId("success-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user, successModalOptions);
   });
 
   test("shows only close button when confirm or callback is not provided", async () => {
@@ -172,15 +143,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent(modalOptionsWithoutConfirm);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.getByTestId("notification-modal")).toBeInTheDocument();
-      expect(screen.getByRole("button", { name: "Close" })).toBeInTheDocument();
-      expect(
-        screen.queryByRole("button", { name: "Confirm" })
-      ).not.toBeInTheDocument();
-    });
+    await openModal(user, modalOptionsWithoutConfirm);
   });
 
   test("closes modal without action when close button is clicked", async () => {
@@ -188,17 +151,7 @@ describe("<ModalProvider />", () => {
 
     renderComponent(alertModalOptions);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
-
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
+    await openModal(user, alertModalOptions);
 
     await user.click(
       screen.getByRole("button", { name: alertModalOptions.close })
@@ -215,17 +168,8 @@ describe("<ModalProvider />", () => {
 
     renderComponent(alertModalOptions);
 
-    await user.click(screen.getByRole("button", { name: "Open Modal" }));
+    await openModal(user, alertModalOptions);
 
-    await waitFor(() => {
-      expect(screen.queryByTestId("notification-modal")).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Cancel" })
-      ).toBeInTheDocument();
-      expect(
-        screen.getByRole("button", { name: "Confirm" })
-      ).toBeInTheDocument();
-    });
     await user.click(
       screen.getByRole("button", { name: alertModalOptions.confirm })
     );
