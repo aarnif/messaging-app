@@ -1,6 +1,7 @@
 import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter } from "react-router";
@@ -35,6 +36,8 @@ vi.mock("react-router", async () => {
   };
 });
 
+const contactDetails = CONTACT_DETAILS.contactDetails;
+
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse]
 ) =>
@@ -48,7 +51,19 @@ const renderComponent = (
     </MockedProvider>
   );
 
-const contactDetails = CONTACT_DETAILS.contactDetails;
+const toggleBlockContact = async (user: UserEvent, action: string) => {
+  await user.click(screen.getByRole("button", { name: `${action} Contact` }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByText(
+        `Are you sure you want to ${action.toLowerCase()} the contact?`
+      )
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: action }));
+};
 
 describe("<Contact />", () => {
   beforeEach(() => {
@@ -156,15 +171,7 @@ describe("<Contact />", () => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
 
-    await user.click(screen.getByRole("button", { name: "Block Contact" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to block the contact?")
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Block" }));
+    await toggleBlockContact(user, "Block");
 
     await waitFor(async () => {
       expect(screen.getByText("You have blocked the contact."));
@@ -182,15 +189,7 @@ describe("<Contact />", () => {
       expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
     });
 
-    await user.click(screen.getByRole("button", { name: "Unblock Contact" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to unblock the contact?")
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Unblock" }));
+    await toggleBlockContact(user, "Unblock");
 
     await waitFor(async () => {
       expect(screen.queryByText("You have blocked the contact.")).toBeNull();
