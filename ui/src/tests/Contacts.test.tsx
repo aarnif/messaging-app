@@ -19,6 +19,7 @@ import {
   addContacts,
   addContactsEmpty,
 } from "./helpers/mocks";
+import { assertContactsDisplayed } from "./helpers/funcs";
 import Contacts from "../components/Contacts";
 import type { MockLink } from "@apollo/client/testing";
 
@@ -59,12 +60,7 @@ describe("<Contacts />", () => {
     renderComponent();
 
     await waitFor(() => {
-      userContactsMock.forEach((contact) => {
-        const { username, name, about } = contact.contactDetails;
-        expect(screen.getByText(`@${username}`)).toBeDefined();
-        expect(screen.getByText(name)).toBeDefined();
-        expect(screen.getByText(about ?? "")).toBeDefined();
-      });
+      assertContactsDisplayed(userContactsMock);
     });
   });
 
