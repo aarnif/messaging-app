@@ -51,6 +51,18 @@ const renderComponent = (
     </MockedProvider>
   );
 
+const waitForPageRender = async () => {
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: "Contact" })).toBeDefined();
+    expect(
+      screen.getByRole("heading", { name: contactDetails.name })
+    ).toBeDefined();
+    expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
+    expect(screen.getByText(contactDetails.about)).toBeDefined();
+    expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
+  });
+};
+
 const toggleBlockContact = async (user: UserEvent, action: string) => {
   await user.click(screen.getByRole("button", { name: `${action} Contact` }));
 
@@ -98,24 +110,15 @@ describe("<Contact />", () => {
 
   test("renders contact info", async () => {
     renderComponent();
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Contact" })).toBeDefined();
-      expect(
-        screen.getByRole("heading", { name: contactDetails.name })
-      ).toBeDefined();
-      expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
-      expect(screen.getByText(contactDetails.about)).toBeDefined();
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
   });
 
   test("chat button is disabled if contact has blocked the current user", async () => {
     renderComponent([findContactById, isBlockedByUserTrue]);
-    await waitFor(() => {
-      const button = screen.getByRole("button", { name: "Chat" });
-      expect(button).toBeDisabled();
-      expect(screen.getByText("Contact has blocked you."));
-    });
+    await waitForPageRender();
+
+    expect(screen.getByRole("button", { name: "Chat" })).toBeDisabled();
+    expect(screen.getByText("Contact has blocked you."));
   });
 
   test("navigates to existing private chat when chat button is clicked", async () => {
@@ -125,9 +128,7 @@ describe("<Contact />", () => {
       isBlockedByUserFalse,
       findPrivateChatWithContact,
     ]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
 
     await user.click(screen.getByRole("button", { name: "Chat" }));
 
@@ -145,9 +146,7 @@ describe("<Contact />", () => {
       isBlockedByUserFalse,
       findPrivateChatWithContactNull,
     ]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
 
     await user.click(screen.getByRole("button", { name: "Chat" }));
 
@@ -167,9 +166,7 @@ describe("<Contact />", () => {
       isBlockedByUserFalse,
       toggleBlockContactTrue,
     ]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
 
     await toggleBlockContact(user, "Block");
 
@@ -185,9 +182,7 @@ describe("<Contact />", () => {
       isBlockedByUserFalse,
       toggleBlockContactFalse,
     ]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
 
     await toggleBlockContact(user, "Unblock");
 
@@ -199,9 +194,7 @@ describe("<Contact />", () => {
   test("removes contact and navigates to contacts page when remove contact button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([findContactById, isBlockedByUserFalse, removeContact]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
+    await waitForPageRender();
 
     await user.click(screen.getByRole("button", { name: "Remove Contact" }));
 
