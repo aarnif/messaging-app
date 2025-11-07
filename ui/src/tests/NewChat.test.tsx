@@ -10,6 +10,7 @@ import {
   findChatByIdGroup,
   findChatByIdNull,
   sendMessage,
+  createChat,
   USER_ONE_DETAILS,
   MESSAGE_DETAILS,
   NewPrivateChatDetails,
@@ -25,21 +26,12 @@ vi.mock("react-router", async () => {
   };
 });
 
-const mockCreateChat = vi.fn();
-
-vi.mock("@apollo/client/react", async () => {
-  const actual = await vi.importActual("@apollo/client/react");
-  return {
-    ...actual,
-    useMutation: vi.fn(() => [mockCreateChat, { loading: false, error: null }]),
-  };
-});
-
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
     findChatByIdGroup,
     findChatByIdNull,
     sendMessage,
+    createChat,
   ]
 ) =>
   render(
@@ -110,6 +102,8 @@ describe("<NewChat />", () => {
   });
 
   test("does not create new chat when message input is empty", async () => {
+    const consoleLogSpy = vi.spyOn(console, "log");
+
     const user = userEvent.setup();
     renderComponent();
 
@@ -120,26 +114,11 @@ describe("<NewChat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(mockCreateChat).not.toHaveBeenCalledWith({
-        variables: {
-          input: {
-            name: null,
-            members: [NewPrivateChatDetails.members[1].id],
-            description: null,
-            initialMessage: MESSAGE_DETAILS.content,
-          },
-        },
-      });
+      expect(consoleLogSpy).toHaveBeenCalledWith("Do not send empty message!");
     });
   });
 
   test("creates chat successfully and navigates to the created chat page", async () => {
-    mockCreateChat.mockResolvedValue({
-      data: {
-        createChat: { id: 1 },
-      },
-    });
-
     const user = userEvent.setup();
     renderComponent();
 
@@ -154,16 +133,6 @@ describe("<NewChat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(mockCreateChat).toHaveBeenCalledWith({
-        variables: {
-          input: {
-            name: NewPrivateChatDetails.name,
-            members: [NewPrivateChatDetails.members[1].id],
-            description: NewPrivateChatDetails.description,
-            initialMessage: MESSAGE_DETAILS.content,
-          },
-        },
-      });
       expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
       expect(input.value).toBe("");
     });

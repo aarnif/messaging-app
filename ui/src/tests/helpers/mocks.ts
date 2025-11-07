@@ -22,6 +22,7 @@ import {
   EDIT_CHAT,
   DELETE_CHAT,
   LEAVE_CHAT,
+  CREATE_CHAT,
 } from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -67,6 +68,8 @@ import type {
   LeaveChatMutationVariables,
   DeleteChatMutation,
   DeleteChatMutationVariables,
+  CreateChatMutation,
+  CreateChatMutationVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
 
@@ -1177,6 +1180,28 @@ export const deleteChat: MockLink.MockedResponse<
   result: {
     data: {
       deleteChat: GROUP_CHAT_DETAILS,
+    },
+  },
+};
+
+export const createChat: MockLink.MockedResponse<
+  CreateChatMutation,
+  CreateChatMutationVariables
+> = {
+  request: {
+    query: CREATE_CHAT,
+    variables: {
+      input: {
+        name: "User2",
+        members: ["2"],
+        description: null,
+        initialMessage: MESSAGE_DETAILS.content,
+      },
+    },
+  },
+  result: {
+    data: {
+      createChat: PRIVATE_CHAT_DETAILS,
     },
   },
 };
