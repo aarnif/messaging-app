@@ -3,7 +3,6 @@ import {
   screen,
   waitFor,
   waitForElementToBeRemoved,
-  within,
 } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
@@ -26,6 +25,11 @@ import {
   isBlockedByUserTrue,
   isBlockedByUserFalse,
 } from "./helpers/mocks";
+import {
+  assertContactsDisplayed,
+  selectContacts,
+  assertContactsSelected,
+} from "./helpers/funcs";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
 import type { MockLink } from "@apollo/client/testing";
@@ -71,32 +75,6 @@ const openNewChatModal = async (user: UserEvent, type: string) => {
   expect(
     screen.getByPlaceholderText("Search by name or username...")
   ).toBeDefined();
-};
-
-const assertContactsDisplayed = (contacts = userContactsMock) => {
-  contacts.forEach((contact) => {
-    const { name, username, about } = contact.contactDetails;
-    expect(screen.getByText(name)).toBeDefined();
-    expect(screen.getByText(`@${username}`)).toBeDefined();
-    expect(screen.getByText(about)).toBeDefined();
-  });
-};
-
-const selectContacts = async (user: UserEvent, usernames: string[]) => {
-  for (const username of usernames) {
-    await user.click(screen.getByText(`@${username}`));
-  }
-};
-
-const assertContactsSelected = (usernames: string[]) => {
-  const selectedContacts = screen.getAllByTestId("selected");
-
-  usernames.forEach((username, index) => {
-    expect(selectedContacts[index]).toBeDefined();
-    expect(
-      within(selectedContacts[index]).getByText(`@${username}`)
-    ).toBeDefined();
-  });
 };
 
 describe("<Chats />", () => {
@@ -175,7 +153,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Group Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
     });
 
@@ -210,7 +188,7 @@ describe("<Chats />", () => {
       await openNewChatModal(user, "New Private Chat");
 
       await waitFor(async () => {
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await user.click(screen.getByTestId("create-chat-button"));
@@ -240,7 +218,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Group Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await selectContacts(user, [contact1username]);
@@ -269,7 +247,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Group Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await selectContacts(user, [contact1username]);
@@ -291,7 +269,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Group Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await selectContacts(user, [contact1username]);
@@ -322,7 +300,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
     });
 
@@ -334,7 +312,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("New Group Chat")).toBeDefined();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await user.click(screen.getByTestId("close-modal-button"));
@@ -363,7 +341,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await selectContacts(user, [contact1username, contact2username]);
@@ -381,7 +359,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await user.click(screen.getByTestId("create-chat-button"));
@@ -409,7 +387,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await user.type(screen.getByLabelText("Name"), "Group Chat");
@@ -436,7 +414,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
-        assertContactsDisplayed();
+        assertContactsDisplayed(userContactsMock);
       });
 
       await selectContacts(user, [contact1username, contact2username]);
