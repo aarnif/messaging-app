@@ -136,7 +136,7 @@ describe("<ModalProvider />", () => {
     });
   });
 
-  test("opens success modal when modal type is danger", async () => {
+  test("opens success modal when modal type is success", async () => {
     const user = userEvent.setup();
 
     const successModalOptions: ModalOptions = {
