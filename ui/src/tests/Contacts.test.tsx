@@ -22,6 +22,7 @@ import {
 import { assertContactsDisplayed } from "./helpers/funcs";
 import Contacts from "../components/Contacts";
 import type { MockLink } from "@apollo/client/testing";
+import type { User } from "../__generated__/graphql";
 
 const contact1username = nonContactUsersMock[0].username;
 const contact2username = nonContactUsersMock[1].username;
@@ -36,6 +37,15 @@ const renderComponent = (
       </MemoryRouter>
     </MockedProvider>
   );
+
+const assertUsersDisplayed = (users: User[]) => {
+  users.forEach((user) => {
+    const { name, username, about } = user;
+    expect(screen.getByText(name)).toBeDefined();
+    expect(screen.getByText(`@${username}`)).toBeDefined();
+    expect(screen.getByText(about ?? "")).toBeDefined();
+  });
+};
 
 describe("<Contacts />", () => {
   test("renders contacts list header", async () => {
@@ -129,12 +139,7 @@ describe("<Contacts />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("Add Contacts")).toBeDefined();
-        nonContactUsersMock.forEach((user) => {
-          const { name, username, about } = user;
-          expect(screen.getByText(name)).toBeDefined();
-          expect(screen.getByText(`@${username}`)).toBeDefined();
-          expect(screen.getByText(about)).toBeDefined();
-        });
+        assertUsersDisplayed(nonContactUsersMock);
       });
 
       await user.click(screen.getByTestId("add-contacts-button"));
@@ -161,12 +166,7 @@ describe("<Contacts />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("Add Contacts")).toBeDefined();
-        nonContactUsersMock.forEach((user) => {
-          const { name, username, about } = user;
-          expect(screen.getByText(name)).toBeDefined();
-          expect(screen.getByText(`@${username}`)).toBeDefined();
-          expect(screen.getByText(about)).toBeDefined();
-        });
+        assertUsersDisplayed(nonContactUsersMock);
       });
 
       await user.click(screen.getByText(`@${contact1username}`));
@@ -197,12 +197,7 @@ describe("<Contacts />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("Add Contacts")).toBeDefined();
-        nonContactUsersMock.forEach((user) => {
-          const { name, username, about } = user;
-          expect(screen.getByText(name)).toBeDefined();
-          expect(screen.getByText(`@${username}`)).toBeDefined();
-          expect(screen.getByText(about)).toBeDefined();
-        });
+        assertUsersDisplayed(nonContactUsersMock);
       });
 
       await user.click(screen.getByText(`@${contact1username}`));
