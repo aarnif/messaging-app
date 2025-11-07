@@ -103,26 +103,6 @@ describe("<Contact />", () => {
     });
   });
 
-  test("navigates to existing private chat when clicking chat button", async () => {
-    const user = userEvent.setup();
-    renderComponent([
-      findContactById,
-      isBlockedByUserFalse,
-      findPrivateChatWithContact,
-    ]);
-    await waitFor(() => {
-      expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Chat" }));
-
-    await waitFor(async () => {
-      expect(mockNavigate).toHaveBeenCalledWith(
-        `/chats/${PRIVATE_CHAT_DETAILS.id}`
-      );
-    });
-  });
-
   test("navigates to existing private chat when chat button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([
