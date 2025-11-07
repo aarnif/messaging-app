@@ -30,6 +30,7 @@ import {
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./helpers/mocks";
+import { sendNewMessage } from "./helpers/funcs";
 import ModalProvider from "../components/ModalProvider";
 import Chat from "../components/Chat";
 import { formatDisplayDate } from "../helpers";
@@ -81,18 +82,6 @@ const openEditChatModal = async (user: UserEvent) => {
   await waitFor(async () => {
     expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
   });
-};
-
-const sendNewMessage = async (user: UserEvent, message: string) => {
-  await waitFor(async () => {
-    expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
-  });
-
-  if (message) {
-    await user.type(screen.getByPlaceholderText("New Message..."), message);
-  }
-
-  await user.click(screen.getByTestId("send-message-button"));
 };
 
 describe("<Chat />", () => {

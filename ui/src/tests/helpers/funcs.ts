@@ -1,5 +1,5 @@
 import { expect } from "vitest";
-import { screen, within } from "@testing-library/react";
+import { screen, within, waitFor } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
 import type { Contact } from "../../__generated__/graphql";
 
@@ -27,4 +27,16 @@ export const assertContactsSelected = (usernames: string[]) => {
       within(selectedContacts[index]).getByText(`@${username}`)
     ).toBeDefined();
   });
+};
+
+export const sendNewMessage = async (user: UserEvent, message: string) => {
+  await waitFor(async () => {
+    expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+  });
+
+  if (message) {
+    await user.type(screen.getByPlaceholderText("New Message..."), message);
+  }
+
+  await user.click(screen.getByTestId("send-message-button"));
 };
