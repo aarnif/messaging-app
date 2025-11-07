@@ -16,6 +16,7 @@ import {
   NewPrivateChatDetails,
   NewGroupChatDetails,
 } from "./helpers/mocks";
+import { sendNewMessage } from "./helpers/funcs";
 import NewChat from "../components/NewChat";
 
 vi.mock("react-router", async () => {
@@ -122,19 +123,14 @@ describe("<NewChat />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
-    });
-
-    const input = screen.getByPlaceholderText(
-      "New Message..."
-    ) as HTMLInputElement;
-    await user.type(input, MESSAGE_DETAILS.content);
-    await user.click(screen.getByTestId("send-message-button"));
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
 
     await waitFor(() => {
-      expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
+      const input = screen.getByPlaceholderText(
+        "New Message..."
+      ) as HTMLInputElement;
       expect(input.value).toBe("");
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
     });
   });
 });
