@@ -88,6 +88,17 @@ const selectContacts = async (user: UserEvent, usernames: string[]) => {
   }
 };
 
+const assertContactsSelected = (usernames: string[]) => {
+  const selectedContacts = screen.getAllByTestId("selected");
+
+  usernames.forEach((username, index) => {
+    expect(selectedContacts[index]).toBeDefined();
+    expect(
+      within(selectedContacts[index]).getByText(`@${username}`)
+    ).toBeDefined();
+  });
+};
+
 describe("<Chats />", () => {
   describe("renders component with chat lists", () => {
     test("renders chat list header header", async () => {
@@ -235,11 +246,7 @@ describe("<Chats />", () => {
       await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
-        const selectedContact = screen.getByTestId("selected");
-        expect(selectedContact).toBeDefined();
-        expect(
-          within(selectedContact).getByText(`@${contact1username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username]);
       });
 
       await user.click(screen.getByTestId("create-chat-button"));
@@ -268,11 +275,7 @@ describe("<Chats />", () => {
       await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
-        const selectedContact = screen.getByTestId("selected");
-        expect(selectedContact).toBeDefined();
-        expect(
-          within(selectedContact).getByText(`@${contact1username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username]);
       });
     });
 
@@ -294,11 +297,7 @@ describe("<Chats />", () => {
       await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
-        const selectedContact = screen.getByTestId("selected");
-        expect(selectedContact).toBeDefined();
-        expect(
-          within(selectedContact).getByText(`@${contact1username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username]);
       });
 
       await user.click(screen.getByTestId("create-chat-button"));
@@ -370,15 +369,7 @@ describe("<Chats />", () => {
       await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
-        const selectedContacts = screen.getAllByTestId("selected");
-        expect(selectedContacts[0]).toBeDefined();
-        expect(
-          within(selectedContacts[0]).getByText(`@${contact1username}`)
-        ).toBeDefined();
-        expect(selectedContacts[1]).toBeDefined();
-        expect(
-          within(selectedContacts[1]).getByText(`@${contact2username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username]);
       });
     });
 
@@ -451,15 +442,7 @@ describe("<Chats />", () => {
       await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
-        const selectedContacts = screen.getAllByTestId("selected");
-        expect(selectedContacts[0]).toBeDefined();
-        expect(
-          within(selectedContacts[0]).getByText(`@${contact1username}`)
-        ).toBeDefined();
-        expect(selectedContacts[1]).toBeDefined();
-        expect(
-          within(selectedContacts[1]).getByText(`@${contact2username}`)
-        ).toBeDefined();
+        assertContactsSelected([contact1username]);
       });
 
       await user.type(screen.getByLabelText("Name"), NewGroupChatDetails.name);
