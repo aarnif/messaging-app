@@ -3,7 +3,7 @@ import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
-import { MemoryRouter, useMatch } from "react-router";
+import { MemoryRouter } from "react-router";
 import {
   currentUserChatAdminMock,
   findContactById,
@@ -11,6 +11,7 @@ import {
   findContactByIdBlocked,
   findPrivateChatWithContact,
   findPrivateChatWithContactNull,
+  mockMatch,
   mockNavigate,
   CONTACT_DETAILS,
   PRIVATE_CHAT_DETAILS,
@@ -29,7 +30,7 @@ vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
   return {
     ...actual,
-    useMatch: vi.fn(),
+    useMatch: () => mockMatch(),
     useNavigate: () => mockNavigate,
   };
 });
@@ -50,20 +51,26 @@ const renderComponent = (
 const contactDetails = CONTACT_DETAILS.contactDetails;
 
 describe("<Contact />", () => {
-  test("shows loading spinner during data fetch", () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
+  beforeEach(() => {
+    mockMatch.mockReturnValue({
+      params: {
+        id: "1",
+      },
     });
+  });
+
+  test("shows loading spinner during data fetch", () => {
     renderComponent();
     expect(screen.getByTestId("spinner")).toBeDefined();
   });
 
   test("shows contact not found message for invalid contact ID", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: "999" },
+    mockMatch.mockReturnValue({
+      params: {
+        id: "999",
+      },
     });
+
     renderComponent([findContactByIdNull, isBlockedByUserNull]);
 
     await waitFor(() => {
@@ -75,10 +82,6 @@ describe("<Contact />", () => {
   });
 
   test("renders contact info", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     renderComponent();
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Contact" })).toBeDefined();
@@ -92,11 +95,6 @@ describe("<Contact />", () => {
   });
 
   test("chat button is disabled if contact has blocked the current user", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
-
     renderComponent([findContactById, isBlockedByUserTrue]);
     await waitFor(() => {
       const button = screen.getByRole("button", { name: "Chat" });
@@ -106,10 +104,6 @@ describe("<Contact />", () => {
   });
 
   test("navigates to existing private chat when clicking chat button", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([
       findContactById,
@@ -130,10 +124,6 @@ describe("<Contact />", () => {
   });
 
   test("navigates to existing private chat when chat button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([
       findContactById,
@@ -154,10 +144,6 @@ describe("<Contact />", () => {
   });
 
   test("saves new private chat info and navigates to chat preview when chat button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([
       findContactById,
@@ -180,10 +166,6 @@ describe("<Contact />", () => {
   });
 
   test("blocks contact when block contact button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([
       findContactById,
@@ -210,10 +192,6 @@ describe("<Contact />", () => {
   });
 
   test("unblocks contact when unblock contact button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([
       findContactByIdBlocked,
@@ -240,10 +218,6 @@ describe("<Contact />", () => {
   });
 
   test("removes contact and navigates to contacts page when remove contact button is clicked", async () => {
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    (useMatch as any).mockReturnValue({
-      params: { id: CONTACT_DETAILS.id },
-    });
     const user = userEvent.setup();
     renderComponent([findContactById, isBlockedByUserFalse, removeContact]);
     await waitFor(() => {
