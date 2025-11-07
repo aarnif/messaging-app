@@ -222,6 +222,7 @@ describe("<Chats />", () => {
       await openNewChatModal(user, "New Private Chat");
 
       await waitFor(async () => {
+        expect(screen.queryByText("New Group Chat")).toBeNull();
         assertContactsDisplayed();
       });
 
@@ -316,6 +317,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
+        assertContactsDisplayed();
       });
     });
 
@@ -327,6 +329,7 @@ describe("<Chats />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("New Group Chat")).toBeDefined();
+        assertContactsDisplayed();
       });
 
       await user.click(screen.getByTestId("close-modal-button"));
@@ -381,6 +384,7 @@ describe("<Chats />", () => {
       await openNewChatModal(user, "New Group Chat");
 
       await waitFor(async () => {
+        expect(screen.queryByText("New Private Chat")).toBeNull();
         assertContactsDisplayed();
       });
 
@@ -408,6 +412,7 @@ describe("<Chats />", () => {
       await openNewChatModal(user, "New Group Chat");
 
       await waitFor(async () => {
+        expect(screen.queryByText("New Private Chat")).toBeNull();
         assertContactsDisplayed();
       });
 
