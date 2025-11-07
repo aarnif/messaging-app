@@ -41,6 +41,15 @@ const renderComponent = (
     </MockedProvider>
   );
 
+const waitForPageRender = async () => {
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Search by name or username...")
+    ).toBeDefined();
+  });
+};
+
 const assertUsersDisplayed = (users: User[]) => {
   users.forEach((user) => {
     const { name, username, about } = user;
@@ -53,12 +62,8 @@ const assertUsersDisplayed = (users: User[]) => {
 describe("<Contacts />", () => {
   test("renders contacts list header", async () => {
     renderComponent();
-    await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Search by name or username...")
-      ).toBeDefined();
-    });
+
+    await waitForPageRender();
   });
 
   test("displays no contacts found if user has none", async () => {
@@ -82,9 +87,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsers]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
@@ -97,9 +100,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsers]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
@@ -118,9 +119,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsersEmpty]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
@@ -134,9 +133,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsers, addContactsEmpty]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
@@ -161,9 +158,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsers]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
@@ -183,9 +178,7 @@ describe("<Contacts />", () => {
       const user = userEvent.setup();
       renderComponent([allContactsByUser, nonContactUsers, addContacts]);
 
-      await waitFor(async () => {
-        expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
-      });
+      await waitForPageRender();
 
       await user.click(screen.getByRole("button"));
 
