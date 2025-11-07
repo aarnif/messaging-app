@@ -33,20 +33,24 @@ const renderComponent = () =>
     </MemoryRouter>
   );
 
+const assertMenuItemsPresent = async () => {
+  expect(screen.getByRole("link", { name: "Chats" })).toBeDefined();
+  expect(screen.getByRole("link", { name: "Contacts" })).toBeDefined();
+  expect(screen.getByRole("link", { name: "Settings" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Log Out" })).toBeDefined();
+};
+
 describe("<Menu />", () => {
   test("renders component", () => {
     renderComponent();
-
-    expect(screen.getByRole("link", { name: "Chats" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Contacts" })).toBeDefined();
-    expect(screen.getByRole("link", { name: "Settings" })).toBeDefined();
-    expect(screen.getByRole("button", { name: "Log Out" })).toBeDefined();
+    assertMenuItemsPresent();
   });
 
   test("highlight active menu item on item click", async () => {
     const user = userEvent.setup();
 
     renderComponent();
+    assertMenuItemsPresent();
 
     const contactLink = screen.getByRole("link", { name: "Contacts" });
 
@@ -59,6 +63,7 @@ describe("<Menu />", () => {
     const user = userEvent.setup();
 
     renderComponent();
+    assertMenuItemsPresent();
 
     await user.click(screen.getByRole("button", { name: "Log Out" }));
 
