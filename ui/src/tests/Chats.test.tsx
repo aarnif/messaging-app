@@ -82,6 +82,12 @@ const assertContactsDisplayed = (contacts = userContactsMock) => {
   });
 };
 
+const selectContacts = async (user: UserEvent, usernames: string[]) => {
+  for (const username of usernames) {
+    await user.click(screen.getByText(`@${username}`));
+  }
+};
+
 describe("<Chats />", () => {
   describe("renders component with chat lists", () => {
     test("renders chat list header header", async () => {
@@ -226,7 +232,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed();
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
+      await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
         const selectedContact = screen.getByTestId("selected");
@@ -259,7 +265,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed();
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
+      await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
         const selectedContact = screen.getByTestId("selected");
@@ -285,7 +291,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed();
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
+      await selectContacts(user, [contact1username]);
 
       await waitFor(async () => {
         const selectedContact = screen.getByTestId("selected");
@@ -361,8 +367,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed();
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
-      await user.click(screen.getByText(`@${contact2username}`));
+      await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
         const selectedContacts = screen.getAllByTestId("selected");
@@ -443,8 +448,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed();
       });
 
-      await user.click(screen.getByText(`@${contact1username}`));
-      await user.click(screen.getByText(`@${contact2username}`));
+      await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
         const selectedContacts = screen.getAllByTestId("selected");
