@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
-import userEvent from "@testing-library/user-event";
+import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
@@ -50,7 +50,12 @@ const waitForPageRender = async () => {
   });
 };
 
-const assertUsersDisplayed = (users: User[]) => {
+const assertUsersDisplayed = (users: User[] = []) => {
+  if (users.length === 0) {
+    expect(screen.getByText("No users found")).toBeDefined();
+    return;
+  }
+
   users.forEach((user) => {
     const { name, username, about } = user;
     expect(screen.getByText(name)).toBeDefined();
@@ -125,7 +130,7 @@ describe("<Contacts />", () => {
 
       await waitFor(async () => {
         expect(screen.getByText("Add Contacts")).toBeDefined();
-        expect(screen.getByText("No users found")).toBeDefined();
+        assertUsersDisplayed();
       });
     });
 
