@@ -64,6 +64,15 @@ const assertUsersDisplayed = (users: User[] = []) => {
   });
 };
 
+const openAddContactsModal = async (user: UserEvent, users: User[] = []) => {
+  await user.click(screen.getByRole("button"));
+
+  await waitFor(async () => {
+    expect(screen.getByText("Add Contacts")).toBeDefined();
+    assertUsersDisplayed(users);
+  });
+};
+
 describe("<Contacts />", () => {
   test("renders contacts list header", async () => {
     renderComponent();
@@ -93,12 +102,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-      });
+      await openAddContactsModal(user, nonContactUsersMock);
     });
 
     test("closes add contacts modal when close modal button is clicked", async () => {
@@ -106,12 +110,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-      });
+      await openAddContactsModal(user, nonContactUsersMock);
 
       await user.click(screen.getByTestId("close-modal-button"));
 
@@ -125,13 +124,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsersEmpty]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-        assertUsersDisplayed();
-      });
+      await openAddContactsModal(user);
     });
 
     test("displays error if no user is selected", async () => {
@@ -139,13 +132,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsers, addContactsEmpty]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-        assertUsersDisplayed(nonContactUsersMock);
-      });
+      await openAddContactsModal(user, nonContactUsersMock);
 
       await user.click(screen.getByTestId("add-contacts-button"));
 
@@ -164,14 +151,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-        assertUsersDisplayed(nonContactUsersMock);
-      });
-
+      await openAddContactsModal(user, nonContactUsersMock);
       await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
@@ -184,14 +164,7 @@ describe("<Contacts />", () => {
       renderComponent([allContactsByUser, nonContactUsers, addContacts]);
 
       await waitForPageRender();
-
-      await user.click(screen.getByRole("button"));
-
-      await waitFor(async () => {
-        expect(screen.getByText("Add Contacts")).toBeDefined();
-        assertUsersDisplayed(nonContactUsersMock);
-      });
-
+      await openAddContactsModal(user, nonContactUsersMock);
       await selectContacts(user, [contact1username, contact2username]);
 
       await waitFor(async () => {
