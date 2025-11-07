@@ -20,7 +20,7 @@ import {
   loginMock,
   mockClient,
   mockNavigate,
-} from "./mocks";
+} from "./helpers/mocks";
 import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {

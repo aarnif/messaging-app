@@ -14,7 +14,7 @@ import {
   MESSAGE_DETAILS,
   NewPrivateChatDetails,
   NewGroupChatDetails,
-} from "./mocks";
+} from "./helpers/mocks";
 import NewChat from "../components/NewChat";
 
 vi.mock("react-router", async () => {

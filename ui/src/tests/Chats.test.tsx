@@ -25,7 +25,7 @@ import {
   allContactsByUserEmpty,
   isBlockedByUserTrue,
   isBlockedByUserFalse,
-} from "./mocks";
+} from "./helpers/mocks";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
 import type { MockLink } from "@apollo/client/testing";

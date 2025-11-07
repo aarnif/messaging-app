@@ -18,7 +18,7 @@ import {
   nonContactUsersMock,
   addContacts,
   addContactsEmpty,
-} from "./mocks";
+} from "./helpers/mocks";
 import Contacts from "../components/Contacts";
 import type { MockLink } from "@apollo/client/testing";
 

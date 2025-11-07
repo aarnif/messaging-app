@@ -9,7 +9,7 @@ import {
   IS_BLOCKED_BY_USER,
   NON_CONTACT_USERS,
   FIND_CONTACT_BY_USER_ID,
-} from "../graphql/queries";
+} from "../../graphql/queries";
 import {
   ADD_CONTACTS,
   CREATE_USER,
@@ -22,7 +22,7 @@ import {
   EDIT_CHAT,
   DELETE_CHAT,
   LEAVE_CHAT,
-} from "../graphql/mutations";
+} from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
   MeQuery,
@@ -67,7 +67,7 @@ import type {
   LeaveChatMutationVariables,
   DeleteChatMutation,
   DeleteChatMutationVariables,
-} from "../__generated__/graphql";
+} from "../../__generated__/graphql";
 import { vi } from "vitest";
 
 export const LOGIN_TOKEN = "fake-token-12345";

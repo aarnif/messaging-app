@@ -4,7 +4,7 @@ import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import ModalProvider from "../components/ModalProvider";
 import Menu from "../components/Menu";
-import { mockClient, mockNavigate } from "./mocks";
+import { mockClient, mockNavigate } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

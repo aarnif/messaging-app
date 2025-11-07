@@ -11,7 +11,7 @@ import {
   editProfile12h,
   mockNavigate,
   windowMockContent,
-} from "./mocks";
+} from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

@@ -15,7 +15,7 @@ import {
   isBlockedByUserFalse,
   CONTACT_DETAILS,
   windowMockContent,
-} from "./mocks";
+} from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
 

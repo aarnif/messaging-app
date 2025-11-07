@@ -17,7 +17,7 @@ import {
   loginErrorMock,
   mockClient,
   mockNavigate,
-} from "./mocks";
+} from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

@@ -23,7 +23,7 @@ import {
   isBlockedByUserTrue,
   isBlockedByUserFalse,
   isBlockedByUserNull,
-} from "./mocks";
+} from "./helpers/mocks";
 import ModalProvider from "../components/ModalProvider";
 import Contact from "../components/Contact";
 

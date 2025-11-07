@@ -29,7 +29,7 @@ import {
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
-} from "./mocks";
+} from "./helpers/mocks";
 import ModalProvider from "../components/ModalProvider";
 import Chat from "../components/Chat";
 import { formatDisplayDate } from "../helpers";

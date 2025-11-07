@@ -1,7 +1,7 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { MemoryRouter } from "react-router";
-import { mockNavigate } from "./mocks";
+import { mockNavigate } from "./helpers/mocks";
 import Settings from "../components/Settings";
 
 vi.mock("react-router", async () => {

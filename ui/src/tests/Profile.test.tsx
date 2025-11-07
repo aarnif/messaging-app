@@ -15,7 +15,7 @@ import {
   changePassword,
   changePasswordError,
   mockNavigate,
-} from "./mocks";
+} from "./helpers/mocks";
 import Profile from "../components/Profile";
 import type { MockLink } from "@apollo/client/testing";
 
