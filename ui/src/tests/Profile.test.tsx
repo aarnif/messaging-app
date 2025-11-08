@@ -39,24 +39,26 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [editProfile24h]) =>
     </MockedProvider>
   );
 
+const assertProfilePageLoaded = async () => {
+  expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
+  expect(screen.getByText(name)).toBeDefined();
+  expect(screen.getByText(`@${username}`)).toBeDefined();
+  expect(screen.getByTestId("go-back-button")).toBeDefined();
+  expect(screen.getByTestId("edit-profile-button")).toBeDefined();
+};
+
 describe("<Profile />", () => {
   test("renders content", async () => {
     renderComponent();
 
-    expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-    expect(screen.getByText(name)).toBeDefined();
-    expect(screen.getByText(`@${username}`)).toBeDefined();
-    expect(screen.getByTestId("go-back-button")).toBeDefined();
-    expect(screen.getByTestId("edit-profile-button")).toBeDefined();
+    assertProfilePageLoaded();
   });
 
   test("navigates back to settings page when back button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent();
 
-    expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-    expect(screen.getByText(name)).toBeDefined();
-    expect(screen.getByText(`@${username}`)).toBeDefined();
+    assertProfilePageLoaded();
 
     const goBackButton = screen.getByTestId("go-back-button");
     expect(goBackButton).toBeDefined();
@@ -72,11 +74,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByTestId("edit-profile-button"));
 
@@ -97,11 +95,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByTestId("edit-profile-button"));
 
@@ -130,11 +124,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByTestId("edit-profile-button"));
 
@@ -173,11 +163,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent([editProfileUpdate]);
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByTestId("edit-profile-button"));
 
@@ -215,11 +201,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
@@ -246,11 +228,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
@@ -285,11 +263,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
@@ -327,11 +301,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent();
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
@@ -377,11 +347,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent([changePasswordError]);
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
@@ -427,11 +393,7 @@ describe("<Profile />", () => {
     const user = userEvent.setup();
     renderComponent([changePassword]);
 
-    await waitFor(async () => {
-      expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();
-      expect(screen.getByText(name)).toBeDefined();
-      expect(screen.getByText(`@${username}`)).toBeDefined();
-    });
+    assertProfilePageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Change Password" }));
 
