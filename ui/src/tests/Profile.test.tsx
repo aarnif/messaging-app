@@ -249,11 +249,11 @@ describe("<Profile />", () => {
     );
     await user.type(
       screen.getByPlaceholderText("Enter your new password..."),
-      "new-password"
+      "newpassword"
     );
     await user.type(
       screen.getByPlaceholderText("Confirm your new password..."),
-      "new-passwor"
+      "newpasswor"
     );
 
     await user.click(screen.getByTestId("change-password-button"));
