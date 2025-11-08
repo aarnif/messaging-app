@@ -61,6 +61,28 @@ const openEditProfileModal = async (user: UserEvent) => {
   });
 };
 
+const openChangePasswordModal = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Change Password" }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByRole("heading", { name: "Change Password" })
+    ).toBeDefined();
+    expect(
+      screen.getByText("Enter your current and the new password.")
+    ).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Enter your current password...")
+    ).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Enter your new password...")
+    ).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Confirm your new password...")
+    ).toBeDefined();
+  });
+};
+
 describe("<Profile />", () => {
   test("renders content", async () => {
     renderComponent();
@@ -173,25 +195,7 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your current password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your new password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Confirm your new password...")
-      ).toBeDefined();
-    });
+    await openChangePasswordModal(user);
   });
 
   test("closes change password modal when close button is clicked", async () => {
@@ -200,25 +204,7 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your current password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your new password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Confirm your new password...")
-      ).toBeDefined();
-    });
+    await openChangePasswordModal(user);
 
     await user.click(screen.getByTestId("close-modal-button"));
 
@@ -235,25 +221,7 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your current password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your new password...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Confirm your new password...")
-      ).toBeDefined();
-    });
+    await openChangePasswordModal(user);
 
     await user.click(screen.getByTestId("change-password-button"));
 
@@ -273,33 +241,20 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
+    await openChangePasswordModal(user);
 
-    const currentPassword = screen.getByPlaceholderText(
-      "Enter your current password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your current password..."),
+      "password"
     );
-    const newPassword = screen.getByPlaceholderText(
-      "Enter your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your new password..."),
+      "new-password"
     );
-    const confirmNewPassword = screen.getByPlaceholderText(
-      "Confirm your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Confirm your new password..."),
+      "new-passwor"
     );
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(currentPassword).toBeDefined();
-      expect(newPassword).toBeDefined();
-      expect(confirmNewPassword).toBeDefined();
-    });
-
-    await user.type(currentPassword, "password");
-    await user.type(newPassword, "new-password");
-    await user.type(confirmNewPassword, "new-passwor");
 
     await user.click(screen.getByTestId("change-password-button"));
 
@@ -319,33 +274,20 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
+    await openChangePasswordModal(user);
 
-    const currentPassword = screen.getByPlaceholderText(
-      "Enter your current password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your current password..."),
+      "wrong"
     );
-    const newPassword = screen.getByPlaceholderText(
-      "Enter your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your new password..."),
+      "newpassword"
     );
-    const confirmNewPassword = screen.getByPlaceholderText(
-      "Confirm your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Confirm your new password..."),
+      "newpassword"
     );
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(currentPassword).toBeDefined();
-      expect(newPassword).toBeDefined();
-      expect(confirmNewPassword).toBeDefined();
-    });
-
-    await user.type(currentPassword, "wrong");
-    await user.type(newPassword, "newpassword");
-    await user.type(confirmNewPassword, "newpassword");
 
     await user.click(screen.getByTestId("change-password-button"));
 
@@ -365,33 +307,20 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Change Password" }));
+    await openChangePasswordModal(user);
 
-    const currentPassword = screen.getByPlaceholderText(
-      "Enter your current password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your current password..."),
+      "password"
     );
-    const newPassword = screen.getByPlaceholderText(
-      "Enter your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Enter your new password..."),
+      "newpassword"
     );
-    const confirmNewPassword = screen.getByPlaceholderText(
-      "Confirm your new password..."
+    await user.type(
+      screen.getByPlaceholderText("Confirm your new password..."),
+      "newpassword"
     );
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Change Password" })
-      ).toBeDefined();
-      expect(
-        screen.getByText("Enter your current and the new password.")
-      ).toBeDefined();
-      expect(currentPassword).toBeDefined();
-      expect(newPassword).toBeDefined();
-      expect(confirmNewPassword).toBeDefined();
-    });
-
-    await user.type(currentPassword, "password");
-    await user.type(newPassword, "newpassword");
-    await user.type(confirmNewPassword, "newpassword");
 
     await user.click(screen.getByTestId("change-password-button"));
 
