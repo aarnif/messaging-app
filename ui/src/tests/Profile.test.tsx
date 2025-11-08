@@ -5,7 +5,7 @@ import {
   waitForElementToBeRemoved,
 } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
+import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
@@ -47,6 +47,20 @@ const assertProfilePageLoaded = async () => {
   expect(screen.getByTestId("edit-profile-button")).toBeDefined();
 };
 
+const openEditProfileModal = async (user: UserEvent) => {
+  await user.click(screen.getByTestId("edit-profile-button"));
+
+  await waitFor(async () => {
+    expect(screen.getByRole("heading", { name: "Edit Profile" })).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Enter your name here...")
+    ).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Tell something about yourself...")
+    ).toBeDefined();
+  });
+};
+
 describe("<Profile />", () => {
   test("renders content", async () => {
     renderComponent();
@@ -76,19 +90,7 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByTestId("edit-profile-button"));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Edit Profile" })
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your name here...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Tell something about yourself...")
-      ).toBeDefined();
-    });
+    await openEditProfileModal(user);
   });
 
   test("closes edit profile modal when close button is clicked", async () => {
@@ -97,19 +99,7 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByTestId("edit-profile-button"));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Edit Profile" })
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Enter your name here...")
-      ).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Tell something about yourself...")
-      ).toBeDefined();
-    });
+    await openEditProfileModal(user);
 
     await user.click(screen.getByTestId("close-edit-profile-button"));
 
@@ -126,21 +116,9 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByTestId("edit-profile-button"));
+    await openEditProfileModal(user);
 
-    const nameInput = screen.getByPlaceholderText("Enter your name here...");
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Edit Profile" })
-      ).toBeDefined();
-      expect(nameInput).toBeDefined();
-      expect(
-        screen.getByPlaceholderText("Tell something about yourself...")
-      ).toBeDefined();
-    });
-
-    user.clear(nameInput);
+    user.clear(screen.getByPlaceholderText("Enter your name here..."));
 
     await user.click(screen.getByTestId("submit-edit-profile-button"));
 
@@ -165,20 +143,12 @@ describe("<Profile />", () => {
 
     assertProfilePageLoaded();
 
-    await user.click(screen.getByTestId("edit-profile-button"));
+    await openEditProfileModal(user);
 
     const nameInput = screen.getByPlaceholderText("Enter your name here...");
     const aboutInput = screen.getByPlaceholderText(
       "Tell something about yourself..."
     );
-
-    await waitFor(async () => {
-      expect(
-        screen.getByRole("heading", { name: "Edit Profile" })
-      ).toBeDefined();
-      expect(nameInput).toBeDefined();
-      expect(aboutInput).toBeDefined();
-    });
 
     const newProfileName = "New Profile Name";
     const newAboutText = "New About Text";
