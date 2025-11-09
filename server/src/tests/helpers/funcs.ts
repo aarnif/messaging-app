@@ -58,3 +58,33 @@ export const assertValidationError = (
   );
   assert.strictEqual(error.extensions?.code, expectedCode);
 };
+
+export const assertError = (
+  responseBody: {
+    errors?: Array<{
+      message: string;
+      extensions?:
+        | {
+            code?: string | undefined;
+            validationErrors?:
+              | {
+                  message?: string | undefined;
+                }[]
+              | undefined;
+          }
+        | undefined;
+    }>;
+  },
+  expectedMessage: string,
+  expectedCode?: string
+) => {
+  assert.ok(responseBody.errors, "Response should have errors");
+  assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
+
+  const error = responseBody.errors[0];
+  assert.strictEqual(error.message, expectedMessage);
+
+  if (expectedCode) {
+    assert.strictEqual(error.extensions?.code, expectedCode);
+  }
+};
