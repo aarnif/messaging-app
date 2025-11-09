@@ -308,16 +308,14 @@ describe("<Chat />", () => {
     const chatMember1 = GROUP_CHAT_DETAILS.members[1].username;
     const chatMember2 = GROUP_CHAT_DETAILS.members[2].username;
 
-    const contactToBeUnSelected = within(modal).getByText(`@${chatMember1}`);
-
     await waitFor(
       () => {
-        expect(contactToBeUnSelected).toBeDefined();
+        expect(within(modal).getByText(`@${chatMember1}`)).toBeDefined();
       },
       { timeout: 2000 }
     );
 
-    await user.click(contactToBeUnSelected);
+    await user.click(within(modal).getByText(`@${chatMember1}`));
 
     await waitFor(async () => {
       const selectedContacts = screen.getAllByTestId("selected");
