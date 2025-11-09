@@ -8,6 +8,7 @@ import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import SignUp from "../components/SignUp";
 import {
   LOGIN_TOKEN,
@@ -59,6 +60,17 @@ const assertSignUpPageLoaded = async () => {
   ).toBeDefined();
 };
 
+const fillSignUpForm = async (
+  user: UserEvent,
+  username: string,
+  password: string,
+  confirmPassword: string
+) => {
+  await user.type(screen.getByLabelText("Username"), username);
+  await user.type(screen.getByLabelText("Password"), password);
+  await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+};
+
 describe("<SignUp />", () => {
   test("renders component", () => {
     renderComponent();
@@ -89,9 +101,7 @@ describe("<SignUp />", () => {
 
     const { username, password, confirmPassword } = invalidUsername;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
-    await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+    await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
@@ -114,9 +124,7 @@ describe("<SignUp />", () => {
 
     const { username, password, confirmPassword } = invalidPassword;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
-    await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+    await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
@@ -139,9 +147,7 @@ describe("<SignUp />", () => {
 
     const { username, password, confirmPassword } = mismatchedPasswords;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
-    await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+    await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
@@ -162,10 +168,9 @@ describe("<SignUp />", () => {
 
     const { username, password, confirmPassword } = createUserInput;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
-    await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+    await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
+
     await waitFor(() => {
       expect(screen.getByText("Username already exists")).toBeDefined();
     });
@@ -184,9 +189,7 @@ describe("<SignUp />", () => {
 
     const { username, password, confirmPassword } = createUserInput;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
-    await user.type(screen.getByLabelText("Confirm Password"), confirmPassword);
+    await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
