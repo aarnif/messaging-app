@@ -13,7 +13,6 @@ import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import type { UserContact } from "../types";
 import type {
-  Maybe,
   Chat as ChatType,
   User,
   Message,
@@ -49,7 +48,7 @@ const ChatMessage = ({
   message,
 }: {
   currentUser: User;
-  message: Maybe<Message>;
+  message: Message;
 }) => {
   const isCurrentUser = message?.sender?.id === currentUser.id;
   const senderName = isCurrentUser ? "You" : message?.sender?.name;
@@ -108,7 +107,7 @@ const ChatMessages = ({
   messages,
 }: {
   currentUser: User;
-  messages: Maybe<Maybe<Message>[]> | undefined;
+  messages: Message[];
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 

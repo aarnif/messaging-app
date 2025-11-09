@@ -26,7 +26,7 @@ type UserChat {
   id: ID!
   name: String
   avatar: String
-  messages: [Message]
+  messages: [Message!]!
 }
 
 type Chat {
@@ -36,7 +36,7 @@ type Chat {
   description: String
   avatar: String
   members: [ChatMember!]!
-  messages: [Message]
+  messages: [Message!]!
 }
 
 type ChatMember {
