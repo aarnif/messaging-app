@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
@@ -19,6 +14,7 @@ import {
   mockClient,
   mockNavigate,
 } from "./helpers/mocks";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -75,13 +71,7 @@ describe("<SignIn />", () => {
 
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    const errorMessage = await screen.findByText("Please fill all fields.");
-    expect(errorMessage).toBeDefined();
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Please fill all fields."),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Please fill all fields.");
   });
 
   test("displays error if wrong credentials", async () => {
@@ -95,14 +85,7 @@ describe("<SignIn />", () => {
     await fillSignInForm(user, username, invalidLoginPassword);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    await waitFor(() => {
-      expect(screen.getByText("Invalid username or password")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Invalid username or password"),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Invalid username or password");
   });
 
   test("signs in user successfully", async () => {
