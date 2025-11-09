@@ -21,10 +21,6 @@ const ChatItem = ({
   const { id, name, messages } = chat;
   const latestMessage = messages?.[0];
 
-  if (!latestMessage) {
-    return null;
-  }
-
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
 
@@ -107,12 +103,9 @@ const ListMenu = ({
         </div>
       ) : hasChats ? (
         <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
-          {chats.map(
-            (chat) =>
-              chat && (
-                <ChatItem key={chat.id} currentUser={currentUser} chat={chat} />
-              )
-          )}
+          {chats.map((chat) => (
+            <ChatItem key={chat.id} currentUser={currentUser} chat={chat} />
+          ))}
         </div>
       ) : (
         <div className="px-4 py-2">
