@@ -44,20 +44,24 @@ const renderComponent = (mocks = [loginMock]) =>
     </MockedProvider>
   );
 
+const assertSignInPageLoaded = async () => {
+  expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
+  expect(screen.getByLabelText("Username")).toBeDefined();
+  expect(screen.getByLabelText("Password")).toBeDefined();
+  expect(screen.getByRole("button", { name: "Sign In" })).toBeDefined();
+  expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+};
+
 describe("<SignIn />", () => {
   test("renders component", () => {
     renderComponent();
-
-    expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
-    expect(screen.getByLabelText("Username")).toBeDefined();
-    expect(screen.getByLabelText("Password")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Sign In" })).toBeDefined();
-    expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+    assertSignInPageLoaded();
   });
 
   test("displays error if inputs field are empty", async () => {
     const user = userEvent.setup();
     renderComponent();
+    assertSignInPageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
@@ -73,9 +77,10 @@ describe("<SignIn />", () => {
   test("displays error if wrong credentials", async () => {
     const user = userEvent.setup();
 
-    const { username } = loginInput;
-
     renderComponent([loginErrorMock]);
+    assertSignInPageLoaded();
+
+    const { username } = loginInput;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), invalidLoginPassword);
@@ -94,9 +99,11 @@ describe("<SignIn />", () => {
   test("signs in user successfully", async () => {
     const user = userEvent.setup();
 
+    renderComponent();
+    assertSignInPageLoaded();
+
     const { username, password } = loginInput;
 
-    renderComponent();
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
@@ -113,6 +120,7 @@ describe("<SignIn />", () => {
     const user = userEvent.setup();
 
     renderComponent();
+    assertSignInPageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
     expect(mockNavigate).toHaveBeenCalledWith("/signup");
