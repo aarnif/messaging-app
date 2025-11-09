@@ -253,10 +253,9 @@ const ListMenu = ({
         </div>
       ) : hasContacts ? (
         <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
-          {contacts.map(
-            (contact) =>
-              contact && <ContactItem key={contact.id} contact={contact} />
-          )}
+          {contacts.map((contact) => (
+            <ContactItem key={contact.id} contact={contact} />
+          ))}
         </div>
       ) : (
         <div className="px-4 py-2">
