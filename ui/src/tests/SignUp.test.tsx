@@ -199,4 +199,14 @@ describe("<SignUp />", () => {
     expect(mockClient.resetStore).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
+
+  test("navigates to sign in page on return to sign in button click", async () => {
+    const user = userEvent.setup();
+
+    renderComponent();
+    assertSignUpPageLoaded();
+
+    await user.click(screen.getByRole("button", { name: "Return to Sign In" }));
+    expect(mockNavigate).toHaveBeenCalledWith("/signin");
+  });
 });
