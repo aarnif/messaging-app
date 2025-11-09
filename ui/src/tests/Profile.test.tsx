@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
@@ -16,6 +11,7 @@ import {
   changePasswordError,
   mockNavigate,
 } from "./helpers/mocks";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import Profile from "../components/Profile";
 import type { MockLink } from "@apollo/client/testing";
 
@@ -164,18 +160,8 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("submit-edit-profile-button"));
 
-    await waitFor(() => {
-      expect(
-        screen.getByText("Profile name must be at least three characters long")
-      ).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () =>
-        screen.queryByText(
-          "Profile name must be at least three characters long"
-        ),
-      { timeout: 3500 }
+    await assertErrorMessageAndDismissal(
+      "Profile name must be at least three characters long"
     );
   });
 
@@ -245,14 +231,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("change-password-button"));
 
-    await waitFor(() => {
-      expect(screen.getByText("Please fill all fields.")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Please fill all fields."),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Please fill all fields.");
   });
 
   test("display error if passwords do not match", async () => {
@@ -266,14 +245,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("change-password-button"));
 
-    await waitFor(() => {
-      expect(screen.getByText("Passwords do not match")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Passwords do not match"),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Passwords do not match");
   });
 
   test("display error if current password is wrong", async () => {
@@ -287,14 +259,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("change-password-button"));
 
-    await waitFor(() => {
-      expect(screen.getByText("Current password do not match")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Current password do not match"),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Current password do not match");
   });
 
   test("changes password succesfully and closes modal", async () => {
