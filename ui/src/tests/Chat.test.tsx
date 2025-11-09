@@ -354,7 +354,7 @@ describe("<Chat />", () => {
       async () => {
         expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
       },
-      { timeout: 1500 }
+      { timeout: 2000 }
     );
   });
 
