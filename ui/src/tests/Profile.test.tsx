@@ -83,6 +83,26 @@ const openChangePasswordModal = async (user: UserEvent) => {
   });
 };
 
+const fillChangePasswordForm = async (
+  user: UserEvent,
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string
+) => {
+  await user.type(
+    screen.getByPlaceholderText("Enter your current password..."),
+    currentPassword
+  );
+  await user.type(
+    screen.getByPlaceholderText("Enter your new password..."),
+    newPassword
+  );
+  await user.type(
+    screen.getByPlaceholderText("Confirm your new password..."),
+    confirmNewPassword
+  );
+};
+
 describe("<Profile />", () => {
   test("renders content", async () => {
     renderComponent();
@@ -242,19 +262,7 @@ describe("<Profile />", () => {
     assertProfilePageLoaded();
 
     await openChangePasswordModal(user);
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your current password..."),
-      "password"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Enter your new password..."),
-      "newpassword"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Confirm your new password..."),
-      "newpasswor"
-    );
+    await fillChangePasswordForm(user, "password", "newpassword", "newpasswor");
 
     await user.click(screen.getByTestId("change-password-button"));
 
@@ -275,19 +283,7 @@ describe("<Profile />", () => {
     assertProfilePageLoaded();
 
     await openChangePasswordModal(user);
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your current password..."),
-      "wrong"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Enter your new password..."),
-      "newpassword"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Confirm your new password..."),
-      "newpassword"
-    );
+    await fillChangePasswordForm(user, "wrong", "newpassword", "newpassword");
 
     await user.click(screen.getByTestId("change-password-button"));
 
@@ -308,17 +304,10 @@ describe("<Profile />", () => {
     assertProfilePageLoaded();
 
     await openChangePasswordModal(user);
-
-    await user.type(
-      screen.getByPlaceholderText("Enter your current password..."),
-      "password"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Enter your new password..."),
-      "newpassword"
-    );
-    await user.type(
-      screen.getByPlaceholderText("Confirm your new password..."),
+    await fillChangePasswordForm(
+      user,
+      "password",
+      "newpassword",
       "newpassword"
     );
 
