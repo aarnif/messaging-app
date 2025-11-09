@@ -48,23 +48,27 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
     </MockedProvider>
   );
 
+const assertSignUpPageLoaded = async () => {
+  expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
+  expect(screen.getByLabelText("Username")).toBeDefined();
+  expect(screen.getByLabelText("Password")).toBeDefined();
+  expect(screen.getByLabelText("Confirm Password")).toBeDefined();
+  expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+  expect(
+    screen.getByRole("button", { name: "Return to Sign In" })
+  ).toBeDefined();
+};
+
 describe("<SignUp />", () => {
   test("renders component", () => {
     renderComponent();
-
-    expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
-    expect(screen.getByLabelText("Username")).toBeDefined();
-    expect(screen.getByLabelText("Password")).toBeDefined();
-    expect(screen.getByLabelText("Confirm Password")).toBeDefined();
-    expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
-    expect(
-      screen.getByRole("button", { name: "Return to Sign In" })
-    ).toBeDefined();
+    assertSignUpPageLoaded();
   });
 
   test("displays error if inputs field are empty", async () => {
     const user = userEvent.setup();
     renderComponent();
+    assertSignUpPageLoaded();
 
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
@@ -80,9 +84,10 @@ describe("<SignUp />", () => {
   test("displays error if username is too short", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = invalidUsername;
-
     renderComponent();
+    assertSignUpPageLoaded();
+
+    const { username, password, confirmPassword } = invalidUsername;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
@@ -104,9 +109,10 @@ describe("<SignUp />", () => {
   test("displays error if password is too short", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = invalidPassword;
-
     renderComponent();
+    assertSignUpPageLoaded();
+
+    const { username, password, confirmPassword } = invalidPassword;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
@@ -128,9 +134,10 @@ describe("<SignUp />", () => {
   test("displays error if passwords do not match", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = mismatchedPasswords;
-
     renderComponent();
+    assertSignUpPageLoaded();
+
+    const { username, password, confirmPassword } = mismatchedPasswords;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
@@ -150,9 +157,10 @@ describe("<SignUp />", () => {
   test("displays error if username already exists", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = createUserInput;
-
     renderComponent([createUserErrorMock]);
+    assertSignUpPageLoaded();
+
+    const { username, password, confirmPassword } = createUserInput;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
@@ -171,9 +179,10 @@ describe("<SignUp />", () => {
   test("signs up user successfully", async () => {
     const user = userEvent.setup();
 
-    const { username, password, confirmPassword } = createUserInput;
-
     renderComponent([createUserMock, loginMock]);
+    assertSignUpPageLoaded();
+
+    const { username, password, confirmPassword } = createUserInput;
 
     await user.type(screen.getByLabelText("Username"), username);
     await user.type(screen.getByLabelText("Password"), password);
