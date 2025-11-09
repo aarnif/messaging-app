@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
@@ -22,6 +17,7 @@ import {
   mockClient,
   mockNavigate,
 } from "./helpers/mocks";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
@@ -84,13 +80,7 @@ describe("<SignUp />", () => {
 
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    const errorMessage = await screen.findByText("Please fill all fields.");
-    expect(errorMessage).toBeDefined();
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Please fill all fields."),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Please fill all fields.");
   });
 
   test("displays error if username is too short", async () => {
@@ -104,15 +94,8 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await waitFor(() => {
-      expect(
-        screen.getByText("Username must be at least 3 characters long")
-      ).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Username must be at least 3 characters long"),
-      { timeout: 3500 }
+    await assertErrorMessageAndDismissal(
+      "Username must be at least 3 characters long"
     );
   });
 
@@ -127,15 +110,8 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await waitFor(() => {
-      expect(
-        screen.getByText("Password must be at least 6 characters long")
-      ).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Password must be at least 6 characters long"),
-      { timeout: 3500 }
+    await assertErrorMessageAndDismissal(
+      "Password must be at least 6 characters long"
     );
   });
 
@@ -150,14 +126,7 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await waitFor(() => {
-      expect(screen.getByText("Passwords do not match")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Passwords do not match"),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Passwords do not match");
   });
 
   test("displays error if username already exists", async () => {
@@ -171,14 +140,7 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await waitFor(() => {
-      expect(screen.getByText("Username already exists")).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () => screen.queryByText("Username already exists"),
-      { timeout: 3500 }
-    );
+    await assertErrorMessageAndDismissal("Username already exists");
   });
 
   test("signs up user successfully", async () => {
