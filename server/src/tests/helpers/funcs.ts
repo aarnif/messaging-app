@@ -29,3 +29,32 @@ export const query = async <Data, Variables = Record<string, never>>(
 
   return result.body as HTTPGraphQLResponse<Data>;
 };
+
+export const assertValidationError = (
+  responseBody: {
+    errors?: Array<{
+      message: string;
+      extensions?: {
+        code?: string | undefined;
+        validationErrors?:
+          | {
+              message?: string | undefined;
+            }[]
+          | undefined;
+      };
+    }>;
+  },
+  expectedValidationMessage: string,
+  expectedCode: string = "BAD_USER_INPUT"
+) => {
+  assert.ok(responseBody.errors, "Response should have errors");
+  assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
+
+  const error = responseBody.errors[0];
+  assert.strictEqual(error.message, "Input validation failed");
+  assert.strictEqual(
+    error.extensions?.validationErrors?.[0].message,
+    expectedValidationMessage
+  );
+  assert.strictEqual(error.extensions?.code, expectedCode);
+};
