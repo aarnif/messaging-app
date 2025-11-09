@@ -78,3 +78,13 @@
 **Testit**
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
+
+## Viikko 7
+
+### Käyttöliittymä:
+
+- Ilmoitus-modaalien lisäys käyttöliittymään
+
+**Testit**
+
+- Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
