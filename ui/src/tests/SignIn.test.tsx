@@ -8,6 +8,7 @@ import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
+import type { UserEvent } from "@testing-library/user-event";
 import SignIn from "../components/SignIn";
 import {
   LOGIN_TOKEN,
@@ -52,6 +53,15 @@ const assertSignInPageLoaded = async () => {
   expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
 };
 
+const fillSignInForm = async (
+  user: UserEvent,
+  username: string,
+  password: string
+) => {
+  await user.type(screen.getByLabelText("Username"), username);
+  await user.type(screen.getByLabelText("Password"), password);
+};
+
 describe("<SignIn />", () => {
   test("renders component", () => {
     renderComponent();
@@ -82,8 +92,7 @@ describe("<SignIn />", () => {
 
     const { username } = loginInput;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), invalidLoginPassword);
+    await fillSignInForm(user, username, invalidLoginPassword);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
     await waitFor(() => {
@@ -104,8 +113,7 @@ describe("<SignIn />", () => {
 
     const { username, password } = loginInput;
 
-    await user.type(screen.getByLabelText("Username"), username);
-    await user.type(screen.getByLabelText("Password"), password);
+    await fillSignInForm(user, username, password);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
     await waitFor(() => {
