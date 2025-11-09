@@ -1,10 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-  within,
-} from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
@@ -30,7 +24,10 @@ import {
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
 } from "./helpers/mocks";
-import { sendNewMessage } from "./helpers/funcs";
+import {
+  sendNewMessage,
+  assertErrorMessageAndDismissal,
+} from "./helpers/funcs";
 import ModalProvider from "../components/ModalProvider";
 import Chat from "../components/Chat";
 import { formatDisplayDate } from "../helpers";
@@ -283,16 +280,8 @@ describe("<Chat />", () => {
 
     await user.click(screen.getByTestId("submit-button"));
 
-    await waitFor(() => {
-      expect(
-        screen.getByText("Chat name must be at least three characters long")
-      ).toBeDefined();
-    });
-
-    await waitForElementToBeRemoved(
-      () =>
-        screen.queryByText("Chat name must be at least three characters long"),
-      { timeout: 3500 }
+    await assertErrorMessageAndDismissal(
+      "Chat name must be at least three characters long"
     );
   });
 
