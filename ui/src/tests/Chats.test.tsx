@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
@@ -29,6 +24,7 @@ import {
   assertContactsDisplayed,
   selectContacts,
   assertContactsSelected,
+  assertErrorMessageAndDismissal,
 } from "./helpers/funcs";
 import Chats from "../components/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
@@ -193,16 +189,8 @@ describe("<Chats />", () => {
 
       await user.click(screen.getByTestId("create-chat-button"));
 
-      await waitFor(() => {
-        expect(
-          screen.getByText("Please select a contact to create a chat with")
-        ).toBeDefined();
-      });
-
-      await waitForElementToBeRemoved(
-        () =>
-          screen.queryByText("Please select a contact to create a chat with"),
-        { timeout: 3500 }
+      await assertErrorMessageAndDismissal(
+        "Please select a contact to create a chat with"
       );
     });
 
@@ -229,14 +217,7 @@ describe("<Chats />", () => {
 
       await user.click(screen.getByTestId("create-chat-button"));
 
-      await waitFor(() => {
-        expect(screen.getByText("Contact has blocked you.")).toBeDefined();
-      });
-
-      await waitForElementToBeRemoved(
-        () => screen.queryByText("Contact has blocked you."),
-        { timeout: 3500 }
-      );
+      await assertErrorMessageAndDismissal("Contact has blocked you.");
     });
 
     test("selects contact when contact button is clicked", async () => {
@@ -364,18 +345,8 @@ describe("<Chats />", () => {
 
       await user.click(screen.getByTestId("create-chat-button"));
 
-      await waitFor(() => {
-        expect(
-          screen.getByText("Chat name must be at least three characters long")
-        ).toBeDefined();
-      });
-
-      await waitForElementToBeRemoved(
-        () =>
-          screen.queryByText(
-            "Chat name must be at least three characters long"
-          ),
-        { timeout: 3500 }
+      await assertErrorMessageAndDismissal(
+        "Chat name must be at least three characters long"
       );
     });
 
@@ -394,15 +365,8 @@ describe("<Chats />", () => {
 
       await user.click(screen.getByTestId("create-chat-button"));
 
-      await waitFor(() => {
-        expect(
-          screen.getByText("Chat must have at least two members")
-        ).toBeDefined();
-      });
-
-      await waitForElementToBeRemoved(
-        () => screen.queryByText("Chat must have at least two members"),
-        { timeout: 3500 }
+      await assertErrorMessageAndDismissal(
+        "Chat must have at least two members"
       );
     });
 
