@@ -1,9 +1,4 @@
-import {
-  render,
-  screen,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { render, screen, waitFor } from "@testing-library/react";
 import { describe, test, expect } from "vitest";
 import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
@@ -22,6 +17,7 @@ import {
   assertContactsDisplayed,
   selectContacts,
   assertContactsSelected,
+  assertErrorMessageAndDismissal,
 } from "./helpers/funcs";
 import Contacts from "../components/Contacts";
 import type { MockLink } from "@apollo/client/testing";
@@ -136,14 +132,7 @@ describe("<Contacts />", () => {
 
       await user.click(screen.getByTestId("add-contacts-button"));
 
-      await waitFor(() => {
-        expect(screen.getByText("Select at least one contact.")).toBeDefined();
-      });
-
-      await waitForElementToBeRemoved(
-        () => screen.queryByText("Select at least one contact."),
-        { timeout: 3500 }
-      );
+      await assertErrorMessageAndDismissal("Select at least one contact.");
     });
 
     test("selects users when user button is clicked", async () => {
