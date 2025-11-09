@@ -18,7 +18,7 @@ import {
   privateChatDetails,
   groupChatDetails,
 } from "./helpers/data";
-import { query } from "./helpers/funcs";
+import { query, assertValidationError } from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
   ME,
@@ -92,19 +92,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Username must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with password shorter than 6 characters", async () => {
@@ -120,19 +111,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Password must be at least 6 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails when passwords do not match", async () => {
@@ -148,19 +130,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Passwords do not match"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Passwords do not match");
       });
 
       void test("fails if user already exists", async () => {
@@ -522,19 +492,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.editProfile;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds updating name and about", async () => {
@@ -696,21 +657,8 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].message,
-          "Input validation failed"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.code,
-          "BAD_USER_INPUT"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
+        assertValidationError(
+          responseBody,
           "Password must be at least 6 characters long"
         );
       });
@@ -734,23 +682,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].message,
-          "Input validation failed"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.code,
-          "BAD_USER_INPUT"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
-          "Passwords do not match"
-        );
+        assertValidationError(responseBody, "Passwords do not match");
       });
 
       void test("succeeds changing password", async () => {
@@ -1921,19 +1853,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Message content cannot be empty"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Message content cannot be empty");
       });
 
       void test("fails with group chat without name", async () => {
@@ -1954,19 +1874,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with group chat name shorter than 3 characters", async () => {
@@ -1987,19 +1898,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds creating private chat", async () => {
@@ -2133,19 +2035,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with chat name shorter than 3 characters", async () => {
@@ -2168,19 +2061,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with non-existent chat ID", async () => {
@@ -2561,19 +2445,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.sendMessage;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Message content cannot be empty"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Message content cannot be empty");
       });
 
       void test("succeeds sending message to chat", async () => {
