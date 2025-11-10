@@ -15,10 +15,17 @@ import {
   user1Details,
   user2Details,
   user3Details,
+  expectedUser1,
+  expectedUser2,
   privateChatDetails,
   groupChatDetails,
 } from "./helpers/data";
-import { query, assertValidationError, assertError } from "./helpers/funcs";
+import {
+  query,
+  assertValidationError,
+  assertError,
+  assertUserEquality,
+} from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
   ME,
@@ -155,15 +162,7 @@ void describe("GraphQL API", () => {
         >(CREATE_USER, { input: user1Input });
         const user = responseBody.data?.createUser;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(
-          user.name,
-          user1Details.username[0].toUpperCase() +
-            user1Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser1);
       });
     });
 
@@ -268,16 +267,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ me: User }>(ME, {}, token);
         const user = responseBody.data?.me;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(
-          user.name,
-          user1Details.username[0].toUpperCase() +
-            user1Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
-        assert.ok(user.id, "User ID should be defined");
+        assertUserEquality(user, expectedUser1);
       });
 
       void test("fails with invalid token", async () => {
@@ -361,16 +351,7 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.findUserById;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user2Id);
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser2);
       });
     });
 
@@ -464,12 +445,11 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.editProfile;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, updatedName);
-        assert.strictEqual(user.about, updatedAbout);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, {
+          ...expectedUser1,
+          name: updatedName,
+          about: updatedAbout,
+        });
       });
 
       void test("succeeds updating name with null about", async () => {
@@ -492,12 +472,10 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.editProfile;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, updatedName);
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, {
+          ...expectedUser1,
+          name: updatedName,
+        });
       });
     });
 
@@ -636,12 +614,7 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.changePassword;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, user1Details.name);
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser1);
       });
     });
   });
