@@ -66,6 +66,47 @@ export const privateChatDetails = {
   initialMessage: "Hello world",
 };
 
+export const expectedPrivateChat = {
+  id: "1",
+  type: "private",
+  name: user2Details.name,
+  avatar: null,
+  description: null,
+  members: [
+    { ...expectedUser1, role: "admin" },
+    { ...expectedUser2, role: "member" },
+  ],
+  messages: [
+    {
+      id: "1",
+      sender: expectedUser1,
+      content: "Hello world",
+      createdAt: 1759094100000,
+    },
+  ],
+};
+
+export const expectedGroupChat = {
+  id: "1",
+  type: "group",
+  name: "Group Chat",
+  avatar: null,
+  description: "Test description",
+  members: [
+    { ...expectedUser1, role: "admin" },
+    { ...expectedUser2, role: "member" },
+    { ...expectedUser3, role: "member" },
+  ],
+  messages: [
+    {
+      id: "1",
+      sender: expectedUser1,
+      content: "Hello world",
+      createdAt: 1759094100000,
+    },
+  ],
+};
+
 export const groupChatDetails = {
   name: "Group Chat",
   description: "Test description",
