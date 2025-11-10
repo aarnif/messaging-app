@@ -61,16 +61,12 @@ export const assertError = (
   responseBody: {
     errors?: Array<{
       message: string;
-      extensions?:
-        | {
-            code?: string | undefined;
-            validationErrors?:
-              | {
-                  message?: string | undefined;
-                }[]
-              | undefined;
-          }
-        | undefined;
+      extensions?: {
+        code?: string;
+        validationErrors?: Array<{
+          message?: string;
+        }>;
+      };
     }>;
   },
   expectedMessage: string,
