@@ -20,6 +20,33 @@ export const user3Details = {
   username: "user3",
 };
 
+export const expectedUser1 = {
+  id: user1Details.id,
+  username: user1Details.username,
+  name: user1Details.name,
+  about: null,
+  avatar: null,
+  is24HourClock: true,
+};
+
+export const expectedUser2 = {
+  id: user2Details.id,
+  username: user2Details.username,
+  name: user2Details.name,
+  about: null,
+  avatar: null,
+  is24HourClock: true,
+};
+
+export const expectedUser3 = {
+  id: user3Details.id,
+  username: user3Details.username,
+  name: user3Details.name,
+  about: null,
+  avatar: null,
+  is24HourClock: true,
+};
+
 export const privateChatDetails = {
   name: null,
   description: null,
