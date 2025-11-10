@@ -1,6 +1,7 @@
 import request from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other";
-import type { User, Contact } from "~/types/graphql";
+import type { User, Contact, Chat } from "~/types/graphql";
+import { user1Details } from "./data";
 import config from "config";
 import assert from "node:assert";
 
@@ -106,4 +107,31 @@ export const assertContactEquality = (
   assert.ok(actual.contactDetails, "Contact details should be defined");
 
   assertUserEquality(actual.contactDetails, expected.contactDetails);
+};
+
+export const assertChatEquality = (
+  actual: Chat | undefined,
+  expected: Chat
+) => {
+  assert.ok(actual, "Chat should be defined");
+  assert.strictEqual(actual.id, expected.id);
+  assert.strictEqual(actual.type, expected.type);
+  assert.strictEqual(actual.name, expected.name);
+  assert.strictEqual(actual.avatar, expected.avatar);
+  assert.strictEqual(actual.members.length, expected.members.length);
+  assert.strictEqual(actual.messages.length, expected.messages.length);
+  assert.strictEqual(actual.messages[0].content, expected.messages[0].content);
+  assert.strictEqual(actual.messages[0].sender.id, user1Details.id);
+
+  for (let i = 0; i < actual.members.length; ++i) {
+    const member: Chat["members"][number] = actual.members[i];
+
+    if (i === 0) {
+      assert.ok(member, "Creator should be in members");
+      assert.strictEqual(member?.role, "admin");
+    } else {
+      assert.ok(member, `Member ${i} should be in members`);
+      assert.strictEqual(member?.role, "member");
+    }
+  }
 };
