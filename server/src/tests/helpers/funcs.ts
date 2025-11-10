@@ -35,12 +35,10 @@ export const assertValidationError = (
     errors?: Array<{
       message: string;
       extensions?: {
-        code?: string | undefined;
-        validationErrors?:
-          | {
-              message?: string | undefined;
-            }[]
-          | undefined;
+        code?: string;
+        validationErrors?: Array<{
+          message?: string;
+        }>;
       };
     }>;
   },
