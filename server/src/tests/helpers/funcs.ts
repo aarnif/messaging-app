@@ -1,6 +1,6 @@
 import request from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other";
-import type { User } from "~/types/graphql";
+import type { User, Contact } from "~/types/graphql";
 import config from "config";
 import assert from "node:assert";
 
@@ -94,4 +94,16 @@ export const assertUserEquality = (
   assert.strictEqual(actual.name, expected.name);
   assert.strictEqual(actual.about, expected.about);
   assert.strictEqual(actual.avatar, expected.avatar);
+};
+
+export const assertContactEquality = (
+  actual: Contact | undefined,
+  expected: Contact
+) => {
+  assert.ok(actual, "Contact should be defined");
+  assert.strictEqual(actual.id, expected.id);
+  assert.strictEqual(actual.isBlocked, expected.isBlocked);
+  assert.ok(actual.contactDetails, "Contact details should be defined");
+
+  assertUserEquality(actual.contactDetails, expected.contactDetails);
 };
