@@ -1,6 +1,13 @@
+import express from "express";
+import http from "http";
+import cors from "cors";
 import { ApolloServer } from "@apollo/server";
+import { ApolloServerPluginDrainHttpServer } from "@apollo/server/plugin/drainHttpServer";
 import type { BaseContext } from "@apollo/server";
-import { startStandaloneServer } from "@apollo/server/standalone";
+import { makeExecutableSchema } from "@graphql-tools/schema";
+import { WebSocketServer } from "ws";
+import { useServer } from "graphql-ws/use/ws";
+import { expressMiddleware } from "@as-integrations/express5";
 import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
@@ -20,32 +27,68 @@ const typeDefs = gql(
   })
 );
 
-const start = async (): Promise<{
-  server: ApolloServer<BaseContext>;
-  url: string;
-}> => {
+const start = async (): Promise<ApolloServer<BaseContext>> => {
   await connectToDatabase();
-  const server = new ApolloServer<BaseContext>({ typeDefs, resolvers });
-  const { url } = await startStandaloneServer(server, {
-    listen: { port: config.PORT },
-    context: async ({ req }) => {
-      const auth = req ? req.headers.authorization : null;
-      let currentUser = null;
-      if (auth && auth.startsWith("Bearer ")) {
-        const decodedToken = jwt.verify(auth.substring(7), config.JWT_SECRET);
-        if (
-          typeof decodedToken === "object" &&
-          typeof decodedToken.id === "number"
-        ) {
-          currentUser = await User.findByPk(decodedToken.id);
-        }
-      }
-      return { currentUser };
-    },
-  });
-  console.log(`Server is now running at ${url}`);
 
-  return { server, url };
+  const app = express();
+  const httpServer = http.createServer(app);
+
+  const wsServer = new WebSocketServer({
+    server: httpServer,
+    path: "/",
+  });
+
+  const schema = makeExecutableSchema({ typeDefs, resolvers });
+  const serverCleanup = useServer({ schema }, wsServer);
+
+  const server = new ApolloServer({
+    schema,
+    plugins: [
+      ApolloServerPluginDrainHttpServer({ httpServer }),
+      {
+        // eslint-disable-next-line @typescript-eslint/require-await
+        async serverWillStart() {
+          return {
+            async drainServer() {
+              await serverCleanup.dispose();
+            },
+          };
+        },
+      },
+    ],
+  });
+
+  await server.start();
+
+  app.use(
+    "/",
+    cors<cors.CorsRequest>(),
+    express.json(),
+    expressMiddleware(server, {
+      context: async ({ req }) => {
+        const auth = req ? req.headers.authorization : null;
+        let currentUser = null;
+        if (auth && auth.startsWith("Bearer ")) {
+          const decodedToken = jwt.verify(auth.substring(7), config.JWT_SECRET);
+          if (
+            typeof decodedToken === "object" &&
+            typeof decodedToken.id === "number"
+          ) {
+            currentUser = await User.findByPk(decodedToken.id);
+          }
+        }
+        return { currentUser };
+      },
+    })
+  );
+
+  const PORT = config.PORT;
+
+  httpServer.listen(PORT, () =>
+    console.log(`Server is now running on http://localhost:${PORT}`)
+  );
+
+  return server;
 };
 
 export { start };

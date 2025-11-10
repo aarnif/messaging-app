@@ -72,7 +72,7 @@ void describe("GraphQL API", () => {
   let server: ApolloServer<BaseContext>;
 
   before(async () => {
-    ({ server } = await start());
+    server = await start();
   });
 
   beforeEach(async () => {
