@@ -21,6 +21,8 @@ import {
   expectedContact2,
   privateChatDetails,
   groupChatDetails,
+  expectedPrivateChat,
+  expectedGroupChat,
 } from "./helpers/data";
 import {
   query,
@@ -28,6 +30,7 @@ import {
   assertError,
   assertUserEquality,
   assertContactEquality,
+  assertChatEquality,
 } from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
@@ -1594,26 +1597,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.createChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.type, "private");
-        assert.strictEqual(chat.name, user2Details.name);
-        assert.strictEqual(chat.description, null);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 2);
-        assert.strictEqual(chat.messages?.length, 1);
-        assert.strictEqual(chat.messages[0]?.content, "Hello world");
-        assert.strictEqual(chat.messages[0]?.sender?.id, user1Details.id);
-
-        const creator = chat.members.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member = chat.members.find(
-          (member) => member?.id === user2Details.id
-        );
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member, "Member should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member.role, "member");
+        assertChatEquality(chat, expectedPrivateChat);
       });
 
       void test("succeeds creating group chat", async () => {
@@ -1624,33 +1608,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.createChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 3);
-        assert.strictEqual(chat.messages?.length, 1);
-        assert.strictEqual(
-          chat?.messages[0]?.content,
-          groupChatDetails.initialMessage
-        );
-        assert.strictEqual(chat?.messages[0]?.sender?.id, user1Details.id);
-        const creator = chat.members.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member1 = chat.members.find(
-          (member) => member?.id === user2Details.id
-        );
-        const member2 = chat.members.find(
-          (member) => member?.id === user3Details.id
-        );
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
+        assertChatEquality(chat, expectedGroupChat);
       });
     });
 
@@ -1783,23 +1741,11 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, "Updated Group Chat");
-        assert.strictEqual(chat.description, "Updated test description");
-        assert.strictEqual(chat.members?.length, 3);
-
-        const creator = chat.members?.find((m) => m?.id === user1Details.id);
-        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
-        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+        });
       });
 
       void test("succeeds removing member from chat", async () => {
@@ -1821,22 +1767,14 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.members?.length, 2);
-
-        const creator = chat.members?.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member = chat.members?.find(
-          (member) => member?.id === user2Details.id
-        );
-        const removedMember = chat.members?.find(
-          (member) => member?.id === user3Details.id
-        );
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member, "Member should be in members");
-        assert.strictEqual(removedMember, undefined, "User3 should be removed");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+          members: expectedGroupChat.members.filter(
+            (member) => member.id !== user3Details.id
+          ),
+        });
       });
 
       void test("succeeds with null description", async () => {
@@ -1858,9 +1796,10 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.name, "Chat with No Description");
-        assert.strictEqual(chat.description, null);
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Chat with No Description",
+        });
       });
     });
 
@@ -1911,11 +1850,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.deleteChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
+        assertChatEquality(chat, expectedGroupChat);
       });
 
       void test("fails when trying to delete same chat twice", async () => {
@@ -1984,31 +1919,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.findChatById;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 3);
-        assert.strictEqual(chat.messages?.length, 1);
-
-        const creator = chat.members?.find((m) => m?.id === user1Details.id);
-        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
-        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
-
-        const message = chat.messages?.[0];
-        assert.ok(message, "Message should exist");
-        assert.strictEqual(message.content, groupChatDetails.initialMessage);
-        assert.strictEqual(message.sender?.id, user1Details.id);
-        assert.strictEqual(message.sender?.username, user1Details.username);
+        assertChatEquality(chat, expectedGroupChat);
       });
     });
 
@@ -2084,23 +1995,15 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.sendMessage;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "private");
-        assert.strictEqual(chat.messages?.length, 2);
-
-        const initialMessage = chat.messages?.[0];
-        assert.ok(initialMessage, "Initial message should exist");
-        assert.strictEqual(
-          initialMessage.content,
-          privateChatDetails.initialMessage
-        );
-
-        const newMessage = chat.messages?.[chat.messages.length - 1];
-        assert.ok(newMessage, "New message should exist");
-        assert.strictEqual(newMessage.content, messageContent);
-        assert.strictEqual(newMessage.sender?.id, user1Details.id);
-        assert.strictEqual(newMessage.sender?.username, user1Details.username);
+        assertChatEquality(chat, {
+          ...expectedPrivateChat,
+          messages: expectedPrivateChat.messages.concat({
+            id: "2",
+            sender: expectedUser2,
+            content: "Hello from chat!",
+            createdAt: 1759094100000 + 86400000,
+          }),
+        });
       });
     });
 
@@ -2155,30 +2058,12 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.leaveChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.members?.length, 2);
-
-        const leftMember = chat.members?.find(
-          (member) => member?.id === user2Details.id
-        );
-        const creator = chat.members?.find(
-          (member) => member?.id === user1Details.id
-        );
-        const otherMember = chat.members?.find(
-          (member) => member?.id === user3Details.id
-        );
-
-        assert.strictEqual(
-          leftMember,
-          undefined,
-          "User2 should no longer be in members"
-        );
-        assert.ok(creator, "Creator should still be in members");
-        assert.ok(otherMember, "User3 should still be in members");
-
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(otherMember.role, "member");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          members: expectedGroupChat.members.filter(
+            (member) => member.id !== user2Details.id
+          ),
+        });
       });
     });
 
