@@ -17,6 +17,8 @@ import {
   user3Details,
   expectedUser1,
   expectedUser2,
+  expectedContact1,
+  expectedContact2,
   privateChatDetails,
   groupChatDetails,
 } from "./helpers/data";
@@ -25,6 +27,7 @@ import {
   assertValidationError,
   assertError,
   assertUserEquality,
+  assertContactEquality,
 } from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
@@ -704,21 +707,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.addContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(contact.contactDetails.about, null);
-        assert.strictEqual(contact.contactDetails.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("fails when trying to add same contact twice", async () => {
@@ -767,27 +756,11 @@ void describe("GraphQL API", () => {
         assert.ok(contacts, "Contacts should be defined");
         assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
 
-        const expectedUsers = [user2Details, user3Details];
+        const expectedContacts = [expectedContact1, expectedContact2];
 
         contacts.forEach((contact, index) => {
-          const expected = expectedUsers[index];
-          assert.ok(contact, `Contact ${index} should be defined`);
-          assert.strictEqual(contact.isBlocked, false);
-          assert.ok(
-            contact.contactDetails,
-            `Contact details ${index} should be defined`
-          );
-          assert.strictEqual(contact.contactDetails.id, expected.id);
-          assert.strictEqual(
-            contact.contactDetails.username,
-            expected.username
-          );
-          assert.strictEqual(
-            contact.contactDetails.name,
-            expected.username[0].toUpperCase() + expected.username.slice(1)
-          );
-          assert.strictEqual(contact.contactDetails.about, null);
-          assert.strictEqual(contact.contactDetails.avatar, null);
+          const expected = expectedContacts[index];
+          assertContactEquality(contact, expected);
         });
       });
     });
@@ -837,20 +810,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.removeContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, "1");
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("fails when trying to remove same contact twice", async () => {
@@ -917,20 +877,10 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.toggleBlockContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        assert.strictEqual(contact.isBlocked, true);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          isBlocked: true,
+        });
       });
 
       void test("succeeds unblocking contact", async () => {
@@ -946,20 +896,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.toggleBlockContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1094,6 +1031,13 @@ void describe("GraphQL API", () => {
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
         assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
+
+        const expectedContacts = [expectedContact1, expectedContact2];
+
+        contacts.forEach((contact, index) => {
+          const expected = expectedContacts[index];
+          assertContactEquality(contact, expected);
+        });
       });
 
       void test("filters contacts by username search", async () => {
@@ -1119,12 +1063,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
+
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("filters contacts by name search", async () => {
@@ -1164,9 +1104,11 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(contact.contactDetails.name, newName);
+
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        });
       });
 
       void test("returns empty array when search has no matches", async () => {
@@ -1210,8 +1152,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1273,12 +1215,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user3Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user3Details.username
-        );
+
+        assertContactEquality(contact, expectedContact2);
       });
 
       void test("filters contacts by username search", async () => {
@@ -1308,12 +1246,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
+
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("filters contacts by name search", async () => {
@@ -1353,9 +1287,11 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(contact.contactDetails.name, newName);
+
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        });
       });
 
       void test("returns empty array when search has no matches", async () => {
@@ -1399,8 +1335,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1464,17 +1400,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.findContactById;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        const user = contact.contactDetails;
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1542,17 +1468,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.findContactByUserId;
 
-        assert.ok(contact, "Contact should be defined");
-        const user = contact.contactDetails;
-        assert.strictEqual(user.id, user2Details.id);
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
     });
   });
