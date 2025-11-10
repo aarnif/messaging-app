@@ -95,6 +95,7 @@ export const assertUserEquality = (
   assert.strictEqual(actual.name, expected.name);
   assert.strictEqual(actual.about, expected.about);
   assert.strictEqual(actual.avatar, expected.avatar);
+  assert.strictEqual(actual.is24HourClock, expected.is24HourClock);
 };
 
 export const assertContactEquality = (

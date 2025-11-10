@@ -12,6 +12,7 @@ export const CREATE_USER = `
       name
       about
       avatar
+      is24HourClock
     }
   }
 `;
@@ -32,6 +33,7 @@ export const ME = `
       name
       about
       avatar
+      is24HourClock
     }
   }
 `;
@@ -47,6 +49,7 @@ export const ADD_CONTACT = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -63,6 +66,7 @@ export const ADD_CONTACTS = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -79,6 +83,7 @@ export const REMOVE_CONTACT = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -182,6 +187,7 @@ export const TOGGLE_BLOCK_CONTACT = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -253,6 +259,7 @@ export const EDIT_PROFILE = `
       name
       about
       avatar
+      is24HourClock
     }
   }
 `;
@@ -265,6 +272,7 @@ export const FIND_USER_BY_ID = `
       name
       about
       avatar
+      is24HourClock
     }
   }
 `;
@@ -315,6 +323,7 @@ export const ALL_CONTACTS_BY_USER = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -331,6 +340,7 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -367,6 +377,7 @@ export const FIND_CONTACT_BY_ID = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
@@ -414,6 +425,7 @@ export const FIND_CONTACT_BY_USER_ID = `
         name
         about
         avatar
+        is24HourClock
       }
     }
   }
