@@ -47,6 +47,18 @@ export const expectedUser3 = {
   is24HourClock: true,
 };
 
+export const expectedContact1 = {
+  id: "1",
+  isBlocked: false,
+  contactDetails: expectedUser2,
+};
+
+export const expectedContact2 = {
+  id: "2",
+  isBlocked: false,
+  contactDetails: expectedUser3,
+};
+
 export const privateChatDetails = {
   name: null,
   description: null,
