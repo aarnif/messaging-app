@@ -53,9 +53,9 @@ scalar Date
 
 type Message {
   id: ID!
-  sender: User
-  content: String
-  createdAt: Date
+  sender: User!
+  content: String!
+  createdAt: Date!
 }
 
 type Contact {
