@@ -1,5 +1,6 @@
 import request from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other";
+import type { User } from "~/types/graphql";
 import config from "config";
 import assert from "node:assert";
 
@@ -81,4 +82,16 @@ export const assertError = (
   if (expectedCode) {
     assert.strictEqual(error.extensions?.code, expectedCode);
   }
+};
+
+export const assertUserEquality = (
+  actual: User | undefined,
+  expected: User
+) => {
+  assert.ok(actual, "User should be defined");
+  assert.strictEqual(actual.id, expected.id);
+  assert.strictEqual(actual.username, expected.username);
+  assert.strictEqual(actual.name, expected.name);
+  assert.strictEqual(actual.about, expected.about);
+  assert.strictEqual(actual.avatar, expected.avatar);
 };
