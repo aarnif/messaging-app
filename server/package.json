@@ -24,6 +24,7 @@
     "dotenv": "^17.2.2",
     "express": "^5.1.0",
     "graphql": "^16.11.0",
+    "graphql-subscriptions": "^3.0.0",
     "graphql-tag": "^2.12.6",
     "jsonwebtoken": "^9.0.2",
     "pg": "^8.16.3",
