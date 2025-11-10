@@ -15,10 +15,23 @@ import {
   user1Details,
   user2Details,
   user3Details,
+  expectedUser1,
+  expectedUser2,
+  expectedContact1,
+  expectedContact2,
   privateChatDetails,
   groupChatDetails,
+  expectedPrivateChat,
+  expectedGroupChat,
 } from "./helpers/data";
-import { query } from "./helpers/funcs";
+import {
+  query,
+  assertValidationError,
+  assertError,
+  assertUserEquality,
+  assertContactEquality,
+  assertChatEquality,
+} from "./helpers/funcs";
 import {
   COUNT_DOCUMENTS,
   ME,
@@ -92,19 +105,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Username must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with password shorter than 6 characters", async () => {
@@ -120,19 +124,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Password must be at least 6 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails when passwords do not match", async () => {
@@ -148,19 +143,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Passwords do not match"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Passwords do not match");
       });
 
       void test("fails if user already exists", async () => {
@@ -175,15 +158,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.createUser;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Username already exists");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertError(responseBody, "Username already exists", "BAD_USER_INPUT");
       });
 
       void test("succeeds with valid input", async () => {
@@ -193,15 +168,7 @@ void describe("GraphQL API", () => {
         >(CREATE_USER, { input: user1Input });
         const user = responseBody.data?.createUser;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(
-          user.name,
-          user1Details.username[0].toUpperCase() +
-            user1Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser1);
       });
     });
 
@@ -226,15 +193,11 @@ void describe("GraphQL API", () => {
         const token = responseBody.data?.login;
 
         assert.strictEqual(token, null, "Token should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
+        assertError(
+          responseBody,
+          "Invalid username or password",
+          "BAD_USER_INPUT"
         );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Invalid username or password");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with incorrect password", async () => {
@@ -250,15 +213,11 @@ void describe("GraphQL API", () => {
         const token = responseBody.data?.login;
 
         assert.strictEqual(token, null, "Token should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
+        assertError(
+          responseBody,
+          "Invalid username or password",
+          "BAD_USER_INPUT"
         );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Invalid username or password");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds with valid credentials", async () => {
@@ -307,31 +266,14 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.me;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("succeeds with valid token", async () => {
         const responseBody = await query<{ me: User }>(ME, {}, token);
         const user = responseBody.data?.me;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(
-          user.name,
-          user1Details.username[0].toUpperCase() +
-            user1Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
-        assert.ok(user.id, "User ID should be defined");
+        assertUserEquality(user, expectedUser1);
       });
 
       void test("fails with invalid token", async () => {
@@ -345,18 +287,11 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.me;
 
         assert.strictEqual(user, undefined, "User should be undefined");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
+        assertError(
+          responseBody,
+          "Context creation failed: jwt malformed",
+          "INTERNAL_SERVER_ERROR"
         );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(
-          error.message,
-          "Context creation failed: jwt malformed"
-        );
-        assert.strictEqual(error.extensions?.code, "INTERNAL_SERVER_ERROR");
       });
     });
 
@@ -399,15 +334,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.findUserById;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent user ID", async () => {
@@ -419,15 +346,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.findUserById;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "User not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "User not found", "NOT_FOUND");
       });
 
       void test("succeeds with valid user ID", async () => {
@@ -438,16 +357,7 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.findUserById;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user2Id);
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser2);
       });
     });
 
@@ -492,15 +402,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.editProfile;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with name shorter than 3 characters", async () => {
@@ -522,19 +424,10 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.editProfile;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds updating name and about", async () => {
@@ -558,12 +451,11 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.editProfile;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, updatedName);
-        assert.strictEqual(user.about, updatedAbout);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, {
+          ...expectedUser1,
+          name: updatedName,
+          about: updatedAbout,
+        });
       });
 
       void test("succeeds updating name with null about", async () => {
@@ -586,12 +478,10 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.editProfile;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, updatedName);
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, {
+          ...expectedUser1,
+          name: updatedName,
+        });
       });
     });
 
@@ -636,15 +526,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with wrong current password", async () => {
@@ -666,15 +548,11 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
+        assertError(
+          responseBody,
+          "Current password does not match",
+          "BAD_USER_INPUT"
         );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Current password does not match");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with new password shorter than 6 characters", async () => {
@@ -696,21 +574,8 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].message,
-          "Input validation failed"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.code,
-          "BAD_USER_INPUT"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
+        assertValidationError(
+          responseBody,
           "Password must be at least 6 characters long"
         );
       });
@@ -734,23 +599,7 @@ void describe("GraphQL API", () => {
         const user = responseBody.data?.changePassword;
 
         assert.strictEqual(user, null, "User should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].message,
-          "Input validation failed"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.code,
-          "BAD_USER_INPUT"
-        );
-        assert.strictEqual(
-          responseBody.errors[0].extensions?.validationErrors?.[0]?.message,
-          "Passwords do not match"
-        );
+        assertValidationError(responseBody, "Passwords do not match");
       });
 
       void test("succeeds changing password", async () => {
@@ -771,12 +620,7 @@ void describe("GraphQL API", () => {
 
         const user = responseBody.data?.changePassword;
 
-        assert.ok(user, "User should be defined");
-        assert.strictEqual(user.id, user1Details.id);
-        assert.strictEqual(user.username, user1Details.username);
-        assert.strictEqual(user.name, user1Details.name);
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertUserEquality(user, expectedUser1);
       });
     });
   });
@@ -839,15 +683,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails when trying to add yourself as contact", async () => {
@@ -859,15 +695,11 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
+        assertError(
+          responseBody,
+          "Cannot add yourself as a contact",
+          "BAD_USER_INPUT"
         );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Cannot add yourself as a contact");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds with valid user ID", async () => {
@@ -878,21 +710,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.addContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(contact.contactDetails.about, null);
-        assert.strictEqual(contact.contactDetails.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("fails when trying to add same contact twice", async () => {
@@ -909,15 +727,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.addContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact already exists");
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertError(responseBody, "Contact already exists", "BAD_USER_INPUT");
       });
     });
 
@@ -931,15 +741,7 @@ void describe("GraphQL API", () => {
         const contacts = responseBody.data?.addContacts;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("succeeds with valid user IDs", async () => {
@@ -957,27 +759,11 @@ void describe("GraphQL API", () => {
         assert.ok(contacts, "Contacts should be defined");
         assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
 
-        const expectedUsers = [user2Details, user3Details];
+        const expectedContacts = [expectedContact1, expectedContact2];
 
         contacts.forEach((contact, index) => {
-          const expected = expectedUsers[index];
-          assert.ok(contact, `Contact ${index} should be defined`);
-          assert.strictEqual(contact.isBlocked, false);
-          assert.ok(
-            contact.contactDetails,
-            `Contact details ${index} should be defined`
-          );
-          assert.strictEqual(contact.contactDetails.id, expected.id);
-          assert.strictEqual(
-            contact.contactDetails.username,
-            expected.username
-          );
-          assert.strictEqual(
-            contact.contactDetails.name,
-            expected.username[0].toUpperCase() + expected.username.slice(1)
-          );
-          assert.strictEqual(contact.contactDetails.about, null);
-          assert.strictEqual(contact.contactDetails.avatar, null);
+          const expected = expectedContacts[index];
+          assertContactEquality(contact, expected);
         });
       });
     });
@@ -1004,15 +790,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent contact", async () => {
@@ -1024,15 +802,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
 
       void test("succeeds with valid contact ID", async () => {
@@ -1043,20 +813,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.removeContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, "1");
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("fails when trying to remove same contact twice", async () => {
@@ -1073,15 +830,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.removeContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
     });
 
@@ -1108,15 +857,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent contact", async () => {
@@ -1128,15 +869,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.toggleBlockContact;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
 
       void test("succeeds blocking contact", async () => {
@@ -1147,20 +880,10 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.toggleBlockContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        assert.strictEqual(contact.isBlocked, true);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          isBlocked: true,
+        });
       });
 
       void test("succeeds unblocking contact", async () => {
@@ -1176,20 +899,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.toggleBlockContact;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        assert.strictEqual(contact.isBlocked, false);
-        assert.ok(contact.contactDetails, "Contact details should be defined");
-        assert.strictEqual(contact.contactDetails.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
-        assert.strictEqual(
-          contact.contactDetails.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1220,15 +930,7 @@ void describe("GraphQL API", () => {
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, null, "IsBlocked should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent contact", async () => {
@@ -1240,15 +942,7 @@ void describe("GraphQL API", () => {
         const isBlocked = responseBody.data?.isBlockedByUser;
 
         assert.strictEqual(isBlocked, null, "IsBlocked should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
 
       void test("returns false when not blocked", async () => {
@@ -1299,15 +993,7 @@ void describe("GraphQL API", () => {
         const contacts = responseBody.data?.allContactsByUser;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("returns empty array when no contacts exist", async () => {
@@ -1348,6 +1034,13 @@ void describe("GraphQL API", () => {
 
         assert.ok(Array.isArray(contacts), "Contacts should be an array");
         assert.strictEqual(contacts.length, 2, "Should have 2 contacts");
+
+        const expectedContacts = [expectedContact1, expectedContact2];
+
+        contacts.forEach((contact, index) => {
+          const expected = expectedContacts[index];
+          assertContactEquality(contact, expected);
+        });
       });
 
       void test("filters contacts by username search", async () => {
@@ -1373,12 +1066,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
+
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("filters contacts by name search", async () => {
@@ -1418,9 +1107,11 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(contact.contactDetails.name, newName);
+
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        });
       });
 
       void test("returns empty array when search has no matches", async () => {
@@ -1464,8 +1155,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1479,15 +1170,7 @@ void describe("GraphQL API", () => {
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
         assert.strictEqual(contacts, undefined, "Contacts should be undefined");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("returns empty array when no contacts exist", async () => {
@@ -1535,12 +1218,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user3Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user3Details.username
-        );
+
+        assertContactEquality(contact, expectedContact2);
       });
 
       void test("filters contacts by username search", async () => {
@@ -1570,12 +1249,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(
-          contact.contactDetails.username,
-          user2Details.username
-        );
+
+        assertContactEquality(contact, expectedContact1);
       });
 
       void test("filters contacts by name search", async () => {
@@ -1615,9 +1290,11 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
-        assert.strictEqual(contact.contactDetails.name, newName);
+
+        assertContactEquality(contact, {
+          ...expectedContact1,
+          contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        });
       });
 
       void test("returns empty array when search has no matches", async () => {
@@ -1661,8 +1338,8 @@ void describe("GraphQL API", () => {
         assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
         const contact = contacts[0];
-        assert.ok(contact, "Contact should exist");
-        assert.strictEqual(contact?.contactDetails?.id, user2Details.id);
+
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1703,15 +1380,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.findContactById;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent user ID", async () => {
@@ -1723,15 +1392,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.findContactById;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
 
       void test("succeeds with valid contact ID", async () => {
@@ -1742,17 +1403,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.findContactById;
 
-        assert.ok(contact, "Contact should be defined");
-        assert.strictEqual(contact.id, contactId);
-        const user = contact.contactDetails;
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
     });
 
@@ -1793,15 +1444,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.findContactByUserId;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent user ID", async () => {
@@ -1815,15 +1458,7 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.findContactByUserId;
 
         assert.strictEqual(contact, null, "Contact should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Contact not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Contact not found", "NOT_FOUND");
       });
 
       void test("succeeds with valid user ID", async () => {
@@ -1836,17 +1471,7 @@ void describe("GraphQL API", () => {
 
         const contact = responseBody.data?.findContactByUserId;
 
-        assert.ok(contact, "Contact should be defined");
-        const user = contact.contactDetails;
-        assert.strictEqual(user.id, user2Details.id);
-        assert.strictEqual(user.username, user2Details.username);
-        assert.strictEqual(
-          user.name,
-          user2Details.username[0].toUpperCase() +
-            user2Details.username.slice(1)
-        );
-        assert.strictEqual(user.about, null);
-        assert.strictEqual(user.avatar, null);
+        assertContactEquality(contact, expectedContact1);
       });
     });
   });
@@ -1892,15 +1517,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with empty initial message", async () => {
@@ -1921,19 +1538,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Message content cannot be empty"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Message content cannot be empty");
       });
 
       void test("fails with group chat without name", async () => {
@@ -1954,19 +1559,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with group chat name shorter than 3 characters", async () => {
@@ -1987,19 +1583,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.createChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("succeeds creating private chat", async () => {
@@ -2010,26 +1597,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.createChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.type, "private");
-        assert.strictEqual(chat.name, user2Details.name);
-        assert.strictEqual(chat.description, null);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 2);
-        assert.strictEqual(chat.messages?.length, 1);
-        assert.strictEqual(chat.messages[0]?.content, "Hello world");
-        assert.strictEqual(chat.messages[0]?.sender?.id, user1Details.id);
-
-        const creator = chat.members.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member = chat.members.find(
-          (member) => member?.id === user2Details.id
-        );
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member, "Member should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member.role, "member");
+        assertChatEquality(chat, expectedPrivateChat);
       });
 
       void test("succeeds creating group chat", async () => {
@@ -2040,33 +1608,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.createChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 3);
-        assert.strictEqual(chat.messages?.length, 1);
-        assert.strictEqual(
-          chat?.messages[0]?.content,
-          groupChatDetails.initialMessage
-        );
-        assert.strictEqual(chat?.messages[0]?.sender?.id, user1Details.id);
-        const creator = chat.members.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member1 = chat.members.find(
-          (member) => member?.id === user2Details.id
-        );
-        const member2 = chat.members.find(
-          (member) => member?.id === user3Details.id
-        );
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
+        assertChatEquality(chat, expectedGroupChat);
       });
     });
 
@@ -2102,15 +1644,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with empty chat name", async () => {
@@ -2133,19 +1667,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with chat name shorter than 3 characters", async () => {
@@ -2168,19 +1693,10 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
+        assertValidationError(
+          responseBody,
           "Group chat name must be at least 3 characters long"
         );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
       });
 
       void test("fails with non-existent chat ID", async () => {
@@ -2203,15 +1719,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.editChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Chat not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Chat not found", "NOT_FOUND");
       });
 
       void test("succeeds updating chat name and description", async () => {
@@ -2233,23 +1741,11 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, "Updated Group Chat");
-        assert.strictEqual(chat.description, "Updated test description");
-        assert.strictEqual(chat.members?.length, 3);
-
-        const creator = chat.members?.find((m) => m?.id === user1Details.id);
-        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
-        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+        });
       });
 
       void test("succeeds removing member from chat", async () => {
@@ -2271,22 +1767,14 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.members?.length, 2);
-
-        const creator = chat.members?.find(
-          (member) => member?.id === user1Details.id
-        );
-        const member = chat.members?.find(
-          (member) => member?.id === user2Details.id
-        );
-        const removedMember = chat.members?.find(
-          (member) => member?.id === user3Details.id
-        );
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member, "Member should be in members");
-        assert.strictEqual(removedMember, undefined, "User3 should be removed");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+          members: expectedGroupChat.members.filter(
+            (member) => member.id !== user3Details.id
+          ),
+        });
       });
 
       void test("succeeds with null description", async () => {
@@ -2308,9 +1796,10 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.editChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.name, "Chat with No Description");
-        assert.strictEqual(chat.description, null);
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          name: "Chat with No Description",
+        });
       });
     });
 
@@ -2336,15 +1825,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent chat ID", async () => {
@@ -2357,15 +1838,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Chat not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Chat not found", "NOT_FOUND");
       });
 
       void test("succeeds deleting chat with valid ID", async () => {
@@ -2377,11 +1850,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.deleteChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
+        assertChatEquality(chat, expectedGroupChat);
       });
 
       void test("fails when trying to delete same chat twice", async () => {
@@ -2399,15 +1868,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.deleteChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Chat not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Chat not found", "NOT_FOUND");
       });
     });
 
@@ -2435,15 +1896,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.findChatById;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with non-existent chat ID", async () => {
@@ -2455,15 +1908,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.findChatById;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Chat not found");
-        assert.strictEqual(error.extensions?.code, "NOT_FOUND");
+        assertError(responseBody, "Chat not found", "NOT_FOUND");
       });
 
       void test("succeeds finding chat", async () => {
@@ -2474,31 +1919,7 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.findChatById;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "group");
-        assert.strictEqual(chat.name, groupChatDetails.name);
-        assert.strictEqual(chat.description, groupChatDetails.description);
-        assert.strictEqual(chat.avatar, null);
-        assert.strictEqual(chat.members?.length, 3);
-        assert.strictEqual(chat.messages?.length, 1);
-
-        const creator = chat.members?.find((m) => m?.id === user1Details.id);
-        const member1 = chat.members?.find((m) => m?.id === user2Details.id);
-        const member2 = chat.members?.find((m) => m?.id === user3Details.id);
-
-        assert.ok(creator, "Creator should be in members");
-        assert.ok(member1, "Member 1 should be in members");
-        assert.ok(member2, "Member 2 should be in members");
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(member1.role, "member");
-        assert.strictEqual(member2.role, "member");
-
-        const message = chat.messages?.[0];
-        assert.ok(message, "Message should exist");
-        assert.strictEqual(message.content, groupChatDetails.initialMessage);
-        assert.strictEqual(message.sender?.id, user1Details.id);
-        assert.strictEqual(message.sender?.username, user1Details.username);
+        assertChatEquality(chat, expectedGroupChat);
       });
     });
 
@@ -2532,15 +1953,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.sendMessage;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("fails with empty message content", async () => {
@@ -2561,19 +1974,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.sendMessage;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Input validation failed");
-        assert.strictEqual(
-          error.extensions?.validationErrors?.[0].message,
-          "Message content cannot be empty"
-        );
-        assert.strictEqual(error.extensions?.code, "BAD_USER_INPUT");
+        assertValidationError(responseBody, "Message content cannot be empty");
       });
 
       void test("succeeds sending message to chat", async () => {
@@ -2594,23 +1995,15 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.sendMessage;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.type, "private");
-        assert.strictEqual(chat.messages?.length, 2);
-
-        const initialMessage = chat.messages?.[0];
-        assert.ok(initialMessage, "Initial message should exist");
-        assert.strictEqual(
-          initialMessage.content,
-          privateChatDetails.initialMessage
-        );
-
-        const newMessage = chat.messages?.[chat.messages.length - 1];
-        assert.ok(newMessage, "New message should exist");
-        assert.strictEqual(newMessage.content, messageContent);
-        assert.strictEqual(newMessage.sender?.id, user1Details.id);
-        assert.strictEqual(newMessage.sender?.username, user1Details.username);
+        assertChatEquality(chat, {
+          ...expectedPrivateChat,
+          messages: expectedPrivateChat.messages.concat({
+            id: "2",
+            sender: expectedUser2,
+            content: "Hello from chat!",
+            createdAt: 1759094100000 + 86400000,
+          }),
+        });
       });
     });
 
@@ -2653,15 +2046,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.leaveChat;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("succeeds when member leaves group chat", async () => {
@@ -2673,30 +2058,12 @@ void describe("GraphQL API", () => {
 
         const chat = responseBody.data?.leaveChat;
 
-        assert.ok(chat, "Chat should be defined");
-        assert.strictEqual(chat.id, chatId);
-        assert.strictEqual(chat.members?.length, 2);
-
-        const leftMember = chat.members?.find(
-          (member) => member?.id === user2Details.id
-        );
-        const creator = chat.members?.find(
-          (member) => member?.id === user1Details.id
-        );
-        const otherMember = chat.members?.find(
-          (member) => member?.id === user3Details.id
-        );
-
-        assert.strictEqual(
-          leftMember,
-          undefined,
-          "User2 should no longer be in members"
-        );
-        assert.ok(creator, "Creator should still be in members");
-        assert.ok(otherMember, "User3 should still be in members");
-
-        assert.strictEqual(creator.role, "admin");
-        assert.strictEqual(otherMember.role, "member");
+        assertChatEquality(chat, {
+          ...expectedGroupChat,
+          members: expectedGroupChat.members.filter(
+            (member) => member.id !== user2Details.id
+          ),
+        });
       });
     });
 
@@ -2710,15 +2077,7 @@ void describe("GraphQL API", () => {
         const chats = responseBody.data?.allChatsByUser;
 
         assert.strictEqual(chats, undefined, "Chats should be undefined");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("returns empty array when no chats exist", async () => {
@@ -2874,15 +2233,7 @@ void describe("GraphQL API", () => {
         const chat = responseBody.data?.findPrivateChatWithContact;
 
         assert.strictEqual(chat, null, "Chat should be null");
-        assert.ok(responseBody.errors, "Response should have errors");
-        assert.ok(
-          responseBody.errors?.length > 0,
-          "Should have at least one error"
-        );
-
-        const error = responseBody.errors[0];
-        assert.strictEqual(error.message, "Not authenticated");
-        assert.strictEqual(error.extensions?.code, "UNAUTHENTICATED");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
       void test("returns null with non-existent chat ID", async () => {
