@@ -27,6 +27,20 @@ const typeDefs = gql(
   })
 );
 
+const authenticateUser = async (auth: string | null | undefined) => {
+  let currentUser = null;
+  if (auth && auth.startsWith("Bearer ")) {
+    const decodedToken = jwt.verify(auth.substring(7), config.JWT_SECRET);
+    if (
+      typeof decodedToken === "object" &&
+      typeof decodedToken.id === "number"
+    ) {
+      currentUser = await User.findByPk(decodedToken.id);
+    }
+  }
+  return currentUser;
+};
+
 const start = async (): Promise<ApolloServer<BaseContext>> => {
   await connectToDatabase();
 
@@ -39,7 +53,18 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
   });
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
-  const serverCleanup = useServer({ schema }, wsServer);
+  const serverCleanup = useServer(
+    {
+      schema,
+      context: async (ctx) => {
+        const auth = ctx.connectionParams?.Authorization as string;
+
+        const currentUser = await authenticateUser(auth);
+        return { currentUser };
+      },
+    },
+    wsServer
+  );
 
   const server = new ApolloServer({
     schema,
@@ -67,16 +92,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null;
-        let currentUser = null;
-        if (auth && auth.startsWith("Bearer ")) {
-          const decodedToken = jwt.verify(auth.substring(7), config.JWT_SECRET);
-          if (
-            typeof decodedToken === "object" &&
-            typeof decodedToken.id === "number"
-          ) {
-            currentUser = await User.findByPk(decodedToken.id);
-          }
-        }
+        const currentUser = await authenticateUser(auth);
         return { currentUser };
       },
     })
