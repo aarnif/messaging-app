@@ -27,6 +27,13 @@ const authLink = new SetContextLink(({ headers }) => {
 const wsLink = new GraphQLWsLink(
   createClient({
     url: "ws://localhost:4000",
+    connectionParams: () => {
+      const token = localStorage.getItem("token");
+
+      return {
+        Authorization: token ? `Bearer ${token}` : "",
+      };
+    },
   })
 );
 
