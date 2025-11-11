@@ -20,6 +20,7 @@ import {
   editChat,
   leaveChat,
   deleteChat,
+  messageSentSubscription,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
@@ -48,6 +49,7 @@ const renderComponent = (
     findChatByIdGroup,
     findChatByIdNull,
     sendMessage,
+    messageSentSubscription,
   ],
   currentUser = currentUserChatAdminMock
 ) =>
@@ -102,7 +104,7 @@ describe("<Chat />", () => {
       },
     });
 
-    renderComponent([findChatByIdNull]);
+    renderComponent([findChatByIdNull, messageSentSubscription]);
 
     await waitFor(() => {
       expect(screen.getByText("Chat not found.")).toBeDefined();
@@ -172,7 +174,11 @@ describe("<Chat />", () => {
 
   test("navigates to contact page when private chat info button is clicked", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdPrivate, findContactByUserId]);
+    renderComponent([
+      findChatByIdPrivate,
+      findContactByUserId,
+      messageSentSubscription,
+    ]);
 
     await waitFor(async () => {
       await user.click(screen.getByTestId("chat-info-button"));
@@ -217,7 +223,13 @@ describe("<Chat />", () => {
   test("does not send message in private chat if contact has blocked user", async () => {
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdPrivate, findChatByIdNull, sendMessage, isBlockedByUserTrue],
+      [
+        findChatByIdPrivate,
+        findChatByIdNull,
+        sendMessage,
+        isBlockedByUserTrue,
+        messageSentSubscription,
+      ],
       currentUserChatAdminMock
     );
 
@@ -244,7 +256,11 @@ describe("<Chat />", () => {
 
   test("shows edit chat modal when edit chat button is clicked", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
     await openEditChatModal(user);
@@ -252,7 +268,11 @@ describe("<Chat />", () => {
 
   test("closes edit chat modal when close button is clicked", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
     await openEditChatModal(user);
@@ -271,7 +291,11 @@ describe("<Chat />", () => {
 
   test("edit chat fails with empty name", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
     await openEditChatModal(user);
@@ -287,7 +311,11 @@ describe("<Chat />", () => {
 
   test("selects contact when contact button is clicked", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
     await openEditChatModal(user);
@@ -319,7 +347,12 @@ describe("<Chat />", () => {
 
   test("edits chat name and description succesfully and closes modal", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser, editChat]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      editChat,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
     await openEditChatModal(user);
@@ -347,7 +380,11 @@ describe("<Chat />", () => {
 
   test("hides leave chat button for admin users", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
 
@@ -357,7 +394,12 @@ describe("<Chat />", () => {
   test("leaves chat and navigates to home page when clicking leave chat button", async () => {
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdGroup, allContactsByUser, leaveChat],
+      [
+        findChatByIdGroup,
+        allContactsByUser,
+        leaveChat,
+        messageSentSubscription,
+      ],
       currentUserChatMemberMock
     );
 
@@ -381,7 +423,7 @@ describe("<Chat />", () => {
   test("hides delete chat button for non admin users", async () => {
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdGroup, allContactsByUser],
+      [findChatByIdGroup, allContactsByUser, messageSentSubscription],
       currentUserChatMemberMock
     );
 
@@ -392,7 +434,12 @@ describe("<Chat />", () => {
 
   test("deletes chat and navigates to home page when clicking delete chat button", async () => {
     const user = userEvent.setup();
-    renderComponent([findChatByIdGroup, allContactsByUser, deleteChat]);
+    renderComponent([
+      findChatByIdGroup,
+      allContactsByUser,
+      deleteChat,
+      messageSentSubscription,
+    ]);
 
     await openChatInfoModal(user);
 

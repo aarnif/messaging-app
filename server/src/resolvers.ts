@@ -6,6 +6,7 @@ import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
+import pubsub from "./pubsub";
 
 // Date scalar implementation from Apollo Server documentation
 // https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar
@@ -1168,7 +1169,7 @@ export const resolvers: Resolvers = {
           content: content,
         });
 
-        return await Chat.findByPk(Number(id), {
+        const chat = await Chat.findByPk(Number(id), {
           include: [
             {
               model: Message,
@@ -1184,6 +1185,14 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        const latestMessage = chat?.toJSON().messages?.at(-1);
+
+        await pubsub.publish("MESSAGE_SENT", {
+          messageSent: latestMessage,
+        });
+
+        return chat;
       } catch (error) {
         throw new GraphQLError("Failed to add message to chat", {
           extensions: {
@@ -1264,6 +1273,11 @@ export const resolvers: Resolvers = {
           },
         });
       }
+    },
+  },
+  Subscription: {
+    messageSent: {
+      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_SENT"]),
     },
   },
 };

@@ -70,8 +70,11 @@ import type {
   DeleteChatMutationVariables,
   CreateChatMutation,
   CreateChatMutationVariables,
+  MessageSentSubscription,
+  MessageSentSubscriptionVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
+import { MESSAGE_SENT } from "../../graphql/subscriptions";
 
 export const LOGIN_TOKEN = "fake-token-12345";
 
@@ -1202,6 +1205,20 @@ export const createChat: MockLink.MockedResponse<
   result: {
     data: {
       createChat: PRIVATE_CHAT_DETAILS,
+    },
+  },
+};
+
+export const messageSentSubscription: MockLink.MockedResponse<
+  MessageSentSubscription,
+  MessageSentSubscriptionVariables
+> = {
+  request: {
+    query: MESSAGE_SENT,
+  },
+  result: {
+    data: {
+      messageSent: MESSAGE_DETAILS,
     },
   },
 };

@@ -125,3 +125,7 @@ input ChangePasswordInput {
 type Token {
   value: String!
 }
+
+type Subscription {
+  messageSent: Message!
+}

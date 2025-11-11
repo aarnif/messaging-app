@@ -1,5 +1,10 @@
 import { useMatch, useNavigate } from "react-router";
-import { useQuery, useLazyQuery } from "@apollo/client/react";
+import {
+  useApolloClient,
+  useQuery,
+  useLazyQuery,
+  useSubscription,
+} from "@apollo/client/react";
 import {
   FIND_CHAT_BY_ID,
   ALL_CHATS_BY_USER,
@@ -7,6 +12,7 @@ import {
   IS_BLOCKED_BY_USER,
   FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
+import { MESSAGE_SENT } from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
@@ -578,12 +584,47 @@ const ChatContent = ({
 };
 
 const Chat = ({ currentUser }: { currentUser: User }) => {
+  const client = useApolloClient();
   const match = useMatch("/chats/:id")?.params;
   const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
     variables: {
       id: match?.id ?? "",
     },
     fetchPolicy: "cache-and-network",
+  });
+
+  useSubscription(MESSAGE_SENT, {
+    onData: ({ data }) => {
+      console.log("Use MESSAGE_SENT-subscription:");
+      const latestMessage = data.data?.messageSent;
+
+      if (!latestMessage) {
+        console.log("No sent message found, skipping cache update");
+        return;
+      }
+
+      client.cache.updateQuery(
+        {
+          query: FIND_CHAT_BY_ID,
+          variables: {
+            id: match?.id ?? "",
+          },
+        },
+        (existingData) => {
+          const chat = existingData?.findChatById;
+          if (!chat) {
+            console.log("No existing chat found in cache, returning unchanged");
+            return existingData;
+          }
+          return {
+            findChatById: {
+              ...chat,
+              messages: chat?.messages.concat(latestMessage),
+            },
+          };
+        }
+      );
+    },
   });
 
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
