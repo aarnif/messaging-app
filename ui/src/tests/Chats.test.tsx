@@ -19,6 +19,7 @@ import {
   allContactsByUserEmpty,
   isBlockedByUserTrue,
   isBlockedByUserFalse,
+  userChatCreatedSubscription,
   userChatUpdatedSubscription,
 } from "./helpers/mocks";
 import {
@@ -45,6 +46,7 @@ const contact2username = userContactsMock[1].contactDetails.username;
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
     allChatsByUser,
+    userChatCreatedSubscription,
     userChatUpdatedSubscription,
   ]
 ) =>
@@ -92,7 +94,11 @@ describe("<Chats />", () => {
     });
 
     test("displays no chats found if user has none", async () => {
-      renderComponent([allChatsByUserEmpty, userChatUpdatedSubscription]);
+      renderComponent([
+        allChatsByUserEmpty,
+        userChatCreatedSubscription,
+        userChatUpdatedSubscription,
+      ]);
 
       await waitFor(() => {
         expect(screen.getByText("No chats found.")).toBeDefined();
@@ -153,6 +159,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         contactsWithoutPrivateChats,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -169,6 +176,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         contactsWithoutPrivateChats,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -186,6 +194,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         contactsWithoutPrivateChatsEmpty,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -201,6 +210,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         contactsWithoutPrivateChats,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -223,6 +233,7 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserTrue,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -249,6 +260,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         contactsWithoutPrivateChats,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -272,6 +284,7 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserFalse,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -307,6 +320,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -323,6 +337,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -345,6 +360,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUserEmpty,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -360,6 +376,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -382,6 +399,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -404,6 +422,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 
@@ -428,6 +447,7 @@ describe("<Chats />", () => {
       renderComponent([
         allChatsByUser,
         allContactsByUser,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
       ]);
 

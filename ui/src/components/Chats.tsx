@@ -1,6 +1,6 @@
 import useField from "../hooks/useField";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
-import { USER_CHAT_UPDATED } from "../graphql/subscriptions";
+import { USER_CHAT_UPDATED, USER_CHAT_CREATED } from "../graphql/subscriptions";
 import {
   useApolloClient,
   useQuery,
@@ -110,6 +110,40 @@ const ListMenu = ({
           return {
             allChatsByUser: existingData.allChatsByUser
               .map((chat) => (chat.id === updatedChat.id ? updatedChat : chat))
+              .sort(
+                (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
+              ),
+          };
+        }
+      );
+    },
+  });
+
+  useSubscription(USER_CHAT_CREATED, {
+    onData: ({ data }) => {
+      console.log("Use USER_CHAT_CREATED-subscription:");
+      const createdChat = data.data?.userChatCreated;
+
+      if (!createdChat) {
+        console.log("No latest message found, skipping cache update");
+        return;
+      }
+
+      client.cache.updateQuery(
+        {
+          query: ALL_CHATS_BY_USER,
+          variables: {
+            search: searchWord.value,
+          },
+        },
+        (existingData) => {
+          if (!existingData?.allChatsByUser) {
+            console.log("No existing chat data found in cache");
+            return existingData;
+          }
+          return {
+            allChatsByUser: existingData.allChatsByUser
+              .concat(createdChat)
               .sort(
                 (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
               ),

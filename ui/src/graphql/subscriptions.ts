@@ -39,3 +39,25 @@ export const USER_CHAT_UPDATED = gql(`
       }
     }
 }`);
+
+export const USER_CHAT_CREATED = gql(`
+  subscription UserChatCreated {
+    userChatCreated {
+      id
+      name
+      avatar
+      latestMessage {
+        id
+        sender {
+          id
+          username
+          name
+          about
+          avatar
+          is24HourClock
+        }
+        content
+        createdAt
+      }
+    }
+}`);

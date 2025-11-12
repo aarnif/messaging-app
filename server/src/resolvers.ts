@@ -896,7 +896,7 @@ export const resolvers: Resolvers = {
           content: initialMessage,
         });
 
-        return await Chat.findByPk(newChat.id, {
+        const chat = await Chat.findByPk(newChat.id, {
           include: [
             {
               model: Message,
@@ -912,6 +912,26 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        if (!chat) {
+          throw new GraphQLError("Chat not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: newChat.id,
+            },
+          });
+        }
+
+        await pubsub.publish("USER_CHAT_CREATED", {
+          userChatCreated: {
+            id: String(chat.id),
+            name: getChatName(chat, context.currentUser),
+            avatar: chat.avatar,
+            latestMessage: chat.messages![0],
+          },
+        });
+
+        return chat;
       } catch (error) {
         throw new GraphQLError("Failed to create chat", {
           extensions: {
@@ -1304,6 +1324,9 @@ export const resolvers: Resolvers = {
     },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
+    },
+    userChatCreated: {
+      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_CREATED"]),
     },
   },
 };

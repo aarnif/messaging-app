@@ -15,6 +15,7 @@ import {
   isBlockedByUserFalse,
   CONTACT_DETAILS,
   windowMockContent,
+  userChatCreatedSubscription,
   userChatUpdatedSubscription,
   messageSentSubscription,
 } from "./helpers/mocks";
@@ -63,7 +64,12 @@ describe("<App />", () => {
   test("redirects to home page from sign in when authenticated", async () => {
     renderComponent(
       ["/signin"],
-      [meMock, allChatsByUser, userChatUpdatedSubscription]
+      [
+        meMock,
+        allChatsByUser,
+        userChatCreatedSubscription,
+        userChatUpdatedSubscription,
+      ]
     );
 
     await waitFor(() => {
@@ -74,7 +80,12 @@ describe("<App />", () => {
   test("redirects to home page from sign up when authenticated", async () => {
     renderComponent(
       ["/signup"],
-      [meMock, allChatsByUser, userChatUpdatedSubscription]
+      [
+        meMock,
+        allChatsByUser,
+        userChatCreatedSubscription,
+        userChatUpdatedSubscription,
+      ]
     );
 
     await waitFor(() => {
@@ -85,7 +96,12 @@ describe("<App />", () => {
   test("renders home page", async () => {
     renderComponent(
       ["/"],
-      [meMock, allChatsByUser, userChatUpdatedSubscription]
+      [
+        meMock,
+        allChatsByUser,
+        userChatCreatedSubscription,
+        userChatUpdatedSubscription,
+      ]
     );
 
     await waitFor(() => {
@@ -100,6 +116,7 @@ describe("<App />", () => {
         meMock,
         allChatsByUser,
         findChatByIdGroup,
+        userChatCreatedSubscription,
         userChatUpdatedSubscription,
         messageSentSubscription,
       ]
@@ -115,7 +132,13 @@ describe("<App />", () => {
   test("renders new chat preview page", async () => {
     renderComponent(
       ["/chats/new"],
-      [meMock, allChatsByUser, findChatByIdGroup, userChatUpdatedSubscription]
+      [
+        meMock,
+        allChatsByUser,
+        findChatByIdGroup,
+        userChatCreatedSubscription,
+        userChatUpdatedSubscription,
+      ]
     );
 
     await waitFor(() => {

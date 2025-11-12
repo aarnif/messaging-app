@@ -129,4 +129,5 @@ type Token {
 type Subscription {
   messageSent: Message!
   userChatUpdated: UserChat!
+  userChatCreated: UserChat!
 }
