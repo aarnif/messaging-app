@@ -16,6 +16,7 @@ import {
   CONTACT_DETAILS,
   windowMockContent,
   userChatUpdatedSubscription,
+  messageSentSubscription,
 } from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -95,7 +96,13 @@ describe("<App />", () => {
   test("renders chat page", async () => {
     renderComponent(
       ["/chats/1"],
-      [meMock, allChatsByUser, findChatByIdGroup, userChatUpdatedSubscription]
+      [
+        meMock,
+        allChatsByUser,
+        findChatByIdGroup,
+        userChatUpdatedSubscription,
+        messageSentSubscription,
+      ]
     );
 
     await waitFor(() => {
