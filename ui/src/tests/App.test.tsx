@@ -15,6 +15,7 @@ import {
   isBlockedByUserFalse,
   CONTACT_DETAILS,
   windowMockContent,
+  userChatUpdatedSubscription,
 } from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -59,7 +60,10 @@ describe("<App />", () => {
   });
 
   test("redirects to home page from sign in when authenticated", async () => {
-    renderComponent(["/signin"], [meMock, allChatsByUser]);
+    renderComponent(
+      ["/signin"],
+      [meMock, allChatsByUser, userChatUpdatedSubscription]
+    );
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -67,7 +71,10 @@ describe("<App />", () => {
   });
 
   test("redirects to home page from sign up when authenticated", async () => {
-    renderComponent(["/signup"], [meMock, allChatsByUser]);
+    renderComponent(
+      ["/signup"],
+      [meMock, allChatsByUser, userChatUpdatedSubscription]
+    );
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -75,7 +82,10 @@ describe("<App />", () => {
   });
 
   test("renders home page", async () => {
-    renderComponent(["/"], [meMock, allChatsByUser]);
+    renderComponent(
+      ["/"],
+      [meMock, allChatsByUser, userChatUpdatedSubscription]
+    );
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
@@ -83,7 +93,10 @@ describe("<App />", () => {
   });
 
   test("renders chat page", async () => {
-    renderComponent(["/chats/1"], [meMock, allChatsByUser, findChatByIdGroup]);
+    renderComponent(
+      ["/chats/1"],
+      [meMock, allChatsByUser, findChatByIdGroup, userChatUpdatedSubscription]
+    );
 
     await waitFor(() => {
       expect(
@@ -95,7 +108,7 @@ describe("<App />", () => {
   test("renders new chat preview page", async () => {
     renderComponent(
       ["/chats/new"],
-      [meMock, allChatsByUser, findChatByIdGroup]
+      [meMock, allChatsByUser, findChatByIdGroup, userChatUpdatedSubscription]
     );
 
     await waitFor(() => {

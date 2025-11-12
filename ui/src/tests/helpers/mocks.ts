@@ -72,9 +72,11 @@ import type {
   CreateChatMutationVariables,
   MessageSentSubscription,
   MessageSentSubscriptionVariables,
+  UserChatUpdatedSubscription,
+  UserChatUpdatedSubscriptionVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
-import { MESSAGE_SENT } from "../../graphql/subscriptions";
+import { MESSAGE_SENT, USER_CHAT_UPDATED } from "../../graphql/subscriptions";
 
 export const LOGIN_TOKEN = "fake-token-12345";
 
@@ -1220,6 +1222,25 @@ export const messageSentSubscription: MockLink.MockedResponse<
   result: {
     data: {
       messageSent: MESSAGE_DETAILS,
+    },
+  },
+};
+
+export const userChatUpdatedSubscription: MockLink.MockedResponse<
+  UserChatUpdatedSubscription,
+  UserChatUpdatedSubscriptionVariables
+> = {
+  request: {
+    query: USER_CHAT_UPDATED,
+  },
+  result: {
+    data: {
+      userChatUpdated: {
+        id: GROUP_CHAT_DETAILS.id,
+        name: GROUP_CHAT_DETAILS.name,
+        avatar: GROUP_CHAT_DETAILS.avatar,
+        latestMessage: MESSAGE_DETAILS,
+      },
     },
   },
 };

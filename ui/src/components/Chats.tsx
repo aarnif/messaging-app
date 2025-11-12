@@ -1,6 +1,11 @@
 import useField from "../hooks/useField";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
-import { useQuery } from "@apollo/client/react";
+import { USER_CHAT_UPDATED } from "../graphql/subscriptions";
+import {
+  useApolloClient,
+  useQuery,
+  useSubscription,
+} from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
@@ -67,6 +72,7 @@ const ListMenu = ({
   currentUser: User;
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const client = useApolloClient();
   const searchWord = useField(
     "search-chats",
     "text",
@@ -76,6 +82,40 @@ const ListMenu = ({
   const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
     variables: {
       search: searchWord.value,
+    },
+  });
+
+  useSubscription(USER_CHAT_UPDATED, {
+    onData: ({ data }) => {
+      console.log("Use CHAT_UPDATED-subscription:");
+      const updatedChat = data.data?.userChatUpdated;
+
+      if (!updatedChat) {
+        console.log("No latest message found, skipping cache update");
+        return;
+      }
+
+      client.cache.updateQuery(
+        {
+          query: ALL_CHATS_BY_USER,
+          variables: {
+            search: searchWord.value,
+          },
+        },
+        (existingData) => {
+          if (!existingData?.allChatsByUser) {
+            console.log("No existing chat data found in cache");
+            return existingData;
+          }
+          return {
+            allChatsByUser: existingData.allChatsByUser
+              .map((chat) => (chat.id === updatedChat.id ? updatedChat : chat))
+              .sort(
+                (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
+              ),
+          };
+        }
+      );
     },
   });
 

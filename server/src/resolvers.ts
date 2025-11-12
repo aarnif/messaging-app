@@ -1191,10 +1191,28 @@ export const resolvers: Resolvers = {
           ],
         });
 
-        const latestMessage = chat?.toJSON().messages?.at(-1);
+        if (!chat) {
+          throw new GraphQLError("Chat not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        const latestMessage = chat.toJSON().messages?.at(-1);
 
         await pubsub.publish("MESSAGE_SENT", {
           messageSent: latestMessage,
+        });
+
+        await pubsub.publish("USER_CHAT_UPDATED", {
+          userChatUpdated: {
+            id: String(chat.id),
+            name: getChatName(chat, context.currentUser),
+            avatar: chat.avatar,
+            latestMessage: latestMessage,
+          },
         });
 
         return chat;
@@ -1283,6 +1301,9 @@ export const resolvers: Resolvers = {
   Subscription: {
     messageSent: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_SENT"]),
+    },
+    userChatUpdated: {
+      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
     },
   },
 };

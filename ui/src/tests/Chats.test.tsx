@@ -19,6 +19,7 @@ import {
   allContactsByUserEmpty,
   isBlockedByUserTrue,
   isBlockedByUserFalse,
+  userChatUpdatedSubscription,
 } from "./helpers/mocks";
 import {
   assertContactsDisplayed,
@@ -41,7 +42,12 @@ vi.mock("react-router", async () => {
 const contact1username = userContactsMock[0].contactDetails.username;
 const contact2username = userContactsMock[1].contactDetails.username;
 
-const renderComponent = (mocks: MockLink.MockedResponse[] = [allChatsByUser]) =>
+const renderComponent = (
+  mocks: MockLink.MockedResponse[] = [
+    allChatsByUser,
+    userChatUpdatedSubscription,
+  ]
+) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
@@ -86,7 +92,7 @@ describe("<Chats />", () => {
     });
 
     test("displays no chats found if user has none", async () => {
-      renderComponent([allChatsByUserEmpty]);
+      renderComponent([allChatsByUserEmpty, userChatUpdatedSubscription]);
 
       await waitFor(() => {
         expect(screen.getByText("No chats found.")).toBeDefined();
@@ -144,7 +150,11 @@ describe("<Chats />", () => {
   describe("creating a private chat", () => {
     test("shows new private chat modal when new private chat button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Private Chat");
 
@@ -156,7 +166,11 @@ describe("<Chats />", () => {
 
     test("closes new private chat modal when close button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Private Chat");
 
@@ -169,7 +183,11 @@ describe("<Chats />", () => {
 
     test("show no contacts if user has none", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChatsEmpty]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChatsEmpty,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Private Chat");
 
@@ -180,7 +198,11 @@ describe("<Chats />", () => {
 
     test("displays error if contact is not selected", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Private Chat");
 
@@ -201,6 +223,7 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserTrue,
+        userChatUpdatedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -223,7 +246,11 @@ describe("<Chats />", () => {
 
     test("selects contact when contact button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, contactsWithoutPrivateChats]);
+      renderComponent([
+        allChatsByUser,
+        contactsWithoutPrivateChats,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Private Chat");
 
@@ -245,6 +272,7 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserFalse,
+        userChatUpdatedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -276,7 +304,11 @@ describe("<Chats />", () => {
   describe("creating a group chat", () => {
     test("shows new group chat modal when new group chat button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -288,7 +320,11 @@ describe("<Chats />", () => {
 
     test("closes new group chat modal when close button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -306,7 +342,11 @@ describe("<Chats />", () => {
 
     test("show no contacts if user has none", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUserEmpty]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUserEmpty,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -317,7 +357,11 @@ describe("<Chats />", () => {
 
     test("selects contact when contact button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -335,7 +379,11 @@ describe("<Chats />", () => {
 
     test("displays error if chat name is not given", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -353,7 +401,11 @@ describe("<Chats />", () => {
 
     test("displays error if not at least two contacts has been selected", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
@@ -373,7 +425,11 @@ describe("<Chats />", () => {
 
     test("saves new group chat info and navigates to chat preview when new chat button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allChatsByUser, allContactsByUser]);
+      renderComponent([
+        allChatsByUser,
+        allContactsByUser,
+        userChatUpdatedSubscription,
+      ]);
 
       await openNewChatModal(user, "New Group Chat");
 
