@@ -446,7 +446,8 @@ export const userChatsMock = [
     id: GROUP_CHAT_DETAILS.id,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
-    messages: GROUP_CHAT_DETAILS.messages,
+    latestMessage:
+      GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
 ];
 

@@ -18,7 +18,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
     id
     name
     avatar
-    messages {
+    latestMessage {
       id
       sender {
         id

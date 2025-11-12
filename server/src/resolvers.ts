@@ -96,37 +96,26 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const whereClause = search
-        ? {
-            [Op.or]: [
-              { type: "private" },
-              { name: { [Op.iLike]: `%${search}%` } },
-              { description: { [Op.iLike]: `%${search}%` } },
-            ],
-          }
-        : {};
-
       const user = await User.findByPk(context.currentUser.id, {
         include: [
           {
             model: Chat,
             as: "chats",
-            where: whereClause,
             through: {
               attributes: [],
             },
             include: [
               {
-                model: Message,
-                as: "messages",
-                include: [{ model: User, as: "sender" }],
-              },
-              {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: ["role"],
+                  attributes: [],
                 },
+              },
+              {
+                model: Message,
+                as: "messages",
+                include: [{ model: User, as: "sender" }],
               },
             ],
           },
@@ -141,15 +130,35 @@ export const resolvers: Resolvers = {
         ],
       });
 
-      // Temporarily filter private chats afterwards until a better solution is available.
-      return !search
-        ? user?.chats || []
-        : user?.chats?.filter((chat) => {
-            if (chat.type === "group") return true;
+      if (!user?.chats) {
+        return [];
+      }
+
+      const searchLower = String(search).toLowerCase();
+
+      const filteredChats = search
+        ? user.chats.filter((chat) => {
+            if (chat.type === "group") {
+              return (
+                chat.name?.toLowerCase().includes(searchLower) ||
+                chat.description?.toLowerCase().includes(searchLower)
+              );
+            }
+
             return chat.members?.some((member) =>
-              member.name?.toLowerCase().includes(search.toLowerCase())
+              member.name?.toLowerCase().includes(searchLower)
             );
-          }) || [];
+          })
+        : user.chats;
+
+      return filteredChats.map((chat) => {
+        return {
+          id: String(chat.id),
+          name: getChatName(chat, context.currentUser),
+          avatar: chat.avatar,
+          latestMessage: chat.messages![0],
+        };
+      });
     },
     findChatById: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
@@ -474,10 +483,6 @@ export const resolvers: Resolvers = {
       }
       return contact;
     },
-  },
-  UserChat: {
-    name: (parent: Chat, __, context: { currentUser: User | null }) =>
-      getChatName(parent, context.currentUser),
   },
   Chat: {
     name: (parent: Chat, __, context: { currentUser: User | null }) =>

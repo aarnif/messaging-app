@@ -98,19 +98,20 @@ describe("<Chats />", () => {
 
       await waitFor(() => {
         userChatsMock.forEach((chat) => {
-          const { name, messages } = chat;
-          const latestMessage = messages[0];
+          const { name, latestMessage } = chat;
 
           expect(screen.getByText(name)).toBeDefined();
           expect(
-            screen.getByText(new RegExp(`${latestMessage.sender.name}:`))
+            screen.getByText(new RegExp(`${latestMessage?.sender.name}:`))
           ).toBeDefined();
-          const formattedDate = formatDisplayDate(latestMessage.createdAt);
+          const formattedDate = formatDisplayDate(
+            latestMessage?.createdAt ?? 0
+          );
           if (formattedDate) {
             expect(screen.getByText(formattedDate)).toBeDefined();
           }
           expect(
-            screen.getByText(truncateText(latestMessage.content))
+            screen.getByText(truncateText(latestMessage?.content ?? ""))
           ).toBeDefined();
         });
       });

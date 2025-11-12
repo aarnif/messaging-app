@@ -18,8 +18,7 @@ const ChatItem = ({
   currentUser: User;
   chat: UserChat;
 }) => {
-  const { id, name, messages } = chat;
-  const latestMessage = messages?.[0];
+  const { id, name, latestMessage } = chat;
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
