@@ -987,6 +987,10 @@ export const resolvers: Resolvers = {
           },
         });
 
+        await pubsub.publish("USER_CHAT_DELETED", {
+          userChatDeleted: String(chatToBeDeleted.id),
+        });
+
         return chatToBeDeleted;
       } catch (error) {
         throw new GraphQLError("Failed to delete chat", {
@@ -1327,6 +1331,9 @@ export const resolvers: Resolvers = {
     },
     userChatCreated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_CREATED"]),
+    },
+    userChatDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_DELETED"]),
     },
   },
 };

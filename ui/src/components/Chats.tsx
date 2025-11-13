@@ -1,6 +1,10 @@
 import useField from "../hooks/useField";
 import { ALL_CHATS_BY_USER } from "../graphql/queries";
-import { USER_CHAT_UPDATED, USER_CHAT_CREATED } from "../graphql/subscriptions";
+import {
+  USER_CHAT_UPDATED,
+  USER_CHAT_CREATED,
+  USER_CHAT_DELETED,
+} from "../graphql/subscriptions";
 import {
   useApolloClient,
   useQuery,
@@ -150,6 +154,22 @@ const ListMenu = ({
           };
         }
       );
+    },
+  });
+
+  useSubscription(USER_CHAT_DELETED, {
+    onData: ({ data }) => {
+      const deletedChatId = data.data?.userChatDeleted;
+
+      if (deletedChatId) {
+        client.cache.evict({
+          id: client.cache.identify({
+            __typename: "UserChat",
+            id: deletedChatId,
+          }),
+        });
+        client.cache.gc();
+      }
     },
   });
 

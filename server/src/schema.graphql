@@ -130,4 +130,5 @@ type Subscription {
   messageSent: Message!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
+  userChatDeleted: ID!
 }

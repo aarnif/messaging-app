@@ -18,6 +18,7 @@ import {
   userChatCreatedSubscription,
   userChatUpdatedSubscription,
   messageSentSubscription,
+  userChatDeletedSubscription,
 } from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -69,6 +70,7 @@ describe("<App />", () => {
         allChatsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]
     );
 
@@ -85,6 +87,7 @@ describe("<App />", () => {
         allChatsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]
     );
 
@@ -101,6 +104,7 @@ describe("<App />", () => {
         allChatsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]
     );
 
@@ -118,6 +122,7 @@ describe("<App />", () => {
         findChatByIdGroup,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
         messageSentSubscription,
       ]
     );
@@ -138,6 +143,7 @@ describe("<App />", () => {
         findChatByIdGroup,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]
     );
 

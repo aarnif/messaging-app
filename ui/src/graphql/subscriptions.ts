@@ -61,3 +61,8 @@ export const USER_CHAT_CREATED = gql(`
       }
     }
 }`);
+
+export const USER_CHAT_DELETED = gql(`
+  subscription UserChatDeleted {
+    userChatDeleted
+}`);

@@ -76,11 +76,14 @@ import type {
   UserChatUpdatedSubscriptionVariables,
   UserChatCreatedSubscription,
   UserChatCreatedSubscriptionVariables,
+  UserChatDeletedSubscription,
+  UserChatDeletedSubscriptionVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
 import {
   MESSAGE_SENT,
   USER_CHAT_CREATED,
+  USER_CHAT_DELETED,
   USER_CHAT_UPDATED,
 } from "../../graphql/subscriptions";
 
@@ -1267,6 +1270,18 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
         latestMessage: MESSAGE_DETAILS,
       },
     },
+  },
+};
+
+export const userChatDeletedSubscription: MockLink.MockedResponse<
+  UserChatDeletedSubscription,
+  UserChatDeletedSubscriptionVariables
+> = {
+  request: {
+    query: USER_CHAT_DELETED,
+  },
+  result: {
+    data: { userChatDeleted: GROUP_CHAT_DETAILS.id },
   },
 };
 

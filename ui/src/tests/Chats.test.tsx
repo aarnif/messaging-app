@@ -21,6 +21,7 @@ import {
   isBlockedByUserFalse,
   userChatCreatedSubscription,
   userChatUpdatedSubscription,
+  userChatDeletedSubscription,
 } from "./helpers/mocks";
 import {
   assertContactsDisplayed,
@@ -48,6 +49,7 @@ const renderComponent = (
     allChatsByUser,
     userChatCreatedSubscription,
     userChatUpdatedSubscription,
+    userChatDeletedSubscription,
   ]
 ) =>
   render(
@@ -98,6 +100,7 @@ describe("<Chats />", () => {
         allChatsByUserEmpty,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await waitFor(() => {
@@ -161,6 +164,7 @@ describe("<Chats />", () => {
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -178,6 +182,7 @@ describe("<Chats />", () => {
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -196,6 +201,7 @@ describe("<Chats />", () => {
         contactsWithoutPrivateChatsEmpty,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -212,6 +218,7 @@ describe("<Chats />", () => {
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -235,6 +242,7 @@ describe("<Chats />", () => {
         isBlockedByUserTrue,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -262,6 +270,7 @@ describe("<Chats />", () => {
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -286,6 +295,7 @@ describe("<Chats />", () => {
         isBlockedByUserFalse,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -322,6 +332,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -339,6 +350,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -362,6 +374,7 @@ describe("<Chats />", () => {
         allContactsByUserEmpty,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -378,6 +391,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -401,6 +415,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -424,6 +439,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -449,6 +465,7 @@ describe("<Chats />", () => {
         allContactsByUser,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
+        userChatDeletedSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
