@@ -2002,6 +2002,7 @@ void describe("GraphQL API", () => {
           ...expectedPrivateChat,
           messages: expectedPrivateChat.messages.concat({
             id: "2",
+            isNotification: false,
             sender: expectedUser2,
             content: "Hello from chat!",
             createdAt: 1759094100000 + 86400000,

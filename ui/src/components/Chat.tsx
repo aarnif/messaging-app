@@ -185,6 +185,7 @@ const NewMessageBox = ({
         input: {
           id: id,
           content: message.value,
+          isNotification: false,
         },
       },
     });

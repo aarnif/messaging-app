@@ -4,6 +4,7 @@ export const MESSAGE_SENT = gql(`
   subscription MessageSent {
     messageSent {
       id
+      isNotification
       sender {
         id
         username
@@ -26,6 +27,7 @@ export const USER_CHAT_UPDATED = gql(`
       avatar
       latestMessage {
         id
+        isNotification
         sender {
           id
           username
@@ -48,6 +50,7 @@ export const USER_CHAT_CREATED = gql(`
       avatar
       latestMessage {
         id
+        isNotification
         sender {
           id
           username

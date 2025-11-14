@@ -106,6 +106,7 @@ export const CREATE_CHAT = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -135,6 +136,7 @@ export const EDIT_CHAT = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -164,6 +166,7 @@ export const DELETE_CHAT = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -210,6 +213,7 @@ export const SEND_MESSAGE = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -239,6 +243,7 @@ export const LEAVE_CHAT = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -294,6 +299,7 @@ export const FIND_CHAT_BY_ID = `
       }
       messages {
         id
+        isNotification
         sender {
           id
           username
@@ -354,6 +360,7 @@ export const ALL_CHATS_BY_USER = `
       avatar
       latestMessage {
         id
+        isNotification
         sender {
           id
           username

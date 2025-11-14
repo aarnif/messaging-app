@@ -166,6 +166,7 @@ export const GROUP_CHAT_DETAILS = {
   messages: [
     {
       id: "1",
+      isNotification: false,
       sender: {
         id: USER_ONE_DETAILS.id,
         username: USER_ONE_DETAILS.username,
@@ -179,6 +180,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: "2",
+      isNotification: false,
       sender: {
         id: USER_TWO_DETAILS.id,
         username: USER_TWO_DETAILS.username,
@@ -192,6 +194,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: "3",
+      isNotification: false,
       sender: {
         id: USER_THREE_DETAILS.id,
         username: USER_THREE_DETAILS.username,
@@ -235,6 +238,7 @@ export const PRIVATE_CHAT_DETAILS = {
   messages: [
     {
       id: "1",
+      isNotification: false,
       sender: {
         id: USER_ONE_DETAILS.id,
         username: USER_ONE_DETAILS.username,
@@ -248,6 +252,7 @@ export const PRIVATE_CHAT_DETAILS = {
     },
     {
       id: "2",
+      isNotification: false,
       sender: {
         id: USER_TWO_DETAILS.id,
         username: USER_TWO_DETAILS.username,
@@ -264,6 +269,7 @@ export const PRIVATE_CHAT_DETAILS = {
 
 export const MESSAGE_DETAILS = {
   id: "4",
+  isNotification: false,
   sender: {
     id: USER_ONE_DETAILS.id,
     username: USER_ONE_DETAILS.username,
@@ -605,6 +611,7 @@ export const sendMessage: MockLink.MockedResponse<
       input: {
         id: "1",
         content: MESSAGE_DETAILS.content,
+        isNotification: false,
       },
     },
   },

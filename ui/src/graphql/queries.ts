@@ -20,6 +20,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
     avatar
     latestMessage {
       id
+      isNotification
       sender {
         id
         username
@@ -68,6 +69,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
     }
     messages {
       id
+      isNotification
       sender {
         id
         username
