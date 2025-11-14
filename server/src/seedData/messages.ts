@@ -2,6 +2,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 1,
+    isNotification: false,
     content: "Hey everyone, are we still on for hiking this weekend?",
     createdAt: new Date("2025-09-01T10:30:00Z"),
     updatedAt: new Date("2025-09-01T10:30:00Z"),
@@ -9,6 +10,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 1,
+    isNotification: false,
     content: "Yes! I'm really looking forward to it. What's the plan?",
     createdAt: new Date("2025-09-01T10:35:00Z"),
     updatedAt: new Date("2025-09-01T10:35:00Z"),
@@ -16,6 +18,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 1,
+    isNotification: false,
     content: "Count me in! Should we meet at the usual spot?",
     createdAt: new Date("2025-09-01T10:40:00Z"),
     updatedAt: new Date("2025-09-01T10:40:00Z"),
@@ -23,6 +26,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 1,
+    isNotification: false,
     content:
       "Yes, let's meet at the trailhead at 8 AM. Does that work for everyone?",
     createdAt: new Date("2025-09-01T10:45:00Z"),
@@ -31,6 +35,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 1,
+    isNotification: false,
     content: "Perfect! I'll bring some snacks for the trail.",
     createdAt: new Date("2025-09-01T10:50:00Z"),
     updatedAt: new Date("2025-09-01T10:50:00Z"),
@@ -38,6 +43,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 1,
+    isNotification: false,
     content: "Great idea! I'll bring plenty of water for everyone.",
     createdAt: new Date("2025-09-01T10:55:00Z"),
     updatedAt: new Date("2025-09-01T10:55:00Z"),
@@ -45,6 +51,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 1,
+    isNotification: false,
     content: "Should we check the weather forecast?",
     createdAt: new Date("2025-09-01T11:00:00Z"),
     updatedAt: new Date("2025-09-01T11:00:00Z"),
@@ -52,6 +59,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 1,
+    isNotification: false,
     content: "Good thinking! It looks sunny all weekend.",
     createdAt: new Date("2025-09-01T11:05:00Z"),
     updatedAt: new Date("2025-09-01T11:05:00Z"),
@@ -59,6 +67,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 1,
+    isNotification: false,
     content: "Awesome! Don't forget your hiking boots everyone.",
     createdAt: new Date("2025-09-01T11:10:00Z"),
     updatedAt: new Date("2025-09-01T11:10:00Z"),
@@ -66,6 +75,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 1,
+    isNotification: false,
     content: "Should we make this a full day hike or half day?",
     createdAt: new Date("2025-09-01T11:15:00Z"),
     updatedAt: new Date("2025-09-01T11:15:00Z"),
@@ -73,6 +83,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 1,
+    isNotification: false,
     content: "I vote for full day! The views are amazing at the summit.",
     createdAt: new Date("2025-09-01T11:20:00Z"),
     updatedAt: new Date("2025-09-01T11:20:00Z"),
@@ -80,6 +91,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 1,
+    isNotification: false,
     content: "Full day sounds perfect! We can have lunch at the top.",
     createdAt: new Date("2025-09-01T11:25:00Z"),
     updatedAt: new Date("2025-09-01T11:25:00Z"),
@@ -87,6 +99,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 1,
+    isNotification: false,
     content: "I'll pack some sandwiches then!",
     createdAt: new Date("2025-09-01T11:30:00Z"),
     updatedAt: new Date("2025-09-01T11:30:00Z"),
@@ -94,6 +107,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 1,
+    isNotification: false,
     content: "This is going to be an amazing adventure!",
     createdAt: new Date("2025-09-01T11:35:00Z"),
     updatedAt: new Date("2025-09-01T11:35:00Z"),
@@ -101,6 +115,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 1,
+    isNotification: false,
     content: "Can't wait to disconnect and enjoy nature.",
     createdAt: new Date("2025-09-15T14:20:00Z"),
     updatedAt: new Date("2025-09-15T14:20:00Z"),
@@ -108,6 +123,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 1,
+    isNotification: false,
     content: "Same here! Fresh air and exercise - perfect combination.",
     createdAt: new Date("2025-09-15T14:25:00Z"),
     updatedAt: new Date("2025-09-15T14:25:00Z"),
@@ -115,6 +131,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 1,
+    isNotification: false,
     content: "Should we plan our next hike after this one?",
     createdAt: new Date("2025-09-15T14:30:00Z"),
     updatedAt: new Date("2025-09-15T14:30:00Z"),
@@ -122,6 +139,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 1,
+    isNotification: false,
     content: "Absolutely! I heard about a great trail in the mountains.",
     createdAt: new Date("2025-09-15T14:35:00Z"),
     updatedAt: new Date("2025-09-15T14:35:00Z"),
@@ -129,6 +147,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 1,
+    isNotification: false,
     content: "Let's make this a monthly tradition!",
     createdAt: new Date("2025-09-15T14:40:00Z"),
     updatedAt: new Date("2025-09-15T14:40:00Z"),
@@ -136,6 +155,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 1,
+    isNotification: false,
     content:
       "That's a fantastic idea! Looking forward to many more adventures.",
     createdAt: new Date("2025-09-25T16:45:00Z"),
@@ -144,6 +164,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 2,
+    isNotification: false,
     content: "Hey everyone, what book should we read next?",
     createdAt: new Date("2025-09-02T09:00:00Z"),
     updatedAt: new Date("2025-09-02T09:00:00Z"),
@@ -151,6 +172,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 2,
+    isNotification: false,
     content:
       "How about 'To Kill a Mockingbird'? I've heard great things about it.",
     createdAt: new Date("2025-09-02T09:15:00Z"),
@@ -159,6 +181,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 2,
+    isNotification: false,
     content: "That's a great choice! I've been meaning to read it.",
     createdAt: new Date("2025-09-02T09:30:00Z"),
     updatedAt: new Date("2025-09-02T09:30:00Z"),
@@ -166,6 +189,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 2,
+    isNotification: false,
     content: "I'm in! When should we meet to discuss it?",
     createdAt: new Date("2025-09-02T09:45:00Z"),
     updatedAt: new Date("2025-09-02T09:45:00Z"),
@@ -173,6 +197,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 2,
+    isNotification: false,
     content: "How about we give everyone 3 weeks to read it?",
     createdAt: new Date("2025-09-02T10:00:00Z"),
     updatedAt: new Date("2025-09-02T10:00:00Z"),
@@ -180,6 +205,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 2,
+    isNotification: false,
     content:
       "That sounds reasonable. Should we get physical copies or digital?",
     createdAt: new Date("2025-09-02T10:15:00Z"),
@@ -188,6 +214,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 2,
+    isNotification: false,
     content: "I prefer physical books, but whatever works for everyone.",
     createdAt: new Date("2025-09-02T10:30:00Z"),
     updatedAt: new Date("2025-09-02T10:30:00Z"),
@@ -195,6 +222,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 2,
+    isNotification: false,
     content: "The library probably has copies we can borrow.",
     createdAt: new Date("2025-09-02T10:45:00Z"),
     updatedAt: new Date("2025-09-02T10:45:00Z"),
@@ -202,6 +230,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 2,
+    isNotification: false,
     content: "Great idea! Let's check the library this weekend.",
     createdAt: new Date("2025-09-02T11:00:00Z"),
     updatedAt: new Date("2025-09-02T11:00:00Z"),
@@ -209,6 +238,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 2,
+    isNotification: false,
     content: "I'm excited to dive into this classic!",
     createdAt: new Date("2025-09-02T11:15:00Z"),
     updatedAt: new Date("2025-09-02T11:15:00Z"),
@@ -216,6 +246,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 2,
+    isNotification: false,
     content: "Same here! Harper Lee is such a talented writer.",
     createdAt: new Date("2025-09-02T11:30:00Z"),
     updatedAt: new Date("2025-09-02T11:30:00Z"),
@@ -223,6 +254,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 2,
+    isNotification: false,
     content: "This will be a great discussion. So many themes to explore.",
     createdAt: new Date("2025-09-02T11:45:00Z"),
     updatedAt: new Date("2025-09-02T11:45:00Z"),
@@ -230,6 +262,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 2,
+    isNotification: false,
     content: "Should we prepare some discussion questions in advance?",
     createdAt: new Date("2025-09-02T12:00:00Z"),
     updatedAt: new Date("2025-09-02T12:00:00Z"),
@@ -237,6 +270,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 2,
+    isNotification: false,
     content: "That's a good idea! We can rotate who prepares them.",
     createdAt: new Date("2025-09-02T12:15:00Z"),
     updatedAt: new Date("2025-09-02T12:15:00Z"),
@@ -244,6 +278,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 2,
+    isNotification: false,
     content: "I volunteer to prepare questions for our first discussion!",
     createdAt: new Date("2025-09-10T11:30:00Z"),
     updatedAt: new Date("2025-09-10T11:30:00Z"),
@@ -251,6 +286,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 2,
+    isNotification: false,
     content: "Perfect! This is going to be our best book discussion yet.",
     createdAt: new Date("2025-09-10T11:45:00Z"),
     updatedAt: new Date("2025-09-10T11:45:00Z"),
@@ -258,6 +294,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 2,
+    isNotification: false,
     content: "I'm already looking forward to our next book choice too!",
     createdAt: new Date("2025-09-10T12:00:00Z"),
     updatedAt: new Date("2025-09-10T12:00:00Z"),
@@ -265,6 +302,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 2,
+    isNotification: false,
     content: "How about we start thinking about genres we want to explore?",
     createdAt: new Date("2025-09-10T12:15:00Z"),
     updatedAt: new Date("2025-09-10T12:15:00Z"),
@@ -272,6 +310,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 2,
+    isNotification: false,
     content: "I'd love to try some science fiction next.",
     createdAt: new Date("2025-09-10T12:30:00Z"),
     updatedAt: new Date("2025-09-10T12:30:00Z"),
@@ -279,6 +318,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 2,
+    isNotification: false,
     content: "Great suggestion! Let's finish this one first though.",
     createdAt: new Date("2025-09-18T15:45:00Z"),
     updatedAt: new Date("2025-09-18T15:45:00Z"),
@@ -286,6 +326,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 3,
+    isNotification: false,
     content: "Hey everyone, ready for Gaming Night?",
     createdAt: new Date("2025-09-03T19:00:00Z"),
     updatedAt: new Date("2025-09-03T19:00:00Z"),
@@ -293,6 +334,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 3,
+    isNotification: false,
     content: "Absolutely! What game are we playing tonight?",
     createdAt: new Date("2025-09-03T19:05:00Z"),
     updatedAt: new Date("2025-09-03T19:05:00Z"),
@@ -300,6 +342,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 3,
+    isNotification: false,
     content: "I'm up for some Rocket League. How about you guys?",
     createdAt: new Date("2025-09-03T19:10:00Z"),
     updatedAt: new Date("2025-09-03T19:10:00Z"),
@@ -307,6 +350,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 3,
+    isNotification: false,
     content: "Rocket League sounds fun! I'm in.",
     createdAt: new Date("2025-09-03T19:15:00Z"),
     updatedAt: new Date("2025-09-03T19:15:00Z"),
@@ -314,6 +358,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 3,
+    isNotification: false,
     content: "Perfect! Let me set up the server.",
     createdAt: new Date("2025-09-03T19:20:00Z"),
     updatedAt: new Date("2025-09-03T19:20:00Z"),
@@ -321,6 +366,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 3,
+    isNotification: false,
     content: "I've been practicing my aerials this week!",
     createdAt: new Date("2025-09-03T19:25:00Z"),
     updatedAt: new Date("2025-09-03T19:25:00Z"),
@@ -328,6 +374,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 3,
+    isNotification: false,
     content: "Nice! I've been working on my defense.",
     createdAt: new Date("2025-09-03T19:30:00Z"),
     updatedAt: new Date("2025-09-03T19:30:00Z"),
@@ -335,6 +382,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 3,
+    isNotification: false,
     content: "This is going to be competitive tonight!",
     createdAt: new Date("2025-09-03T19:35:00Z"),
     updatedAt: new Date("2025-09-03T19:35:00Z"),
@@ -342,6 +390,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 3,
+    isNotification: false,
     content: "Should we do 2v2 or 3v3 matches?",
     createdAt: new Date("2025-09-03T19:40:00Z"),
     updatedAt: new Date("2025-09-03T19:40:00Z"),
@@ -349,6 +398,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 3,
+    isNotification: false,
     content: "Let's start with 2v2 and see how it goes.",
     createdAt: new Date("2025-09-03T19:45:00Z"),
     updatedAt: new Date("2025-09-03T19:45:00Z"),
@@ -356,6 +406,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 3,
+    isNotification: false,
     content: "Sounds good! Who wants to be my teammate?",
     createdAt: new Date("2025-09-03T19:50:00Z"),
     updatedAt: new Date("2025-09-03T19:50:00Z"),
@@ -363,6 +414,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 3,
+    isNotification: false,
     content: "I'll team up with you! Let's show them what we got.",
     createdAt: new Date("2025-09-03T19:55:00Z"),
     updatedAt: new Date("2025-09-03T19:55:00Z"),
@@ -370,6 +422,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 3,
+    isNotification: false,
     content: "Alright, me and player 4 vs you two. Let's do this!",
     createdAt: new Date("2025-09-03T20:00:00Z"),
     updatedAt: new Date("2025-09-03T20:00:00Z"),
@@ -377,6 +430,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 3,
+    isNotification: false,
     content: "Game on! May the best team win.",
     createdAt: new Date("2025-09-03T20:05:00Z"),
     updatedAt: new Date("2025-09-03T20:05:00Z"),
@@ -384,6 +438,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 3,
+    isNotification: false,
     content: "This is going to be epic! Ready when you are.",
     createdAt: new Date("2025-09-03T20:10:00Z"),
     updatedAt: new Date("2025-09-03T20:10:00Z"),
@@ -391,6 +446,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 3,
+    isNotification: false,
     content: "Let's warm up with a few practice shots first.",
     createdAt: new Date("2025-09-03T20:15:00Z"),
     updatedAt: new Date("2025-09-03T20:15:00Z"),
@@ -398,6 +454,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 3,
+    isNotification: false,
     content: "Good idea! Then we'll start the real matches.",
     createdAt: new Date("2025-09-22T20:10:00Z"),
     updatedAt: new Date("2025-09-22T20:10:00Z"),
@@ -405,6 +462,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 3,
+    isNotification: false,
     content: "Can't wait! These gaming nights are the best.",
     createdAt: new Date("2025-09-22T20:15:00Z"),
     updatedAt: new Date("2025-09-22T20:15:00Z"),
@@ -412,6 +470,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 3,
+    isNotification: false,
     content: "Agreed! We should do this more often.",
     createdAt: new Date("2025-09-22T20:20:00Z"),
     updatedAt: new Date("2025-09-22T20:20:00Z"),
@@ -419,6 +478,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 3,
+    isNotification: false,
     content: "Definitely! Same time next week everyone?",
     createdAt: new Date("2025-09-28T21:15:00Z"),
     updatedAt: new Date("2025-09-28T21:15:00Z"),
@@ -426,6 +486,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 4,
+    isNotification: false,
     content: "Good morning, everyone! Ready for our yoga session today?",
     createdAt: new Date("2025-09-04T07:00:00Z"),
     updatedAt: new Date("2025-09-04T07:00:00Z"),
@@ -433,6 +494,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 4,
+    isNotification: false,
     content: "Good morning! I'm excited for today's session. What's the focus?",
     createdAt: new Date("2025-09-04T07:10:00Z"),
     updatedAt: new Date("2025-09-04T07:10:00Z"),
@@ -440,6 +502,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 4,
+    isNotification: false,
     content: "Morning! How about we focus on flexibility today?",
     createdAt: new Date("2025-09-04T07:20:00Z"),
     updatedAt: new Date("2025-09-04T07:20:00Z"),
@@ -447,6 +510,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 4,
+    isNotification: false,
     content: "Sounds great to me. I've been wanting to improve my flexibility.",
     createdAt: new Date("2025-09-04T07:30:00Z"),
     updatedAt: new Date("2025-09-04T07:30:00Z"),
@@ -454,6 +518,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 4,
+    isNotification: false,
     content: "Perfect! We'll do some deep stretches and hip openers.",
     createdAt: new Date("2025-09-04T07:40:00Z"),
     updatedAt: new Date("2025-09-04T07:40:00Z"),
@@ -461,6 +526,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 4,
+    isNotification: false,
     content: "My hamstrings definitely need some work!",
     createdAt: new Date("2025-09-04T07:50:00Z"),
     updatedAt: new Date("2025-09-04T07:50:00Z"),
@@ -468,6 +534,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 4,
+    isNotification: false,
     content: "Mine too! Those desk jobs really tighten everything up.",
     createdAt: new Date("2025-09-04T08:00:00Z"),
     updatedAt: new Date("2025-09-04T08:00:00Z"),
@@ -475,6 +542,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 4,
+    isNotification: false,
     content: "Should we start with some gentle warm-up poses?",
     createdAt: new Date("2025-09-04T08:10:00Z"),
     updatedAt: new Date("2025-09-04T08:10:00Z"),
@@ -482,6 +550,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 4,
+    isNotification: false,
     content: "Absolutely! Let's begin with cat-cow stretches.",
     createdAt: new Date("2025-09-04T08:20:00Z"),
     updatedAt: new Date("2025-09-04T08:20:00Z"),
@@ -489,6 +558,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 4,
+    isNotification: false,
     content: "I love how relaxed I feel after these sessions.",
     createdAt: new Date("2025-09-04T08:30:00Z"),
     updatedAt: new Date("2025-09-04T08:30:00Z"),
@@ -496,6 +566,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 4,
+    isNotification: false,
     content: "Same here! It really helps with stress relief.",
     createdAt: new Date("2025-09-04T08:40:00Z"),
     updatedAt: new Date("2025-09-04T08:40:00Z"),
@@ -503,6 +574,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 4,
+    isNotification: false,
     content: "The breathing exercises are my favorite part.",
     createdAt: new Date("2025-09-04T08:50:00Z"),
     updatedAt: new Date("2025-09-04T08:50:00Z"),
@@ -510,6 +582,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 4,
+    isNotification: false,
     content: "Great! Let's incorporate more pranayama today.",
     createdAt: new Date("2025-09-04T09:00:00Z"),
     updatedAt: new Date("2025-09-04T09:00:00Z"),
@@ -517,6 +590,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 4,
+    isNotification: false,
     content: "I've been practicing the techniques at home too.",
     createdAt: new Date("2025-09-04T09:10:00Z"),
     updatedAt: new Date("2025-09-04T09:10:00Z"),
@@ -524,6 +598,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 4,
+    isNotification: false,
     content: "That's wonderful! Consistency is key with yoga.",
     createdAt: new Date("2025-09-12T07:20:00Z"),
     updatedAt: new Date("2025-09-12T07:20:00Z"),
@@ -531,6 +606,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 4,
+    isNotification: false,
     content: "Should we try some more advanced poses today?",
     createdAt: new Date("2025-09-12T07:30:00Z"),
     updatedAt: new Date("2025-09-12T07:30:00Z"),
@@ -538,6 +614,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 4,
+    isNotification: false,
     content: "Let's work our way up gradually. Safety first!",
     createdAt: new Date("2025-09-12T07:40:00Z"),
     updatedAt: new Date("2025-09-12T07:40:00Z"),
@@ -545,6 +622,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 4,
+    isNotification: false,
     content: "I'm feeling more balanced already after just a few weeks.",
     createdAt: new Date("2025-09-12T07:50:00Z"),
     updatedAt: new Date("2025-09-12T07:50:00Z"),
@@ -552,6 +630,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 4,
+    isNotification: false,
     content: "Yoga really is life-changing when you stick with it.",
     createdAt: new Date("2025-09-12T08:00:00Z"),
     updatedAt: new Date("2025-09-12T08:00:00Z"),
@@ -559,6 +638,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 4,
+    isNotification: false,
     content: "Thanks for being such a great instructor! Namaste.",
     createdAt: new Date("2025-09-20T07:30:00Z"),
     updatedAt: new Date("2025-09-20T07:30:00Z"),
@@ -566,6 +646,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 5,
+    isNotification: false,
     content: "Hey everyone, ready for band practice?",
     createdAt: new Date("2025-09-05T18:00:00Z"),
     updatedAt: new Date("2025-09-05T18:00:00Z"),
@@ -573,6 +654,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 5,
+    isNotification: false,
     content: "Yes! I have a new song idea to share.",
     createdAt: new Date("2025-09-05T18:05:00Z"),
     updatedAt: new Date("2025-09-05T18:05:00Z"),
@@ -580,6 +662,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 5,
+    isNotification: false,
     content: "Can't wait to hear it! Let's start with a warm-up.",
     createdAt: new Date("2025-09-05T18:10:00Z"),
     updatedAt: new Date("2025-09-05T18:10:00Z"),
@@ -587,6 +670,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 5,
+    isNotification: false,
     content: "Good idea. Let's play our usual warm-up tune.",
     createdAt: new Date("2025-09-05T18:15:00Z"),
     updatedAt: new Date("2025-09-05T18:15:00Z"),
@@ -594,6 +678,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 5,
+    isNotification: false,
     content: "My guitar is finally back from the shop - new strings!",
     createdAt: new Date("2025-09-05T18:20:00Z"),
     updatedAt: new Date("2025-09-05T18:20:00Z"),
@@ -601,6 +686,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 5,
+    isNotification: false,
     content: "Nice! Fresh strings always sound so crisp.",
     createdAt: new Date("2025-09-05T18:25:00Z"),
     updatedAt: new Date("2025-09-05T18:25:00Z"),
@@ -608,6 +694,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 5,
+    isNotification: false,
     content: "I brought my drum kit today. Ready to make some noise!",
     createdAt: new Date("2025-09-05T18:30:00Z"),
     updatedAt: new Date("2025-09-05T18:30:00Z"),
@@ -615,6 +702,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 5,
+    isNotification: false,
     content: "Perfect! My bass is tuned and ready to go.",
     createdAt: new Date("2025-09-05T18:35:00Z"),
     updatedAt: new Date("2025-09-05T18:35:00Z"),
@@ -622,6 +710,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 5,
+    isNotification: false,
     content: "Alright, let's jam! What key should we start in?",
     createdAt: new Date("2025-09-05T18:40:00Z"),
     updatedAt: new Date("2025-09-05T18:40:00Z"),
@@ -629,6 +718,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 5,
+    isNotification: false,
     content: "How about E minor? It's got a great feel for rock.",
     createdAt: new Date("2025-09-05T18:45:00Z"),
     updatedAt: new Date("2025-09-05T18:45:00Z"),
@@ -636,6 +726,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 5,
+    isNotification: false,
     content: "E minor it is! Let me set the tempo.",
     createdAt: new Date("2025-09-05T18:50:00Z"),
     updatedAt: new Date("2025-09-05T18:50:00Z"),
@@ -643,6 +734,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 5,
+    isNotification: false,
     content: "I love playing in minor keys - so much emotion!",
     createdAt: new Date("2025-09-05T18:55:00Z"),
     updatedAt: new Date("2025-09-05T18:55:00Z"),
@@ -650,6 +742,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 5,
+    isNotification: false,
     content: "That sounded amazing! We're really getting tight as a band.",
     createdAt: new Date("2025-09-05T19:00:00Z"),
     updatedAt: new Date("2025-09-05T19:00:00Z"),
@@ -657,6 +750,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 5,
+    isNotification: false,
     content: "I think we're ready to book our first gig!",
     createdAt: new Date("2025-09-05T19:05:00Z"),
     updatedAt: new Date("2025-09-05T19:05:00Z"),
@@ -664,6 +758,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 5,
+    isNotification: false,
     content: "That's exciting! Know any local venues we could approach?",
     createdAt: new Date("2025-09-14T18:10:00Z"),
     updatedAt: new Date("2025-09-14T18:10:00Z"),
@@ -671,6 +766,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 5,
+    isNotification: false,
     content: "There's a coffee shop downtown that has open mic nights.",
     createdAt: new Date("2025-09-14T18:15:00Z"),
     updatedAt: new Date("2025-09-14T18:15:00Z"),
@@ -678,6 +774,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 5,
+    isNotification: false,
     content: "Perfect starting point! Let's put together a setlist.",
     createdAt: new Date("2025-09-14T18:20:00Z"),
     updatedAt: new Date("2025-09-14T18:20:00Z"),
@@ -685,6 +782,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 5,
+    isNotification: false,
     content: "I'm so excited about this! Our hard work is paying off.",
     createdAt: new Date("2025-09-14T18:25:00Z"),
     updatedAt: new Date("2025-09-14T18:25:00Z"),
@@ -692,6 +790,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 5,
+    isNotification: false,
     content: "Same here! Next practice let's finalize our best songs.",
     createdAt: new Date("2025-09-14T18:30:00Z"),
     updatedAt: new Date("2025-09-14T18:30:00Z"),
@@ -699,6 +798,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 5,
+    isNotification: false,
     content: "This is just the beginning for our band!",
     createdAt: new Date("2025-09-19T18:15:00Z"),
     updatedAt: new Date("2025-09-19T18:15:00Z"),
@@ -706,6 +806,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 6,
+    isNotification: false,
     content: "Hey Cooking Lovers! What should we cook this weekend?",
     createdAt: new Date("2025-09-06T11:00:00Z"),
     updatedAt: new Date("2025-09-06T11:00:00Z"),
@@ -713,6 +814,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 6,
+    isNotification: false,
     content: "How about a themed dinner? Italian night!",
     createdAt: new Date("2025-09-06T11:15:00Z"),
     updatedAt: new Date("2025-09-06T11:15:00Z"),
@@ -720,6 +822,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 6,
+    isNotification: false,
     content: "Italian sounds delicious. I'm in!",
     createdAt: new Date("2025-09-06T11:30:00Z"),
     updatedAt: new Date("2025-09-06T11:30:00Z"),
@@ -727,6 +830,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 6,
+    isNotification: false,
     content: "Perfect! I'll make homemade pasta.",
     createdAt: new Date("2025-09-06T11:45:00Z"),
     updatedAt: new Date("2025-09-06T11:45:00Z"),
@@ -734,6 +838,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 6,
+    isNotification: false,
     content: "Excellent! I can prepare a classic marinara sauce.",
     createdAt: new Date("2025-09-06T12:00:00Z"),
     updatedAt: new Date("2025-09-06T12:00:00Z"),
@@ -741,6 +846,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 6,
+    isNotification: false,
     content: "I'll bring fresh basil and mozzarella for caprese salad.",
     createdAt: new Date("2025-09-06T12:15:00Z"),
     updatedAt: new Date("2025-09-06T12:15:00Z"),
@@ -748,6 +854,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 6,
+    isNotification: false,
     content: "And I'll make tiramisu for dessert!",
     createdAt: new Date("2025-09-06T12:30:00Z"),
     updatedAt: new Date("2025-09-06T12:30:00Z"),
@@ -755,6 +862,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 6,
+    isNotification: false,
     content: "This is going to be an amazing feast!",
     createdAt: new Date("2025-09-06T12:45:00Z"),
     updatedAt: new Date("2025-09-06T12:45:00Z"),
@@ -762,6 +870,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 6,
+    isNotification: false,
     content: "Should we get some Italian wine to pair with dinner?",
     createdAt: new Date("2025-09-06T13:00:00Z"),
     updatedAt: new Date("2025-09-06T13:00:00Z"),
@@ -769,6 +878,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 6,
+    isNotification: false,
     content: "Great idea! A nice Chianti would be perfect.",
     createdAt: new Date("2025-09-06T13:15:00Z"),
     updatedAt: new Date("2025-09-06T13:15:00Z"),
@@ -776,6 +886,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 6,
+    isNotification: false,
     content: "I know a good wine shop - I can pick some up.",
     createdAt: new Date("2025-09-06T13:30:00Z"),
     updatedAt: new Date("2025-09-06T13:30:00Z"),
@@ -783,6 +894,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 6,
+    isNotification: false,
     content: "Perfect! What time should we start cooking together?",
     createdAt: new Date("2025-09-06T13:45:00Z"),
     updatedAt: new Date("2025-09-06T13:45:00Z"),
@@ -790,6 +902,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 6,
+    isNotification: false,
     content:
       "How about we meet at 4 PM? That gives us time to prep everything.",
     createdAt: new Date("2025-09-06T14:00:00Z"),
@@ -798,6 +911,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 6,
+    isNotification: false,
     content: "Sounds perfect! I can't wait to cook together.",
     createdAt: new Date("2025-09-06T14:15:00Z"),
     updatedAt: new Date("2025-09-06T14:15:00Z"),
@@ -805,6 +919,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 6,
+    isNotification: false,
     content: "This is why I love our cooking group - always amazing food!",
     createdAt: new Date("2025-09-06T14:30:00Z"),
     updatedAt: new Date("2025-09-06T14:30:00Z"),
@@ -812,6 +927,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 6,
+    isNotification: false,
     content: "The best part is learning new techniques from each other.",
     createdAt: new Date("2025-09-06T14:45:00Z"),
     updatedAt: new Date("2025-09-06T14:45:00Z"),
@@ -819,6 +935,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 6,
+    isNotification: false,
     content: "Absolutely! I've improved so much since joining this group.",
     createdAt: new Date("2025-09-16T11:30:00Z"),
     updatedAt: new Date("2025-09-16T11:30:00Z"),
@@ -826,6 +943,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 6,
+    isNotification: false,
     content: "Same here! What theme should we do next time?",
     createdAt: new Date("2025-09-16T11:45:00Z"),
     updatedAt: new Date("2025-09-16T11:45:00Z"),
@@ -833,6 +951,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 6,
+    isNotification: false,
     content: "How about Asian fusion? I have some great recipes to try.",
     createdAt: new Date("2025-09-16T12:00:00Z"),
     updatedAt: new Date("2025-09-16T12:00:00Z"),
@@ -840,6 +959,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 6,
+    isNotification: false,
     content:
       "Asian fusion sounds amazing! Let's plan it after this Italian feast.",
     createdAt: new Date("2025-09-24T11:45:00Z"),
@@ -848,6 +968,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 7,
+    isNotification: false,
     content: "Hey Photography Crew! Any plans for this weekend?",
     createdAt: new Date("2025-09-07T14:00:00Z"),
     updatedAt: new Date("2025-09-07T14:00:00Z"),
@@ -855,6 +976,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 7,
+    isNotification: false,
     content: "How about a photo walk in the park?",
     createdAt: new Date("2025-09-07T14:10:00Z"),
     updatedAt: new Date("2025-09-07T14:10:00Z"),
@@ -862,6 +984,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 7,
+    isNotification: false,
     content: "Sounds great! I need to test my new lens.",
     createdAt: new Date("2025-09-07T14:20:00Z"),
     updatedAt: new Date("2025-09-07T14:20:00Z"),
@@ -869,6 +992,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 7,
+    isNotification: false,
     content: "I'm in! Let's meet at the park entrance at 9 AM.",
     createdAt: new Date("2025-09-07T14:30:00Z"),
     updatedAt: new Date("2025-09-07T14:30:00Z"),
@@ -876,6 +1000,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 7,
+    isNotification: false,
     content: "Perfect! The morning light should be beautiful.",
     createdAt: new Date("2025-09-07T14:40:00Z"),
     updatedAt: new Date("2025-09-07T14:40:00Z"),
@@ -883,6 +1008,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 7,
+    isNotification: false,
     content: "I'll bring my tripod in case we want to do long exposures.",
     createdAt: new Date("2025-09-07T14:50:00Z"),
     updatedAt: new Date("2025-09-07T14:50:00Z"),
@@ -890,6 +1016,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 7,
+    isNotification: false,
     content: "Great idea! I have some neutral density filters we can use.",
     createdAt: new Date("2025-09-07T15:00:00Z"),
     updatedAt: new Date("2025-09-07T15:00:00Z"),
@@ -897,6 +1024,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 7,
+    isNotification: false,
     content: "This sounds like it's going to be a productive shoot!",
     createdAt: new Date("2025-09-07T15:10:00Z"),
     updatedAt: new Date("2025-09-07T15:10:00Z"),
@@ -904,6 +1032,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 7,
+    isNotification: false,
     content: "Should we focus on nature photography or street photography?",
     createdAt: new Date("2025-09-07T15:20:00Z"),
     updatedAt: new Date("2025-09-07T15:20:00Z"),
@@ -911,6 +1040,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 7,
+    isNotification: false,
     content: "Why not both? The park has great nature and people watching.",
     createdAt: new Date("2025-09-07T15:30:00Z"),
     updatedAt: new Date("2025-09-07T15:30:00Z"),
@@ -918,6 +1048,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 7,
+    isNotification: false,
     content: "I love that approach! More variety in our shots.",
     createdAt: new Date("2025-09-07T15:40:00Z"),
     updatedAt: new Date("2025-09-07T15:40:00Z"),
@@ -925,6 +1056,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 7,
+    isNotification: false,
     content: "We can critique each other's work afterwards over coffee.",
     createdAt: new Date("2025-09-07T15:50:00Z"),
     updatedAt: new Date("2025-09-07T15:50:00Z"),
@@ -932,6 +1064,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 7,
+    isNotification: false,
     content: "That's the best part! Learning from each other's perspectives.",
     createdAt: new Date("2025-09-07T16:00:00Z"),
     updatedAt: new Date("2025-09-07T16:00:00Z"),
@@ -939,6 +1072,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 7,
+    isNotification: false,
     content: "I always discover new techniques during our photo walks.",
     createdAt: new Date("2025-09-07T16:10:00Z"),
     updatedAt: new Date("2025-09-07T16:10:00Z"),
@@ -946,6 +1080,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 7,
+    isNotification: false,
     content: "Same here! These group shoots really push my creativity.",
     createdAt: new Date("2025-09-13T14:20:00Z"),
     updatedAt: new Date("2025-09-13T14:20:00Z"),
@@ -953,6 +1088,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 7,
+    isNotification: false,
     content: "Can't wait to see what amazing shots we capture this time!",
     createdAt: new Date("2025-09-13T14:30:00Z"),
     updatedAt: new Date("2025-09-13T14:30:00Z"),
@@ -960,6 +1096,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 7,
+    isNotification: false,
     content: "Should we set a theme for next week's shoot too?",
     createdAt: new Date("2025-09-13T14:40:00Z"),
     updatedAt: new Date("2025-09-13T14:40:00Z"),
@@ -967,6 +1104,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 7,
+    isNotification: false,
     content: "How about black and white photography? Classic and timeless.",
     createdAt: new Date("2025-09-13T14:50:00Z"),
     updatedAt: new Date("2025-09-13T14:50:00Z"),
@@ -974,6 +1112,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 7,
+    isNotification: false,
     content: "I love that idea! B&W really makes you focus on composition.",
     createdAt: new Date("2025-09-13T15:00:00Z"),
     updatedAt: new Date("2025-09-13T15:00:00Z"),
@@ -981,6 +1120,7 @@ const messages = [
   {
     senderId: 3,
     chatId: 7,
+    isNotification: false,
     content: "Perfect! Let's make this weekend's shoot the best one yet.",
     createdAt: new Date("2025-09-21T14:30:00Z"),
     updatedAt: new Date("2025-09-21T14:30:00Z"),
@@ -988,6 +1128,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 8,
+    isNotification: false,
     content: "Hey Movie Buffs! What movie should we watch this weekend?",
     createdAt: new Date("2025-09-08T20:00:00Z"),
     updatedAt: new Date("2025-09-08T20:00:00Z"),
@@ -995,6 +1136,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 8,
+    isNotification: false,
     content: "How about the new sci-fi movie that just came out?",
     createdAt: new Date("2025-09-08T20:05:00Z"),
     updatedAt: new Date("2025-09-08T20:05:00Z"),
@@ -1002,6 +1144,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 8,
+    isNotification: false,
     content: "I've heard great things about it. I'm in!",
     createdAt: new Date("2025-09-08T20:10:00Z"),
     updatedAt: new Date("2025-09-08T20:10:00Z"),
@@ -1009,6 +1152,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 8,
+    isNotification: false,
     content: "Sounds good to me. Should we watch it at my place?",
     createdAt: new Date("2025-09-08T20:15:00Z"),
     updatedAt: new Date("2025-09-08T20:15:00Z"),
@@ -1016,6 +1160,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 8,
+    isNotification: false,
     content: "Perfect! Your home theater setup is amazing.",
     createdAt: new Date("2025-09-08T20:20:00Z"),
     updatedAt: new Date("2025-09-08T20:20:00Z"),
@@ -1023,6 +1168,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 8,
+    isNotification: false,
     content: "I'll bring the popcorn! Can't watch movies without it.",
     createdAt: new Date("2025-09-08T20:25:00Z"),
     updatedAt: new Date("2025-09-08T20:25:00Z"),
@@ -1030,6 +1176,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 8,
+    isNotification: false,
     content: "And I'll grab some drinks on the way over.",
     createdAt: new Date("2025-09-08T20:30:00Z"),
     updatedAt: new Date("2025-09-08T20:30:00Z"),
@@ -1037,6 +1184,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 8,
+    isNotification: false,
     content: "Awesome! What time works for everyone?",
     createdAt: new Date("2025-09-08T20:35:00Z"),
     updatedAt: new Date("2025-09-08T20:35:00Z"),
@@ -1044,6 +1192,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 8,
+    isNotification: false,
     content: "How about 7 PM? That gives us time for dinner first.",
     createdAt: new Date("2025-09-08T20:40:00Z"),
     updatedAt: new Date("2025-09-08T20:40:00Z"),
@@ -1051,6 +1200,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 8,
+    isNotification: false,
     content: "Perfect timing! I'm really excited about this movie.",
     createdAt: new Date("2025-09-08T20:45:00Z"),
     updatedAt: new Date("2025-09-08T20:45:00Z"),
@@ -1058,6 +1208,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 8,
+    isNotification: false,
     content: "The reviews have been incredible. High expectations!",
     createdAt: new Date("2025-09-08T20:50:00Z"),
     updatedAt: new Date("2025-09-08T20:50:00Z"),
@@ -1065,6 +1216,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 8,
+    isNotification: false,
     content: "I love our movie nights. Always such great discussions after.",
     createdAt: new Date("2025-09-08T20:55:00Z"),
     updatedAt: new Date("2025-09-08T20:55:00Z"),
@@ -1072,6 +1224,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 8,
+    isNotification: false,
     content:
       "That's the best part! Analyzing all the themes and cinematography.",
     createdAt: new Date("2025-09-08T21:00:00Z"),
@@ -1080,6 +1233,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 8,
+    isNotification: false,
     content: "Should we pick our next movie too while we're all together?",
     createdAt: new Date("2025-09-08T21:05:00Z"),
     updatedAt: new Date("2025-09-08T21:05:00Z"),
@@ -1087,6 +1241,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 8,
+    isNotification: false,
     content: "Great idea! Maybe something classic next time?",
     createdAt: new Date("2025-09-11T20:10:00Z"),
     updatedAt: new Date("2025-09-11T20:10:00Z"),
@@ -1094,6 +1249,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 8,
+    isNotification: false,
     content: "I have a few Criterion Collection films we could choose from.",
     createdAt: new Date("2025-09-11T20:15:00Z"),
     updatedAt: new Date("2025-09-11T20:15:00Z"),
@@ -1101,6 +1257,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 8,
+    isNotification: false,
     content: "Ooh, I love Criterion films! So much artistic merit.",
     createdAt: new Date("2025-09-11T20:20:00Z"),
     updatedAt: new Date("2025-09-11T20:20:00Z"),
@@ -1108,6 +1265,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 8,
+    isNotification: false,
     content: "This group has really expanded my taste in cinema.",
     createdAt: new Date("2025-09-11T20:25:00Z"),
     updatedAt: new Date("2025-09-11T20:25:00Z"),
@@ -1115,6 +1273,7 @@ const messages = [
   {
     senderId: 5,
     chatId: 8,
+    isNotification: false,
     content: "Same here! I never would have discovered some of these gems.",
     createdAt: new Date("2025-09-11T20:30:00Z"),
     updatedAt: new Date("2025-09-11T20:30:00Z"),
@@ -1122,6 +1281,7 @@ const messages = [
   {
     senderId: 9,
     chatId: 8,
+    isNotification: false,
     content: "That's what I love about movie clubs - shared discovery!",
     createdAt: new Date("2025-09-30T20:15:00Z"),
     updatedAt: new Date("2025-09-30T20:15:00Z"),
@@ -1129,6 +1289,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 9,
+    isNotification: false,
     content: "Hey Tech Geeks! Did you see the latest release from Apple?",
     createdAt: new Date("2025-09-09T16:00:00Z"),
     updatedAt: new Date("2025-09-09T16:00:00Z"),
@@ -1136,6 +1297,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 9,
+    isNotification: false,
     content:
       "Yes! The new features look amazing. Especially the AI enhancements.",
     createdAt: new Date("2025-09-09T16:10:00Z"),
@@ -1144,6 +1306,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 9,
+    isNotification: false,
     content:
       "I'm excited to try out the new hardware. The specs are impressive.",
     createdAt: new Date("2025-09-09T16:20:00Z"),
@@ -1152,6 +1315,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 9,
+    isNotification: false,
     content:
       "Agreed. Do you think it's worth upgrading from last year's model?",
     createdAt: new Date("2025-09-09T16:30:00Z"),
@@ -1160,6 +1324,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 9,
+    isNotification: false,
     content: "Depends on your use case. The performance boost is significant.",
     createdAt: new Date("2025-09-09T16:40:00Z"),
     updatedAt: new Date("2025-09-09T16:40:00Z"),
@@ -1167,6 +1332,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 9,
+    isNotification: false,
     content: "The battery life improvements alone might make it worthwhile.",
     createdAt: new Date("2025-09-09T16:50:00Z"),
     updatedAt: new Date("2025-09-09T16:50:00Z"),
@@ -1174,6 +1340,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 9,
+    isNotification: false,
     content: "Plus the new camera system looks revolutionary.",
     createdAt: new Date("2025-09-09T17:00:00Z"),
     updatedAt: new Date("2025-09-09T17:00:00Z"),
@@ -1181,6 +1348,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 9,
+    isNotification: false,
     content: "True! The computational photography features are mind-blowing.",
     createdAt: new Date("2025-09-09T17:10:00Z"),
     updatedAt: new Date("2025-09-09T17:10:00Z"),
@@ -1188,6 +1356,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 9,
+    isNotification: false,
     content: "I'm most excited about the development tools and APIs.",
     createdAt: new Date("2025-09-09T17:20:00Z"),
     updatedAt: new Date("2025-09-09T17:20:00Z"),
@@ -1195,6 +1364,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 9,
+    isNotification: false,
     content:
       "Same here! The new frameworks should make app development easier.",
     createdAt: new Date("2025-09-09T17:30:00Z"),
@@ -1203,6 +1373,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 9,
+    isNotification: false,
     content: "Anyone planning to watch the keynote replay tonight?",
     createdAt: new Date("2025-09-09T17:40:00Z"),
     updatedAt: new Date("2025-09-09T17:40:00Z"),
@@ -1210,6 +1381,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 9,
+    isNotification: false,
     content: "Definitely! I want to catch all the technical details I missed.",
     createdAt: new Date("2025-09-09T17:50:00Z"),
     updatedAt: new Date("2025-09-09T17:50:00Z"),
@@ -1217,6 +1389,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 9,
+    isNotification: false,
     content: "Good idea! The demo sections are always worth rewatching.",
     createdAt: new Date("2025-09-09T18:00:00Z"),
     updatedAt: new Date("2025-09-09T18:00:00Z"),
@@ -1224,6 +1397,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 9,
+    isNotification: false,
     content: "I love how they explain complex tech in accessible ways.",
     createdAt: new Date("2025-09-09T18:10:00Z"),
     updatedAt: new Date("2025-09-09T18:10:00Z"),
@@ -1231,6 +1405,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 9,
+    isNotification: false,
     content: "Apple's presentation style really sets the bar high.",
     createdAt: new Date("2025-09-09T18:20:00Z"),
     updatedAt: new Date("2025-09-09T18:20:00Z"),
@@ -1238,6 +1413,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 9,
+    isNotification: false,
     content: "Can't wait to get my hands on the developer beta!",
     createdAt: new Date("2025-09-09T18:30:00Z"),
     updatedAt: new Date("2025-09-09T18:30:00Z"),
@@ -1245,6 +1421,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 9,
+    isNotification: false,
     content: "Me too! So many project ideas are already forming.",
     createdAt: new Date("2025-09-09T18:40:00Z"),
     updatedAt: new Date("2025-09-09T18:40:00Z"),
@@ -1252,6 +1429,7 @@ const messages = [
   {
     senderId: 1,
     chatId: 9,
+    isNotification: false,
     content: "We should collaborate on something using the new features!",
     createdAt: new Date("2025-09-09T18:50:00Z"),
     updatedAt: new Date("2025-09-09T18:50:00Z"),
@@ -1259,6 +1437,7 @@ const messages = [
   {
     senderId: 6,
     chatId: 9,
+    isNotification: false,
     content: "That sounds like an awesome group project idea!",
     createdAt: new Date("2025-09-09T19:00:00Z"),
     updatedAt: new Date("2025-09-09T19:00:00Z"),
@@ -1266,6 +1445,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 9,
+    isNotification: false,
     content: "I'm totally in! Let's brainstorm some concepts next week.",
     createdAt: new Date("2025-09-17T16:30:00Z"),
     updatedAt: new Date("2025-09-17T16:30:00Z"),
@@ -1273,6 +1453,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 10,
+    isNotification: false,
     content: "Hey Fitness Freaks! Ready for our workout session tomorrow?",
     createdAt: new Date("2025-09-10T08:00:00Z"),
     updatedAt: new Date("2025-09-10T08:00:00Z"),
@@ -1280,6 +1461,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 10,
+    isNotification: false,
     content: "Absolutely! What's the plan for tomorrow?",
     createdAt: new Date("2025-09-10T08:10:00Z"),
     updatedAt: new Date("2025-09-10T08:10:00Z"),
@@ -1287,6 +1469,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 10,
+    isNotification: false,
     content: "I'm in! Should we start with some cardio?",
     createdAt: new Date("2025-09-10T08:20:00Z"),
     updatedAt: new Date("2025-09-10T08:20:00Z"),
@@ -1294,6 +1477,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 10,
+    isNotification: false,
     content: "Cardio sounds great. How about a 5k run?",
     createdAt: new Date("2025-09-10T08:30:00Z"),
     updatedAt: new Date("2025-09-10T08:30:00Z"),
@@ -1301,6 +1485,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 10,
+    isNotification: false,
     content: "Perfect! The weather looks ideal for running.",
     createdAt: new Date("2025-09-10T08:40:00Z"),
     updatedAt: new Date("2025-09-10T08:40:00Z"),
@@ -1308,6 +1493,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 10,
+    isNotification: false,
     content: "I'll bring my fitness tracker to monitor our progress.",
     createdAt: new Date("2025-09-10T08:50:00Z"),
     updatedAt: new Date("2025-09-10T08:50:00Z"),
@@ -1315,6 +1501,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 10,
+    isNotification: false,
     content: "Great idea! I love seeing the stats afterwards.",
     createdAt: new Date("2025-09-10T09:00:00Z"),
     updatedAt: new Date("2025-09-10T09:00:00Z"),
@@ -1322,6 +1509,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 10,
+    isNotification: false,
     content: "Should we do some strength training after the run?",
     createdAt: new Date("2025-09-10T09:10:00Z"),
     updatedAt: new Date("2025-09-10T09:10:00Z"),
@@ -1329,6 +1517,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 10,
+    isNotification: false,
     content: "Absolutely! A full-body workout would be perfect.",
     createdAt: new Date("2025-09-10T09:20:00Z"),
     updatedAt: new Date("2025-09-10T09:20:00Z"),
@@ -1336,6 +1525,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 10,
+    isNotification: false,
     content: "I'll bring my resistance bands for variety.",
     createdAt: new Date("2025-09-10T09:30:00Z"),
     updatedAt: new Date("2025-09-10T09:30:00Z"),
@@ -1343,6 +1533,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 10,
+    isNotification: false,
     content: "And I'll pack some protein shakes for recovery.",
     createdAt: new Date("2025-09-10T09:40:00Z"),
     updatedAt: new Date("2025-09-10T09:40:00Z"),
@@ -1350,6 +1541,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 10,
+    isNotification: false,
     content: "You guys always think ahead! That's why we're so effective.",
     createdAt: new Date("2025-09-10T09:50:00Z"),
     updatedAt: new Date("2025-09-10T09:50:00Z"),
@@ -1357,6 +1549,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 10,
+    isNotification: false,
     content: "Teamwork makes the dream work! Consistency is key.",
     createdAt: new Date("2025-09-10T10:00:00Z"),
     updatedAt: new Date("2025-09-10T10:00:00Z"),
@@ -1364,6 +1557,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 10,
+    isNotification: false,
     content: "I've definitely seen improvements since we started this group.",
     createdAt: new Date("2025-09-10T10:10:00Z"),
     updatedAt: new Date("2025-09-10T10:10:00Z"),
@@ -1371,6 +1565,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 10,
+    isNotification: false,
     content: "Same here! The motivation from you all keeps me going.",
     createdAt: new Date("2025-09-10T10:20:00Z"),
     updatedAt: new Date("2025-09-10T10:20:00Z"),
@@ -1378,6 +1573,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 10,
+    isNotification: false,
     content: "Should we set some group fitness goals for next month?",
     createdAt: new Date("2025-09-10T10:30:00Z"),
     updatedAt: new Date("2025-09-10T10:30:00Z"),
@@ -1385,6 +1581,7 @@ const messages = [
   {
     senderId: 7,
     chatId: 10,
+    isNotification: false,
     content: "Great idea! Maybe train for a local 10k race?",
     createdAt: new Date("2025-09-10T10:40:00Z"),
     updatedAt: new Date("2025-09-10T10:40:00Z"),
@@ -1392,6 +1589,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 10,
+    isNotification: false,
     content: "I love that challenge! Count me in for the 10k training.",
     createdAt: new Date("2025-09-10T10:50:00Z"),
     updatedAt: new Date("2025-09-10T10:50:00Z"),
@@ -1399,6 +1597,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 10,
+    isNotification: false,
     content: "This is going to push us to new levels! I'm excited.",
     createdAt: new Date("2025-09-10T11:00:00Z"),
     updatedAt: new Date("2025-09-10T11:00:00Z"),
@@ -1406,6 +1605,7 @@ const messages = [
   {
     senderId: 4,
     chatId: 10,
+    isNotification: false,
     content: "Let's research some good training plans tonight.",
     createdAt: new Date("2025-09-23T08:30:00Z"),
     updatedAt: new Date("2025-09-23T08:30:00Z"),
@@ -1413,6 +1613,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 11,
+    isNotification: false,
     content: "Hey Travel Buddies! Any ideas for our next trip?",
     createdAt: new Date("2025-09-11T15:00:00Z"),
     updatedAt: new Date("2025-09-11T15:00:00Z"),
@@ -1420,6 +1621,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 11,
+    isNotification: false,
     content: "How about a trip to the mountains? We could go hiking.",
     createdAt: new Date("2025-09-11T15:15:00Z"),
     updatedAt: new Date("2025-09-11T15:15:00Z"),
@@ -1427,6 +1629,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 11,
+    isNotification: false,
     content: "I love that idea! Fresh air and beautiful scenery.",
     createdAt: new Date("2025-09-11T15:30:00Z"),
     updatedAt: new Date("2025-09-11T15:30:00Z"),
@@ -1434,6 +1637,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 11,
+    isNotification: false,
     content: "Count me in! When should we go?",
     createdAt: new Date("2025-09-11T15:45:00Z"),
     updatedAt: new Date("2025-09-11T15:45:00Z"),
@@ -1441,6 +1645,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 11,
+    isNotification: false,
     content: "How about next weekend? The weather looks perfect.",
     createdAt: new Date("2025-09-11T16:00:00Z"),
     updatedAt: new Date("2025-09-11T16:00:00Z"),
@@ -1448,6 +1653,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 11,
+    isNotification: false,
     content: "Next weekend works for me! Should we book accommodation?",
     createdAt: new Date("2025-09-11T16:15:00Z"),
     updatedAt: new Date("2025-09-11T16:15:00Z"),
@@ -1455,6 +1661,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 11,
+    isNotification: false,
     content: "I can look into mountain lodges. Any preferences?",
     createdAt: new Date("2025-09-11T16:30:00Z"),
     updatedAt: new Date("2025-09-11T16:30:00Z"),
@@ -1462,6 +1669,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 11,
+    isNotification: false,
     content: "Something cozy with a fireplace would be nice!",
     createdAt: new Date("2025-09-11T16:45:00Z"),
     updatedAt: new Date("2025-09-11T16:45:00Z"),
@@ -1469,6 +1677,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 11,
+    isNotification: false,
     content: "Great idea! I'll help with the search.",
     createdAt: new Date("2025-09-11T17:00:00Z"),
     updatedAt: new Date("2025-09-11T17:00:00Z"),
@@ -1476,6 +1685,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 11,
+    isNotification: false,
     content: "Don't forget to check for hiking trails nearby.",
     createdAt: new Date("2025-09-11T17:15:00Z"),
     updatedAt: new Date("2025-09-11T17:15:00Z"),
@@ -1483,6 +1693,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 11,
+    isNotification: false,
     content: "Already on it! Found some amazing trails.",
     createdAt: new Date("2025-09-11T17:30:00Z"),
     updatedAt: new Date("2025-09-11T17:30:00Z"),
@@ -1490,6 +1701,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 11,
+    isNotification: false,
     content: "Perfect! This is going to be an amazing trip.",
     createdAt: new Date("2025-09-11T17:45:00Z"),
     updatedAt: new Date("2025-09-11T17:45:00Z"),
@@ -1497,6 +1709,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 11,
+    isNotification: false,
     content: "Should we start a packing list?",
     createdAt: new Date("2025-09-11T18:00:00Z"),
     updatedAt: new Date("2025-09-11T18:00:00Z"),
@@ -1504,6 +1717,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 11,
+    isNotification: false,
     content: "Good thinking! I'll create a shared document.",
     createdAt: new Date("2025-09-11T18:15:00Z"),
     updatedAt: new Date("2025-09-11T18:15:00Z"),
@@ -1511,6 +1725,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 11,
+    isNotification: false,
     content: "Don't forget warm clothes for the evenings!",
     createdAt: new Date("2025-09-11T18:30:00Z"),
     updatedAt: new Date("2025-09-11T18:30:00Z"),
@@ -1518,6 +1733,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 11,
+    isNotification: false,
     content: "And hiking boots! Essential for mountain trails.",
     createdAt: new Date("2025-09-11T18:45:00Z"),
     updatedAt: new Date("2025-09-11T18:45:00Z"),
@@ -1525,6 +1741,7 @@ const messages = [
   {
     senderId: 8,
     chatId: 11,
+    isNotification: false,
     content: "I'm so excited! This will be our best trip yet.",
     createdAt: new Date("2025-09-11T19:00:00Z"),
     updatedAt: new Date("2025-09-11T19:00:00Z"),
@@ -1532,6 +1749,7 @@ const messages = [
   {
     senderId: 2,
     chatId: 11,
+    isNotification: false,
     content: "Agreed! Can't wait to disconnect and enjoy nature.",
     createdAt: new Date("2025-09-26T15:30:00Z"),
     updatedAt: new Date("2025-09-26T15:30:00Z"),
@@ -1539,6 +1757,7 @@ const messages = [
   {
     senderId: 10,
     chatId: 11,
+    isNotification: false,
     content: "Let's meet tomorrow to finalize the details.",
     createdAt: new Date("2025-09-29T15:45:00Z"),
     updatedAt: new Date("2025-09-29T15:45:00Z"),
@@ -1546,6 +1765,7 @@ const messages = [
   {
     senderId: 11,
     chatId: 11,
+    isNotification: false,
     content: "Perfect! See you all tomorrow. This is going to be epic!",
     createdAt: new Date("2025-09-30T19:30:00Z"),
     updatedAt: new Date("2025-09-30T19:30:00Z"),
