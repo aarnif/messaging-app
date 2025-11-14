@@ -1945,6 +1945,7 @@ void describe("GraphQL API", () => {
             input: {
               id: chatId,
               content: "Hello from unauthenticated user",
+              isNotification: false,
             },
           },
           ""
@@ -1966,6 +1967,7 @@ void describe("GraphQL API", () => {
             input: {
               id: chatId,
               content: "",
+              isNotification: false,
             },
           },
           token
@@ -1988,6 +1990,7 @@ void describe("GraphQL API", () => {
             input: {
               id: chatId,
               content: messageContent,
+              isNotification: false,
             },
           },
           token

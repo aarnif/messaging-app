@@ -114,6 +114,7 @@ input EditChatInput {
 input SendMessageInput {
   id: ID!
   content: String!
+  isNotification: Boolean!
 }
 
 input ChangePasswordInput {

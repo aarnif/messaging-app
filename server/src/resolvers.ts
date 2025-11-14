@@ -894,6 +894,7 @@ export const resolvers: Resolvers = {
           senderId: Number(context.currentUser.id),
           chatId: Number(newChat.id),
           content: initialMessage,
+          isNotification: false,
         });
 
         const chat = await Chat.findByPk(newChat.id, {
@@ -1189,15 +1190,16 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const { id, content } = input;
+      const { id, content, isNotification } = input;
 
       const newMessageInputSchema = z.object({
         id: z.string(),
         content: z.string().min(1, "Message content cannot be empty"),
+        isNotification: z.boolean(),
       });
 
       try {
-        newMessageInputSchema.parse({ id, content });
+        newMessageInputSchema.parse({ id, content, isNotification });
       } catch (error) {
         if (error instanceof z.ZodError) {
           throw new GraphQLError("Input validation failed", {
@@ -1214,6 +1216,7 @@ export const resolvers: Resolvers = {
           senderId: Number(context.currentUser.id),
           chatId: Number(id),
           content: content,
+          isNotification: isNotification,
         });
 
         const chat = await Chat.findByPk(Number(id), {
