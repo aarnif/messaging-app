@@ -56,8 +56,8 @@ const ChatMessage = ({
   currentUser: User;
   message: Message;
 }) => {
-  const isCurrentUser = message?.sender?.id === currentUser.id;
-  const senderName = isCurrentUser ? "You" : message?.sender?.name;
+  const isCurrentUser = message.sender.id === currentUser.id;
+  const senderName = isCurrentUser ? "You" : message.sender.name;
 
   return (
     <div
@@ -81,7 +81,7 @@ const ChatMessage = ({
         <p
           className={`text-xs font-normal break-words text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"}`}
         >
-          {message?.content}
+          {message.content}
         </p>
         <p
           className={`my-1 text-end text-[10px] ${
@@ -123,9 +123,9 @@ const ChatMessages = ({
 
   return (
     <div className="flex h-0 flex-grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
-      {messages?.map((message) => (
+      {messages.map((message) => (
         <ChatMessage
-          key={message?.id}
+          key={message.id}
           currentUser={currentUser}
           message={message}
         />
