@@ -1774,6 +1774,13 @@ void describe("GraphQL API", () => {
           members: expectedGroupChat.members.filter(
             (member) => member.id !== user3Details.id
           ),
+          messages: expectedGroupChat.messages.concat({
+            id: "2",
+            isNotification: true,
+            sender: expectedUser2,
+            content: "User2 was removed from the chat",
+            createdAt: 1759094100000,
+          }),
         });
       });
 
