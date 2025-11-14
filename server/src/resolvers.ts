@@ -1078,9 +1078,59 @@ export const resolvers: Resolvers = {
               role: "member",
             }))
           );
+
+          const addedMembers = await User.findAll({
+            where: { id: { [Op.in]: membersToAdd } },
+          });
+
+          const notificationMessages = await Message.bulkCreate(
+            addedMembers.map((member) => ({
+              senderId: Number(context.currentUser?.id),
+              chatId: Number(chatToBeUpdated.id),
+              content: `${member.name} was added to the chat`,
+              isNotification: true,
+            }))
+          );
+
+          for (const message of notificationMessages) {
+            const messageWithSender = await Message.findByPk(message.id, {
+              include: [{ model: User, as: "sender" }],
+            });
+            await pubsub.publish("MESSAGE_SENT", {
+              messageSent: messageWithSender,
+            });
+          }
         }
 
         if (membersToRemove.length > 0) {
+          const removedMembers = await User.findAll({
+            where: {
+              id: {
+                [Op.in]: membersToRemove.filter(
+                  (member) => member !== undefined
+                ),
+              },
+            },
+          });
+
+          const notificationMessages = await Message.bulkCreate(
+            removedMembers.map((member) => ({
+              senderId: Number(context.currentUser?.id),
+              chatId: Number(chatToBeUpdated.id),
+              content: `${member.name} was removed from the chat`,
+              isNotification: true,
+            }))
+          );
+
+          for (const message of notificationMessages) {
+            const messageWithSender = await Message.findByPk(message.id, {
+              include: [{ model: User, as: "sender" }],
+            });
+            await pubsub.publish("MESSAGE_SENT", {
+              messageSent: messageWithSender,
+            });
+          }
+
           await ChatMember.destroy({
             where: {
               userId: {
