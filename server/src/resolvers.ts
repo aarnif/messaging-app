@@ -1179,11 +1179,31 @@ export const resolvers: Resolvers = {
       }
 
       try {
+        const currentUser = await User.findByPk(context.currentUser.id);
+
         await ChatMember.destroy({
           where: {
             userId: context?.currentUser?.id,
             chatId: Number(id),
           },
+        });
+
+        const notificationMessage = await Message.create({
+          senderId: Number(context.currentUser.id),
+          chatId: Number(id),
+          content: `${currentUser?.name} left the chat`,
+          isNotification: true,
+        });
+
+        const messageWithSender = await Message.findByPk(
+          notificationMessage.id,
+          {
+            include: [{ model: User, as: "sender" }],
+          }
+        );
+
+        await pubsub.publish("MESSAGE_SENT", {
+          messageSent: messageWithSender,
         });
 
         const chat = await Chat.findByPk(Number(id), {
