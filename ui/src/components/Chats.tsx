@@ -1,9 +1,10 @@
 import useField from "../hooks/useField";
-import { ALL_CHATS_BY_USER } from "../graphql/queries";
+import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "../graphql/queries";
 import {
   USER_CHAT_UPDATED,
   USER_CHAT_CREATED,
   USER_CHAT_DELETED,
+  USER_CHAT_LEFT,
 } from "../graphql/subscriptions";
 import {
   useApolloClient,
@@ -169,6 +170,40 @@ const ListMenu = ({
           }),
         });
         client.cache.gc();
+      }
+    },
+  });
+
+  useSubscription(USER_CHAT_LEFT, {
+    onData: ({ data }) => {
+      console.log("Use USER_CHAT_LEFT-subscription:");
+      const leftGroupChatDetails = data.data?.userChatLeft;
+
+      if (leftGroupChatDetails) {
+        const { chatId, memberId } = leftGroupChatDetails;
+
+        if (currentUser.id !== memberId) {
+          client.cache.updateQuery(
+            {
+              query: FIND_CHAT_BY_ID,
+              variables: { id: chatId },
+            },
+            (existingData) => {
+              if (!existingData?.findChatById) {
+                return existingData;
+              }
+
+              return {
+                findChatById: {
+                  ...existingData.findChatById,
+                  members: existingData.findChatById.members.filter(
+                    (member) => member.id !== memberId
+                  ),
+                },
+              };
+            }
+          );
+        }
       }
     },
   });

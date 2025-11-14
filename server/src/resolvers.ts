@@ -1135,7 +1135,7 @@ export const resolvers: Resolvers = {
           },
         });
 
-        return await Chat.findByPk(Number(id), {
+        const chat = await Chat.findByPk(Number(id), {
           include: [
             {
               model: Message,
@@ -1151,6 +1151,24 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        if (!chat) {
+          throw new GraphQLError("Chat not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: id,
+            },
+          });
+        }
+
+        await pubsub.publish("USER_CHAT_LEFT", {
+          userChatLeft: {
+            chatId: String(chat.id),
+            memberId: String(context.currentUser.id),
+          },
+        });
+
+        return chat;
       } catch (error) {
         throw new GraphQLError("Failed to leave chat", {
           extensions: {
@@ -1334,6 +1352,9 @@ export const resolvers: Resolvers = {
     },
     userChatDeleted: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_DELETED"]),
+    },
+    userChatLeft: {
+      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_LEFT"]),
     },
   },
 };

@@ -56,6 +56,15 @@ const cache = new InMemoryCache({
         },
       },
     },
+    Chat: {
+      fields: {
+        members: {
+          merge(_, incoming = []) {
+            return [...incoming];
+          },
+        },
+      },
+    },
   },
 });
 

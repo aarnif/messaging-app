@@ -126,9 +126,15 @@ type Token {
   value: String!
 }
 
+type leftGroupChatDetails {
+  chatId: ID!
+  memberId: ID!
+}
+
 type Subscription {
   messageSent: Message!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
   userChatDeleted: ID!
+  userChatLeft: leftGroupChatDetails!
 }

@@ -78,6 +78,8 @@ import type {
   UserChatCreatedSubscriptionVariables,
   UserChatDeletedSubscription,
   UserChatDeletedSubscriptionVariables,
+  UserChatLeftSubscription,
+  UserChatLeftSubscriptionVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
 import {
@@ -85,6 +87,7 @@ import {
   USER_CHAT_CREATED,
   USER_CHAT_DELETED,
   USER_CHAT_UPDATED,
+  USER_CHAT_LEFT,
 } from "../../graphql/subscriptions";
 
 export const LOGIN_TOKEN = "fake-token-12345";
@@ -1282,6 +1285,23 @@ export const userChatDeletedSubscription: MockLink.MockedResponse<
   },
   result: {
     data: { userChatDeleted: GROUP_CHAT_DETAILS.id },
+  },
+};
+
+export const userChatLeftSubscription: MockLink.MockedResponse<
+  UserChatLeftSubscription,
+  UserChatLeftSubscriptionVariables
+> = {
+  request: {
+    query: USER_CHAT_LEFT,
+  },
+  result: {
+    data: {
+      userChatLeft: {
+        chatId: GROUP_CHAT_DETAILS.id,
+        memberId: USER_TWO_DETAILS.id,
+      },
+    },
   },
 };
 

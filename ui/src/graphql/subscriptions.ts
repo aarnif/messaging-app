@@ -66,3 +66,11 @@ export const USER_CHAT_DELETED = gql(`
   subscription UserChatDeleted {
     userChatDeleted
 }`);
+
+export const USER_CHAT_LEFT = gql(`
+  subscription UserChatLeft  {
+    userChatLeft {
+      chatId
+      memberId
+    }
+}`);
