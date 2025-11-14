@@ -108,6 +108,21 @@ const ChatMessage = ({
   );
 };
 
+const NotificationMessage = ({ message }: { message: Message }) => {
+  return (
+    <div className="flex flex-col items-center">
+      <div
+        data-testid={"notification-message"}
+        className="relative flex max-w-[250px] min-w-[100px] flex-col rounded-xl bg-slate-200 p-2 sm:max-w-[600px] dark:bg-slate-700"
+      >
+        <p className="text-xs font-medium break-words text-slate-800 dark:text-slate-100">
+          {message.content}
+        </p>
+      </div>
+    </div>
+  );
+};
+
 const ChatMessages = ({
   currentUser,
   messages,
@@ -123,13 +138,17 @@ const ChatMessages = ({
 
   return (
     <div className="flex h-0 flex-grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
-      {messages.map((message) => (
-        <ChatMessage
-          key={message.id}
-          currentUser={currentUser}
-          message={message}
-        />
-      ))}
+      {messages.map((message) =>
+        message.isNotification ? (
+          <NotificationMessage key={message.id} message={message} />
+        ) : (
+          <ChatMessage
+            key={message.id}
+            currentUser={currentUser}
+            message={message}
+          />
+        )
+      )}
       <div ref={messagesEndRef} />
     </div>
   );
