@@ -83,8 +83,15 @@
 
 ### Käyttöliittymä:
 
-- Ilmoitus-modaalien lisäys käyttöliittymään
+- Ilmoitus-modaalit
 
 **Testit**
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
+
+## Viikko 8
+
+### Sovellus:
+
+- GraphQL tilaukset
+- Ilmoitus-viestit chatissa
