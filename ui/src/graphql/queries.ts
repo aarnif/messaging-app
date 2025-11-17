@@ -69,6 +69,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
     }
     messages {
       id
+      chatId
       isNotification
       sender {
         id

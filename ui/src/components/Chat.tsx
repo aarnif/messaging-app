@@ -618,8 +618,8 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       console.log("Use MESSAGE_SENT-subscription:");
       const latestMessage = data.data?.messageSent;
 
-      if (!latestMessage) {
-        console.log("No sent message found, skipping cache update");
+      if (!latestMessage || latestMessage.chatId !== match?.id) {
+        console.log("Message is not for this chat, skipping cache update");
         return;
       }
 
@@ -633,7 +633,6 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
         (existingData) => {
           const chat = existingData?.findChatById;
           if (!chat) {
-            console.log("No existing chat found in cache, returning unchanged");
             return existingData;
           }
           return {

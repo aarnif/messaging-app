@@ -166,6 +166,7 @@ export const GROUP_CHAT_DETAILS = {
   messages: [
     {
       id: "1",
+      chatId: "1",
       isNotification: false,
       sender: {
         id: USER_ONE_DETAILS.id,
@@ -180,6 +181,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: "2",
+      chatId: "1",
       isNotification: false,
       sender: {
         id: USER_TWO_DETAILS.id,
@@ -194,6 +196,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: "3",
+      chatId: "1",
       isNotification: false,
       sender: {
         id: USER_THREE_DETAILS.id,
@@ -238,6 +241,7 @@ export const PRIVATE_CHAT_DETAILS = {
   messages: [
     {
       id: "1",
+      chatId: "1",
       isNotification: false,
       sender: {
         id: USER_ONE_DETAILS.id,
@@ -252,6 +256,7 @@ export const PRIVATE_CHAT_DETAILS = {
     },
     {
       id: "2",
+      chatId: "1",
       isNotification: false,
       sender: {
         id: USER_TWO_DETAILS.id,
@@ -269,6 +274,7 @@ export const PRIVATE_CHAT_DETAILS = {
 
 export const MESSAGE_DETAILS = {
   id: "4",
+  chatId: GROUP_CHAT_DETAILS.id,
   isNotification: false,
   sender: {
     id: USER_ONE_DETAILS.id,

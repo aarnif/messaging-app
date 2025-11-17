@@ -4,6 +4,7 @@ export const MESSAGE_SENT = gql(`
   subscription MessageSent {
     messageSent {
       id
+      chatId
       isNotification
       sender {
         id
