@@ -1,13 +1,13 @@
 # Changelog
 
-## Viikko 1
+## Viikko 1 (22.9-28.9.2025)
 
 - Projektin alustus (Postgres tietokanta + Node.js palvelin + GraphQL API + React käyttöliittymä)
 - Vaatimusmäärittelyn teko
 - Tietokannan suunnittelu, mallien luonti (5 taulua) ja alustus seed datalla
 - Palvelimen teon aloitus
 
-## Viikko 2
+## Viikko 2 (29.9-5.10.2025)
 
 ### Palvelin:
 
@@ -29,7 +29,7 @@
 
 - Testien kirjoitus yllä mainituille toiminnoille (Node.js Test runner + Supertest)
 
-## Viikko 3
+## Viikko 3 (6.10-12.10.2025)
 
 ### Käyttöliittymä:
 
@@ -37,7 +37,7 @@
 - Käyttöliittymän alustus (React + Vite + TypeScript + Tailwind CSS)
 - Reitityksen lisäys (React Router v7)
 
-## Viikko 4
+## Viikko 4 (13.10-19.10.2025)
 
 ### Käyttöliittymä:
 
@@ -50,7 +50,7 @@
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
 
-## Viikko 5
+## Viikko 5 (20.10-26.10.2025)
 
 ### Käyttöliittymä:
 
@@ -66,7 +66,7 @@
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
 
-## Viikko 6
+## Viikko 6 (27.10-2.11.2025)
 
 ### Käyttöliittymä:
 
@@ -79,7 +79,7 @@
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
 
-## Viikko 7
+## Viikko 7 (3.11-9.11.2025)
 
 ### Käyttöliittymä:
 
@@ -89,7 +89,7 @@
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
 
-## Viikko 8
+## Viikko 8 (10.11-16.11.2025)
 
 ### Sovellus:
 
