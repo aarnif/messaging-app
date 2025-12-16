@@ -95,3 +95,19 @@
 
 - GraphQL tilaukset
 - Ilmoitus-viestit chatissa
+
+## Viikko 9 (17.11-23.11.2025)
+
+Ei muutoksia
+
+## Viikko 10 (24.11-30.11.2025)
+
+Ei muutoksia
+
+## Viikko 11 (1.12-7.12.2025)
+
+Ei muutoksia
+
+## Viikko 12 (8.12-14.12.2025)
+
+Ei muutoksia
