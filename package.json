@@ -19,7 +19,8 @@
     "test:ui:coverage": "npm run test --prefix ui -- --coverage",
     "typecheck:ui": "npm run typecheck --prefix ui",
     "lint:ui": "npm run lint --prefix ui",
-    "preview:ui": "npm run preview --prefix ui"
+    "preview:ui": "npm run preview --prefix ui",
+    "test:e2e": "playwright test"
   },
   "repository": {
     "type": "git",
@@ -32,5 +33,10 @@
   "bugs": {
     "url": "https://github.com/aarnif/fullstack-open-project/issues"
   },
-  "homepage": "https://github.com/aarnif/fullstack-open-project#readme"
+  "homepage": "https://github.com/aarnif/fullstack-open-project#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.57.0",
+    "@types/node": "^25.0.2",
+    "baseline-browser-mapping": "^2.9.8"
+  }
 }
