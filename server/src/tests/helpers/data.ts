@@ -79,6 +79,7 @@ export const expectedPrivateChat = {
   messages: [
     {
       id: "1",
+      chatId: "1",
       isNotification: false,
       sender: expectedUser1,
       content: "Hello world",
@@ -101,6 +102,7 @@ export const expectedGroupChat = {
   messages: [
     {
       id: "1",
+      chatId: "1",
       isNotification: false,
       sender: expectedUser1,
       content: "Hello world",

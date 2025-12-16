@@ -1776,6 +1776,7 @@ void describe("GraphQL API", () => {
           ),
           messages: expectedGroupChat.messages.concat({
             id: "2",
+            chatId: "1",
             isNotification: true,
             sender: expectedUser2,
             content: "User2 was removed from the chat",
@@ -2009,6 +2010,7 @@ void describe("GraphQL API", () => {
           ...expectedPrivateChat,
           messages: expectedPrivateChat.messages.concat({
             id: "2",
+            chatId: "1",
             isNotification: false,
             sender: expectedUser2,
             content: "Hello from chat!",
@@ -2076,6 +2078,7 @@ void describe("GraphQL API", () => {
           ),
           messages: expectedGroupChat.messages.concat({
             id: "2",
+            chatId: "1",
             isNotification: true,
             sender: expectedUser2,
             content: "User2 left the chat",
