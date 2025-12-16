@@ -28,6 +28,7 @@ export const USER_CHAT_UPDATED = gql(`
       avatar
       latestMessage {
         id
+        chatId
         isNotification
         sender {
           id
@@ -51,6 +52,7 @@ export const USER_CHAT_CREATED = gql(`
       avatar
       latestMessage {
         id
+        chatId
         isNotification
         sender {
           id
