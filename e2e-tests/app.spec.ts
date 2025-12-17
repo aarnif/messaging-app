@@ -95,5 +95,15 @@ test.describe("App", () => {
         page.getByText("Invalid username or password")
       ).toBeVisible();
     });
+
+    test("can sign in with valid credentials", async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await logout(page);
+      await signIn(page, user1.username, user1.password);
+
+      await expect(
+        page.getByText("Select Chat to Start Messaging.")
+      ).toBeVisible();
+    });
   });
 });
