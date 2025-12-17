@@ -49,4 +49,15 @@ test.describe("App", () => {
       page.getByText("Select Chat to Start Messaging.")
     ).toBeVisible();
   });
+
+  test("prevents creating duplicate user", async ({ page, request }) => {
+    await signUp(page, "user1", "password", "password");
+
+    await page.getByTestId("logout-button").click();
+    await page.getByRole("button", { name: "Logout" }).click();
+    await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
+
+    await signUp(page, "user1", "password", "password");
+    await expect(page.getByText("Username already exists")).toBeVisible();
+  });
 });

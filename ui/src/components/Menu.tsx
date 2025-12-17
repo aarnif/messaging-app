@@ -70,6 +70,7 @@ const Menu = () => {
         </NavLink>
       ))}
       <button
+        data-testid="logout-button"
         className={styles.container.default}
         onClick={() =>
           modal({
