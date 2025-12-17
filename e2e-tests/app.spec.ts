@@ -20,6 +20,12 @@ test.describe("App", () => {
     await expect(page).toHaveTitle(/Messaging App/);
   });
 
+  test("prevents user creation with empty fields", async ({ page }) => {
+    await signUp(page, "", "", "");
+
+    await expect(page.getByText("Please fill all fields")).toBeVisible();
+  });
+
   test("prevents user creation with invalid username", async ({ page }) => {
     await signUp(page, "u", user1.password, user1.confirmPassword);
 
