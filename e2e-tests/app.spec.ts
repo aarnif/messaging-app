@@ -75,5 +75,20 @@ test.describe("App", () => {
 
       await expect(page.getByText("Please fill all fields.")).toBeVisible();
     });
+
+    test("prevents sign in with invalid username", async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await logout(page);
+      await page.getByRole("textbox", { name: "Username" }).fill("invalid");
+      await page
+        .getByRole("textbox", { name: "Password", exact: true })
+        .fill(user1.password);
+
+      await page.getByRole("button", { name: "Sign In" }).click();
+
+      await expect(
+        page.getByText("Invalid username or password")
+      ).toBeVisible();
+    });
   });
 });
