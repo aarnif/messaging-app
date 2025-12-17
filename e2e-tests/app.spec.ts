@@ -90,5 +90,22 @@ test.describe("App", () => {
         page.getByText("Invalid username or password")
       ).toBeVisible();
     });
+
+    test("prevents sign in with invalid password", async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await logout(page);
+      await page
+        .getByRole("textbox", { name: "Username" })
+        .fill(user1.username);
+      await page
+        .getByRole("textbox", { name: "Password", exact: true })
+        .fill("invalid");
+
+      await page.getByRole("button", { name: "Sign In" }).click();
+
+      await expect(
+        page.getByText("Invalid username or password")
+      ).toBeVisible();
+    });
   });
 });
