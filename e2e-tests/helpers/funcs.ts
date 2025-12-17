@@ -20,3 +20,9 @@ export const signUp = async (
 
   await page.getByRole("button", { name: "Sign Up" }).click();
 };
+
+export const logout = async (page: Page) => {
+  await page.getByTestId("logout-button").click();
+  await page.getByRole("button", { name: "Logout" }).click();
+  await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
+};

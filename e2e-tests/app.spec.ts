@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { signUp } from "./helpers/funcs";
+import { signUp, logout } from "./helpers/funcs";
 import { user1 } from "./helpers/data";
 
 test.describe("App", () => {
@@ -52,6 +52,7 @@ test.describe("App", () => {
 
   test("can create a new user", async ({ page }) => {
     await signUp(page, user1.username, user1.password, user1.confirmPassword);
+
     await expect(
       page.getByText("Select Chat to Start Messaging.")
     ).toBeVisible();
@@ -59,12 +60,9 @@ test.describe("App", () => {
 
   test("prevents creating duplicate user", async ({ page, request }) => {
     await signUp(page, user1.username, user1.password, user1.confirmPassword);
-
-    await page.getByTestId("logout-button").click();
-    await page.getByRole("button", { name: "Logout" }).click();
-    await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
-
+    await logout(page);
     await signUp(page, user1.username, user1.password, user1.confirmPassword);
+
     await expect(page.getByText("Username already exists")).toBeVisible();
   });
 });
