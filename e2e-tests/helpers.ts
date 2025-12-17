@@ -7,7 +7,7 @@ export const signUp = async (
   password: string,
   confirmPassword: string
 ) => {
-  await page.getByText("Sign Up").click();
+  await page.getByRole("button", { name: "Sign Up" }).click();
   await expect(page.getByRole("heading", { name: "Sign Up" })).toBeVisible();
 
   await page.getByRole("textbox", { name: "Username" }).fill(username);

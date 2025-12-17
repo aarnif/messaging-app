@@ -42,4 +42,11 @@ test.describe("App", () => {
 
     await expect(page.getByText("Passwords do not match")).toBeVisible();
   });
+
+  test("can create a new user", async ({ page }) => {
+    await signUp(page, "user1", "password", "password");
+    await expect(
+      page.getByText("Select Chat to Start Messaging.")
+    ).toBeVisible();
+  });
 });
