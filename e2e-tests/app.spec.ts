@@ -25,4 +25,12 @@ test.describe("App", () => {
       page.getByText("Password must be at least 6 characters long")
     ).toBeVisible();
   });
+
+  test("prevents user creation with non-matching passwords", async ({
+    page,
+  }) => {
+    await signUp(page, "user1", "password", "passwor");
+
+    await expect(page.getByText("Passwords do not match")).toBeVisible();
+  });
 });
