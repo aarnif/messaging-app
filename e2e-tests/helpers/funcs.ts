@@ -39,3 +39,21 @@ export const logout = async (page: Page) => {
   await page.getByRole("button", { name: "Logout" }).click();
   await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
 };
+
+export const addContacts = async (
+  page: Page,
+  users: {
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }[]
+) => {
+  await page.getByTestId("contacts-nav-item").click();
+  await expect(page.getByRole("heading", { name: /Contacts/ })).toBeVisible();
+  await expect(page.getByText("No contacts found.")).toBeVisible();
+  await page.getByTestId("add-new-contacts").click();
+  for (const user of users) {
+    await page.getByRole("button", { name: user.username }).click();
+  }
+  await page.getByTestId("add-contacts-button").click();
+};

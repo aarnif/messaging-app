@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { signUp, signIn, logout } from "./helpers/funcs";
+import { signUp, signIn, logout, addContacts } from "./helpers/funcs";
 import { user1, user2 } from "./helpers/data";
 
 test.describe("App", () => {
@@ -119,16 +119,7 @@ test.describe("App", () => {
     });
 
     test("can add a contact", async ({ page }) => {
-      await page.getByTestId("contacts-nav-item").click();
-
-      await expect(
-        page.getByRole("heading", { name: /Contacts/ })
-      ).toBeVisible();
-      await expect(page.getByText("No contacts found.")).toBeVisible();
-
-      await page.getByTestId("add-new-contacts").click();
-      await page.getByRole("button", { name: "User2" }).click();
-      await page.getByTestId("add-contacts-button").click();
+      await addContacts(page, [user2]);
 
       await expect(page.getByText(/User2/)).toBeVisible();
       await expect(page.getByText(/@user2/)).toBeVisible();
