@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { signUp } from "./helpers";
+import { signUp } from "./helpers/funcs";
 
 test.describe("App", () => {
   test.beforeEach(async ({ page, request }) => {
