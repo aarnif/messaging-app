@@ -5,10 +5,12 @@ import SearchBox from "./SearchBox";
 const MenuHeader = ({
   title,
   searchWord,
+  buttonTestId = "",
   callback = () => {},
 }: {
   title: string;
   searchWord: InputField;
+  buttonTestId: string;
   callback?: () => void;
 }) => (
   <div className="flex w-full flex-col gap-4 p-4">
@@ -16,7 +18,11 @@ const MenuHeader = ({
       <h1 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
         {title}
       </h1>
-      <button onClick={callback} className="cursor-pointer">
+      <button
+        data-testid={buttonTestId}
+        onClick={callback}
+        className="cursor-pointer"
+      >
         <MdOpenInNew className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
       </button>
     </div>

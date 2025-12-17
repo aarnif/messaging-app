@@ -223,6 +223,7 @@ const ListMenu = ({
       <MenuHeader
         title="Chats"
         searchWord={searchWord}
+        buttonTestId=""
         callback={() => setIsNewChatDropdownOpen(true)}
       />
       {loading ? (

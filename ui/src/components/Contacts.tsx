@@ -245,6 +245,7 @@ const ListMenu = ({
       <MenuHeader
         title="Contacts"
         searchWord={searchWord}
+        buttonTestId="add-new-contacts"
         callback={() => setIsAddContactsModalOpen(true)}
       />
       {loading ? (

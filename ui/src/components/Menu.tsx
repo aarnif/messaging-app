@@ -35,6 +35,7 @@ const Menu = () => {
       icon: <FaComments className={styles.icon} />,
     },
     {
+      testId: "contacts-nav-item",
       title: "Contacts",
       path: "/contacts",
       icon: <FaAddressBook className={styles.icon} />,
@@ -59,6 +60,7 @@ const Menu = () => {
         <NavLink
           key={item.path}
           to={item.path}
+          data-testid={item.testId && item.testId}
           className={
             isPathActive(item.path)
               ? styles.container.active

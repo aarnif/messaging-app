@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { signUp, signIn, logout } from "./helpers/funcs";
-import { user1 } from "./helpers/data";
+import { user1, user2 } from "./helpers/data";
 
 test.describe("App", () => {
   test.beforeEach(async ({ page, request }) => {
@@ -101,6 +101,37 @@ test.describe("App", () => {
       await expect(
         page.getByText("Select Chat to Start Messaging.")
       ).toBeVisible();
+    });
+  });
+
+  test.describe("Contacts", () => {
+    test.beforeEach(async ({ page }) => {
+      for (const user of [user1, user2]) {
+        await signUp(page, user.username, user.password, user.confirmPassword);
+        await logout(page);
+      }
+
+      await signIn(page, user1.username, user1.password);
+
+      await expect(
+        page.getByText("Select Chat to Start Messaging.")
+      ).toBeVisible();
+    });
+
+    test("can add a contact", async ({ page }) => {
+      await page.getByTestId("contacts-nav-item").click();
+
+      await expect(
+        page.getByRole("heading", { name: /Contacts/ })
+      ).toBeVisible();
+      await expect(page.getByText("No contacts found.")).toBeVisible();
+
+      await page.getByTestId("add-new-contacts").click();
+      await page.getByRole("button", { name: "User2" }).click();
+      await page.getByTestId("add-contacts-button").click();
+
+      await expect(page.getByText(/User2/)).toBeVisible();
+      await expect(page.getByText(/@user2/)).toBeVisible();
     });
   });
 });
