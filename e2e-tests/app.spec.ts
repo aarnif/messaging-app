@@ -20,49 +20,60 @@ test.describe("App", () => {
     await expect(page).toHaveTitle(/Messaging App/);
   });
 
-  test("prevents user creation with empty fields", async ({ page }) => {
-    await signUp(page, "", "", "");
+  test.describe("User Creation", () => {
+    test("prevents user creation with empty fields", async ({ page }) => {
+      await signUp(page, "", "", "");
 
-    await expect(page.getByText("Please fill all fields")).toBeVisible();
+      await expect(page.getByText("Please fill all fields")).toBeVisible();
+    });
+
+    test("prevents user creation with invalid username", async ({ page }) => {
+      await signUp(page, "u", user1.password, user1.confirmPassword);
+
+      await expect(
+        page.getByText("Username must be at least 3 characters long")
+      ).toBeVisible();
+    });
+
+    test("prevents user creation with invalid password", async ({ page }) => {
+      await signUp(page, user1.username, "passw", user1.confirmPassword);
+
+      await expect(
+        page.getByText("Password must be at least 6 characters long")
+      ).toBeVisible();
+    });
+
+    test("prevents user creation with non-matching passwords", async ({
+      page,
+    }) => {
+      await signUp(page, user1.username, user1.password, "passwor");
+
+      await expect(page.getByText("Passwords do not match")).toBeVisible();
+    });
+
+    test("can create a new user", async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await expect(
+        page.getByText("Select Chat to Start Messaging.")
+      ).toBeVisible();
+    });
+
+    test("prevents creating duplicate user", async ({ page, request }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await logout(page);
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+
+      await expect(page.getByText("Username already exists")).toBeVisible();
+    });
   });
 
-  test("prevents user creation with invalid username", async ({ page }) => {
-    await signUp(page, "u", user1.password, user1.confirmPassword);
+  test.describe("User Sign In", () => {
+    test("prevents sign in with empty credentials", async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+      await logout(page);
+      await page.getByRole("button", { name: "Sign In" }).click();
 
-    await expect(
-      page.getByText("Username must be at least 3 characters long")
-    ).toBeVisible();
-  });
-
-  test("prevents user creation with invalid password", async ({ page }) => {
-    await signUp(page, user1.username, "passw", user1.confirmPassword);
-
-    await expect(
-      page.getByText("Password must be at least 6 characters long")
-    ).toBeVisible();
-  });
-
-  test("prevents user creation with non-matching passwords", async ({
-    page,
-  }) => {
-    await signUp(page, user1.username, user1.password, "passwor");
-
-    await expect(page.getByText("Passwords do not match")).toBeVisible();
-  });
-
-  test("can create a new user", async ({ page }) => {
-    await signUp(page, user1.username, user1.password, user1.confirmPassword);
-
-    await expect(
-      page.getByText("Select Chat to Start Messaging.")
-    ).toBeVisible();
-  });
-
-  test("prevents creating duplicate user", async ({ page, request }) => {
-    await signUp(page, user1.username, user1.password, user1.confirmPassword);
-    await logout(page);
-    await signUp(page, user1.username, user1.password, user1.confirmPassword);
-
-    await expect(page.getByText("Username already exists")).toBeVisible();
+      await expect(page.getByText("Please fill all fields.")).toBeVisible();
+    });
   });
 });
