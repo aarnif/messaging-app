@@ -9,3 +9,9 @@ export const user2 = {
   password: "password",
   confirmPassword: "password",
 };
+
+export const user3 = {
+  username: "user3",
+  password: "password",
+  confirmPassword: "password",
+};
