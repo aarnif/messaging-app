@@ -3,6 +3,15 @@ import { signUp } from "./helpers";
 
 test.describe("App", () => {
   test.beforeEach(async ({ page, request }) => {
+    await request.post("http://localhost:4000/", {
+      data: {
+        query: `
+        mutation Mutation {
+          resetDatabase
+        }
+      `,
+      },
+    });
     await page.goto("http://localhost:5173");
   });
 
