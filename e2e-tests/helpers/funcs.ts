@@ -21,6 +21,19 @@ export const signUp = async (
   await page.getByRole("button", { name: "Sign Up" }).click();
 };
 
+export const signIn = async (
+  page: Page,
+  username: string,
+  password: string
+) => {
+  await page.getByRole("textbox", { name: "Username" }).fill(username);
+  await page
+    .getByRole("textbox", { name: "Password", exact: true })
+    .fill(password);
+
+  await page.getByRole("button", { name: "Sign In" }).click();
+};
+
 export const logout = async (page: Page) => {
   await page.getByTestId("logout-button").click();
   await page.getByRole("button", { name: "Logout" }).click();

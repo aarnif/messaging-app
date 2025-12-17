@@ -1,5 +1,5 @@
 import { test, expect } from "@playwright/test";
-import { signUp, logout } from "./helpers/funcs";
+import { signUp, signIn, logout } from "./helpers/funcs";
 import { user1 } from "./helpers/data";
 
 test.describe("App", () => {
@@ -79,12 +79,7 @@ test.describe("App", () => {
     test("prevents sign in with invalid username", async ({ page }) => {
       await signUp(page, user1.username, user1.password, user1.confirmPassword);
       await logout(page);
-      await page.getByRole("textbox", { name: "Username" }).fill("invalid");
-      await page
-        .getByRole("textbox", { name: "Password", exact: true })
-        .fill(user1.password);
-
-      await page.getByRole("button", { name: "Sign In" }).click();
+      await signIn(page, "invalid", user1.password);
 
       await expect(
         page.getByText("Invalid username or password")
@@ -94,14 +89,7 @@ test.describe("App", () => {
     test("prevents sign in with invalid password", async ({ page }) => {
       await signUp(page, user1.username, user1.password, user1.confirmPassword);
       await logout(page);
-      await page
-        .getByRole("textbox", { name: "Username" })
-        .fill(user1.username);
-      await page
-        .getByRole("textbox", { name: "Password", exact: true })
-        .fill("invalid");
-
-      await page.getByRole("button", { name: "Sign In" }).click();
+      await signIn(page, user1.username, "invalid");
 
       await expect(
         page.getByText("Invalid username or password")
