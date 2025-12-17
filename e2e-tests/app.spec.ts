@@ -58,7 +58,7 @@ test.describe("App", () => {
       ).toBeVisible();
     });
 
-    test("prevents creating duplicate user", async ({ page, request }) => {
+    test("prevents creating duplicate user", async ({ page }) => {
       await signUp(page, user1.username, user1.password, user1.confirmPassword);
       await logout(page);
       await signUp(page, user1.username, user1.password, user1.confirmPassword);
