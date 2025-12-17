@@ -1,6 +1,6 @@
 import { test, expect } from "@playwright/test";
 import { signUp, signIn, logout, addContacts } from "./helpers/funcs";
-import { user1, user2 } from "./helpers/data";
+import { user1, user2, user3 } from "./helpers/data";
 
 test.describe("App", () => {
   test.beforeEach(async ({ page, request }) => {
@@ -106,7 +106,7 @@ test.describe("App", () => {
 
   test.describe("Contacts", () => {
     test.beforeEach(async ({ page }) => {
-      for (const user of [user1, user2]) {
+      for (const user of [user1, user2, user3]) {
         await signUp(page, user.username, user.password, user.confirmPassword);
         await logout(page);
       }
@@ -123,6 +123,18 @@ test.describe("App", () => {
 
       await expect(page.getByText(/User2/)).toBeVisible();
       await expect(page.getByText(/@user2/)).toBeVisible();
+    });
+
+    test("can add several contacts", async ({ page }) => {
+      const users = [user2, user3];
+      await addContacts(page, users);
+
+      for (const user of users) {
+        await expect(page.getByText(new RegExp(user.username))).toBeVisible();
+        await expect(
+          page.getByText(new RegExp(`@${user.username}`))
+        ).toBeVisible();
+      }
     });
   });
 });
