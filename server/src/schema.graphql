@@ -80,6 +80,7 @@ type Mutation {
   leaveChat(id: ID!): Chat
   sendMessage(input: SendMessageInput!): Chat
   changePassword(input: ChangePasswordInput!): User
+  resetDatabase: Boolean
 }
 
 input CreateUserInput {

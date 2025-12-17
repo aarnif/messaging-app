@@ -7,6 +7,7 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import pubsub from "./pubsub";
+import { emptyDatabase, createDatabase } from "./populateDatabase";
 
 // Date scalar implementation from Apollo Server documentation
 // https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar
@@ -1411,6 +1412,11 @@ export const resolvers: Resolvers = {
           },
         });
       }
+    },
+    resetDatabase: async () => {
+      await emptyDatabase();
+      await createDatabase();
+      return true;
     },
   },
   Subscription: {
