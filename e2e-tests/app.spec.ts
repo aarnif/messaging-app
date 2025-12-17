@@ -68,17 +68,18 @@ test.describe("App", () => {
   });
 
   test.describe("User Sign In", () => {
-    test("prevents sign in with empty credentials", async ({ page }) => {
+    test.beforeEach(async ({ page }) => {
       await signUp(page, user1.username, user1.password, user1.confirmPassword);
       await logout(page);
+    });
+
+    test("prevents sign in with empty credentials", async ({ page }) => {
       await page.getByRole("button", { name: "Sign In" }).click();
 
       await expect(page.getByText("Please fill all fields.")).toBeVisible();
     });
 
     test("prevents sign in with invalid username", async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
       await signIn(page, "invalid", user1.password);
 
       await expect(
@@ -87,8 +88,6 @@ test.describe("App", () => {
     });
 
     test("prevents sign in with invalid password", async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
       await signIn(page, user1.username, "invalid");
 
       await expect(
@@ -97,8 +96,6 @@ test.describe("App", () => {
     });
 
     test("can sign in with valid credentials", async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
       await signIn(page, user1.username, user1.password);
 
       await expect(
