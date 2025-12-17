@@ -17,4 +17,12 @@ test.describe("App", () => {
       page.getByText("Username must be at least 3 characters long")
     ).toBeVisible();
   });
+
+  test("prevents user creation with invalid password", async ({ page }) => {
+    await signUp(page, "user1", "passw", "password");
+
+    await expect(
+      page.getByText("Password must be at least 6 characters long")
+    ).toBeVisible();
+  });
 });
