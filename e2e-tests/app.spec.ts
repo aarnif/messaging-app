@@ -200,6 +200,34 @@ test.describe("App", () => {
       ).toBeVisible();
     });
 
+    test("prevents private chat creation with a contact that has blocked user", async ({
+      page,
+    }) => {
+      await logout(page);
+      await signIn(page, user2.username, user2.password);
+
+      await addContacts(page, [user1]);
+
+      await page.getByRole("link", { name: user1.username }).click();
+      await page.getByRole("button", { name: "Block Contact" }).click();
+      await page.getByRole("button", { name: "Block", exact: true }).click();
+
+      await logout(page);
+      await signIn(page, user1.username, user1.password);
+
+      await page.getByTestId("create-new-chat").click();
+      await page.getByRole("button", { name: "New Private Chat" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "New Private Chat" })
+      ).toBeVisible();
+
+      await page.getByRole("button", { name: user2.username }).click();
+      await page.getByTestId("create-chat-button").click();
+
+      await expect(page.getByText("Contact has blocked you.")).toBeVisible();
+    });
+
     test("can create a private chat", async ({ page }) => {
       await page.getByTestId("create-new-chat").click();
       await page.getByRole("button", { name: "New Private Chat" }).click();
