@@ -254,5 +254,23 @@ test.describe("App", () => {
         page.getByText("Chat must have at least two members")
       ).toBeVisible();
     });
+
+    test("can create a group chat", async ({ page }) => {
+      await openGroupChatModal(page);
+
+      await page
+        .getByRole("textbox", { name: "Name", exact: true })
+        .fill("New Group Chat");
+
+      await page.getByRole("button", { name: user2.username }).click();
+      await page.getByRole("button", { name: user3.username }).click();
+
+      await page.getByTestId("create-chat-button").click();
+      await page.getByTestId("message-input").fill("Hello World!");
+      await page.getByTestId("send-message-button").click();
+
+      await expect(page.getByText("New Group Chat")).toBeVisible();
+      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+    });
   });
 });
