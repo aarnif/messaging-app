@@ -30,6 +30,7 @@ const Menu = () => {
 
   const navItems = [
     {
+      testId: "chats-nav-item",
       title: "Chats",
       path: "/",
       icon: <FaComments className={styles.icon} />,

@@ -168,4 +168,37 @@ test.describe("App", () => {
       await expect(page.getByText("No contacts found.")).toBeVisible();
     });
   });
+
+  test.describe("Chats", () => {
+    test.beforeEach(async ({ page }) => {
+      for (const user of [user1, user2, user3]) {
+        await signUp(page, user.username, user.password, user.confirmPassword);
+        await logout(page);
+      }
+
+      await signIn(page, user1.username, user1.password);
+
+      await expect(
+        page.getByText("Select Chat to Start Messaging.")
+      ).toBeVisible();
+      await addContacts(page, [user2, user3]);
+      await page.getByTestId("chats-nav-item").click();
+    });
+
+    test("can create a private chat", async ({ page }) => {
+      await page.getByTestId("create-new-chat").click();
+      await page.getByRole("button", { name: "New Private Chat" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "New Private Chat" })
+      ).toBeVisible();
+
+      await page.getByRole("button", { name: user2.username }).click();
+      await page.getByTestId("create-chat-button").click();
+      await page.getByTestId("message-input").fill("Hello World!");
+      await page.getByTestId("send-message-button").click();
+
+      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+    });
+  });
 });
