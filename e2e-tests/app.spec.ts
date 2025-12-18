@@ -244,5 +244,25 @@ test.describe("App", () => {
         page.getByText("Chat name must be at least three characters long")
       ).toBeVisible();
     });
+
+    test("prevents group chat creation without members", async ({ page }) => {
+      await page.pause();
+      await page.getByTestId("create-new-chat").click();
+      await page.getByRole("button", { name: "New Group Chat" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "New Group Chat" })
+      ).toBeVisible();
+
+      await page
+        .getByRole("textbox", { name: "Name", exact: true })
+        .fill("New Group Chat");
+
+      await page.getByTestId("create-chat-button").click();
+
+      await expect(
+        page.getByText("Chat must have at least two members")
+      ).toBeVisible();
+    });
   });
 });
