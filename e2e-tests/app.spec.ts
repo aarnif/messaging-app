@@ -6,6 +6,7 @@ import {
   addContacts,
   blockContact,
   openPrivateChatModal,
+  openGroupChatModal,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -231,12 +232,7 @@ test.describe("App", () => {
     });
 
     test("prevents group chat creation without name", async ({ page }) => {
-      await page.getByTestId("create-new-chat").click();
-      await page.getByRole("button", { name: "New Group Chat" }).click();
-
-      await expect(
-        page.getByRole("heading", { name: "New Group Chat" })
-      ).toBeVisible();
+      await openGroupChatModal(page);
 
       await page.getByTestId("create-chat-button").click();
 
@@ -246,13 +242,7 @@ test.describe("App", () => {
     });
 
     test("prevents group chat creation without members", async ({ page }) => {
-      await page.pause();
-      await page.getByTestId("create-new-chat").click();
-      await page.getByRole("button", { name: "New Group Chat" }).click();
-
-      await expect(
-        page.getByRole("heading", { name: "New Group Chat" })
-      ).toBeVisible();
+      await openGroupChatModal(page);
 
       await page
         .getByRole("textbox", { name: "Name", exact: true })

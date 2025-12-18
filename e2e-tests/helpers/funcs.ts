@@ -74,3 +74,12 @@ export const openPrivateChatModal = async (page: Page) => {
     page.getByRole("heading", { name: "New Private Chat" })
   ).toBeVisible();
 };
+
+export const openGroupChatModal = async (page: Page) => {
+  await page.getByTestId("create-new-chat").click();
+  await page.getByRole("button", { name: "New Group Chat" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "New Group Chat" })
+  ).toBeVisible();
+};
