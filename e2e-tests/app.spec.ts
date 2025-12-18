@@ -155,5 +155,17 @@ test.describe("App", () => {
         page.getByText("You have blocked the contact.")
       ).not.toBeVisible();
     });
+
+    test("can remove a contact", async ({ page }) => {
+      await addContacts(page, [user2]);
+
+      await page.pause();
+
+      await page.getByRole("link", { name: user2.username }).click();
+      await page.getByRole("button", { name: "Remove Contact" }).click();
+      await page.getByRole("button", { name: "Remove", exact: true }).click();
+
+      await expect(page.getByText("No contacts found.")).toBeVisible();
+    });
   });
 });
