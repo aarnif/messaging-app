@@ -376,16 +376,7 @@ export const resolvers: Resolvers = {
         include: [{ model: User, as: "contactDetails" }],
       });
 
-      if (!contact) {
-        throw new GraphQLError("Contact not found", {
-          extensions: {
-            code: "NOT_FOUND",
-            invalidArgs: id,
-          },
-        });
-      }
-
-      return contact.isBlocked;
+      return !contact ? false : contact.isBlocked;
     },
     findContactById: async (
       _,
