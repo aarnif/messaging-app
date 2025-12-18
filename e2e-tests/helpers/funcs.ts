@@ -65,3 +65,12 @@ export const blockContact = async (page: Page) => {
 
   await expect(page.getByText("You have blocked the contact.")).toBeVisible();
 };
+
+export const openPrivateChatModal = async (page: Page) => {
+  await page.getByTestId("create-new-chat").click();
+  await page.getByRole("button", { name: "New Private Chat" }).click();
+
+  await expect(
+    page.getByRole("heading", { name: "New Private Chat" })
+  ).toBeVisible();
+};

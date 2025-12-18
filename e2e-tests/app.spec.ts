@@ -5,6 +5,7 @@ import {
   logout,
   addContacts,
   blockContact,
+  openPrivateChatModal,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -187,12 +188,7 @@ test.describe("App", () => {
     });
 
     test("prevents private chat creation without contact", async ({ page }) => {
-      await page.getByTestId("create-new-chat").click();
-      await page.getByRole("button", { name: "New Private Chat" }).click();
-
-      await expect(
-        page.getByRole("heading", { name: "New Private Chat" })
-      ).toBeVisible();
+      await openPrivateChatModal(page);
 
       await page.getByTestId("create-chat-button").click();
 
@@ -215,12 +211,7 @@ test.describe("App", () => {
       await logout(page);
       await signIn(page, user1.username, user1.password);
 
-      await page.getByTestId("create-new-chat").click();
-      await page.getByRole("button", { name: "New Private Chat" }).click();
-
-      await expect(
-        page.getByRole("heading", { name: "New Private Chat" })
-      ).toBeVisible();
+      await openPrivateChatModal(page);
 
       await page.getByRole("button", { name: user2.username }).click();
       await page.getByTestId("create-chat-button").click();
@@ -229,12 +220,7 @@ test.describe("App", () => {
     });
 
     test("can create a private chat", async ({ page }) => {
-      await page.getByTestId("create-new-chat").click();
-      await page.getByRole("button", { name: "New Private Chat" }).click();
-
-      await expect(
-        page.getByRole("heading", { name: "New Private Chat" })
-      ).toBeVisible();
+      await openPrivateChatModal(page);
 
       await page.getByRole("button", { name: user2.username }).click();
       await page.getByTestId("create-chat-button").click();
