@@ -43,6 +43,7 @@ export const logout = async (page: Page) => {
 export const addContacts = async (
   page: Page,
   users: {
+    name: string;
     username: string;
     password: string;
     confirmPassword: string;
