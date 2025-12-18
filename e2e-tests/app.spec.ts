@@ -229,5 +229,20 @@ test.describe("App", () => {
 
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
     });
+
+    test("prevents group chat creation without name", async ({ page }) => {
+      await page.getByTestId("create-new-chat").click();
+      await page.getByRole("button", { name: "New Group Chat" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "New Group Chat" })
+      ).toBeVisible();
+
+      await page.getByTestId("create-chat-button").click();
+
+      await expect(
+        page.getByText("Chat name must be at least three characters long")
+      ).toBeVisible();
+    });
   });
 });
