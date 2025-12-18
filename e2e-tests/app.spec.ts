@@ -136,5 +136,24 @@ test.describe("App", () => {
         ).toBeVisible();
       }
     });
+
+    test("can toggle block a contact", async ({ page }) => {
+      await addContacts(page, [user2]);
+
+      await page.getByRole("link", { name: user2.username }).click();
+      await page.getByRole("button", { name: "Block Contact" }).click();
+      await page.getByRole("button", { name: "Block", exact: true }).click();
+
+      await expect(
+        page.getByText("You have blocked the contact.")
+      ).toBeVisible();
+
+      await page.getByRole("button", { name: "Unblock Contact" }).click();
+      await page.getByRole("button", { name: "Unblock", exact: true }).click();
+
+      await expect(
+        page.getByText("You have blocked the contact.")
+      ).not.toBeVisible();
+    });
   });
 });
