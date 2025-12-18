@@ -185,6 +185,21 @@ test.describe("App", () => {
       await page.getByTestId("chats-nav-item").click();
     });
 
+    test("prevents private chat creation without contact", async ({ page }) => {
+      await page.getByTestId("create-new-chat").click();
+      await page.getByRole("button", { name: "New Private Chat" }).click();
+
+      await expect(
+        page.getByRole("heading", { name: "New Private Chat" })
+      ).toBeVisible();
+
+      await page.getByTestId("create-chat-button").click();
+
+      await expect(
+        page.getByText("Please select a contact to create a chat with")
+      ).toBeVisible();
+    });
+
     test("can create a private chat", async ({ page }) => {
       await page.getByTestId("create-new-chat").click();
       await page.getByRole("button", { name: "New Private Chat" }).click();
