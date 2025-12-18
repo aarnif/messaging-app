@@ -1,5 +1,11 @@
 import { test, expect } from "@playwright/test";
-import { signUp, signIn, logout, addContacts } from "./helpers/funcs";
+import {
+  signUp,
+  signIn,
+  logout,
+  addContacts,
+  blockContact,
+} from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
 test.describe("App", () => {
@@ -141,12 +147,7 @@ test.describe("App", () => {
       await addContacts(page, [user2]);
 
       await page.getByRole("link", { name: user2.username }).click();
-      await page.getByRole("button", { name: "Block Contact" }).click();
-      await page.getByRole("button", { name: "Block", exact: true }).click();
-
-      await expect(
-        page.getByText("You have blocked the contact.")
-      ).toBeVisible();
+      await blockContact(page);
 
       await page.getByRole("button", { name: "Unblock Contact" }).click();
       await page.getByRole("button", { name: "Unblock", exact: true }).click();
@@ -209,8 +210,7 @@ test.describe("App", () => {
       await addContacts(page, [user1]);
 
       await page.getByRole("link", { name: user1.username }).click();
-      await page.getByRole("button", { name: "Block Contact" }).click();
-      await page.getByRole("button", { name: "Block", exact: true }).click();
+      await blockContact(page);
 
       await logout(page);
       await signIn(page, user1.username, user1.password);
