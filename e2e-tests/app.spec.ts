@@ -291,5 +291,30 @@ test.describe("App", () => {
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
     });
+
+    test("can send a message to existing chat", async ({ page }) => {
+      await openGroupChatModal(page);
+
+      await page
+        .getByRole("textbox", { name: "Name", exact: true })
+        .fill("New Group Chat");
+
+      await page.getByRole("button", { name: user2.username }).click();
+      await page.getByRole("button", { name: user3.username }).click();
+
+      await page.getByTestId("create-chat-button").click();
+      await page.getByTestId("message-input").fill("Hello World!");
+      await page.getByTestId("send-message-button").click();
+
+      await expect(
+        page.getByRole("link", { name: "New Group Chat" })
+      ).toBeVisible();
+      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+      await page.getByTestId("message-input").fill("Another message.");
+      await page.getByTestId("send-message-button").click();
+
+      await expect(page.getByText("User1: Another message.")).toBeVisible();
+    });
   });
 });
