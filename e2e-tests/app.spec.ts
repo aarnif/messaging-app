@@ -8,6 +8,7 @@ import {
   sendMessage,
   createPrivateChat,
   createGroupChat,
+  openChatInfoModal,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -333,11 +334,7 @@ test.describe("App", () => {
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-        await page.getByTestId("chat-info-button").click();
-
-        await expect(
-          page.getByRole("heading", { name: "Chat", exact: true })
-        ).toBeVisible();
+        await openChatInfoModal(page);
 
         await page.getByTestId("edit-chat-button").click();
 
@@ -368,11 +365,7 @@ test.describe("App", () => {
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-        await page.getByTestId("chat-info-button").click();
-
-        await expect(
-          page.getByRole("heading", { name: "Chat", exact: true })
-        ).toBeVisible();
+        await openChatInfoModal(page);
 
         await page.getByTestId("edit-chat-button").click();
 

@@ -153,3 +153,11 @@ export const createGroupChat = async (
     await sendMessage(page, initialMessage);
   }
 };
+
+export const openChatInfoModal = async (page: Page) => {
+  await page.getByTestId("chat-info-button").click();
+
+  await expect(
+    page.getByRole("heading", { name: "Chat", exact: true })
+  ).toBeVisible();
+};
