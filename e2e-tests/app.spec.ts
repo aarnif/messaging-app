@@ -9,6 +9,7 @@ import {
   createPrivateChat,
   createGroupChat,
   openChatInfoModal,
+  editGroupChat,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -334,17 +335,7 @@ test.describe("App", () => {
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-        await openChatInfoModal(page);
-
-        await page.getByTestId("edit-chat-button").click();
-
-        await expect(
-          page.getByRole("heading", { name: "Edit Chat", exact: true })
-        ).toBeVisible();
-
-        await page.getByRole("textbox", { name: "Name", exact: true }).fill("");
-
-        await page.getByTestId("submit-button").click();
+        await editGroupChat(page, "", "");
 
         await expect(
           page.getByText("Chat name must be at least three characters long")
@@ -365,26 +356,11 @@ test.describe("App", () => {
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-        await openChatInfoModal(page);
-
-        await page.getByTestId("edit-chat-button").click();
-
-        await expect(
-          page.getByRole("heading", { name: "Edit Chat", exact: true })
-        ).toBeVisible();
-
-        await page
-          .getByRole("textbox", { name: "Name", exact: true })
-          .fill("Edited Group Chat Name");
-        await page
-          .getByRole("textbox", { name: "Description", exact: true })
-          .fill("Edited Group Chat Description");
-
-        await page.getByTestId("submit-button").click();
-
-        await expect(
-          page.getByRole("heading", { name: "Edit Chat", exact: true })
-        ).not.toBeVisible();
+        await editGroupChat(
+          page,
+          "Edited Group Chat Name",
+          "Edited Group Chat Description"
+        );
 
         await expect(
           page.locator("h2", { hasText: "Edited Group Chat Name" })

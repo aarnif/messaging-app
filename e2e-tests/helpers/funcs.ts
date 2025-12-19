@@ -161,3 +161,25 @@ export const openChatInfoModal = async (page: Page) => {
     page.getByRole("heading", { name: "Chat", exact: true })
   ).toBeVisible();
 };
+
+export const editGroupChat = async (
+  page: Page,
+  chatName: string,
+  chatDescription: string
+) => {
+  await openChatInfoModal(page);
+
+  await page.getByTestId("edit-chat-button").click();
+
+  await expect(
+    page.getByRole("heading", { name: "Edit Chat", exact: true })
+  ).toBeVisible();
+
+  await page.getByRole("textbox", { name: "Name", exact: true }).fill(chatName);
+
+  await page
+    .getByRole("textbox", { name: "Description", exact: true })
+    .fill(chatDescription);
+
+  await page.getByTestId("submit-button").click();
+};
