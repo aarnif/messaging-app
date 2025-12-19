@@ -6,9 +6,8 @@ import {
   addContacts,
   blockContact,
   openPrivateChatModal,
-  openGroupChatModal,
-  addMembersToChat,
   sendMessage,
+  createGroupChat,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -233,9 +232,7 @@ test.describe("App", () => {
     });
 
     test("prevents group chat creation without name", async ({ page }) => {
-      await openGroupChatModal(page);
-
-      await page.getByTestId("create-chat-button").click();
+      await createGroupChat(page, "", []);
 
       await expect(
         page.getByText("Chat name must be at least three characters long")
@@ -243,13 +240,7 @@ test.describe("App", () => {
     });
 
     test("prevents group chat creation without members", async ({ page }) => {
-      await openGroupChatModal(page);
-
-      await page
-        .getByRole("textbox", { name: "Name", exact: true })
-        .fill("New Group Chat");
-
-      await page.getByTestId("create-chat-button").click();
+      await createGroupChat(page, "New Group Chat", []);
 
       await expect(
         page.getByText("Chat must have at least two members")
@@ -259,14 +250,7 @@ test.describe("App", () => {
     test("prevents group chat creation with one additional member", async ({
       page,
     }) => {
-      await openGroupChatModal(page);
-
-      await page
-        .getByRole("textbox", { name: "Name", exact: true })
-        .fill("New Group Chat");
-
-      await addMembersToChat(page, [user2]);
-      await page.getByTestId("create-chat-button").click();
+      await createGroupChat(page, "New Group Chat", [user2]);
 
       await expect(
         page.getByText("Chat must have at least two members")
@@ -274,16 +258,12 @@ test.describe("App", () => {
     });
 
     test("can create a group chat", async ({ page }) => {
-      await openGroupChatModal(page);
-
-      await page
-        .getByRole("textbox", { name: "Name", exact: true })
-        .fill("New Group Chat");
-
-      await addMembersToChat(page, [user2, user3]);
-
-      await page.getByTestId("create-chat-button").click();
-      await sendMessage(page, "Hello World!");
+      await createGroupChat(
+        page,
+        "New Group Chat",
+        [user2, user3],
+        "Hello World!"
+      );
 
       await expect(
         page.getByRole("link", { name: "New Group Chat" })
@@ -292,16 +272,12 @@ test.describe("App", () => {
     });
 
     test("can send a message to existing chat", async ({ page }) => {
-      await openGroupChatModal(page);
-
-      await page
-        .getByRole("textbox", { name: "Name", exact: true })
-        .fill("New Group Chat");
-
-      await addMembersToChat(page, [user2, user3]);
-
-      await page.getByTestId("create-chat-button").click();
-      await sendMessage(page, "Hello World!");
+      await createGroupChat(
+        page,
+        "New Group Chat",
+        [user2, user3],
+        "Hello World!"
+      );
 
       await expect(
         page.getByRole("link", { name: "New Group Chat" })
