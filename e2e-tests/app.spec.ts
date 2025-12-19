@@ -286,7 +286,9 @@ test.describe("App", () => {
       await page.getByTestId("message-input").fill("Hello World!");
       await page.getByTestId("send-message-button").click();
 
-      await expect(page.getByText("New Group Chat")).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: "New Group Chat" })
+      ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
     });
   });
