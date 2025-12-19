@@ -29,87 +29,100 @@ test.describe("App", () => {
     await expect(page).toHaveTitle(/Messaging App/);
   });
 
-  test.describe("User Creation", () => {
-    test("prevents user creation with empty fields", async ({ page }) => {
-      await signUp(page, "", "", "");
+  test.describe("Users", () => {
+    test.describe("Creation", () => {
+      test("prevents user creation with empty fields", async ({ page }) => {
+        await signUp(page, "", "", "");
+        await expect(page.getByText("Please fill all fields")).toBeVisible();
+      });
 
-      await expect(page.getByText("Please fill all fields")).toBeVisible();
+      test("prevents user creation with invalid username", async ({ page }) => {
+        await signUp(page, "u", user1.password, user1.confirmPassword);
+        await expect(
+          page.getByText("Username must be at least 3 characters long")
+        ).toBeVisible();
+      });
+
+      test("prevents user creation with invalid password", async ({ page }) => {
+        await signUp(page, user1.username, "passw", user1.confirmPassword);
+        await expect(
+          page.getByText("Password must be at least 6 characters long")
+        ).toBeVisible();
+      });
+
+      test("prevents user creation with non-matching passwords", async ({
+        page,
+      }) => {
+        await signUp(page, user1.username, user1.password, "passwor");
+        await expect(page.getByText("Passwords do not match")).toBeVisible();
+      });
+
+      test("can create a new user", async ({ page }) => {
+        await signUp(
+          page,
+          user1.username,
+          user1.password,
+          user1.confirmPassword
+        );
+        await expect(
+          page.getByText("Select Chat to Start Messaging.")
+        ).toBeVisible();
+      });
+
+      test("prevents creating duplicate user", async ({ page }) => {
+        await signUp(
+          page,
+          user1.username,
+          user1.password,
+          user1.confirmPassword
+        );
+        await logout(page);
+        await signUp(
+          page,
+          user1.username,
+          user1.password,
+          user1.confirmPassword
+        );
+        await expect(page.getByText("Username already exists")).toBeVisible();
+      });
     });
 
-    test("prevents user creation with invalid username", async ({ page }) => {
-      await signUp(page, "u", user1.password, user1.confirmPassword);
+    test.describe("Authentication", () => {
+      test.beforeEach(async ({ page }) => {
+        await signUp(
+          page,
+          user1.username,
+          user1.password,
+          user1.confirmPassword
+        );
+        await logout(page);
+      });
 
-      await expect(
-        page.getByText("Username must be at least 3 characters long")
-      ).toBeVisible();
-    });
+      test("prevents sign in with empty credentials", async ({ page }) => {
+        await page.getByRole("button", { name: "Sign In" }).click();
+        await expect(page.getByText("Please fill all fields.")).toBeVisible();
+      });
 
-    test("prevents user creation with invalid password", async ({ page }) => {
-      await signUp(page, user1.username, "passw", user1.confirmPassword);
+      test("prevents sign in with invalid username", async ({ page }) => {
+        await signIn(page, "invalid", user1.password);
+        await expect(
+          page.getByText("Invalid username or password")
+        ).toBeVisible();
+      });
 
-      await expect(
-        page.getByText("Password must be at least 6 characters long")
-      ).toBeVisible();
-    });
+      test("prevents sign in with invalid password", async ({ page }) => {
+        await signIn(page, user1.username, "invalid");
+        await expect(
+          page.getByText("Invalid username or password")
+        ).toBeVisible();
+      });
 
-    test("prevents user creation with non-matching passwords", async ({
-      page,
-    }) => {
-      await signUp(page, user1.username, user1.password, "passwor");
-
-      await expect(page.getByText("Passwords do not match")).toBeVisible();
-    });
-
-    test("can create a new user", async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await expect(
-        page.getByText("Select Chat to Start Messaging.")
-      ).toBeVisible();
-    });
-
-    test("prevents creating duplicate user", async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-
-      await expect(page.getByText("Username already exists")).toBeVisible();
-    });
-  });
-
-  test.describe("User Sign In", () => {
-    test.beforeEach(async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
-    });
-
-    test("prevents sign in with empty credentials", async ({ page }) => {
-      await page.getByRole("button", { name: "Sign In" }).click();
-
-      await expect(page.getByText("Please fill all fields.")).toBeVisible();
-    });
-
-    test("prevents sign in with invalid username", async ({ page }) => {
-      await signIn(page, "invalid", user1.password);
-
-      await expect(
-        page.getByText("Invalid username or password")
-      ).toBeVisible();
-    });
-
-    test("prevents sign in with invalid password", async ({ page }) => {
-      await signIn(page, user1.username, "invalid");
-
-      await expect(
-        page.getByText("Invalid username or password")
-      ).toBeVisible();
-    });
-
-    test("can sign in with valid credentials", async ({ page }) => {
-      await signIn(page, user1.username, user1.password);
-
-      await expect(
-        page.getByText("Select Chat to Start Messaging.")
-      ).toBeVisible();
+      test("can sign in with valid credentials", async ({ page }) => {
+        await signIn(page, user1.username, user1.password);
+        await expect(
+          page.getByText("Select Chat to Start Messaging.")
+        ).toBeVisible();
+      });
     });
   });
 
@@ -119,7 +132,6 @@ test.describe("App", () => {
         await signUp(page, user.username, user.password, user.confirmPassword);
         await logout(page);
       }
-
       await signIn(page, user1.username, user1.password);
 
       await expect(
@@ -148,7 +160,6 @@ test.describe("App", () => {
 
     test("can toggle block a contact", async ({ page }) => {
       await addContacts(page, [user2]);
-
       await page.getByRole("link", { name: user2.username }).click();
       await blockContact(page);
 
@@ -162,9 +173,6 @@ test.describe("App", () => {
 
     test("can remove a contact", async ({ page }) => {
       await addContacts(page, [user2]);
-
-      await page.pause();
-
       await page.getByRole("link", { name: user2.username }).click();
       await page.getByRole("button", { name: "Remove Contact" }).click();
       await page.getByRole("button", { name: "Remove", exact: true }).click();
@@ -179,105 +187,103 @@ test.describe("App", () => {
         await signUp(page, user.username, user.password, user.confirmPassword);
         await logout(page);
       }
-
       await signIn(page, user1.username, user1.password);
 
       await expect(
         page.getByText("Select Chat to Start Messaging.")
       ).toBeVisible();
+
       await addContacts(page, [user2, user3]);
       await page.getByTestId("chats-nav-item").click();
     });
 
-    test("prevents private chat creation without contact", async ({ page }) => {
-      await createPrivateChat(page);
+    test.describe("Creation", () => {
+      test("prevents creation without contact", async ({ page }) => {
+        await createPrivateChat(page);
 
-      await expect(
-        page.getByText("Please select a contact to create a chat with")
-      ).toBeVisible();
-    });
+        await expect(
+          page.getByText("Please select a contact to create a chat with")
+        ).toBeVisible();
+      });
 
-    test("prevents private chat creation with a contact that has blocked user", async ({
-      page,
-    }) => {
-      await logout(page);
-      await signIn(page, user2.username, user2.password);
-
-      await addContacts(page, [user1]);
-
-      await page.getByRole("link", { name: user1.username }).click();
-      await blockContact(page);
-
-      await logout(page);
-      await signIn(page, user1.username, user1.password);
-
-      await createPrivateChat(page, user2);
-
-      await expect(page.getByText("Contact has blocked you.")).toBeVisible();
-    });
-
-    test("can create a private chat", async ({ page }) => {
-      await createPrivateChat(page, user2, "Hello World!");
-
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
-    });
-
-    test("prevents group chat creation without name", async ({ page }) => {
-      await createGroupChat(page, "", []);
-
-      await expect(
-        page.getByText("Chat name must be at least three characters long")
-      ).toBeVisible();
-    });
-
-    test("prevents group chat creation without members", async ({ page }) => {
-      await createGroupChat(page, "New Group Chat", []);
-
-      await expect(
-        page.getByText("Chat must have at least two members")
-      ).toBeVisible();
-    });
-
-    test("prevents group chat creation with one additional member", async ({
-      page,
-    }) => {
-      await createGroupChat(page, "New Group Chat", [user2]);
-
-      await expect(
-        page.getByText("Chat must have at least two members")
-      ).toBeVisible();
-    });
-
-    test("can create a group chat", async ({ page }) => {
-      await createGroupChat(
+      test("prevents creation with a contact that has blocked user", async ({
         page,
-        "New Group Chat",
-        [user2, user3],
-        "Hello World!"
-      );
+      }) => {
+        await logout(page);
+        await signIn(page, user2.username, user2.password);
+        await addContacts(page, [user1]);
+        await page.getByRole("link", { name: user1.username }).click();
+        await blockContact(page);
 
-      await expect(
-        page.getByRole("link", { name: "New Group Chat" })
-      ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+        await logout(page);
+        await signIn(page, user1.username, user1.password);
+        await createPrivateChat(page, user2);
+
+        await expect(page.getByText("Contact has blocked you.")).toBeVisible();
+      });
+
+      test("can create a private chat", async ({ page }) => {
+        await createPrivateChat(page, user2, "Hello World!");
+
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      });
+
+      test("prevents creation without name", async ({ page }) => {
+        await createGroupChat(page, "", []);
+
+        await expect(
+          page.getByText("Chat name must be at least three characters long")
+        ).toBeVisible();
+      });
+
+      test("prevents creation without members", async ({ page }) => {
+        await createGroupChat(page, "New Group Chat", []);
+
+        await expect(
+          page.getByText("Chat must have at least two members")
+        ).toBeVisible();
+      });
+
+      test("prevents creation with one additional member", async ({ page }) => {
+        await createGroupChat(page, "New Group Chat", [user2]);
+
+        await expect(
+          page.getByText("Chat must have at least two members")
+        ).toBeVisible();
+      });
+
+      test("can create a group chat", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      });
     });
 
-    test("can send a message to existing chat", async ({ page }) => {
-      await createGroupChat(
-        page,
-        "New Group Chat",
-        [user2, user3],
-        "Hello World!"
-      );
+    test.describe("Messages", () => {
+      test("can send a message to existing chat", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          [user2, user3],
+          "Hello World!"
+        );
 
-      await expect(
-        page.getByRole("link", { name: "New Group Chat" })
-      ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-      await sendMessage(page, "Another message.");
-
-      await expect(page.getByText("User1: Another message.")).toBeVisible();
+        await sendMessage(page, "Another message.");
+        await expect(page.getByText("User1: Another message.")).toBeVisible();
+      });
     });
   });
 });
