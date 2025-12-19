@@ -268,6 +268,25 @@ test.describe("App", () => {
     });
 
     test.describe("Messages", () => {
+      test("prevents sending an empty message to existing chat", async ({
+        page,
+      }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+        await sendMessage(page, "");
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      });
+
       test("can send a message to existing chat", async ({ page }) => {
         await createGroupChat(
           page,
