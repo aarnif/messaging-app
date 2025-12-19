@@ -129,6 +129,7 @@ export const createPrivateChat = async (
 export const createGroupChat = async (
   page: Page,
   chatName: string,
+  chatDescription: string,
   users: {
     name: string;
     username: string;
@@ -140,6 +141,9 @@ export const createGroupChat = async (
   await openGroupChatModal(page);
 
   await page.getByRole("textbox", { name: "Name", exact: true }).fill(chatName);
+  await page
+    .getByRole("textbox", { name: "Description", exact: true })
+    .fill(chatDescription);
 
   await addMembersToChat(page, users);
 

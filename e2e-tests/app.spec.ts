@@ -229,7 +229,7 @@ test.describe("App", () => {
       });
 
       test("prevents creation without name", async ({ page }) => {
-        await createGroupChat(page, "", []);
+        await createGroupChat(page, "", "New Group Chat Description", []);
 
         await expect(
           page.getByText("Chat name must be at least three characters long")
@@ -237,7 +237,12 @@ test.describe("App", () => {
       });
 
       test("prevents creation without members", async ({ page }) => {
-        await createGroupChat(page, "New Group Chat", []);
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          []
+        );
 
         await expect(
           page.getByText("Chat must have at least two members")
@@ -245,7 +250,12 @@ test.describe("App", () => {
       });
 
       test("prevents creation with one additional member", async ({ page }) => {
-        await createGroupChat(page, "New Group Chat", [user2]);
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2]
+        );
 
         await expect(
           page.getByText("Chat must have at least two members")
@@ -256,6 +266,7 @@ test.describe("App", () => {
         await createGroupChat(
           page,
           "New Group Chat",
+          "New Group Chat Description",
           [user2, user3],
           "Hello World!"
         );
@@ -274,6 +285,7 @@ test.describe("App", () => {
         await createGroupChat(
           page,
           "New Group Chat",
+          "New Group Chat Description",
           [user2, user3],
           "Hello World!"
         );
@@ -291,6 +303,7 @@ test.describe("App", () => {
         await createGroupChat(
           page,
           "New Group Chat",
+          "New Group Chat Description",
           [user2, user3],
           "Hello World!"
         );
@@ -310,6 +323,7 @@ test.describe("App", () => {
         await createGroupChat(
           page,
           "New Group Chat",
+          "New Group Chat Description",
           [user2, user3],
           "Hello World!"
         );
@@ -344,6 +358,7 @@ test.describe("App", () => {
         await createGroupChat(
           page,
           "New Group Chat",
+          "New Group Chat Description",
           [user2, user3],
           "Hello World!"
         );
