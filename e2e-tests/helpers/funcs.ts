@@ -84,6 +84,20 @@ export const openGroupChatModal = async (page: Page) => {
   ).toBeVisible();
 };
 
+export const addMembersToChat = async (
+  page: Page,
+  users: {
+    name: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }[]
+) => {
+  for (const user of users) {
+    await page.getByRole("button", { name: user.username }).click();
+  }
+};
+
 export const sendMessage = async (page: Page, message: string) => {
   await page.getByTestId("message-input").fill(message);
   await page.getByTestId("send-message-button").click();

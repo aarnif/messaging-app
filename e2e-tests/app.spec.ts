@@ -7,6 +7,7 @@ import {
   blockContact,
   openPrivateChatModal,
   openGroupChatModal,
+  addMembersToChat,
   sendMessage,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
@@ -264,7 +265,7 @@ test.describe("App", () => {
         .getByRole("textbox", { name: "Name", exact: true })
         .fill("New Group Chat");
 
-      await page.getByRole("button", { name: user2.username }).click();
+      await addMembersToChat(page, [user2]);
       await page.getByTestId("create-chat-button").click();
 
       await expect(
@@ -279,8 +280,7 @@ test.describe("App", () => {
         .getByRole("textbox", { name: "Name", exact: true })
         .fill("New Group Chat");
 
-      await page.getByRole("button", { name: user2.username }).click();
-      await page.getByRole("button", { name: user3.username }).click();
+      await addMembersToChat(page, [user2, user3]);
 
       await page.getByTestId("create-chat-button").click();
       await sendMessage(page, "Hello World!");
@@ -298,8 +298,7 @@ test.describe("App", () => {
         .getByRole("textbox", { name: "Name", exact: true })
         .fill("New Group Chat");
 
-      await page.getByRole("button", { name: user2.username }).click();
-      await page.getByRole("button", { name: user3.username }).click();
+      await addMembersToChat(page, [user2, user3]);
 
       await page.getByTestId("create-chat-button").click();
       await sendMessage(page, "Hello World!");
