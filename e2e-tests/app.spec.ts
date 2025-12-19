@@ -5,8 +5,8 @@ import {
   logout,
   addContacts,
   blockContact,
-  openPrivateChatModal,
   sendMessage,
+  createPrivateChat,
   createGroupChat,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
@@ -190,9 +190,7 @@ test.describe("App", () => {
     });
 
     test("prevents private chat creation without contact", async ({ page }) => {
-      await openPrivateChatModal(page);
-
-      await page.getByTestId("create-chat-button").click();
+      await createPrivateChat(page);
 
       await expect(
         page.getByText("Please select a contact to create a chat with")
@@ -213,20 +211,13 @@ test.describe("App", () => {
       await logout(page);
       await signIn(page, user1.username, user1.password);
 
-      await openPrivateChatModal(page);
-
-      await page.getByRole("button", { name: user2.username }).click();
-      await page.getByTestId("create-chat-button").click();
+      await createPrivateChat(page, user2);
 
       await expect(page.getByText("Contact has blocked you.")).toBeVisible();
     });
 
     test("can create a private chat", async ({ page }) => {
-      await openPrivateChatModal(page);
-
-      await page.getByRole("button", { name: user2.username }).click();
-      await page.getByTestId("create-chat-button").click();
-      await sendMessage(page, "Hello World!");
+      await createPrivateChat(page, user2, "Hello World!");
 
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
     });

@@ -103,6 +103,29 @@ export const sendMessage = async (page: Page, message: string) => {
   await page.getByTestId("send-message-button").click();
 };
 
+export const createPrivateChat = async (
+  page: Page,
+  user?: {
+    name: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+  },
+  initialMessage?: string
+) => {
+  await openPrivateChatModal(page);
+
+  if (user) {
+    await page.getByRole("button", { name: user.username }).click();
+  }
+
+  await page.getByTestId("create-chat-button").click();
+
+  if (initialMessage) {
+    await sendMessage(page, initialMessage);
+  }
+};
+
 export const createGroupChat = async (
   page: Page,
   chatName: string,
