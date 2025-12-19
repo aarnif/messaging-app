@@ -7,6 +7,7 @@ import {
   blockContact,
   openPrivateChatModal,
   openGroupChatModal,
+  sendMessage,
 } from "./helpers/funcs";
 import { user1, user2, user3 } from "./helpers/data";
 
@@ -225,8 +226,7 @@ test.describe("App", () => {
 
       await page.getByRole("button", { name: user2.username }).click();
       await page.getByTestId("create-chat-button").click();
-      await page.getByTestId("message-input").fill("Hello World!");
-      await page.getByTestId("send-message-button").click();
+      await sendMessage(page, "Hello World!");
 
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
     });
@@ -283,8 +283,7 @@ test.describe("App", () => {
       await page.getByRole("button", { name: user3.username }).click();
 
       await page.getByTestId("create-chat-button").click();
-      await page.getByTestId("message-input").fill("Hello World!");
-      await page.getByTestId("send-message-button").click();
+      await sendMessage(page, "Hello World!");
 
       await expect(
         page.getByRole("link", { name: "New Group Chat" })
@@ -303,16 +302,14 @@ test.describe("App", () => {
       await page.getByRole("button", { name: user3.username }).click();
 
       await page.getByTestId("create-chat-button").click();
-      await page.getByTestId("message-input").fill("Hello World!");
-      await page.getByTestId("send-message-button").click();
+      await sendMessage(page, "Hello World!");
 
       await expect(
         page.getByRole("link", { name: "New Group Chat" })
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-      await page.getByTestId("message-input").fill("Another message.");
-      await page.getByTestId("send-message-button").click();
+      await sendMessage(page, "Another message.");
 
       await expect(page.getByText("User1: Another message.")).toBeVisible();
     });
