@@ -339,6 +339,55 @@ test.describe("App", () => {
           page.getByText("Chat name must be at least three characters long")
         ).toBeVisible();
       });
+
+      test("can edit group chat details", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+        await page.getByTestId("chat-info-button").click();
+
+        await expect(
+          page.getByRole("heading", { name: "Chat", exact: true })
+        ).toBeVisible();
+
+        await page.getByTestId("edit-chat-button").click();
+
+        await expect(
+          page.getByRole("heading", { name: "Edit Chat", exact: true })
+        ).toBeVisible();
+
+        await page
+          .getByRole("textbox", { name: "Name", exact: true })
+          .fill("Edited Group Chat Name");
+        await page
+          .getByRole("textbox", { name: "Description", exact: true })
+          .fill("Edited Group Chat Description");
+
+        await page.getByTestId("submit-button").click();
+
+        await expect(
+          page.getByRole("heading", { name: "Edit Chat", exact: true })
+        ).not.toBeVisible();
+
+        await expect(
+          page.locator("h2", { hasText: "Edited Group Chat Name" })
+        ).toBeVisible();
+        await expect(
+          page.locator("h4", { hasText: "Edited Group Chat Name" })
+        ).toBeVisible();
+        await expect(
+          page.getByText("Edited Group Chat Description")
+        ).toBeVisible();
+      });
     });
   });
 });
