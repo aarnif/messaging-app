@@ -304,5 +304,41 @@ test.describe("App", () => {
         await expect(page.getByText("User1: Another message.")).toBeVisible();
       });
     });
+
+    test.describe("Editing", () => {
+      test("prevents editing with empty chat name", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+        await page.getByTestId("chat-info-button").click();
+
+        await expect(
+          page.getByRole("heading", { name: "Chat", exact: true })
+        ).toBeVisible();
+
+        await page.getByTestId("edit-chat-button").click();
+
+        await expect(
+          page.getByRole("heading", { name: "Edit Chat", exact: true })
+        ).toBeVisible();
+
+        await page.getByRole("textbox", { name: "Name", exact: true }).fill("");
+
+        await page.getByTestId("submit-button").click();
+
+        await expect(
+          page.getByText("Chat name must be at least three characters long")
+        ).toBeVisible();
+      });
+    });
   });
 });
