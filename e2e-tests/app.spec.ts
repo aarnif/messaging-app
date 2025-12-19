@@ -255,6 +255,23 @@ test.describe("App", () => {
       ).toBeVisible();
     });
 
+    test("prevents group chat creation with one additional member", async ({
+      page,
+    }) => {
+      await openGroupChatModal(page);
+
+      await page
+        .getByRole("textbox", { name: "Name", exact: true })
+        .fill("New Group Chat");
+
+      await page.getByRole("button", { name: user2.username }).click();
+      await page.getByTestId("create-chat-button").click();
+
+      await expect(
+        page.getByText("Chat must have at least two members")
+      ).toBeVisible();
+    });
+
     test("can create a group chat", async ({ page }) => {
       await openGroupChatModal(page);
 
