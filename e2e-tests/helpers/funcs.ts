@@ -236,3 +236,8 @@ export const changePassword = async (
 
   await page.getByTestId("change-password-button").click();
 };
+
+export const openAppearanceSettings = async (page: Page) => {
+  await page.getByTestId("settings-nav-item").click();
+  await page.getByRole("link", { name: "Appearance" }).click();
+};

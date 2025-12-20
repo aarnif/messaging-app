@@ -12,6 +12,7 @@ import {
   editGroupChat,
   editProfile,
   changePassword,
+  openAppearanceSettings,
 } from "./helpers/funcs";
 import { user1, user2, user3, user4 } from "./helpers/data";
 
@@ -481,8 +482,7 @@ test.describe("App", () => {
     });
 
     test("can toggle dark mode", async ({ page }) => {
-      await page.getByTestId("settings-nav-item").click();
-      await page.getByRole("link", { name: "Appearance" }).click();
+      await openAppearanceSettings(page);
 
       const htmlElement = page.locator("html");
       await expect(htmlElement).not.toHaveClass(/dark/);
@@ -511,18 +511,14 @@ test.describe("App", () => {
 
       await expect(page.getByText(/AM|PM/)).not.toBeVisible();
 
-      await page.getByTestId("settings-nav-item").click();
-      await page.getByRole("link", { name: "Appearance" }).click();
+      await openAppearanceSettings(page);
       await page.getByTestId("toggle-clock-mode").click();
-
       await page.getByTestId("chats-nav-item").click();
 
       await expect(page.getByText(/AM|PM/)).toBeVisible();
 
-      await page.getByTestId("settings-nav-item").click();
-      await page.getByRole("link", { name: "Appearance" }).click();
+      await openAppearanceSettings(page);
       await page.getByTestId("toggle-clock-mode").click();
-
       await page.getByTestId("chats-nav-item").click();
 
       await expect(page.getByText(/AM|PM/)).not.toBeVisible();
