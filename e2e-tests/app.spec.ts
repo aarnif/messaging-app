@@ -11,7 +11,7 @@ import {
   openChatInfoModal,
   editGroupChat,
 } from "./helpers/funcs";
-import { user1, user2, user3 } from "./helpers/data";
+import { user1, user2, user3, user4 } from "./helpers/data";
 
 test.describe("App", () => {
   test.beforeEach(async ({ page, request }) => {
@@ -185,7 +185,7 @@ test.describe("App", () => {
 
   test.describe("Chats", () => {
     test.beforeEach(async ({ page }) => {
-      for (const user of [user1, user2, user3]) {
+      for (const user of [user1, user2, user3, user4]) {
         await signUp(page, user.username, user.password, user.confirmPassword);
         await logout(page);
       }
@@ -195,7 +195,7 @@ test.describe("App", () => {
         page.getByText("Select Chat to Start Messaging.")
       ).toBeVisible();
 
-      await addContacts(page, [user2, user3]);
+      await addContacts(page, [user2, user3, user4]);
       await page.getByTestId("chats-nav-item").click();
     });
 
@@ -335,7 +335,7 @@ test.describe("App", () => {
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
-        await editGroupChat(page, "", "");
+        await editGroupChat(page, "", "", [user2, user3]);
 
         await expect(
           page.getByText("Chat name must be at least three characters long")
@@ -359,7 +359,8 @@ test.describe("App", () => {
         await editGroupChat(
           page,
           "Edited Group Chat Name",
-          "Edited Group Chat Description"
+          "Edited Group Chat Description",
+          [user2, user3]
         );
 
         await expect(page.getByTestId("chat-info-name")).toHaveText(
@@ -369,6 +370,40 @@ test.describe("App", () => {
         await expect(
           page.getByText("Edited Group Chat Description")
         ).toBeVisible();
+
+        await expect(page.getByText("3 members")).toBeVisible();
+      });
+
+      test("can edit group chat members", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+        await editGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2, user3, user4]
+        );
+
+        await expect(page.getByTestId("chat-info-name")).toHaveText(
+          "New Group Chat"
+        );
+
+        await expect(
+          page.getByText("New Group Chat Description")
+        ).toBeVisible();
+
+        await expect(page.getByText("4 members")).toBeVisible();
       });
     });
   });

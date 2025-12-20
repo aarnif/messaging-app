@@ -165,7 +165,13 @@ export const openChatInfoModal = async (page: Page) => {
 export const editGroupChat = async (
   page: Page,
   chatName: string,
-  chatDescription: string
+  chatDescription: string,
+  chatMembers: {
+    name: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }[]
 ) => {
   await openChatInfoModal(page);
 
@@ -180,6 +186,18 @@ export const editGroupChat = async (
   await page
     .getByRole("textbox", { name: "Description", exact: true })
     .fill(chatDescription);
+
+  const modal = page.getByTestId("edit-chat-modal");
+
+  const currentMembers = await modal.getByTestId("selected").all();
+
+  for (let i = 0; i < currentMembers.length; ++i) {
+    await currentMembers[i].click();
+  }
+
+  for (const user of chatMembers) {
+    await modal.getByRole("button", { name: user.username }).click();
+  }
 
   await page.getByTestId("submit-button").click();
 };
