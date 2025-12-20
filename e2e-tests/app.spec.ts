@@ -374,7 +374,7 @@ test.describe("App", () => {
         await expect(page.getByText("3 members")).toBeVisible();
       });
 
-      test("can edit group chat members", async ({ page }) => {
+      test("can add chat members", async ({ page }) => {
         await createGroupChat(
           page,
           "New Group Chat",
