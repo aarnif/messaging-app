@@ -6,6 +6,7 @@
   "scripts": {
     "install:server": "npm install --prefix server",
     "install:ui": "npm install --prefix ui",
+    "install:all": "npm install && npm run install:server && npm run install:ui",
     "start:db": "npm run start:db --prefix server",
     "populate:db": "npm run populate:db --prefix server",
     "generate:server": "npm run generate --prefix server",
