@@ -214,3 +214,25 @@ export const editProfile = async (page: Page, name: string, about?: string) => {
 
   await page.getByTestId("submit-edit-profile-button").click();
 };
+
+export const changePassword = async (
+  page: Page,
+  currentPassword: string,
+  newPassword: string,
+  confirmNewPassword: string
+) => {
+  await page.getByTestId("settings-nav-item").click();
+  await page.getByRole("button", { name: "Change Password" }).click();
+
+  await page
+    .getByRole("textbox", { name: "Current Password", exact: true })
+    .fill(currentPassword);
+  await page
+    .getByRole("textbox", { name: "New Password", exact: true })
+    .fill(newPassword);
+  await page
+    .getByRole("textbox", { name: "Confirm New Password", exact: true })
+    .fill(confirmNewPassword);
+
+  await page.getByTestId("change-password-button").click();
+};

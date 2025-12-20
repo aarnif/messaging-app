@@ -11,6 +11,7 @@ import {
   openChatInfoModal,
   editGroupChat,
   editProfile,
+  changePassword,
 } from "./helpers/funcs";
 import { user1, user2, user3, user4 } from "./helpers/data";
 
@@ -154,10 +155,7 @@ test.describe("App", () => {
       });
 
       test("prevents sending empty change password info", async ({ page }) => {
-        await page.getByTestId("settings-nav-item").click();
-        await page.getByRole("button", { name: "Change Password" }).click();
-
-        await page.getByTestId("change-password-button").click();
+        await changePassword(page, "", "", "");
 
         await expect(page.getByText("Please fill all fields.")).toBeVisible();
       });
@@ -165,20 +163,7 @@ test.describe("App", () => {
       test("prevents change password with non-matching passwords", async ({
         page,
       }) => {
-        await page.getByTestId("settings-nav-item").click();
-        await page.getByRole("button", { name: "Change Password" }).click();
-
-        await page
-          .getByRole("textbox", { name: "Current Password", exact: true })
-          .fill(user1.password);
-        await page
-          .getByRole("textbox", { name: "New Password", exact: true })
-          .fill("newPassword");
-        await page
-          .getByRole("textbox", { name: "Confirm New Password", exact: true })
-          .fill("newPasswor");
-
-        await page.getByTestId("change-password-button").click();
+        await changePassword(page, user1.password, "newPassword", "newPasswor");
 
         await expect(page.getByText("Passwords do not match")).toBeVisible();
       });
@@ -186,20 +171,12 @@ test.describe("App", () => {
       test("prevents change password with wrong current password", async ({
         page,
       }) => {
-        await page.getByTestId("settings-nav-item").click();
-        await page.getByRole("button", { name: "Change Password" }).click();
-
-        await page
-          .getByRole("textbox", { name: "Current Password", exact: true })
-          .fill("wrongPassword");
-        await page
-          .getByRole("textbox", { name: "New Password", exact: true })
-          .fill("newPassword");
-        await page
-          .getByRole("textbox", { name: "Confirm New Password", exact: true })
-          .fill("newPassword");
-
-        await page.getByTestId("change-password-button").click();
+        await changePassword(
+          page,
+          "wrongPassword",
+          "newPassword",
+          "newPassword"
+        );
 
         await expect(
           page.getByText("Current password does not match")
