@@ -343,7 +343,10 @@ const ChatInfoModal = ({
           src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
         />
         <div className="flex flex-col items-center gap-1">
-          <h4 className="font-oswald font-semibold text-slate-900 dark:text-slate-50">
+          <h4
+            data-testid="chat-info-name"
+            className="font-oswald font-semibold text-slate-900 dark:text-slate-50"
+          >
             {name}
           </h4>
           <p className="text-center text-xs font-normal text-slate-700 dark:text-slate-200">

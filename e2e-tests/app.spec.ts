@@ -362,12 +362,10 @@ test.describe("App", () => {
           "Edited Group Chat Description"
         );
 
-        await expect(
-          page.locator("h2", { hasText: "Edited Group Chat Name" })
-        ).toBeVisible();
-        await expect(
-          page.locator("h4", { hasText: "Edited Group Chat Name" })
-        ).toBeVisible();
+        await expect(page.getByTestId("chat-info-name")).toHaveText(
+          "Edited Group Chat Name"
+        );
+
         await expect(
           page.getByText("Edited Group Chat Description")
         ).toBeVisible();
