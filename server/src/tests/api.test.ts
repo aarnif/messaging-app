@@ -933,7 +933,7 @@ void describe("GraphQL API", () => {
         assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
       });
 
-      void test("fails with non-existent contact", async () => {
+      void test("returns false with non-existent contact", async () => {
         const responseBody = await query<
           { isBlockedByUser: boolean },
           { id: string }
@@ -941,8 +941,12 @@ void describe("GraphQL API", () => {
 
         const isBlocked = responseBody.data?.isBlockedByUser;
 
-        assert.strictEqual(isBlocked, null, "IsBlocked should be null");
-        assertError(responseBody, "Contact not found", "NOT_FOUND");
+        assert.strictEqual(isBlocked, false, "IsBlocked should be false");
+        assert.strictEqual(
+          responseBody.errors,
+          undefined,
+          "Should have no errors"
+        );
       });
 
       void test("returns false when not blocked", async () => {
