@@ -201,3 +201,16 @@ export const editGroupChat = async (
 
   await page.getByTestId("submit-button").click();
 };
+
+export const editProfile = async (page: Page, name: string, about?: string) => {
+  await page.getByTestId("settings-nav-item").click();
+  await page.getByTestId("edit-profile-button").click();
+
+  await page.getByRole("textbox", { name: "Name", exact: true }).fill(name);
+
+  if (about) {
+    await page.getByRole("textbox", { name: "About", exact: true }).fill(about);
+  }
+
+  await page.getByTestId("submit-edit-profile-button").click();
+};
