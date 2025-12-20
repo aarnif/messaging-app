@@ -18,3 +18,10 @@ export const user3 = {
   password: "password",
   confirmPassword: "password",
 };
+
+export const user4 = {
+  name: "User4",
+  username: "user4",
+  password: "password",
+  confirmPassword: "password",
+};
