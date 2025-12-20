@@ -147,6 +147,21 @@ test.describe("App", () => {
           page.getByText("Profile name must be at least three characters long")
         ).toBeVisible();
       });
+
+      test("can edit profile info", async ({ page }) => {
+        await page.getByTestId("settings-nav-item").click();
+        await page.getByTestId("edit-profile-button").click();
+        await page
+          .getByRole("textbox", { name: "Name", exact: true })
+          .fill("New Name");
+        await page
+          .getByRole("textbox", { name: "About", exact: true })
+          .fill("Hi! I am using this app!");
+        await page.getByTestId("submit-edit-profile-button").click();
+
+        await expect(page.getByText("New Name")).toBeVisible();
+        await expect(page.getByText("Hi! I am using this app!")).toBeVisible();
+      });
     });
   });
 
