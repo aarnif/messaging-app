@@ -321,7 +321,7 @@ test.describe("App", () => {
     });
 
     test.describe("Editing", () => {
-      test("prevents editing with empty chat name", async ({ page }) => {
+      test.beforeEach(async ({ page }) => {
         await createGroupChat(
           page,
           "New Group Chat",
@@ -329,7 +329,9 @@ test.describe("App", () => {
           [user2, user3],
           "Hello World!"
         );
+      });
 
+      test("prevents editing with empty chat name", async ({ page }) => {
         await expect(
           page.getByRole("link", { name: "New Group Chat" })
         ).toBeVisible();
@@ -343,14 +345,6 @@ test.describe("App", () => {
       });
 
       test("can edit group chat details", async ({ page }) => {
-        await createGroupChat(
-          page,
-          "New Group Chat",
-          "New Group Chat Description",
-          [user2, user3],
-          "Hello World!"
-        );
-
         await expect(
           page.getByRole("link", { name: "New Group Chat" })
         ).toBeVisible();
@@ -375,14 +369,6 @@ test.describe("App", () => {
       });
 
       test("can add chat members", async ({ page }) => {
-        await createGroupChat(
-          page,
-          "New Group Chat",
-          "New Group Chat Description",
-          [user2, user3],
-          "Hello World!"
-        );
-
         await expect(
           page.getByRole("link", { name: "New Group Chat" })
         ).toBeVisible();
@@ -407,14 +393,6 @@ test.describe("App", () => {
       });
 
       test("can remove chat members", async ({ page }) => {
-        await createGroupChat(
-          page,
-          "New Group Chat",
-          "New Group Chat Description",
-          [user2, user3],
-          "Hello World!"
-        );
-
         await expect(
           page.getByRole("link", { name: "New Group Chat" })
         ).toBeVisible();
