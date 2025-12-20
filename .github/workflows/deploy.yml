@@ -1,0 +1,61 @@
+name: Deployment pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize]
+
+jobs:
+  deployment_pipeline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Install root dependencies
+        run: npm ci
+      - name: Install server dependencies
+        run: npm ci --prefix server
+      - name: Install UI dependencies
+        run: npm ci --prefix ui
+      - name: Install Playwright Browsers
+        run: npx playwright install --with-deps
+      - name: Generate GraphQL server types
+        run: npm run generate:server
+      - name: Run test database
+        run: docker compose -f server/docker-compose.yml up -d
+      - name: Run server tests
+        run: npm run test:server
+        env:
+          NODE_ENV: test
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Start server
+        run: npm run dev:server &
+        env:
+          NODE_ENV: test
+          PORT: ${{ secrets.PORT }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+      - name: Wait for server to be ready
+        run: sleep 10
+      - name: Generate GraphQL ui types
+        run: npm run generate:ui
+        env:
+          SERVER_URL: http://localhost:${{ secrets.PORT }}
+      - name: Run ui tests
+        run: npm run test:ui
+      - name: Run e2e tests
+        run: |
+          npm run dev:ui &
+          npm run test:e2e
+        env:
+          NODE_ENV: test
+          PORT: ${{ secrets.PORT }}
+          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          SERVER_URL: http://localhost:${{ secrets.PORT }}
