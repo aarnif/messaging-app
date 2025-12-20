@@ -152,6 +152,15 @@ test.describe("App", () => {
         await expect(page.getByText("New Name")).toBeVisible();
         await expect(page.getByText("Hi! I am using this app!")).toBeVisible();
       });
+
+      test("prevents sending empty change password info", async ({ page }) => {
+        await page.getByTestId("settings-nav-item").click();
+        await page.getByRole("button", { name: "Change Password" }).click();
+
+        await page.getByTestId("change-password-button").click();
+
+        await expect(page.getByText("Please fill all fields.")).toBeVisible();
+      });
     });
   });
 
