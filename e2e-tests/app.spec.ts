@@ -493,5 +493,39 @@ test.describe("App", () => {
       await page.getByTestId("toggle-dark-mode").click();
       await expect(htmlElement).not.toHaveClass(/dark/);
     });
+
+    test("can toggle 24 hour clock", async ({ page }) => {
+      for (const user of [user1, user2]) {
+        await signUp(page, user.username, user.password, user.confirmPassword);
+        await logout(page);
+      }
+      await signIn(page, user1.username, user1.password);
+
+      await expect(
+        page.getByText("Select Chat to Start Messaging.")
+      ).toBeVisible();
+
+      await addContacts(page, [user2]);
+      await page.getByTestId("chats-nav-item").click();
+      await createPrivateChat(page, user2, "Hello World!");
+
+      await expect(page.getByText(/AM|PM/)).not.toBeVisible();
+
+      await page.getByTestId("settings-nav-item").click();
+      await page.getByRole("link", { name: "Appearance" }).click();
+      await page.getByTestId("toggle-clock-mode").click();
+
+      await page.getByTestId("chats-nav-item").click();
+
+      await expect(page.getByText(/AM|PM/)).toBeVisible();
+
+      await page.getByTestId("settings-nav-item").click();
+      await page.getByRole("link", { name: "Appearance" }).click();
+      await page.getByTestId("toggle-clock-mode").click();
+
+      await page.getByTestId("chats-nav-item").click();
+
+      await expect(page.getByText(/AM|PM/)).not.toBeVisible();
+    });
   });
 });
