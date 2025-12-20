@@ -8,7 +8,6 @@ import {
   sendMessage,
   createPrivateChat,
   createGroupChat,
-  openChatInfoModal,
   editGroupChat,
   editProfile,
   changePassword,
