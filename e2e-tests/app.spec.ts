@@ -126,6 +126,28 @@ test.describe("App", () => {
         ).toBeVisible();
       });
     });
+
+    test.describe("Editing", () => {
+      test.beforeEach(async ({ page }) => {
+        await signUp(
+          page,
+          user1.username,
+          user1.password,
+          user1.confirmPassword
+        );
+      });
+
+      test("prevents editing with empty profile name", async ({ page }) => {
+        await page.getByTestId("settings-nav-item").click();
+        await page.getByTestId("edit-profile-button").click();
+        await page.getByRole("textbox", { name: "Name", exact: true }).fill("");
+        await page.getByTestId("submit-edit-profile-button").click();
+
+        await expect(
+          page.getByText("Profile name must be at least three characters long")
+        ).toBeVisible();
+      });
+    });
   });
 
   test.describe("Contacts", () => {

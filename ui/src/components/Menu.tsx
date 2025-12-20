@@ -42,6 +42,7 @@ const Menu = () => {
       icon: <FaAddressBook className={styles.icon} />,
     },
     {
+      testId: "settings-nav-item",
       title: "Settings",
       path: "/settings",
       icon: <FaCog className={styles.icon} />,
