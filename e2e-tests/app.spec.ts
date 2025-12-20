@@ -474,4 +474,24 @@ test.describe("App", () => {
       });
     });
   });
+
+  test.describe("Settings", () => {
+    test.beforeEach(async ({ page }) => {
+      await signUp(page, user1.username, user1.password, user1.confirmPassword);
+    });
+
+    test("can toggle dark mode", async ({ page }) => {
+      await page.getByTestId("settings-nav-item").click();
+      await page.getByRole("link", { name: "Appearance" }).click();
+
+      const htmlElement = page.locator("html");
+      await expect(htmlElement).not.toHaveClass(/dark/);
+
+      await page.getByTestId("toggle-dark-mode").click();
+      await expect(htmlElement).toHaveClass(/dark/);
+
+      await page.getByTestId("toggle-dark-mode").click();
+      await expect(htmlElement).not.toHaveClass(/dark/);
+    });
+  });
 });
