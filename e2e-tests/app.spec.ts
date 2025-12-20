@@ -161,6 +161,27 @@ test.describe("App", () => {
 
         await expect(page.getByText("Please fill all fields.")).toBeVisible();
       });
+
+      test("prevents change password with non-matching passwords", async ({
+        page,
+      }) => {
+        await page.getByTestId("settings-nav-item").click();
+        await page.getByRole("button", { name: "Change Password" }).click();
+
+        await page
+          .getByRole("textbox", { name: "Current Password", exact: true })
+          .fill(user1.password);
+        await page
+          .getByRole("textbox", { name: "New Password", exact: true })
+          .fill("newPassword");
+        await page
+          .getByRole("textbox", { name: "Confirm New Password", exact: true })
+          .fill("newPasswor");
+
+        await page.getByTestId("change-password-button").click();
+
+        await expect(page.getByText("Passwords do not match")).toBeVisible();
+      });
     });
   });
 
