@@ -405,6 +405,38 @@ test.describe("App", () => {
 
         await expect(page.getByText("4 members")).toBeVisible();
       });
+
+      test("can remove chat members", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2, user3],
+          "Hello World!"
+        );
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(page.getByText("User1: Hello World!")).toBeVisible();
+
+        await editGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2]
+        );
+
+        await expect(page.getByTestId("chat-info-name")).toHaveText(
+          "New Group Chat"
+        );
+
+        await expect(
+          page.getByText("New Group Chat Description")
+        ).toBeVisible();
+
+        await expect(page.getByText("2 members")).toBeVisible();
+      });
     });
   });
 });
