@@ -60,4 +60,3 @@ jobs:
           PORT: ${{ secrets.PORT }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-          SERVER_URL: http://localhost:${{ secrets.PORT }}
