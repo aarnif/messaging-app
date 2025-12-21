@@ -51,10 +51,12 @@ jobs:
         run: npm run test:ui
         env:
           CI: true
+      - name: Start UI dev server
+        run: npm run dev:ui &
+      - name: Wait for UI server to be ready
+        run: sleep 10
       - name: Run e2e tests
-        run: |
-          npm run dev:ui &
-          npm run test:e2e
+        run: npm run test:e2e
         env:
           NODE_ENV: test
           PORT: ${{ secrets.PORT }}
