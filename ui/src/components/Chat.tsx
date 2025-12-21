@@ -561,7 +561,7 @@ const ChatContent = ({
     fetchPolicy: "network-only",
   });
 
-  const { id, type, name, members } = chat;
+  const { id, type, name, members, messages } = chat;
 
   const otherChatMember =
     type === "private"
@@ -596,7 +596,7 @@ const ChatContent = ({
         currentUser={currentUser}
         callBack={handleCallBack}
       />
-      <ChatMessages currentUser={currentUser} messages={chat.messages} />
+      <ChatMessages currentUser={currentUser} messages={messages} />
       <NewMessageBox
         id={id}
         userId={otherChatMember ? otherChatMember.id : null}
