@@ -99,6 +99,17 @@ const fillChangePasswordForm = async (
   );
 };
 
+const assertChangePasswordModalClosed = async (timeout: number = 2000) => {
+  await waitFor(
+    async () => {
+      expect(
+        screen.queryByRole("heading", { name: "Change Password" })
+      ).toBeNull();
+    },
+    { timeout }
+  );
+};
+
 describe("<Profile />", () => {
   test("renders content", async () => {
     renderComponent();
@@ -214,14 +225,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("close-modal-button"));
 
-    await waitFor(
-      async () => {
-        expect(
-          screen.queryByRole("heading", { name: "Change Password" })
-        ).toBeNull();
-      },
-      { timeout: 2000 }
-    );
+    await assertChangePasswordModalClosed();
   });
 
   test("display error if all fields are not filled", async () => {
@@ -281,13 +285,6 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("change-password-button"));
 
-    await waitFor(
-      async () => {
-        expect(
-          screen.queryByRole("heading", { name: "Change Password" })
-        ).toBeNull();
-      },
-      { timeout: 2000 }
-    );
+    await assertChangePasswordModalClosed();
   });
 });
