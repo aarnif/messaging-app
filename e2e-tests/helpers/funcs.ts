@@ -241,3 +241,18 @@ export const openAppearanceSettings = async (page: Page) => {
   await page.getByTestId("settings-nav-item").click();
   await page.getByRole("link", { name: "Appearance" }).click();
 };
+
+export const signUpMultipleUsers = async (
+  page: Page,
+  users: {
+    name: string;
+    username: string;
+    password: string;
+    confirmPassword: string;
+  }[]
+) => {
+  for (const user of users) {
+    await signUp(page, user.username, user.password, user.confirmPassword);
+    await logout(page);
+  }
+};
