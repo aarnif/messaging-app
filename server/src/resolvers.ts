@@ -1034,6 +1034,11 @@ export const resolvers: Resolvers = {
               attributes: ["role"],
             },
           },
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
         ],
       });
 
@@ -1137,6 +1142,17 @@ export const resolvers: Resolvers = {
         chatToBeUpdated.description = description || null;
 
         await chatToBeUpdated.save();
+
+        const latestMessage = chatToBeUpdated.toJSON().messages?.at(-1);
+
+        await pubsub.publish("USER_CHAT_UPDATED", {
+          userChatUpdated: {
+            id: String(chatToBeUpdated.id),
+            name: getChatName(chatToBeUpdated, context.currentUser),
+            avatar: chatToBeUpdated.avatar,
+            latestMessage: latestMessage,
+          },
+        });
 
         return await Chat.findByPk(Number(id), {
           include: [
