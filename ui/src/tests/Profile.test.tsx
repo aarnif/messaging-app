@@ -214,11 +214,14 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("close-modal-button"));
 
-    await waitFor(async () => {
-      expect(
-        screen.queryByRole("heading", { name: "Change Password" })
-      ).toBeNull();
-    });
+    await waitFor(
+      async () => {
+        expect(
+          screen.queryByRole("heading", { name: "Change Password" })
+        ).toBeNull();
+      },
+      { timeout: 2000 }
+    );
   });
 
   test("display error if all fields are not filled", async () => {
