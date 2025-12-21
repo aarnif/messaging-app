@@ -45,8 +45,6 @@ jobs:
         run: sleep 10
       - name: Generate GraphQL ui types
         run: npm run generate:ui
-        env:
-          SERVER_URL: http://localhost:${{ secrets.PORT }}
       - name: Run ui tests
         run: npm run test:ui
         env:
