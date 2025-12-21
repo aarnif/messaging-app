@@ -58,7 +58,7 @@ jobs:
       - name: Run e2e tests
         run: npm run test:e2e
         env:
-          NODE_ENV: test
+          CI: true
           PORT: ${{ secrets.PORT }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
