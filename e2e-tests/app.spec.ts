@@ -201,8 +201,9 @@ test.describe("App", () => {
     test("can add a contact", async ({ page }) => {
       await addContacts(page, [user2]);
 
-      await expect(page.getByText(/User2/)).toBeVisible();
-      await expect(page.getByText(/@user2/)).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) })
+      ).toBeVisible();
     });
 
     test("can add several contacts", async ({ page }) => {
