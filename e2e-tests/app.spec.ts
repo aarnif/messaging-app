@@ -2,6 +2,7 @@ import { test, expect } from "@playwright/test";
 import {
   signUp,
   signIn,
+  signUpMultipleUsers,
   logout,
   addContacts,
   blockContact,
@@ -187,10 +188,7 @@ test.describe("App", () => {
 
   test.describe("Contacts", () => {
     test.beforeEach(async ({ page }) => {
-      for (const user of [user1, user2, user3]) {
-        await signUp(page, user.username, user.password, user.confirmPassword);
-        await logout(page);
-      }
+      await signUpMultipleUsers(page, [user1, user2, user3]);
       await signIn(page, user1.username, user1.password);
 
       await expect(
@@ -242,10 +240,7 @@ test.describe("App", () => {
 
   test.describe("Chats", () => {
     test.beforeEach(async ({ page }) => {
-      for (const user of [user1, user2, user3, user4]) {
-        await signUp(page, user.username, user.password, user.confirmPassword);
-        await logout(page);
-      }
+      await signUpMultipleUsers(page, [user1, user2, user3, user4]);
       await signIn(page, user1.username, user1.password);
 
       await expect(
