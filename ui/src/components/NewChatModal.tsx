@@ -39,7 +39,7 @@ export const SelectContactList = ({
   }
 
   return (
-    <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
+    <div className="flex h-0 w-full grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {contacts.map((contact) => (
         <SelectUserButton
           key={contact.id}
@@ -297,7 +297,7 @@ const NewChatModal = ({
       transition={{ type: "tween" }}
     >
       <motion.div
-        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-[500px] sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,

@@ -62,7 +62,7 @@ const EditProfileModal = ({
       animate={{ x: 0 }}
       exit={{ x: "100vw" }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+      className="absolute inset-0 flex grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
       <div className="flex w-full items-center justify-between">
         <button
@@ -177,7 +177,7 @@ const ChangePasswordModal = ({
       transition={{ type: "tween" }}
     >
       <motion.div
-        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,
@@ -240,11 +240,11 @@ const Profile = ({ currentUser }: { currentUser: User }) => {
 
   return (
     <div
-      className={`relative flex flex-grow flex-col items-center justify-center bg-white dark:bg-slate-800 ${
+      className={`relative flex grow flex-col items-center justify-center bg-white dark:bg-slate-800 ${
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
-      <div className="flex w-full flex-grow flex-col items-center gap-4 overflow-y-auto px-2 py-4 sm:gap-8">
+      <div className="flex w-full grow flex-col items-center gap-4 overflow-y-auto px-2 py-4 sm:gap-8">
         <div className="flex w-full items-center justify-center">
           <button
             data-testid="go-back-button"
@@ -264,7 +264,7 @@ const Profile = ({ currentUser }: { currentUser: User }) => {
             <FiEdit className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
           </button>
         </div>
-        <div className="flex flex-grow flex-col items-center gap-2.5">
+        <div className="flex grow flex-col items-center gap-2.5">
           <img
             className="h-20 w-20 rounded-full"
             src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
