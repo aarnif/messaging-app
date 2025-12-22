@@ -111,3 +111,8 @@ Ei muutoksia
 ## Viikko 12 (8.12-14.12.2025)
 
 Ei muutoksia
+
+## Viikko 13 (15.12-21.12.2025)
+
+- Järjestelmätestien kirjoitus sovellukselle (Playwright)
+- Jatkuvan integraation ja julkaisun automatisointi (GitHub Actions)
