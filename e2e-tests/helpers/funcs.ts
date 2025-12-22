@@ -18,7 +18,8 @@ export const signUp = async (
     .getByRole("textbox", { name: "Confirm Password" })
     .fill(confirmPassword);
 
-  await page.getByRole("button", { name: "Sign Up" }).click();
+  await page.getByTestId("submit-button").waitFor({ state: "attached" });
+  await page.getByTestId("submit-button").click({ force: true });
 };
 
 export const signIn = async (

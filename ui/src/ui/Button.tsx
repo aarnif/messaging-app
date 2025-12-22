@@ -1,10 +1,12 @@
 const Button = ({
+  testId,
   type,
   variant,
   text,
   disabled = false,
   onClick,
 }: {
+  testId?: string;
   type: "submit" | "reset" | "button" | undefined;
   variant:
     | "primary"
@@ -54,6 +56,7 @@ const Button = ({
 
   return (
     <button
+      data-testid={testId}
       type={type}
       onClick={onClick}
       disabled={disabled}
