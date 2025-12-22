@@ -417,7 +417,7 @@ const EditChatModal = ({
 }) => {
   const width = useResponsiveWidth();
   const isMobileScreen = width <= 640;
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
   const searchWord = useField(
     "search-contacts",
     "text",
@@ -525,7 +525,7 @@ const EditChatModal = ({
           </button>
         </div>
         <AnimatePresence>
-          {message && <Notify message={message} />}
+          {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         <SelectContactsList

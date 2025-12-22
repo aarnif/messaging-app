@@ -12,7 +12,7 @@ import { AnimatePresence } from "motion/react";
 const SignUp = () => {
   const client = useApolloClient();
   const navigate = useNavigate();
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(
     "password",
@@ -120,7 +120,9 @@ const SignUp = () => {
           </h1>
           <div className="flex w-full flex-col gap-4">
             <AnimatePresence>
-              {message && <Notify message={message} />}
+              {message && (
+                <Notify message={message} closeMessage={closeMessage} />
+              )}
             </AnimatePresence>
             <FormField field={username} />
             <FormField field={password} />

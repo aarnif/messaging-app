@@ -69,7 +69,7 @@ const PrivateChatContent = ({
 }) => {
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
 
   const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
     variables: {
@@ -138,7 +138,7 @@ const PrivateChatContent = ({
         </button>
       </div>
       <AnimatePresence>
-        {message && <Notify message={message} />}
+        {message && <Notify message={message} closeMessage={closeMessage} />}
       </AnimatePresence>
       <SearchBox searchWord={searchWord} />
       {loading ? (
@@ -176,7 +176,7 @@ const GroupChatContent = ({
   );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
@@ -245,7 +245,7 @@ const GroupChatContent = ({
         </button>
       </div>
       <AnimatePresence>
-        {message && <Notify message={message} />}
+        {message && <Notify message={message} closeMessage={closeMessage} />}
       </AnimatePresence>
       <SearchBox searchWord={searchWord} />
       {loading ? (
