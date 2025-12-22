@@ -13,6 +13,7 @@ import {
   editProfile,
   changePassword,
   openAppearanceSettings,
+  assertErrorNotifyAndClose,
 } from "./helpers/funcs";
 import { user1, user2, user3, user4 } from "./helpers/data";
 
@@ -38,28 +39,30 @@ test.describe("App", () => {
     test.describe("Creation", () => {
       test("prevents user creation with empty fields", async ({ page }) => {
         await signUp(page, "", "", "");
-        await expect(page.getByText("Please fill all fields")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Please fill all fields");
       });
 
       test("prevents user creation with invalid username", async ({ page }) => {
         await signUp(page, "u", user1.password, user1.confirmPassword);
-        await expect(
-          page.getByText("Username must be at least 3 characters long")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Username must be at least 3 characters long"
+        );
       });
 
       test("prevents user creation with invalid password", async ({ page }) => {
         await signUp(page, user1.username, "passw", user1.confirmPassword);
-        await expect(
-          page.getByText("Password must be at least 6 characters long")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Password must be at least 6 characters long"
+        );
       });
 
       test("prevents user creation with non-matching passwords", async ({
         page,
       }) => {
         await signUp(page, user1.username, user1.password, "passwor");
-        await expect(page.getByText("Passwords do not match")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Passwords do not match");
       });
 
       test("can create a new user", async ({ page }) => {
@@ -88,7 +91,7 @@ test.describe("App", () => {
           user1.password,
           user1.confirmPassword
         );
-        await expect(page.getByText("Username already exists")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Username already exists");
       });
     });
 
@@ -105,21 +108,17 @@ test.describe("App", () => {
 
       test("prevents sign in with empty credentials", async ({ page }) => {
         await page.getByRole("button", { name: "Sign In" }).click();
-        await expect(page.getByText("Please fill all fields.")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Please fill all fields.");
       });
 
       test("prevents sign in with invalid username", async ({ page }) => {
         await signIn(page, "invalid", user1.password);
-        await expect(
-          page.getByText("Invalid username or password")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Invalid username or password");
       });
 
       test("prevents sign in with invalid password", async ({ page }) => {
         await signIn(page, user1.username, "invalid");
-        await expect(
-          page.getByText("Invalid username or password")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Invalid username or password");
       });
 
       test("can sign in with valid credentials", async ({ page }) => {
@@ -143,9 +142,10 @@ test.describe("App", () => {
       test("prevents editing with empty profile name", async ({ page }) => {
         await editProfile(page, "");
 
-        await expect(
-          page.getByText("Profile name must be at least three characters long")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Profile name must be at least three characters long"
+        );
       });
 
       test("can edit profile info", async ({ page }) => {
@@ -158,7 +158,7 @@ test.describe("App", () => {
       test("prevents sending empty change password info", async ({ page }) => {
         await changePassword(page, "", "", "");
 
-        await expect(page.getByText("Please fill all fields.")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Please fill all fields.");
       });
 
       test("prevents change password with non-matching passwords", async ({
@@ -166,7 +166,7 @@ test.describe("App", () => {
       }) => {
         await changePassword(page, user1.password, "newPassword", "newPasswor");
 
-        await expect(page.getByText("Passwords do not match")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Passwords do not match");
       });
 
       test("prevents change password with wrong current password", async ({
@@ -179,9 +179,10 @@ test.describe("App", () => {
           "newPassword"
         );
 
-        await expect(
-          page.getByText("Current password does not match")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Current password does not match"
+        );
       });
     });
   });
@@ -255,9 +256,10 @@ test.describe("App", () => {
       test("prevents creation without contact", async ({ page }) => {
         await createPrivateChat(page);
 
-        await expect(
-          page.getByText("Please select a contact to create a chat with")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Please select a contact to create a chat with"
+        );
       });
 
       test("prevents creation with a contact that has blocked user", async ({
@@ -273,7 +275,7 @@ test.describe("App", () => {
         await signIn(page, user1.username, user1.password);
         await createPrivateChat(page, user2);
 
-        await expect(page.getByText("Contact has blocked you.")).toBeVisible();
+        await assertErrorNotifyAndClose(page, "Contact has blocked you.");
       });
 
       test("can create a private chat", async ({ page }) => {
@@ -285,9 +287,10 @@ test.describe("App", () => {
       test("prevents creation without name", async ({ page }) => {
         await createGroupChat(page, "", "New Group Chat Description", []);
 
-        await expect(
-          page.getByText("Chat name must be at least three characters long")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Chat name must be at least three characters long"
+        );
       });
 
       test("prevents creation without members", async ({ page }) => {
@@ -298,9 +301,10 @@ test.describe("App", () => {
           []
         );
 
-        await expect(
-          page.getByText("Chat must have at least two members")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Chat must have at least two members"
+        );
       });
 
       test("prevents creation with one additional member", async ({ page }) => {
@@ -311,9 +315,10 @@ test.describe("App", () => {
           [user2]
         );
 
-        await expect(
-          page.getByText("Chat must have at least two members")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Chat must have at least two members"
+        );
       });
 
       test("can create a group chat", async ({ page }) => {
@@ -391,9 +396,10 @@ test.describe("App", () => {
 
         await editGroupChat(page, "", "", [user2, user3]);
 
-        await expect(
-          page.getByText("Chat name must be at least three characters long")
-        ).toBeVisible();
+        await assertErrorNotifyAndClose(
+          page,
+          "Chat name must be at least three characters long"
+        );
       });
 
       test("can edit group chat details", async ({ page }) => {

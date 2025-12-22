@@ -5,12 +5,13 @@ const useNotifyMessage = () => {
 
   const showMessage = (text: string) => {
     setMessage(text);
-    setTimeout(() => {
-      setMessage(null);
-    }, 3000);
   };
 
-  return { message, showMessage };
+  const closeMessage = () => {
+    setMessage(null);
+  };
+
+  return { message, showMessage, closeMessage };
 };
 
 export default useNotifyMessage;

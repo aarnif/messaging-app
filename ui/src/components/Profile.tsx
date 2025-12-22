@@ -22,7 +22,7 @@ const EditProfileModal = ({
   setIsEditProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { name, about } = currentUser;
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
   const nameInput = useField("name", "text", "Enter your name here...", name);
   const aboutInput = useField(
     "about",
@@ -86,7 +86,7 @@ const EditProfileModal = ({
       </div>
       <div className="flex w-full flex-col gap-4">
         <AnimatePresence>
-          {message && <Notify message={message} />}
+          {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <FormField field={nameInput} />
         <FormField field={aboutInput} />
@@ -100,7 +100,7 @@ const ChangePasswordModal = ({
 }: {
   setIsChangePasswordModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
   const currentPassword = useField(
     "Current Password",
     "password",
@@ -214,7 +214,9 @@ const ChangePasswordModal = ({
         </h3>
         <div className="flex w-full flex-col gap-6">
           <AnimatePresence>
-            {message && <Notify message={message} />}
+            {message && (
+              <Notify message={message} closeMessage={closeMessage} />
+            )}
           </AnimatePresence>
           <FormField field={currentPassword} />
           <FormField field={newPassword} />

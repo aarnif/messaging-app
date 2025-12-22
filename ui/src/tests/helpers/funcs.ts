@@ -1,10 +1,6 @@
 import { expect } from "vitest";
-import {
-  screen,
-  within,
-  waitFor,
-  waitForElementToBeRemoved,
-} from "@testing-library/react";
+import { screen, within, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
 import type { Contact } from "../../__generated__/graphql";
 
@@ -46,15 +42,15 @@ export const sendNewMessage = async (user: UserEvent, message: string) => {
   await user.click(screen.getByTestId("send-message-button"));
 };
 
-export const assertErrorMessageAndDismissal = async (
-  errorMessage: string,
-  timeout = 3500
-) => {
+export const assertErrorMessageAndDismissal = async (errorMessage: string) => {
+  const user = userEvent.setup();
   await waitFor(() => {
     expect(screen.getByText(errorMessage)).toBeDefined();
   });
 
-  await waitForElementToBeRemoved(() => screen.queryByText(errorMessage), {
-    timeout,
+  await user.click(screen.getByTestId("close-notify-message"));
+
+  await waitFor(() => {
+    expect(screen.queryByText(errorMessage)).toBeNull();
   });
 };

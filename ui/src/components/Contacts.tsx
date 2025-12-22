@@ -70,7 +70,7 @@ const AddContactsModal = ({
     "text",
     "Search by name or username..."
   );
-  const { message, showMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useNotifyMessage();
   const width = useResponsiveWidth();
 
   const [users, setUsers] = useState<AddContactOption[]>([]);
@@ -163,7 +163,7 @@ const AddContactsModal = ({
           </button>
         </div>
         <AnimatePresence>
-          {message && <Notify message={message} />}
+          {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         {loading ? (

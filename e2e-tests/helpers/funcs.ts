@@ -256,3 +256,12 @@ export const signUpMultipleUsers = async (
     await logout(page);
   }
 };
+
+export const assertErrorNotifyAndClose = async (
+  page: Page,
+  message: string
+) => {
+  await expect(page.getByText(message)).toBeVisible();
+  await page.getByTestId("close-notify-message").click();
+  await expect(page.getByText(message)).not.toBeVisible();
+};
