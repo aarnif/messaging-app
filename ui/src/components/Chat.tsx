@@ -65,7 +65,7 @@ const ChatMessage = ({
     >
       <div
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
-        className={`relative flex max-w-[250px] min-w-[100px] flex-col rounded-xl px-2 pt-2 sm:max-w-[600px] ${
+        className={`relative flex max-w-62.5 min-w-25 flex-col rounded-xl px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
         }`}
       >
@@ -79,7 +79,7 @@ const ChatMessage = ({
           {senderName}
         </h3>
         <p
-          className={`text-xs font-normal break-words text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"}`}
+          className={`text-xs font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"}`}
         >
           {message.content}
         </p>
@@ -93,7 +93,7 @@ const ChatMessage = ({
           {formatDisplayDate(message?.createdAt, currentUser.is24HourClock)}
         </p>
         <div
-          className={`absolute bottom-0 border-t-[16px] border-t-transparent ${isCurrentUser ? "-right-2 border-l-[16px] border-l-green-300" : "-left-2 border-r-[16px] border-r-slate-200 dark:border-r-slate-700"}`}
+          className={`absolute bottom-0 border-t-16 border-t-transparent ${isCurrentUser ? "-right-2 border-l-16 border-l-green-300" : "-left-2 border-r-16 border-r-slate-200 dark:border-r-slate-700"}`}
         ></div>
       </div>
 
@@ -101,7 +101,7 @@ const ChatMessage = ({
         <img
           src="https://i.ibb.co/vJDhmJJ/profile-placeholder.png"
           alt="sender-thumbnail"
-          className="relative right-[12px] h-10 w-10 rounded-full"
+          className="relative right-3 h-10 w-10 rounded-full"
         />
       )}
     </div>
@@ -113,9 +113,9 @@ const NotificationMessage = ({ message }: { message: Message }) => {
     <div className="flex flex-col items-center">
       <div
         data-testid={"notification-message"}
-        className="relative flex max-w-[250px] min-w-[100px] flex-col rounded-xl bg-slate-200 p-2 sm:max-w-[600px] dark:bg-slate-700"
+        className="relative flex max-w-62.5 min-w-25 flex-col rounded-xl bg-slate-200 p-2 sm:sm:max-w-150 dark:bg-slate-700"
       >
-        <p className="text-xs font-medium break-words text-slate-800 dark:text-slate-100">
+        <p className="text-xs font-medium wrap-break-word text-slate-800 dark:text-slate-100">
           {message.content}
         </p>
       </div>
@@ -137,7 +137,7 @@ const ChatMessages = ({
   }, [messages]);
 
   return (
-    <div className="flex h-0 flex-grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
+    <div className="flex h-0 grow flex-col gap-4 overflow-y-auto p-4 sm:p-8">
       {messages.map((message) =>
         message.isNotification ? (
           <NotificationMessage key={message.id} message={message} />
@@ -312,7 +312,7 @@ const ChatInfoModal = ({
       animate={{ x: 0 }}
       exit={{ x: "100vw" }}
       transition={{ type: "tween", duration: 0.3 }}
-      className="absolute inset-0 flex flex-grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
+      className="absolute inset-0 flex grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
       <div
         className={`flex w-full items-center ${!isAdmin ? "relative justify-center" : "justify-between"}`}
@@ -355,7 +355,7 @@ const ChatInfoModal = ({
         </div>
       </div>
 
-      <div className="flex w-full flex-grow flex-col gap-2 p-2 sm:max-w-[360px]">
+      <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-90">
         <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
           {members?.length} members
         </h4>
@@ -492,7 +492,7 @@ const EditChatModal = ({
     >
       <motion.div
         data-testid="edit-chat-modal"
-        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-[500px] sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,
@@ -659,9 +659,9 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
   const chat = data?.findChatById;
 
   return (
-    <div className="relative flex flex-grow flex-col">
+    <div className="relative flex grow flex-col">
       {loading ? (
-        <div className="flex flex-grow items-center justify-center">
+        <div className="flex grow items-center justify-center">
           <Spinner />
         </div>
       ) : !chat ? (
