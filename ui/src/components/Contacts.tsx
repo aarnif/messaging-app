@@ -45,7 +45,7 @@ export const SelectUserList = ({
   };
 
   return (
-    <div className="flex h-0 w-full flex-grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
+    <div className="flex h-0 w-full grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
       {users.map((user) => (
         <SelectUserButton
           key={user.id}
@@ -130,7 +130,7 @@ const AddContactsModal = ({
       transition={{ type: "tween" }}
     >
       <motion.div
-        className="flex h-[90vh] flex-grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-[500px] sm:max-w-[500px] sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,
@@ -238,7 +238,7 @@ const ListMenu = ({
 
   return (
     <div
-      className={`flex flex-grow flex-col border-r border-slate-200 bg-white sm:max-w-[360px] dark:border-slate-700 dark:bg-slate-800 ${
+      className={`flex grow flex-col border-r border-slate-200 bg-white sm:max-w-90 dark:border-slate-700 dark:bg-slate-800 ${
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
@@ -253,7 +253,7 @@ const ListMenu = ({
           <Spinner />
         </div>
       ) : hasContacts ? (
-        <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
+        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
           {contacts.map((contact) => (
             <ContactItem key={contact.id} contact={contact} />
           ))}
@@ -272,7 +272,7 @@ const ListMenu = ({
 const Contacts = () => {
   const [isAddContactsModalOpen, setIsAddContactsModalOpen] = useState(false);
   return (
-    <div className="flex flex-grow">
+    <div className="flex grow">
       <ListMenu setIsAddContactsModalOpen={setIsAddContactsModalOpen} />
       <Outlet />
       <AnimatePresence>
