@@ -216,7 +216,7 @@ const ListMenu = ({
 
   return (
     <div
-      className={`flex flex-grow flex-col border-r border-slate-200 bg-white sm:max-w-[360px] dark:border-slate-700 dark:bg-slate-800 ${
+      className={`flex grow flex-col border-r border-slate-200 bg-white sm:max-w-90 dark:border-slate-700 dark:bg-slate-800 ${
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
@@ -231,7 +231,7 @@ const ListMenu = ({
           <Spinner />
         </div>
       ) : hasChats ? (
-        <div className="flex h-0 flex-grow flex-col gap-2 overflow-y-auto p-2">
+        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
           {chats.map((chat) => (
             <ChatItem key={chat.id} currentUser={currentUser} chat={chat} />
           ))}
@@ -266,7 +266,7 @@ const Chats = ({ currentUser }: { currentUser: User }) => {
   };
 
   return (
-    <div className="flex flex-grow">
+    <div className="flex grow">
       <ListMenu
         currentUser={currentUser}
         setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}

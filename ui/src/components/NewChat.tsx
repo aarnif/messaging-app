@@ -75,7 +75,7 @@ const NewChatContent = ({
         members={members}
         currentUser={currentUser}
       />
-      <div className="flex-grow"></div>
+      <div className="grow"></div>
       <NewMessageBox
         chatName={name ?? null}
         chatDescription={description ?? null}
@@ -92,7 +92,7 @@ const NewChat = ({ currentUser }: { currentUser: User }) => {
   const newChatInfo = storedChatInfo ? JSON.parse(storedChatInfo) : null;
 
   return (
-    <div className="relative flex flex-grow flex-col">
+    <div className="relative flex grow flex-col">
       <NewChatContent currentUser={currentUser} chat={newChatInfo} />
     </div>
   );
