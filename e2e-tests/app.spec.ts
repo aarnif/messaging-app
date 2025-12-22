@@ -39,6 +39,10 @@ test.describe("App", () => {
       test("prevents user creation with empty fields", async ({ page }) => {
         await signUp(page, "", "", "");
         await expect(page.getByText("Please fill all fields")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Please fill all fields")
+        ).not.toBeVisible();
       });
 
       test("prevents user creation with invalid username", async ({ page }) => {
@@ -46,6 +50,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Username must be at least 3 characters long")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Username must be at least 3 characters long")
+        ).not.toBeVisible();
       });
 
       test("prevents user creation with invalid password", async ({ page }) => {
@@ -53,6 +61,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Password must be at least 6 characters long")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Password must be at least 6 characters long")
+        ).not.toBeVisible();
       });
 
       test("prevents user creation with non-matching passwords", async ({
@@ -60,6 +72,10 @@ test.describe("App", () => {
       }) => {
         await signUp(page, user1.username, user1.password, "passwor");
         await expect(page.getByText("Passwords do not match")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Passwords do not match")
+        ).not.toBeVisible();
       });
 
       test("can create a new user", async ({ page }) => {
@@ -89,6 +105,10 @@ test.describe("App", () => {
           user1.confirmPassword
         );
         await expect(page.getByText("Username already exists")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Username already exists")
+        ).not.toBeVisible();
       });
     });
 
@@ -106,6 +126,10 @@ test.describe("App", () => {
       test("prevents sign in with empty credentials", async ({ page }) => {
         await page.getByRole("button", { name: "Sign In" }).click();
         await expect(page.getByText("Please fill all fields.")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Please fill all fields.")
+        ).not.toBeVisible();
       });
 
       test("prevents sign in with invalid username", async ({ page }) => {
@@ -113,6 +137,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Invalid username or password")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Invalid username or password")
+        ).not.toBeVisible();
       });
 
       test("prevents sign in with invalid password", async ({ page }) => {
@@ -120,6 +148,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Invalid username or password")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Invalid username or password")
+        ).not.toBeVisible();
       });
 
       test("can sign in with valid credentials", async ({ page }) => {
@@ -146,6 +178,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Profile name must be at least three characters long")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Profile name must be at least three characters long")
+        ).not.toBeVisible();
       });
 
       test("can edit profile info", async ({ page }) => {
@@ -159,6 +195,10 @@ test.describe("App", () => {
         await changePassword(page, "", "", "");
 
         await expect(page.getByText("Please fill all fields.")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Please fill all fields.")
+        ).not.toBeVisible();
       });
 
       test("prevents change password with non-matching passwords", async ({
@@ -167,6 +207,10 @@ test.describe("App", () => {
         await changePassword(page, user1.password, "newPassword", "newPasswor");
 
         await expect(page.getByText("Passwords do not match")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Passwords do not match")
+        ).not.toBeVisible();
       });
 
       test("prevents change password with wrong current password", async ({
@@ -182,6 +226,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Current password does not match")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Current password does not match")
+        ).not.toBeVisible();
       });
     });
   });
@@ -258,6 +306,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Please select a contact to create a chat with")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Please select a contact to create a chat with")
+        ).not.toBeVisible();
       });
 
       test("prevents creation with a contact that has blocked user", async ({
@@ -274,6 +326,10 @@ test.describe("App", () => {
         await createPrivateChat(page, user2);
 
         await expect(page.getByText("Contact has blocked you.")).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Contact has blocked you.")
+        ).not.toBeVisible();
       });
 
       test("can create a private chat", async ({ page }) => {
@@ -288,6 +344,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Chat name must be at least three characters long")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Chat name must be at least three characters long")
+        ).not.toBeVisible();
       });
 
       test("prevents creation without members", async ({ page }) => {
@@ -301,6 +361,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Chat must have at least two members")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Chat must have at least two members")
+        ).not.toBeVisible();
       });
 
       test("prevents creation with one additional member", async ({ page }) => {
@@ -314,6 +378,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Chat must have at least two members")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Chat must have at least two members")
+        ).not.toBeVisible();
       });
 
       test("can create a group chat", async ({ page }) => {
@@ -394,6 +462,10 @@ test.describe("App", () => {
         await expect(
           page.getByText("Chat name must be at least three characters long")
         ).toBeVisible();
+        await page.getByTestId("close-notify-message").click();
+        await expect(
+          page.getByText("Chat name must be at least three characters long")
+        ).not.toBeVisible();
       });
 
       test("can edit group chat details", async ({ page }) => {
