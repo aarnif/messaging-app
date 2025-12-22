@@ -92,7 +92,7 @@ const ContactContent = ({
   };
 
   return (
-    <div className="flex w-full flex-grow flex-col items-center gap-4 overflow-y-auto px-2 py-4 sm:gap-8">
+    <div className="flex w-full grow flex-col items-center gap-4 overflow-y-auto px-2 py-4 sm:gap-8">
       <div className="flex w-full justify-center">
         <button
           data-testid="go-back-button"
@@ -105,7 +105,7 @@ const ContactContent = ({
           Contact
         </h2>
       </div>
-      <div className="flex flex-grow flex-col items-center gap-2.5">
+      <div className="flex grow flex-col items-center gap-2.5">
         <img
           className="h-20 w-20 rounded-full"
           src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
@@ -213,9 +213,9 @@ const Contact = ({ currentUser }: { currentUser: User }) => {
   const loading = contactLoading || blockedLoading;
 
   return (
-    <div className="flex flex-grow flex-col items-center justify-center bg-white dark:bg-slate-800">
+    <div className="flex grow flex-col items-center justify-center bg-white dark:bg-slate-800">
       {loading ? (
-        <div className="flex flex-grow items-center justify-center">
+        <div className="flex grow items-center justify-center">
           <Spinner />
         </div>
       ) : !contact ? (
