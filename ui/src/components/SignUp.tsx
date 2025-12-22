@@ -129,7 +129,12 @@ const SignUp = () => {
             <FormField field={confirmPassword} />
           </div>
           <div className="flex w-full flex-col gap-2">
-            <Button type="submit" variant="primary" text="Sign Up" />
+            <Button
+              testId="submit-button"
+              type="submit"
+              variant="primary"
+              text="Sign Up"
+            />
 
             <Button
               type="button"
