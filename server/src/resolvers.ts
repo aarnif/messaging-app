@@ -156,7 +156,7 @@ export const resolvers: Resolvers = {
         return {
           id: String(chat.id),
           type: chat.type,
-          name: getChatName(chat, context.currentUser),
+          name: chat.name || null,
           avatar: chat.avatar,
           members: chat.members ?? [],
           latestMessage: chat.messages![0],
@@ -921,7 +921,7 @@ export const resolvers: Resolvers = {
           userChatCreated: {
             id: String(chat.id),
             type: chat.type,
-            name: getChatName(chat, context.currentUser),
+            name: chat.name || null,
             avatar: chat.avatar,
             members: chat.members,
             latestMessage: chat.messages![0],
@@ -1153,7 +1153,7 @@ export const resolvers: Resolvers = {
           userChatUpdated: {
             id: String(chatToBeUpdated.id),
             type: chatToBeUpdated.type,
-            name: getChatName(chatToBeUpdated, context.currentUser),
+            name: chatToBeUpdated.name || null,
             avatar: chatToBeUpdated.avatar,
             members: chatToBeUpdated.members,
             latestMessage: latestMessage,
@@ -1339,7 +1339,7 @@ export const resolvers: Resolvers = {
           userChatUpdated: {
             id: String(chat.id),
             type: chat.type,
-            name: getChatName(chat, context.currentUser),
+            name: chat.name || null,
             avatar: chat.avatar,
             members: chat.members,
             latestMessage: latestMessage,
