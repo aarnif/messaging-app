@@ -172,7 +172,6 @@ const NewMessageBox = ({
     onError: (error) => {
       console.log(error);
     },
-    refetchQueries: [ALL_CHATS_BY_USER],
   });
 
   const handleSendMessage = async () => {
