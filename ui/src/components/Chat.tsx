@@ -613,7 +613,6 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
     variables: {
       id: match?.id ?? "",
     },
-    fetchPolicy: "cache-and-network",
   });
 
   useSubscription(MESSAGE_SENT, {
