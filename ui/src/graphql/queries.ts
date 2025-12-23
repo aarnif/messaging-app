@@ -16,8 +16,17 @@ export const ME = gql(`
 export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
   allChatsByUser(search: $search) {
     id
+    type
     name
     avatar
+    members {
+      id
+      username
+      name
+      about
+      avatar
+      is24HourClock
+    }
     latestMessage {
       id
       chatId

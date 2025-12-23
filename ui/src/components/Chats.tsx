@@ -20,6 +20,7 @@ import { useState } from "react";
 import { AnimatePresence } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
+import { getChatName } from "../helpers";
 
 const ChatItem = ({
   currentUser,
@@ -114,7 +115,14 @@ const ListMenu = ({
           }
           return {
             allChatsByUser: existingData.allChatsByUser
-              .map((chat) => (chat.id === updatedChat.id ? updatedChat : chat))
+              .map((chat) =>
+                chat.id === updatedChat.id
+                  ? {
+                      ...updatedChat,
+                      name: getChatName(updatedChat, currentUser.id),
+                    }
+                  : chat
+              )
               .sort(
                 (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
               ),
@@ -148,7 +156,10 @@ const ListMenu = ({
           }
           return {
             allChatsByUser: existingData.allChatsByUser
-              .concat(createdChat)
+              .concat({
+                ...createdChat,
+                name: getChatName(createdChat, currentUser.id),
+              })
               .sort(
                 (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
               ),

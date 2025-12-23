@@ -110,7 +110,7 @@ export const resolvers: Resolvers = {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: [],
+                  attributes: ["role"],
                 },
               },
               {
@@ -155,8 +155,10 @@ export const resolvers: Resolvers = {
       return filteredChats.map((chat) => {
         return {
           id: String(chat.id),
+          type: chat.type,
           name: getChatName(chat, context.currentUser),
           avatar: chat.avatar,
+          members: chat.members ?? [],
           latestMessage: chat.messages![0],
         };
       });
@@ -918,8 +920,10 @@ export const resolvers: Resolvers = {
         await pubsub.publish("USER_CHAT_CREATED", {
           userChatCreated: {
             id: String(chat.id),
+            type: chat.type,
             name: getChatName(chat, context.currentUser),
             avatar: chat.avatar,
+            members: chat.members,
             latestMessage: chat.messages![0],
           },
         });
@@ -1148,8 +1152,10 @@ export const resolvers: Resolvers = {
         await pubsub.publish("USER_CHAT_UPDATED", {
           userChatUpdated: {
             id: String(chatToBeUpdated.id),
+            type: chatToBeUpdated.type,
             name: getChatName(chatToBeUpdated, context.currentUser),
             avatar: chatToBeUpdated.avatar,
+            members: chatToBeUpdated.members,
             latestMessage: latestMessage,
           },
         });
@@ -1332,8 +1338,10 @@ export const resolvers: Resolvers = {
         await pubsub.publish("USER_CHAT_UPDATED", {
           userChatUpdated: {
             id: String(chat.id),
+            type: chat.type,
             name: getChatName(chat, context.currentUser),
             avatar: chat.avatar,
+            members: chat.members,
             latestMessage: latestMessage,
           },
         });
