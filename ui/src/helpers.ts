@@ -1,4 +1,5 @@
 import { format, isToday, isThisWeek } from "date-fns";
+import type { UserChat } from "./__generated__/graphql";
 
 export const formatDisplayDate = (
   messageTime: number,
@@ -23,3 +24,14 @@ export const formatDisplayDate = (
 
 export const truncateText = (text: string, maxLength: number = 20): string =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
+
+export const getChatName = (chat: UserChat, currentUserId: string): string => {
+  if (chat.type === "group") {
+    return chat.name || "Group Chat";
+  }
+
+  const otherMember = chat.members?.find(
+    (member) => member.id !== currentUserId
+  );
+  return otherMember?.name || "Private Chat";
+};

@@ -24,8 +24,18 @@ export const USER_CHAT_UPDATED = gql(`
   subscription UserChatUpdated {
     userChatUpdated {
       id
+      type
       name
       avatar
+      members {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+        role
+      }
       latestMessage {
         id
         chatId
@@ -48,8 +58,18 @@ export const USER_CHAT_CREATED = gql(`
   subscription UserChatCreated {
     userChatCreated {
       id
+      type
       name
       avatar
+      members {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+        role
+      }
       latestMessage {
         id
         chatId

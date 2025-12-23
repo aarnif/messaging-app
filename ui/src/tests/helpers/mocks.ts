@@ -470,8 +470,10 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
 export const userChatsMock = [
   {
     id: GROUP_CHAT_DETAILS.id,
+    type: GROUP_CHAT_DETAILS.type,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
+    members: GROUP_CHAT_DETAILS.members,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
@@ -1262,8 +1264,10 @@ export const userChatUpdatedSubscription: MockLink.MockedResponse<
     data: {
       userChatUpdated: {
         id: GROUP_CHAT_DETAILS.id,
+        type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
     },
@@ -1281,8 +1285,10 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
     data: {
       userChatCreated: {
         id: "2",
+        type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
     },

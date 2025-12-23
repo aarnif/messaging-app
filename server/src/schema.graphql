@@ -24,8 +24,10 @@ type User {
 
 type UserChat {
   id: ID!
+  type: String!
   name: String
   avatar: String
+  members: [ChatMember!]!
   latestMessage: Message!
 }
 
