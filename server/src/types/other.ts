@@ -16,6 +16,7 @@ export interface ChatMember {
   userId: number;
   chatId: number;
   role: "member" | "admin";
+  unreadCount: number;
 }
 
 // For supertest GraphQL HTTP response typing

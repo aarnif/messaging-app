@@ -11,6 +11,7 @@ class ChatMember extends Model<
   declare chatId: number;
   declare role: "member" | "admin";
   declare name?: string;
+  declare unreadCount: number;
 }
 ChatMember.init(
   {
@@ -39,6 +40,11 @@ ChatMember.init(
       type: DataTypes.ENUM("member", "admin"),
       defaultValue: "member",
       allowNull: false,
+    },
+    unreadCount: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      defaultValue: 0,
     },
   },
   {

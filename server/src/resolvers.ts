@@ -880,6 +880,7 @@ export const resolvers: Resolvers = {
                 Number(member) === Number(context.currentUser?.id)
                   ? "admin"
                   : "member",
+              unreadCount: 0,
             };
           })
         );
@@ -1077,6 +1078,7 @@ export const resolvers: Resolvers = {
               userId: memberId,
               chatId: Number(chatToBeUpdated.id),
               role: "member",
+              unreadCount: 0,
             }))
           );
 
