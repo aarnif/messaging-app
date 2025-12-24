@@ -143,6 +143,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "admin",
+      unreadCount: 0,
     },
     {
       id: USER_TWO_DETAILS.id,
@@ -152,6 +153,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
     {
       id: USER_THREE_DETAILS.id,
@@ -161,6 +163,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
   ],
   messages: [
@@ -227,6 +230,7 @@ export const PRIVATE_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "admin",
+      unreadCount: 0,
     },
     {
       id: USER_TWO_DETAILS.id,
@@ -236,6 +240,7 @@ export const PRIVATE_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
   ],
   messages: [

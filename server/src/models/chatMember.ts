@@ -12,6 +12,10 @@ class ChatMember extends Model<
   declare role: "member" | "admin";
   declare name?: string;
   declare unreadCount: number;
+  declare chat_member?: {
+    role: string;
+    unreadCount: number;
+  };
 }
 ChatMember.init(
   {

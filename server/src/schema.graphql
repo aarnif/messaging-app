@@ -49,6 +49,7 @@ type ChatMember {
   avatar: String
   is24HourClock: Boolean!
   role: String
+  unreadCount: Int!
 }
 
 scalar Date

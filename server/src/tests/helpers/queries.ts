@@ -103,6 +103,7 @@ export const CREATE_CHAT = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id
@@ -133,6 +134,7 @@ export const EDIT_CHAT = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id
@@ -163,6 +165,7 @@ export const DELETE_CHAT = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id
@@ -210,6 +213,7 @@ export const SEND_MESSAGE = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id
@@ -240,6 +244,7 @@ export const LEAVE_CHAT = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id
@@ -296,6 +301,7 @@ export const FIND_CHAT_BY_ID = `
         name
         avatar
         role
+        unreadCount
       }
       messages {
         id

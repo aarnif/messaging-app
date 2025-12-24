@@ -110,7 +110,7 @@ export const resolvers: Resolvers = {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: ["role"],
+                  attributes: ["role", "unreadCount"],
                 },
               },
               {
@@ -485,6 +485,9 @@ export const resolvers: Resolvers = {
   ChatMember: {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>
       parent.chat_member?.role || null,
+    unreadCount: (
+      parent: ChatMember & { chat_member?: { unreadCount: number } }
+    ) => parent.chat_member?.unreadCount ?? 0,
   },
   Mutation: {
     createUser: async (_, { input }) => {

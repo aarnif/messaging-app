@@ -35,6 +35,7 @@ export const USER_CHAT_UPDATED = gql(`
         avatar
         is24HourClock
         role
+        unreadCount
       }
       latestMessage {
         id
@@ -69,6 +70,7 @@ export const USER_CHAT_CREATED = gql(`
         avatar
         is24HourClock
         role
+        unreadCount
       }
       latestMessage {
         id

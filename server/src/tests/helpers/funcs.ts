@@ -134,5 +134,6 @@ export const assertChatEquality = (
       assert.ok(member, `Member ${i} should be in members`);
       assert.strictEqual(member?.role, "member");
     }
+    assert.strictEqual(member.unreadCount, expected.members[i].unreadCount);
   }
 };

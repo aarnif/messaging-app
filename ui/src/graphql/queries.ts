@@ -26,6 +26,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
       about
       avatar
       is24HourClock
+      unreadCount
     }
     latestMessage {
       id
