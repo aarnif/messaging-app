@@ -29,7 +29,7 @@ const ChatItem = ({
   currentUser: User;
   chat: UserChat;
 }) => {
-  const { id, name, latestMessage, unreadCount } = chat;
+  const { id, latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
@@ -53,7 +53,7 @@ const ChatItem = ({
         <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
-              {name}
+              {getChatName(chat, currentUser.id)}
             </h2>
             {formattedTime && (
               <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
