@@ -29,6 +29,8 @@ type UserChat {
   avatar: String
   members: [ChatMember!]!
   latestMessage: Message!
+  unreadCount: Int!
+  userId: ID
 }
 
 type Chat {

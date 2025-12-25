@@ -29,7 +29,7 @@ const ChatItem = ({
   currentUser: User;
   chat: UserChat;
 }) => {
-  const { id, name, latestMessage } = chat;
+  const { id, name, latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
@@ -61,10 +61,17 @@ const ChatItem = ({
               </p>
             )}
           </div>
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {sender?.name}:{" "}
-            <span className="font-normal">{messagePreview}</span>
-          </p>
+          <div className="flex items-center justify-between">
+            <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+              {sender?.name}:{" "}
+              <span className="font-normal">{messagePreview}</span>
+            </p>
+            {unreadCount > 0 && (
+              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white dark:bg-green-500">
+                {unreadCount}
+              </span>
+            )}
+          </div>
         </div>
       </div>
     </NavLink>
@@ -92,6 +99,7 @@ const ListMenu = ({
   });
 
   useSubscription(USER_CHAT_UPDATED, {
+    fetchPolicy: "no-cache",
     onData: ({ data }) => {
       console.log("Use CHAT_UPDATED-subscription:");
       const updatedChat = data.data?.userChatUpdated;
@@ -101,34 +109,44 @@ const ListMenu = ({
         return;
       }
 
-      client.cache.updateQuery(
-        {
-          query: ALL_CHATS_BY_USER,
-          variables: {
-            search: searchWord.value,
+      if (updatedChat.userId === currentUser.id) {
+        console.log("Updating cache for current user");
+
+        client.cache.updateQuery(
+          {
+            query: ALL_CHATS_BY_USER,
+            variables: {
+              search: searchWord.value,
+            },
           },
-        },
-        (existingData) => {
-          if (!existingData?.allChatsByUser) {
-            console.log("No existing chat data found in cache");
-            return existingData;
+          (existingData) => {
+            if (!existingData?.allChatsByUser) {
+              console.log("No existing chat data found in cache");
+              return existingData;
+            }
+
+            return {
+              allChatsByUser: existingData.allChatsByUser
+                .map((chat) =>
+                  chat.id === updatedChat.id
+                    ? {
+                        ...updatedChat,
+                        name: getChatName(updatedChat, currentUser.id),
+                      }
+                    : chat
+                )
+                .sort(
+                  (a, b) =>
+                    b.latestMessage.createdAt - a.latestMessage.createdAt
+                ),
+            };
           }
-          return {
-            allChatsByUser: existingData.allChatsByUser
-              .map((chat) =>
-                chat.id === updatedChat.id
-                  ? {
-                      ...updatedChat,
-                      name: getChatName(updatedChat, currentUser.id),
-                    }
-                  : chat
-              )
-              .sort(
-                (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
-              ),
-          };
-        }
-      );
+        );
+      } else {
+        console.log(
+          `Skipping cache update - subscription is for user ${updatedChat.userId}, not current user ${currentUser.id}`
+        );
+      }
     },
   });
 
@@ -142,30 +160,33 @@ const ListMenu = ({
         return;
       }
 
-      client.cache.updateQuery(
-        {
-          query: ALL_CHATS_BY_USER,
-          variables: {
-            search: searchWord.value,
+      if (createdChat.userId === currentUser.id) {
+        client.cache.updateQuery(
+          {
+            query: ALL_CHATS_BY_USER,
+            variables: {
+              search: searchWord.value,
+            },
           },
-        },
-        (existingData) => {
-          if (!existingData?.allChatsByUser) {
-            console.log("No existing chat data found in cache");
-            return existingData;
+          (existingData) => {
+            if (!existingData?.allChatsByUser) {
+              console.log("No existing chat data found in cache");
+              return existingData;
+            }
+            return {
+              allChatsByUser: existingData.allChatsByUser
+                .concat({
+                  ...createdChat,
+                  name: getChatName(createdChat, currentUser.id),
+                })
+                .sort(
+                  (a, b) =>
+                    b.latestMessage.createdAt - a.latestMessage.createdAt
+                ),
+            };
           }
-          return {
-            allChatsByUser: existingData.allChatsByUser
-              .concat({
-                ...createdChat,
-                name: getChatName(createdChat, currentUser.id),
-              })
-              .sort(
-                (a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt
-              ),
-          };
-        }
-      );
+        );
+      }
     },
   });
 

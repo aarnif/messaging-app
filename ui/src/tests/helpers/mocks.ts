@@ -134,6 +134,8 @@ export const GROUP_CHAT_DETAILS = {
   name: "Test Chat 1",
   description: "This is a group chat.",
   avatar: null,
+  unreadCount: 0,
+  userId: USER_ONE_DETAILS.id,
   members: [
     {
       id: USER_ONE_DETAILS.id,
@@ -221,6 +223,8 @@ export const PRIVATE_CHAT_DETAILS = {
   name: "User2",
   description: null,
   avatar: null,
+  unreadCount: 0,
+  userId: USER_ONE_DETAILS.id,
   members: [
     {
       id: USER_ONE_DETAILS.id,
@@ -478,6 +482,7 @@ export const userChatsMock = [
     type: GROUP_CHAT_DETAILS.type,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
+    unreadCount: GROUP_CHAT_DETAILS.unreadCount,
     members: GROUP_CHAT_DETAILS.members,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
@@ -1272,6 +1277,7 @@ export const userChatUpdatedSubscription: MockLink.MockedResponse<
         type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
@@ -1290,9 +1296,11 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
     data: {
       userChatCreated: {
         id: "2",
+        userId: USER_TWO_DETAILS.id,
         type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },

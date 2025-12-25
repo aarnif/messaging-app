@@ -27,6 +27,8 @@ export const USER_CHAT_UPDATED = gql(`
       type
       name
       avatar
+      unreadCount
+      userId
       members {
         id
         username
@@ -62,6 +64,8 @@ export const USER_CHAT_CREATED = gql(`
       type
       name
       avatar
+      unreadCount
+      userId
       members {
         id
         username

@@ -2012,6 +2012,10 @@ void describe("GraphQL API", () => {
 
         assertChatEquality(chat, {
           ...expectedPrivateChat,
+          members: [
+            expectedPrivateChat.members[0],
+            { ...expectedPrivateChat.members[1], unreadCount: 2 },
+          ],
           messages: expectedPrivateChat.messages.concat({
             id: "2",
             chatId: "1",
