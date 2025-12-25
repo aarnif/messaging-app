@@ -233,3 +233,9 @@ export const CHANGE_PASSWORD =
     is24HourClock
   }
 }`);
+
+export const MARK_CHAT_AS_READ = gql(`
+  mutation MarkChatAsRead($id: ID!) {
+    markChatAsRead(id: $id)
+  }
+`);

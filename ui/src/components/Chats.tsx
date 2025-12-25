@@ -11,7 +11,7 @@ import {
   useQuery,
   useSubscription,
 } from "@apollo/client/react";
-import { NavLink, Outlet, useLocation } from "react-router";
+import { NavLink, Outlet, useLocation, useMatch } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { User, UserChat } from "../__generated__/graphql";
@@ -86,6 +86,7 @@ const ListMenu = ({
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const client = useApolloClient();
+  const match = useMatch("/chats/:id");
   const searchWord = useField(
     "search-chats",
     "text",
@@ -112,6 +113,8 @@ const ListMenu = ({
       if (updatedChat.userId === currentUser.id) {
         console.log("Updating cache for current user");
 
+        const isViewingChat = match?.params.id === updatedChat.id;
+
         client.cache.updateQuery(
           {
             query: ALL_CHATS_BY_USER,
@@ -131,6 +134,9 @@ const ListMenu = ({
                   chat.id === updatedChat.id
                     ? {
                         ...updatedChat,
+                        unreadCount: isViewingChat
+                          ? 0
+                          : updatedChat.unreadCount,
                         name: getChatName(updatedChat, currentUser.id),
                       }
                     : chat

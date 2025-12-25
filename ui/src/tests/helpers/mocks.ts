@@ -23,6 +23,7 @@ import {
   DELETE_CHAT,
   LEAVE_CHAT,
   CREATE_CHAT,
+  MARK_CHAT_AS_READ,
 } from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -80,6 +81,8 @@ import type {
   UserChatDeletedSubscriptionVariables,
   UserChatLeftSubscription,
   UserChatLeftSubscriptionVariables,
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables,
 } from "../../__generated__/graphql";
 import { vi } from "vitest";
 import {
@@ -1245,6 +1248,23 @@ export const createChat: MockLink.MockedResponse<
   result: {
     data: {
       createChat: PRIVATE_CHAT_DETAILS,
+    },
+  },
+};
+
+export const markChatAsRead: MockLink.MockedResponse<
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables
+> = {
+  request: {
+    query: MARK_CHAT_AS_READ,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      markChatAsRead: true,
     },
   },
 };

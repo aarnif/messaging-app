@@ -38,6 +38,7 @@ import {
   EDIT_CHAT,
   LEAVE_CHAT,
   DELETE_CHAT,
+  MARK_CHAT_AS_READ,
 } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -613,6 +614,18 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       id: match?.id ?? "",
     },
   });
+
+  const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
+
+  useEffect(() => {
+    if (match?.id) {
+      console.log(`Marking chat ${match.id} as read`);
+      markChatAsRead({
+        variables: { id: match.id },
+        refetchQueries: [ALL_CHATS_BY_USER],
+      });
+    }
+  }, [match?.id, markChatAsRead]);
 
   useSubscription(MESSAGE_SENT, {
     onData: ({ data }) => {

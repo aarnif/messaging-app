@@ -20,6 +20,7 @@ import {
   editChat,
   leaveChat,
   deleteChat,
+  markChatAsRead,
   messageSentSubscription,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
@@ -49,6 +50,7 @@ const renderComponent = (
     findChatByIdGroup,
     findChatByIdNull,
     sendMessage,
+    markChatAsRead,
     messageSentSubscription,
   ],
   currentUser = currentUserChatAdminMock
@@ -177,6 +179,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdPrivate,
       findContactByUserId,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -228,6 +231,7 @@ describe("<Chat />", () => {
         findChatByIdNull,
         sendMessage,
         isBlockedByUserTrue,
+        markChatAsRead,
         messageSentSubscription,
       ],
       currentUserChatAdminMock
@@ -259,6 +263,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdGroup,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -271,6 +276,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdGroup,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -294,6 +300,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdGroup,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -314,6 +321,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdGroup,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -351,6 +359,7 @@ describe("<Chat />", () => {
       findChatByIdGroup,
       allContactsByUser,
       editChat,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -383,6 +392,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdGroup,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -398,6 +408,7 @@ describe("<Chat />", () => {
         findChatByIdGroup,
         allContactsByUser,
         leaveChat,
+        markChatAsRead,
         messageSentSubscription,
       ],
       currentUserChatMemberMock
@@ -423,7 +434,12 @@ describe("<Chat />", () => {
   test("hides delete chat button for non admin users", async () => {
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdGroup, allContactsByUser, messageSentSubscription],
+      [
+        findChatByIdGroup,
+        allContactsByUser,
+        markChatAsRead,
+        messageSentSubscription,
+      ],
       currentUserChatMemberMock
     );
 
@@ -438,6 +454,7 @@ describe("<Chat />", () => {
       findChatByIdGroup,
       allContactsByUser,
       deleteChat,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
