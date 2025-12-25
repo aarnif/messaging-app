@@ -1482,6 +1482,38 @@ export const resolvers: Resolvers = {
       await createDatabase();
       return true;
     },
+    markChatAsRead: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        await ChatMember.update(
+          { unreadCount: 0 },
+          {
+            where: {
+              userId: context.currentUser.id,
+              chatId: Number(id),
+            },
+          }
+        );
+
+        return true;
+      } catch (error) {
+        throw new GraphQLError("Failed to mark chat as read", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
   },
   Subscription: {
     messageSent: {
