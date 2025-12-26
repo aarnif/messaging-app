@@ -72,6 +72,7 @@ export const expectedPrivateChat = {
   name: user2Details.name,
   avatar: null,
   description: null,
+  unreadCount: 0,
   members: [
     { ...expectedUser1, role: "admin", unreadCount: 0 },
     { ...expectedUser2, role: "member", unreadCount: 0 },
@@ -94,6 +95,7 @@ export const expectedGroupChat = {
   name: "Group Chat",
   avatar: null,
   description: "Test description",
+  unreadCount: 0,
   members: [
     { ...expectedUser1, role: "admin", unreadCount: 0 },
     { ...expectedUser2, role: "member", unreadCount: 0 },

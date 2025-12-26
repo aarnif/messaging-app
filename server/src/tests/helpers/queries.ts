@@ -364,6 +364,7 @@ export const ALL_CHATS_BY_USER = `
       id
       name
       avatar
+      unreadCount
       latestMessage {
         id
         isNotification
@@ -441,5 +442,11 @@ export const FIND_CONTACT_BY_USER_ID = `
         is24HourClock
       }
     }
+  }
+`;
+
+export const MARK_CHAT_AS_READ = `
+  mutation MarkChatAsRead($id: ID!) {
+    markChatAsRead(id: $id)
   }
 `;

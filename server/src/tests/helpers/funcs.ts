@@ -131,6 +131,7 @@ export const assertUserChatEquality = (
 ) => {
   const userChat = assertChatBasics<UserChat>(actual, expected, "User Chat");
 
+  assert.strictEqual(userChat.unreadCount, expected.unreadCount);
   assert.ok(userChat.latestMessage, "Latest message should be defined");
   assert.strictEqual(
     userChat.latestMessage.content,

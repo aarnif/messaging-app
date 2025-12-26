@@ -10,6 +10,7 @@ import type {
   EditChatInput,
   SendMessageInput,
   ChangePasswordInput,
+  UserChat,
 } from "~/types/graphql";
 import {
   user1Details,
@@ -57,6 +58,7 @@ import {
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   CHANGE_PASSWORD,
   FIND_CONTACT_BY_USER_ID,
+  MARK_CHAT_AS_READ,
 } from "./helpers/queries";
 import { sequelize } from "../db";
 import { start } from "../server";
@@ -2299,6 +2301,101 @@ void describe("GraphQL API", () => {
         assert.ok(member1, "Member 1 should be in members");
         assert.strictEqual(creator.role, "admin");
         assert.strictEqual(member1.role, "member");
+      });
+    });
+
+    void describe("Mark chat as read", () => {
+      let chatId: string;
+      let token2: string;
+
+      beforeEach(async () => {
+        const contactResponseBody = await query<
+          { addContact: Contact },
+          { id: string }
+        >(ADD_CONTACT, { id: user2Details.id }, token);
+
+        assert.ok(
+          contactResponseBody.data?.addContact.id,
+          "Contact ID should be defined"
+        );
+
+        const chatResponseBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
+        assert.ok(
+          chatResponseBody.data?.createChat.id,
+          "Chat ID should be defined"
+        );
+        chatId = chatResponseBody.data.createChat.id;
+
+        await query<{ sendMessage: Chat }, { input: SendMessageInput }>(
+          SEND_MESSAGE,
+          {
+            input: {
+              id: chatId,
+              content: "Test message",
+              isNotification: false,
+            },
+          },
+          token
+        );
+
+        const loginResponseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user2Details.username,
+            password: user2Details.password,
+          },
+        });
+
+        assert.ok(
+          loginResponseBody.data,
+          "User2 login token value should be defined"
+        );
+        token2 = loginResponseBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const responseBody = await query<
+          { markChatAsRead: boolean },
+          { id: string }
+        >(MARK_CHAT_AS_READ, { id: chatId }, "");
+
+        const result = responseBody.data?.markChatAsRead;
+
+        assert.strictEqual(result, null, "Result should be null");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+      });
+
+      void test("succeeds marking chat as read", async () => {
+        const getUnreadCount = async () => {
+          const response = await query<
+            { allChatsByUser: UserChat[] },
+            { search: string }
+          >(ALL_CHATS_BY_USER, { search: "" }, token2);
+
+          const userChats = response.data?.allChatsByUser;
+          assert.ok(userChats, "User chats should be defined");
+
+          return userChats[0].unreadCount;
+        };
+
+        const unreadCountBefore = await getUnreadCount();
+        assert.strictEqual(unreadCountBefore, 2);
+
+        const responseBody = await query<
+          { markChatAsRead: boolean },
+          { id: string }
+        >(MARK_CHAT_AS_READ, { id: chatId }, token2);
+
+        const result = responseBody.data?.markChatAsRead;
+        assert.strictEqual(result, true, "Result should be true");
+
+        const unreadCountAfter = await getUnreadCount();
+        assert.strictEqual(unreadCountAfter, 0);
       });
     });
   });
