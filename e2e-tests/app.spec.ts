@@ -375,6 +375,41 @@ test.describe("App", () => {
         await sendMessage(page, "Another message.");
         await expect(page.getByText("User1: Another message.")).toBeVisible();
       });
+
+      test("marks chat as read when opened", async ({ page }) => {
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user2, user3],
+          "Message from user1"
+        );
+
+        const testCases = [
+          { user: user2, unreadCount: "1", message: "Message from user2" },
+          { user: user3, unreadCount: "2", message: "Message from user3" },
+        ];
+
+        for (const { user, unreadCount, message } of testCases) {
+          await logout(page);
+          await signIn(page, user.username, user.password);
+
+          await expect(page.getByTestId("unread-messages-badge")).toBeVisible();
+          await expect(page.getByTestId("unread-messages-badge")).toHaveText(
+            unreadCount
+          );
+
+          await page
+            .getByRole("link", { name: new RegExp("New Group Chat") })
+            .click();
+
+          await expect(
+            page.getByTestId("unread-messages-badge")
+          ).not.toBeVisible();
+
+          await sendMessage(page, message);
+        }
+      });
     });
 
     test.describe("Editing", () => {

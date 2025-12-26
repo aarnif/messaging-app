@@ -67,7 +67,10 @@ const ChatItem = ({
               <span className="font-normal">{messagePreview}</span>
             </p>
             {unreadCount > 0 && (
-              <span className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white dark:bg-green-500">
+              <span
+                data-testid="unread-messages-badge"
+                className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white dark:bg-green-500"
+              >
                 {unreadCount}
               </span>
             )}
