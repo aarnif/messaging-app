@@ -1,6 +1,6 @@
 import request from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other";
-import type { User, Contact, Chat } from "~/types/graphql";
+import type { User, Contact, Chat, UserChat } from "~/types/graphql";
 import { user1Details } from "./data";
 import config from "config";
 import assert from "node:assert";
@@ -110,22 +110,45 @@ export const assertContactEquality = (
   assertUserEquality(actual.contactDetails, expected.contactDetails);
 };
 
-export const assertChatEquality = (
-  actual: Chat | undefined,
-  expected: Chat
-) => {
-  assert.ok(actual, "Chat should be defined");
+const assertChatBasics = <T extends UserChat | Chat>(
+  actual: T | undefined,
+  expected: T,
+  entityName: string
+): T => {
+  assert.ok(actual, `${entityName} should be defined`);
   assert.strictEqual(actual.id, expected.id);
   assert.strictEqual(actual.type, expected.type);
   assert.strictEqual(actual.name, expected.name);
   assert.strictEqual(actual.avatar, expected.avatar);
   assert.strictEqual(actual.members.length, expected.members.length);
-  assert.strictEqual(actual.messages.length, expected.messages.length);
-  assert.strictEqual(actual.messages[0].content, expected.messages[0].content);
-  assert.strictEqual(actual.messages[0].sender.id, user1Details.id);
 
-  for (let i = 0; i < actual.members.length; ++i) {
-    const member: Chat["members"][number] = actual.members[i];
+  return actual;
+};
+
+export const assertUserChatEquality = (
+  actual: UserChat | undefined,
+  expected: UserChat
+) => {
+  const userChat = assertChatBasics<UserChat>(actual, expected, "User Chat");
+
+  assert.ok(userChat.latestMessage, "Latest message should be defined");
+  assert.strictEqual(
+    userChat.latestMessage.content,
+    expected.latestMessage.content
+  );
+  assert.strictEqual(userChat.latestMessage.sender.id, user1Details.id);
+};
+
+export const assertChatEquality = (
+  actual: Chat | undefined,
+  expected: Chat
+) => {
+  const chat = assertChatBasics<Chat>(actual, expected, "Chat");
+
+  assert.strictEqual(chat.messages.length, expected.messages.length);
+
+  for (let i = 0; i < chat.members.length; ++i) {
+    const member = chat.members[i];
 
     if (i === 0) {
       assert.ok(member, "Creator should be in members");
