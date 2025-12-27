@@ -17,10 +17,12 @@ import MenuHeader from "../ui/MenuHeader";
 import type { User, UserChat } from "../__generated__/graphql";
 import { formatDisplayDate, truncateText } from "../helpers";
 import { useState } from "react";
-import { AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
 import { getChatName } from "../helpers";
+
+const MotionNavLink = motion.create(NavLink);
 
 const ChatItem = ({
   currentUser,
@@ -29,7 +31,7 @@ const ChatItem = ({
   currentUser: User;
   chat: UserChat;
 }) => {
-  const { id, latestMessage, unreadCount } = chat;
+  const { latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
@@ -37,47 +39,38 @@ const ChatItem = ({
   const formattedTime = formatDisplayDate(createdAt, currentUser.is24HourClock);
 
   return (
-    <NavLink
-      to={`/chats/${id}`}
-      className={({ isActive }) =>
-        isActive
-          ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
-          : "rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
-      }
-    >
-      <div className="flex gap-4 p-2">
-        <img
-          className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
-        />
-        <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
-          <div className="flex items-center justify-between">
-            <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
-              {getChatName(chat, currentUser.id)}
-            </h2>
-            {formattedTime && (
-              <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-                {formattedTime}
-              </p>
-            )}
-          </div>
-          <div className="flex justify-between">
+    <div className="flex gap-4 p-2">
+      <img
+        className="h-12 w-12 rounded-full"
+        src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+      />
+      <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
+        <div className="flex items-center justify-between">
+          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
+            {getChatName(chat, currentUser.id)}
+          </h2>
+          {formattedTime && (
             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-              {sender?.name}:{" "}
-              <span className="font-normal">{messagePreview}</span>
+              {formattedTime}
             </p>
-            {unreadCount > 0 && (
-              <span
-                data-testid="unread-messages-badge"
-                className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white dark:bg-green-500"
-              >
-                {unreadCount}
-              </span>
-            )}
-          </div>
+          )}
+        </div>
+        <div className="flex justify-between">
+          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
+            {sender?.name}:{" "}
+            <span className="font-normal">{messagePreview}</span>
+          </p>
+          {unreadCount > 0 && (
+            <span
+              data-testid="unread-messages-badge"
+              className="flex h-4.5 w-4.5 items-center justify-center rounded-full bg-green-600 text-xs font-bold text-white dark:bg-green-500"
+            >
+              {unreadCount}
+            </span>
+          )}
         </div>
       </div>
-    </NavLink>
+    </div>
   );
 };
 
@@ -273,9 +266,25 @@ const ListMenu = ({
         </div>
       ) : hasChats ? (
         <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {chats.map((chat) => (
-            <ChatItem key={chat.id} currentUser={currentUser} chat={chat} />
-          ))}
+          <AnimatePresence mode="popLayout" initial={false}>
+            {chats.map((chat) => (
+              <MotionNavLink
+                key={chat.id}
+                to={`/chats/${chat.id}`}
+                className={({ isActive }) =>
+                  isActive
+                    ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
+                    : "rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
+                }
+                layout
+                transition={{
+                  duration: 0.5,
+                }}
+              >
+                <ChatItem currentUser={currentUser} chat={chat} />
+              </MotionNavLink>
+            ))}
+          </AnimatePresence>
         </div>
       ) : (
         <div className="px-4 py-2">
