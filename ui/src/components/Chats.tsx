@@ -95,6 +95,10 @@ const ListMenu = ({
     },
   });
 
+  const [recentlyUpdatedChatId, setRecentlyUpdatedChatId] = useState<
+    string | null
+  >(null);
+
   useSubscription(USER_CHAT_UPDATED, {
     fetchPolicy: "no-cache",
     onData: ({ data }) => {
@@ -110,6 +114,8 @@ const ListMenu = ({
         console.log("Updating cache for current user");
 
         const isViewingChat = match?.params.id === updatedChat.id;
+
+        setRecentlyUpdatedChatId(updatedChat.id);
 
         client.cache.updateQuery(
           {
@@ -274,9 +280,10 @@ const ListMenu = ({
                 className={({ isActive }) =>
                   isActive
                     ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
-                    : "rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700"
+                    : `rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatId === chat.id && "bg-slate-200 dark:bg-slate-700"}`
                 }
                 layout
+                onLayoutAnimationComplete={() => setRecentlyUpdatedChatId(null)}
                 transition={{
                   duration: 0.5,
                 }}
