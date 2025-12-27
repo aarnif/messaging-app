@@ -61,7 +61,7 @@ const ChatItem = ({
               </p>
             )}
           </div>
-          <div className="flex items-center justify-between">
+          <div className="flex justify-between">
             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
               {sender?.name}:{" "}
               <span className="font-normal">{messagePreview}</span>
