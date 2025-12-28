@@ -22,11 +22,21 @@ export default {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      about: {
+        type: DataTypes.STRING,
+        allowNull: true,
+      },
       avatar: {
         type: DataTypes.STRING,
         allowNull: true,
       },
+      is24_hour_clock: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: true,
+        allowNull: false,
+      },
     });
+
     await queryInterface.createTable("contacts", {
       id: {
         type: DataTypes.INTEGER,
@@ -49,12 +59,13 @@ export default {
           key: "id",
         },
       },
-      status: {
-        type: DataTypes.ENUM("added", "blocked"),
-        defaultValue: "added",
+      is_blocked: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
       },
     });
+
     await queryInterface.createTable("chats", {
       id: {
         type: DataTypes.INTEGER,
@@ -86,7 +97,8 @@ export default {
         },
       },
     });
-    await queryInterface.createTable("chatmembers", {
+
+    await queryInterface.createTable("chat_members", {
       id: {
         type: DataTypes.INTEGER,
         primaryKey: true,
@@ -113,7 +125,13 @@ export default {
         defaultValue: "member",
         allowNull: false,
       },
+      unread_count: {
+        type: DataTypes.INTEGER,
+        allowNull: false,
+        defaultValue: 0,
+      },
     });
+
     await queryInterface.createTable("messages", {
       id: {
         type: DataTypes.INTEGER,
@@ -138,6 +156,11 @@ export default {
       },
       content: {
         type: DataTypes.TEXT,
+        allowNull: false,
+      },
+      is_notification: {
+        type: DataTypes.BOOLEAN,
+        defaultValue: false,
         allowNull: false,
       },
     });
