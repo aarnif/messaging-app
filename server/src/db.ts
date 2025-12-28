@@ -1,5 +1,5 @@
-import { Sequelize } from "sequelize";
-import { Umzug, SequelizeStorage } from "umzug";
+import { Sequelize, QueryInterface } from "sequelize";
+import { Umzug, SequelizeStorage, RunnableMigration } from "umzug";
 import config from "../config";
 
 const sequelize = new Sequelize(config.DATABASE_URL, {
@@ -9,7 +9,23 @@ const sequelize = new Sequelize(config.DATABASE_URL, {
 const runMigrations = async () => {
   const migrator = new Umzug({
     migrations: {
-      glob: "migrations/*.ts",
+      glob: "src/migrations/*.ts",
+      resolve: ({ name, path, context }) => {
+        if (!path) {
+          throw new Error(
+            `Migration path not found for migration file: ${name}`
+          );
+        }
+        return {
+          name,
+          up: async () => {
+            const migration = (await import(path)) as {
+              default: RunnableMigration<QueryInterface>;
+            };
+            return migration.default.up({ name, path, context });
+          },
+        };
+      },
     },
     storage: new SequelizeStorage({ sequelize, tableName: "migrations" }),
     context: sequelize.getQueryInterface(),
