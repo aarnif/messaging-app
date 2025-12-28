@@ -12,6 +12,7 @@ import {
   findChatByIdPrivate,
   findChatByIdNull,
   sendMessage,
+  allChatsByUser,
   allContactsByUser,
   findContactByUserId,
   currentUserChatAdminMock,
@@ -20,10 +21,12 @@ import {
   editChat,
   leaveChat,
   deleteChat,
+  markChatAsRead,
   messageSentSubscription,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
+  mockChatsSearchWord,
 } from "./helpers/mocks";
 import {
   sendNewMessage,
@@ -48,7 +51,9 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
     findChatByIdGroup,
     findChatByIdNull,
+    allChatsByUser,
     sendMessage,
+    markChatAsRead,
     messageSentSubscription,
   ],
   currentUser = currentUserChatAdminMock
@@ -57,7 +62,7 @@ const renderComponent = (
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
         <ModalProvider>
-          <Chat currentUser={currentUser} />
+          <Chat currentUser={currentUser} searchWord={mockChatsSearchWord} />
         </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
@@ -177,6 +182,8 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdPrivate,
       findContactByUserId,
+      allChatsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -226,8 +233,10 @@ describe("<Chat />", () => {
       [
         findChatByIdPrivate,
         findChatByIdNull,
+        allChatsByUser,
         sendMessage,
         isBlockedByUserTrue,
+        markChatAsRead,
         messageSentSubscription,
       ],
       currentUserChatAdminMock
@@ -258,7 +267,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -270,7 +281,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -293,7 +306,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -313,7 +328,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -349,8 +366,10 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       editChat,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -382,7 +401,9 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 
@@ -396,8 +417,10 @@ describe("<Chat />", () => {
     renderComponent(
       [
         findChatByIdGroup,
+        allChatsByUser,
         allContactsByUser,
         leaveChat,
+        markChatAsRead,
         messageSentSubscription,
       ],
       currentUserChatMemberMock
@@ -423,7 +446,13 @@ describe("<Chat />", () => {
   test("hides delete chat button for non admin users", async () => {
     const user = userEvent.setup();
     renderComponent(
-      [findChatByIdGroup, allContactsByUser, messageSentSubscription],
+      [
+        findChatByIdGroup,
+        allChatsByUser,
+        allContactsByUser,
+        markChatAsRead,
+        messageSentSubscription,
+      ],
       currentUserChatMemberMock
     );
 
@@ -436,8 +465,10 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       deleteChat,
+      markChatAsRead,
       messageSentSubscription,
     ]);
 

@@ -23,6 +23,7 @@ import {
   DELETE_CHAT,
   LEAVE_CHAT,
   CREATE_CHAT,
+  MARK_CHAT_AS_READ,
 } from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -80,7 +81,10 @@ import type {
   UserChatDeletedSubscriptionVariables,
   UserChatLeftSubscription,
   UserChatLeftSubscriptionVariables,
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables,
 } from "../../__generated__/graphql";
+import type { InputField } from "../../types";
 import { vi } from "vitest";
 import {
   MESSAGE_SENT,
@@ -134,6 +138,8 @@ export const GROUP_CHAT_DETAILS = {
   name: "Test Chat 1",
   description: "This is a group chat.",
   avatar: null,
+  unreadCount: 0,
+  userId: USER_ONE_DETAILS.id,
   members: [
     {
       id: USER_ONE_DETAILS.id,
@@ -143,6 +149,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "admin",
+      unreadCount: 0,
     },
     {
       id: USER_TWO_DETAILS.id,
@@ -152,6 +159,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
     {
       id: USER_THREE_DETAILS.id,
@@ -161,6 +169,7 @@ export const GROUP_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
   ],
   messages: [
@@ -218,6 +227,8 @@ export const PRIVATE_CHAT_DETAILS = {
   name: "User2",
   description: null,
   avatar: null,
+  unreadCount: 0,
+  userId: USER_ONE_DETAILS.id,
   members: [
     {
       id: USER_ONE_DETAILS.id,
@@ -227,6 +238,7 @@ export const PRIVATE_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "admin",
+      unreadCount: 0,
     },
     {
       id: USER_TWO_DETAILS.id,
@@ -236,6 +248,7 @@ export const PRIVATE_CHAT_DETAILS = {
       avatar: null,
       is24HourClock: true,
       role: "member",
+      unreadCount: 0,
     },
   ],
   messages: [
@@ -473,6 +486,7 @@ export const userChatsMock = [
     type: GROUP_CHAT_DETAILS.type,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
+    unreadCount: GROUP_CHAT_DETAILS.unreadCount,
     members: GROUP_CHAT_DETAILS.members,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
@@ -1239,6 +1253,23 @@ export const createChat: MockLink.MockedResponse<
   },
 };
 
+export const markChatAsRead: MockLink.MockedResponse<
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables
+> = {
+  request: {
+    query: MARK_CHAT_AS_READ,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      markChatAsRead: true,
+    },
+  },
+};
+
 export const messageSentSubscription: MockLink.MockedResponse<
   MessageSentSubscription,
   MessageSentSubscriptionVariables
@@ -1267,6 +1298,7 @@ export const userChatUpdatedSubscription: MockLink.MockedResponse<
         type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
@@ -1285,9 +1317,11 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
     data: {
       userChatCreated: {
         id: "2",
+        userId: USER_TWO_DETAILS.id,
         type: GROUP_CHAT_DETAILS.type,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
+        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
@@ -1340,4 +1374,14 @@ export const windowMockContent = {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+};
+
+export const mockChatsSearchWord: InputField = {
+  name: "search-chats",
+  type: "text",
+  value: "",
+  placeholder: "Search by title or description...",
+  setValue: vi.fn(),
+  onChange: vi.fn(),
+  onReset: vi.fn(),
 };

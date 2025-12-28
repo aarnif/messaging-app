@@ -17,7 +17,7 @@ import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import type { UserContact } from "../types";
+import type { InputField, UserContact } from "../types";
 import type {
   Chat as ChatType,
   User,
@@ -38,6 +38,7 @@ import {
   EDIT_CHAT,
   LEAVE_CHAT,
   DELETE_CHAT,
+  MARK_CHAT_AS_READ,
 } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
@@ -605,7 +606,13 @@ const ChatContent = ({
   );
 };
 
-const Chat = ({ currentUser }: { currentUser: User }) => {
+const Chat = ({
+  currentUser,
+  searchWord,
+}: {
+  currentUser: User;
+  searchWord: InputField;
+}) => {
   const client = useApolloClient();
   const match = useMatch("/chats/:id")?.params;
   const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
@@ -613,6 +620,23 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       id: match?.id ?? "",
     },
   });
+
+  const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
+
+  useEffect(() => {
+    if (match?.id) {
+      console.log(`Marking chat ${match.id} as read`);
+      markChatAsRead({
+        variables: { id: match.id },
+        refetchQueries: [
+          {
+            query: ALL_CHATS_BY_USER,
+            variables: { search: searchWord.value },
+          },
+        ],
+      });
+    }
+  }, [match?.id, markChatAsRead, searchWord]);
 
   useSubscription(MESSAGE_SENT, {
     onData: ({ data }) => {

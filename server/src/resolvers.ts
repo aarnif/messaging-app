@@ -110,7 +110,7 @@ export const resolvers: Resolvers = {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: ["role"],
+                  attributes: ["role", "unreadCount"],
                 },
               },
               {
@@ -153,6 +153,12 @@ export const resolvers: Resolvers = {
         : user.chats;
 
       return filteredChats.map((chat) => {
+        const unreadMessagesCount =
+          chat
+            .toJSON()
+            .members?.find((member) => member.id === context.currentUser?.id)
+            ?.chat_member?.unreadCount ?? 0;
+
         return {
           id: String(chat.id),
           type: chat.type,
@@ -160,6 +166,7 @@ export const resolvers: Resolvers = {
           avatar: chat.avatar,
           members: chat.members ?? [],
           latestMessage: chat.messages![0],
+          unreadCount: unreadMessagesCount,
         };
       });
     },
@@ -485,6 +492,9 @@ export const resolvers: Resolvers = {
   ChatMember: {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>
       parent.chat_member?.role || null,
+    unreadCount: (
+      parent: ChatMember & { chat_member?: { unreadCount: number } }
+    ) => parent.chat_member?.unreadCount ?? 0,
   },
   Mutation: {
     createUser: async (_, { input }) => {
@@ -880,6 +890,8 @@ export const resolvers: Resolvers = {
                 Number(member) === Number(context.currentUser?.id)
                   ? "admin"
                   : "member",
+              unreadCount:
+                Number(member) === Number(context.currentUser?.id) ? 0 : 1,
             };
           })
         );
@@ -917,16 +929,24 @@ export const resolvers: Resolvers = {
           });
         }
 
-        await pubsub.publish("USER_CHAT_CREATED", {
-          userChatCreated: {
-            id: String(chat.id),
-            type: chat.type,
-            name: chat.name || null,
-            avatar: chat.avatar,
-            members: chat.members,
-            latestMessage: chat.messages![0],
-          },
+        const chatMembers = await ChatMember.findAll({
+          where: { chatId: String(chat.id) },
         });
+
+        for (const member of chatMembers) {
+          await pubsub.publish("USER_CHAT_CREATED", {
+            userChatCreated: {
+              id: String(chat.id),
+              type: chat.type,
+              name: chat.name || null,
+              avatar: chat.avatar,
+              members: chat.members,
+              latestMessage: chat.messages![0],
+              unreadCount: member.unreadCount,
+              userId: String(member.userId),
+            },
+          });
+        }
 
         return chat;
       } catch (error) {
@@ -1077,6 +1097,7 @@ export const resolvers: Resolvers = {
               userId: memberId,
               chatId: Number(chatToBeUpdated.id),
               role: "member",
+              unreadCount: 0,
             }))
           );
 
@@ -1149,16 +1170,24 @@ export const resolvers: Resolvers = {
 
         const latestMessage = chatToBeUpdated.toJSON().messages?.at(-1);
 
-        await pubsub.publish("USER_CHAT_UPDATED", {
-          userChatUpdated: {
-            id: String(chatToBeUpdated.id),
-            type: chatToBeUpdated.type,
-            name: chatToBeUpdated.name || null,
-            avatar: chatToBeUpdated.avatar,
-            members: chatToBeUpdated.members,
-            latestMessage: latestMessage,
-          },
+        const chatMembers = await ChatMember.findAll({
+          where: { chatId: Number(id) },
         });
+
+        for (const member of chatMembers) {
+          await pubsub.publish("USER_CHAT_UPDATED", {
+            userChatUpdated: {
+              id: String(chatToBeUpdated.id),
+              type: chatToBeUpdated.type,
+              name: chatToBeUpdated.name || null,
+              avatar: chatToBeUpdated.avatar,
+              members: chatToBeUpdated.members,
+              latestMessage: latestMessage,
+              unreadCount: member.unreadCount,
+              userId: String(member.userId),
+            },
+          });
+        }
 
         return await Chat.findByPk(Number(id), {
           include: [
@@ -1303,6 +1332,18 @@ export const resolvers: Resolvers = {
           isNotification: isNotification,
         });
 
+        await ChatMember.increment(
+          { unreadCount: 1 },
+          {
+            where: {
+              chatId: Number(id),
+              userId: {
+                [Op.ne]: context.currentUser.id,
+              },
+            },
+          }
+        );
+
         const chat = await Chat.findByPk(Number(id), {
           include: [
             {
@@ -1314,7 +1355,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role"],
+                attributes: ["role", "unreadCount"],
               },
             },
           ],
@@ -1335,16 +1376,24 @@ export const resolvers: Resolvers = {
           messageSent: latestMessage,
         });
 
-        await pubsub.publish("USER_CHAT_UPDATED", {
-          userChatUpdated: {
-            id: String(chat.id),
-            type: chat.type,
-            name: chat.name || null,
-            avatar: chat.avatar,
-            members: chat.members,
-            latestMessage: latestMessage,
-          },
+        const chatMembers = await ChatMember.findAll({
+          where: { chatId: Number(id) },
         });
+
+        for (const member of chatMembers) {
+          await pubsub.publish("USER_CHAT_UPDATED", {
+            userChatUpdated: {
+              id: String(chat.id),
+              type: chat.type,
+              name: chat.name || null,
+              avatar: chat.avatar,
+              members: chat.members,
+              latestMessage: latestMessage,
+              unreadCount: member.unreadCount,
+              userId: String(member.userId),
+            },
+          });
+        }
 
         return chat;
       } catch (error) {
@@ -1432,6 +1481,38 @@ export const resolvers: Resolvers = {
       await emptyDatabase();
       await createDatabase();
       return true;
+    },
+    markChatAsRead: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      try {
+        await ChatMember.update(
+          { unreadCount: 0 },
+          {
+            where: {
+              userId: context.currentUser.id,
+              chatId: Number(id),
+            },
+          }
+        );
+
+        return true;
+      } catch (error) {
+        throw new GraphQLError("Failed to mark chat as read", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
     },
   },
   Subscription: {
