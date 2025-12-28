@@ -17,7 +17,7 @@ import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import type { UserContact } from "../types";
+import type { InputField, UserContact } from "../types";
 import type {
   Chat as ChatType,
   User,
@@ -606,7 +606,13 @@ const ChatContent = ({
   );
 };
 
-const Chat = ({ currentUser }: { currentUser: User }) => {
+const Chat = ({
+  currentUser,
+  searchWord,
+}: {
+  currentUser: User;
+  searchWord: InputField;
+}) => {
   const client = useApolloClient();
   const match = useMatch("/chats/:id")?.params;
   const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
@@ -622,10 +628,15 @@ const Chat = ({ currentUser }: { currentUser: User }) => {
       console.log(`Marking chat ${match.id} as read`);
       markChatAsRead({
         variables: { id: match.id },
-        refetchQueries: [ALL_CHATS_BY_USER],
+        refetchQueries: [
+          {
+            query: ALL_CHATS_BY_USER,
+            variables: { search: searchWord.value },
+          },
+        ],
       });
     }
-  }, [match?.id, markChatAsRead]);
+  }, [match?.id, markChatAsRead, searchWord]);
 
   useSubscription(MESSAGE_SENT, {
     onData: ({ data }) => {

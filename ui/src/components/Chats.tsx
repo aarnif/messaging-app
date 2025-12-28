@@ -1,4 +1,3 @@
-import useField from "../hooks/useField";
 import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "../graphql/queries";
 import {
   USER_CHAT_UPDATED,
@@ -15,6 +14,7 @@ import { NavLink, Outlet, useLocation, useMatch } from "react-router";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { User, UserChat } from "../__generated__/graphql";
+import type { InputField } from "../types";
 import { formatDisplayDate, truncateText } from "../helpers";
 import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
@@ -76,18 +76,15 @@ const ChatItem = ({
 
 const ListMenu = ({
   currentUser,
+  searchWord,
   setIsNewChatDropdownOpen,
 }: {
   currentUser: User;
+  searchWord: InputField;
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const client = useApolloClient();
   const match = useMatch("/chats/:id");
-  const searchWord = useField(
-    "search-chats",
-    "text",
-    "Search by title or description..."
-  );
 
   const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
     variables: {
@@ -304,7 +301,13 @@ const ListMenu = ({
   );
 };
 
-const Chats = ({ currentUser }: { currentUser: User }) => {
+const Chats = ({
+  currentUser,
+  searchWord,
+}: {
+  currentUser: User;
+  searchWord: InputField;
+}) => {
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [newChatModalType, setNewChatModalType] = useState<
@@ -326,6 +329,7 @@ const Chats = ({ currentUser }: { currentUser: User }) => {
     <div className="flex grow">
       <ListMenu
         currentUser={currentUser}
+        searchWord={searchWord}
         setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
       />
       <Outlet />

@@ -12,6 +12,7 @@ import {
   findChatByIdPrivate,
   findChatByIdNull,
   sendMessage,
+  allChatsByUser,
   allContactsByUser,
   findContactByUserId,
   currentUserChatAdminMock,
@@ -25,6 +26,7 @@ import {
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
+  mockChatsSearchWord,
 } from "./helpers/mocks";
 import {
   sendNewMessage,
@@ -49,6 +51,7 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
     findChatByIdGroup,
     findChatByIdNull,
+    allChatsByUser,
     sendMessage,
     markChatAsRead,
     messageSentSubscription,
@@ -59,7 +62,7 @@ const renderComponent = (
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
         <ModalProvider>
-          <Chat currentUser={currentUser} />
+          <Chat currentUser={currentUser} searchWord={mockChatsSearchWord} />
         </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
@@ -179,6 +182,7 @@ describe("<Chat />", () => {
     renderComponent([
       findChatByIdPrivate,
       findContactByUserId,
+      allChatsByUser,
       markChatAsRead,
       messageSentSubscription,
     ]);
@@ -229,6 +233,7 @@ describe("<Chat />", () => {
       [
         findChatByIdPrivate,
         findChatByIdNull,
+        allChatsByUser,
         sendMessage,
         isBlockedByUserTrue,
         markChatAsRead,
@@ -262,6 +267,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
@@ -275,6 +281,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
@@ -299,6 +306,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
@@ -320,6 +328,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
@@ -357,6 +366,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       editChat,
       markChatAsRead,
@@ -391,6 +401,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
@@ -406,6 +417,7 @@ describe("<Chat />", () => {
     renderComponent(
       [
         findChatByIdGroup,
+        allChatsByUser,
         allContactsByUser,
         leaveChat,
         markChatAsRead,
@@ -436,6 +448,7 @@ describe("<Chat />", () => {
     renderComponent(
       [
         findChatByIdGroup,
+        allChatsByUser,
         allContactsByUser,
         markChatAsRead,
         messageSentSubscription,
@@ -452,6 +465,7 @@ describe("<Chat />", () => {
     const user = userEvent.setup();
     renderComponent([
       findChatByIdGroup,
+      allChatsByUser,
       allContactsByUser,
       deleteChat,
       markChatAsRead,

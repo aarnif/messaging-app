@@ -1,6 +1,7 @@
 import { Routes, Route, Navigate } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "./graphql/queries";
+import useField from "./hooks/useField";
 import ModalProvider from "./components/ModalProvider";
 import Home from "./components/Home";
 import SignIn from "./components/SignIn";
@@ -18,6 +19,11 @@ import type { User } from "./__generated__/graphql";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
+  const searchWord = useField(
+    "search-chats",
+    "text",
+    "Search by title or description..."
+  );
 
   if (loading) {
     return null;
@@ -32,7 +38,15 @@ const App = () => {
           path="/"
           element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
         >
-          <Route path="/" element={<Chats currentUser={currentUser as User} />}>
+          <Route
+            path="/"
+            element={
+              <Chats
+                currentUser={currentUser as User}
+                searchWord={searchWord}
+              />
+            }
+          >
             <Route
               index
               element={
@@ -41,7 +55,12 @@ const App = () => {
             />
             <Route
               path="/chats/:id"
-              element={<Chat currentUser={currentUser as User} />}
+              element={
+                <Chat
+                  currentUser={currentUser as User}
+                  searchWord={searchWord}
+                />
+              }
             />
 
             <Route

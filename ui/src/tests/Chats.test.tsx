@@ -23,6 +23,7 @@ import {
   userChatUpdatedSubscription,
   userChatDeletedSubscription,
   userChatLeftSubscription,
+  mockChatsSearchWord,
 } from "./helpers/mocks";
 import {
   assertContactsDisplayed,
@@ -57,7 +58,10 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Chats currentUser={currentUserChatAdminMock} />
+        <Chats
+          currentUser={currentUserChatAdminMock}
+          searchWord={mockChatsSearchWord}
+        />
       </MemoryRouter>
     </MockedProvider>
   );

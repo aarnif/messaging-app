@@ -84,6 +84,7 @@ import type {
   MarkChatAsReadMutation,
   MarkChatAsReadMutationVariables,
 } from "../../__generated__/graphql";
+import type { InputField } from "../../types";
 import { vi } from "vitest";
 import {
   MESSAGE_SENT,
@@ -1373,4 +1374,14 @@ export const windowMockContent = {
     removeEventListener: vi.fn(),
     dispatchEvent: vi.fn(),
   })),
+};
+
+export const mockChatsSearchWord: InputField = {
+  name: "search-chats",
+  type: "text",
+  value: "",
+  placeholder: "Search by title or description...",
+  setValue: vi.fn(),
+  onChange: vi.fn(),
+  onReset: vi.fn(),
 };
