@@ -9,7 +9,7 @@ const sequelize = new Sequelize(config.DATABASE_URL, {
 const runMigrations = async () => {
   const migrator = new Umzug({
     migrations: {
-      glob: "migrations/*.ts",
+      glob: "src/migrations/*.ts",
     },
     storage: new SequelizeStorage({ sequelize, tableName: "migrations" }),
     context: sequelize.getQueryInterface(),
