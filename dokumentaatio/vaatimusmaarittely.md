@@ -26,15 +26,15 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 
 ### Kirjautumisen jälkeen
 
-- [ ] **Chatit ja viestit**
+- [x] **Chatit ja viestit**
 
-  - [x] Käyttäjä näkee päänäkymän, jossa on listattuna käyttäjän chatit
-  - [x] Käyttäjä voi luoda uuden ryhmä- tai kahdenkeskisen chatin
-  - [x] Käyttäjä voi admin-roolissa muokata ryhmächatin tietoja
-  - [x] Käyttäjä voi admin-roolissa poistaa chatin
-  - [x] Käyttäjä voi lähettää tekstipohjaisia viestejä sovelluksessa
-  - [x] Käyttäjä voi poistua chatista
-  - [ ] Käyttäjä saa tiedon uusista viesteitä reaaliaikaisesti
+- [x] Käyttäjä näkee päänäkymän, jossa on listattuna käyttäjän chatit
+- [x] Käyttäjä voi luoda uuden ryhmä- tai kahdenkeskisen chatin
+- [x] Käyttäjä voi admin-roolissa muokata ryhmächatin tietoja
+- [x] Käyttäjä voi admin-roolissa poistaa chatin
+- [x] Käyttäjä voi lähettää tekstipohjaisia viestejä sovelluksessa
+- [x] Käyttäjä voi poistua chatista
+- [x] Käyttäjä saa tiedon uusista viesteitä reaaliaikaisesti
 
 - [x] **Kontaktit**
 
