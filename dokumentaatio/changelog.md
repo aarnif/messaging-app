@@ -116,3 +116,7 @@ Ei muutoksia
 
 - Järjestelmätestien kirjoitus sovellukselle (Playwright)
 - Jatkuvan integraation ja julkaisun automatisointi (GitHub Actions)
+
+## Viikko 14 (22.12-28.12.2025)
+
+- Lukemattomien viestin lukumäärä merkin lisäys käyttäjän chatteihin.
