@@ -55,12 +55,10 @@
 | 12.11 | 2    |                                   |
 | 13.11 | 1    |                                   |
 | 14.11 | 2    | ilmoitus viestien lisäys chattiin |
-| 15.11 | 1    | uusien viestien ilmoitusmerkki    |
-| 16.11 | 1    |                                   |
 | 16.12 | 1    | järjestelmätestien kirjoitus      |
 | 17.12 | 3    |                                   |
 | 18.12 | 3    |                                   |
 | 19.12 | 3    |                                   |
 | 20.12 | 3    |                                   |
 | 21.12 | 2    | CI/CD automatisointi              |
-|  yht  | 175  |                                   |
+|  yht  | 173  |                                   |
