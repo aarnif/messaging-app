@@ -61,4 +61,11 @@
 | 19.12 | 3    |                                   |
 | 20.12 | 3    |                                   |
 | 21.12 | 2    | CI/CD automatisointi              |
-|  yht  | 173  |                                   |
+| 22.12 | 2    | bugien korjaus                    |
+| 23.12 | 2    |                                   |
+| 24.12 | 1    | uusien viestien ilmoitusmerkki    |
+| 25.12 | 1    |                                   |
+| 26.12 | 2    |                                   |
+| 27.12 | 2    |                                   |
+| 28.12 | 2    | bugien korjaus                    |
+|  yht  | 185  |                                   |
