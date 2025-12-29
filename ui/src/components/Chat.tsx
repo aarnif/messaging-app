@@ -105,7 +105,7 @@ const ChatMessage = ({
         <img
           src="https://i.ibb.co/vJDhmJJ/profile-placeholder.png"
           alt="sender-thumbnail"
-          className="relative right-3 h-10 w-10 rounded-full"
+          className={`relative right-3 h-10 w-10 rounded-full ${isLatestMessage && "animate-fade-in"}`}
         />
       )}
     </div>
