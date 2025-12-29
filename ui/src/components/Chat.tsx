@@ -53,12 +53,15 @@ import Button from "../ui/Button";
 const ChatMessage = ({
   currentUser,
   message,
+  latestAddedMessageId,
 }: {
   currentUser: User;
   message: Message;
+  latestAddedMessageId: string | null;
 }) => {
   const isCurrentUser = message.sender.id === currentUser.id;
   const senderName = isCurrentUser ? "You" : message.sender.name;
+  const isLatestMessage = message.id === latestAddedMessageId;
 
   return (
     <div
@@ -68,7 +71,7 @@ const ChatMessage = ({
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
         className={`relative flex max-w-62.5 min-w-25 flex-col rounded-xl px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
-        }`}
+        } ${isLatestMessage && "animate-pop-in"}`}
       >
         <h3
           className={`text-xs font-semibold ${
@@ -102,7 +105,7 @@ const ChatMessage = ({
         <img
           src="https://i.ibb.co/vJDhmJJ/profile-placeholder.png"
           alt="sender-thumbnail"
-          className="relative right-3 h-10 w-10 rounded-full"
+          className={`relative right-3 h-10 w-10 rounded-full ${isLatestMessage && "animate-fade-in"}`}
         />
       )}
     </div>
@@ -127,9 +130,11 @@ const NotificationMessage = ({ message }: { message: Message }) => {
 const ChatMessages = ({
   currentUser,
   messages,
+  latestAddedMessageId,
 }: {
   currentUser: User;
   messages: Message[];
+  latestAddedMessageId: string | null;
 }) => {
   const messagesEndRef = useRef<HTMLDivElement>(null);
 
@@ -147,6 +152,7 @@ const ChatMessages = ({
             key={message.id}
             currentUser={currentUser}
             message={message}
+            latestAddedMessageId={latestAddedMessageId}
           />
         )
       )}
@@ -548,10 +554,12 @@ const ChatContent = ({
   currentUser,
   chat,
   setIsChatInfoOpen,
+  latestAddedMessageId,
 }: {
   currentUser: User;
   chat: ChatType;
   setIsChatInfoOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  latestAddedMessageId: string | null;
 }) => {
   const navigate = useNavigate();
   const [checkIsBlocked] = useLazyQuery(IS_BLOCKED_BY_USER, {
@@ -596,7 +604,11 @@ const ChatContent = ({
         currentUser={currentUser}
         callBack={handleCallBack}
       />
-      <ChatMessages currentUser={currentUser} messages={messages} />
+      <ChatMessages
+        currentUser={currentUser}
+        messages={messages}
+        latestAddedMessageId={latestAddedMessageId}
+      />
       <NewMessageBox
         id={id}
         userId={otherChatMember ? otherChatMember.id : null}
@@ -648,6 +660,8 @@ const Chat = ({
         return;
       }
 
+      setLatestAddedMessageId(latestMessage.id);
+
       client.cache.updateQuery(
         {
           query: FIND_CHAT_BY_ID,
@@ -673,6 +687,9 @@ const Chat = ({
 
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
   const [isEditChatOpen, setIsEditChatOpen] = useState(false);
+  const [latestAddedMessageId, setLatestAddedMessageId] = useState<
+    string | null
+  >(null);
 
   useEffect(() => {
     setIsChatInfoOpen(false);
@@ -694,6 +711,7 @@ const Chat = ({
             currentUser={currentUser}
             chat={chat}
             setIsChatInfoOpen={setIsChatInfoOpen}
+            latestAddedMessageId={latestAddedMessageId}
           />
           <AnimatePresence>
             {isChatInfoOpen && (
