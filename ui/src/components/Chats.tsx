@@ -166,6 +166,8 @@ const ListMenu = ({
       }
 
       if (createdChat.userId === currentUser.id) {
+        setRecentlyUpdatedChatId(createdChat.id);
+
         client.cache.updateQuery(
           {
             query: ALL_CHATS_BY_USER,
