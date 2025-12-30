@@ -193,7 +193,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
       <div className="flex gap-4 p-2">
         <img
           className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
+          src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
         />
         <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
