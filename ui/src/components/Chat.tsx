@@ -49,6 +49,7 @@ import FormField from "../ui/FormField";
 import SearchBox from "../ui/SearchBox";
 import SelectContactsList from "../ui/SelectContactsList";
 import Button from "../ui/Button";
+import Avatar from "../ui/Avatar";
 
 const ChatMessage = ({
   currentUser,
@@ -102,11 +103,23 @@ const ChatMessage = ({
       </div>
 
       {!isCurrentUser && (
-        <img
-          src="https://i.ibb.co/vJDhmJJ/profile-placeholder.png"
-          alt="sender-thumbnail"
-          className={`relative right-3 h-10 w-10 rounded-full ${isLatestMessage && "animate-fade-in"}`}
-        />
+        <>
+          {message.sender.avatar ? (
+            <img
+              src={message.sender.avatar}
+              alt="sender-thumbnail"
+              className={`relative right-3 h-10 w-10 rounded-full ${isLatestMessage && "animate-fade-in"}`}
+            />
+          ) : (
+            <div className="relative right-3 w-full">
+              <Avatar
+                name={message.sender.name}
+                size="small"
+                isLatestMessage={isLatestMessage}
+              />
+            </div>
+          )}
+        </>
       )}
     </div>
   );
