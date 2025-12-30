@@ -14,6 +14,7 @@
     "test:server": "npm run test --prefix server",
     "typecheck:server": "npm run typecheck --prefix server",
     "lint:server": "npm run lint --prefix server",
+    "prod:server": "npm run prod --prefix server",
     "generate:ui": "npm run generate --prefix ui",
     "dev:ui": "npm run dev --prefix ui",
     "build:ui": "npm run build --prefix ui",
