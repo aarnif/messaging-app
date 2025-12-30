@@ -192,11 +192,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
       }
     >
       <div className="flex gap-4 p-2">
-        {avatar ? (
-          <img className="h-12 w-12 rounded-full" src={avatar} />
-        ) : (
-          <Avatar name={name} size="medium" />
-        )}
+        <Avatar name={name} size="medium" avatar={avatar} />
         <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">

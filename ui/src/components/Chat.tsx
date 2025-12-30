@@ -103,23 +103,14 @@ const ChatMessage = ({
       </div>
 
       {!isCurrentUser && (
-        <>
-          {message.sender.avatar ? (
-            <img
-              src={message.sender.avatar}
-              alt="sender-thumbnail"
-              className={`relative right-3 h-10 w-10 rounded-full ${isLatestMessage && "animate-fade-in"}`}
-            />
-          ) : (
-            <div className="relative right-3 w-full">
-              <Avatar
-                name={message.sender.name}
-                size="small"
-                isLatestMessage={isLatestMessage}
-              />
-            </div>
-          )}
-        </>
+        <div className="relative right-3 w-full">
+          <Avatar
+            name={message.sender.name}
+            size="small"
+            avatar={message.sender.avatar}
+            isLatestMessage={isLatestMessage}
+          />
+        </div>
       )}
     </div>
   );

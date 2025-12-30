@@ -266,11 +266,7 @@ const Profile = ({ currentUser }: { currentUser: User }) => {
           </button>
         </div>
         <div className="flex grow flex-col items-center gap-2.5">
-          {avatar ? (
-            <img className="h-20 w-20 rounded-full" src={avatar} />
-          ) : (
-            <Avatar name={name} size="large" />
-          )}
+          <Avatar name={name} size="large" avatar={avatar} />
           <div className="flex flex-col items-center gap-3">
             <div className="flex flex-col items-center">
               <h4 className="font-oswald font-semibold text-slate-900 dark:text-slate-50">
