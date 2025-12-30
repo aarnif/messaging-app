@@ -14,6 +14,7 @@ import MenuHeader from "../ui/MenuHeader";
 import Notify from "../ui/Notify";
 import SearchBox from "../ui/SearchBox";
 import SelectUserButton from "../ui/SelectUserButton";
+import Avatar from "../ui/Avatar";
 import type { Contact } from "../__generated__/graphql";
 import type { AddContactOption } from "../types";
 
@@ -179,7 +180,7 @@ const AddContactsModal = ({
 const ContactItem = ({ contact }: { contact: Contact }) => {
   const { id, contactDetails } = contact;
 
-  const { name, username, about } = contactDetails;
+  const { name, username, about, avatar } = contactDetails;
 
   return (
     <NavLink
@@ -191,10 +192,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
       }
     >
       <div className="flex gap-4 p-2">
-        <img
-          className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
-        />
+        <Avatar name={name} size="medium" avatar={avatar} />
         <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">

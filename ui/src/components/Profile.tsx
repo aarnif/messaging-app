@@ -13,6 +13,7 @@ import { motion, AnimatePresence } from "motion/react";
 import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
 import Button from "../ui/Button";
+import Avatar from "../ui/Avatar";
 
 const EditProfileModal = ({
   currentUser,
@@ -236,7 +237,7 @@ const Profile = ({ currentUser }: { currentUser: User }) => {
   const [isChangePasswordModalOpen, setIsChangePasswordModalOpen] =
     useState(false);
 
-  const { name, username, about } = currentUser;
+  const { name, username, about, avatar } = currentUser;
 
   return (
     <div
@@ -265,10 +266,7 @@ const Profile = ({ currentUser }: { currentUser: User }) => {
           </button>
         </div>
         <div className="flex grow flex-col items-center gap-2.5">
-          <img
-            className="h-20 w-20 rounded-full"
-            src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
-          />
+          <Avatar name={name} size="large" avatar={avatar} />
           <div className="flex flex-col items-center gap-3">
             <div className="flex flex-col items-center">
               <h4 className="font-oswald font-semibold text-slate-900 dark:text-slate-50">

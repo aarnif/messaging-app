@@ -11,6 +11,7 @@ import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../graphql/mutations";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import Button from "../ui/Button";
+import Avatar from "../ui/Avatar";
 import type { User, Contact as ContactType } from "../__generated__/graphql";
 import { useState, useEffect } from "react";
 import useModal from "../hooks/useModal";
@@ -26,7 +27,7 @@ const ContactContent = ({
 }) => {
   const modal = useModal();
   const navigate = useNavigate();
-  const { id, name, username, about } = contact.contactDetails;
+  const { id, name, username, about, avatar } = contact.contactDetails;
 
   const [findPrivateChatWithContact] = useLazyQuery(
     FIND_PRIVATE_CHAT_WITH_CONTACT,
@@ -106,10 +107,7 @@ const ContactContent = ({
         </h2>
       </div>
       <div className="flex grow flex-col items-center gap-2.5">
-        <img
-          className="h-20 w-20 rounded-full"
-          src="https://i.ibb.co/cNxwtNN/profile-placeholder.png"
-        />
+        <Avatar name={name} size="large" avatar={avatar} />
         <div className="flex flex-col items-center gap-3">
           <div className="flex flex-col items-center">
             <h4 className="font-oswald font-semibold text-slate-900 dark:text-slate-50">
