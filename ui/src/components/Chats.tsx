@@ -31,7 +31,7 @@ const ChatItem = ({
   currentUser: User;
   chat: UserChat;
 }) => {
-  const { latestMessage, unreadCount } = chat;
+  const { id, latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
@@ -39,7 +39,7 @@ const ChatItem = ({
   const formattedTime = formatDisplayDate(createdAt, currentUser.is24HourClock);
 
   return (
-    <div className="flex gap-4 p-2">
+    <div data-testid={`chat-item-${id}`} className="flex gap-4 p-2">
       <img
         className="h-12 w-12 rounded-full"
         src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
