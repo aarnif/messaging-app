@@ -60,3 +60,18 @@ jobs:
           PORT: ${{ secrets.PORT }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+
+  deploy:
+    needs: [deployment_pipeline]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v6
+        with:
+          node-version: "24"
+      - name: Trigger server deployment
+        if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
+        run: curl ${{ secrets.RENDER_SERVICE_URL }}
+      - name: Trigger ui deployment
+        if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
+        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_SERVICE_URL }}
