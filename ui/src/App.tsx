@@ -15,6 +15,7 @@ import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
+import LoadingPage from "./components/LoadingPage";
 import type { User } from "./__generated__/graphql";
 
 const App = () => {
@@ -26,7 +27,7 @@ const App = () => {
   );
 
   if (loading) {
-    return null;
+    return <LoadingPage />;
   }
 
   const currentUser = data?.me;
