@@ -18,16 +18,12 @@ import SelectionPrompt from "./ui/SelectionPrompt";
 import type { User } from "./__generated__/graphql";
 
 const App = () => {
-  const { data, loading } = useQuery(ME);
+  const { data } = useQuery(ME);
   const searchWord = useField(
     "search-chats",
     "text",
     "Search by title or description..."
   );
-
-  if (loading) {
-    return null;
-  }
 
   const currentUser = data?.me;
 
