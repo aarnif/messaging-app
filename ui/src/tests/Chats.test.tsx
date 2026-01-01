@@ -1,4 +1,4 @@
-import { render, screen, waitFor } from "@testing-library/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
@@ -120,20 +120,27 @@ describe("<Chats />", () => {
 
       await waitFor(() => {
         userChatsMock.forEach((chat) => {
-          const { name, latestMessage } = chat;
+          const { id, name, latestMessage } = chat;
 
-          expect(screen.getByText(name)).toBeDefined();
+          const chatItem = screen.getByTestId(`chat-item-${id}`);
+          expect(chatItem).toBeDefined();
+
+          expect(within(chatItem).getByText(name)).toBeDefined();
           expect(
-            screen.getByText(new RegExp(`${latestMessage?.sender.name}:`))
+            within(chatItem).getByText(
+              new RegExp(`${latestMessage?.sender.name}:`)
+            )
           ).toBeDefined();
           const formattedDate = formatDisplayDate(
             latestMessage?.createdAt ?? 0
           );
           if (formattedDate) {
-            expect(screen.getByText(formattedDate)).toBeDefined();
+            expect(within(chatItem).getByText(formattedDate)).toBeDefined();
           }
           expect(
-            screen.getByText(truncateText(latestMessage?.content ?? ""))
+            within(chatItem).getByText(
+              truncateText(latestMessage?.content ?? "")
+            )
           ).toBeDefined();
         });
       });
