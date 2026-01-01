@@ -120,10 +120,16 @@ describe("<Chats />", () => {
 
       await waitFor(() => {
         userChatsMock.forEach((chat) => {
-          const { id, name, latestMessage } = chat;
+          const { id, unreadCount, name, latestMessage } = chat;
 
           const chatItem = screen.getByTestId(`chat-item-${id}`);
           expect(chatItem).toBeDefined();
+
+          if (unreadCount > 0) {
+            const badge = within(chatItem).getByTestId("unread-messages-badge");
+            expect(badge).toBeDefined();
+            expect(badge.textContent).toBe(String(unreadCount));
+          }
 
           expect(within(chatItem).getByText(name)).toBeDefined();
           expect(
