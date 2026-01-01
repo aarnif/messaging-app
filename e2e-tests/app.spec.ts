@@ -231,6 +231,21 @@ test.describe("App", () => {
       ).not.toBeVisible();
     });
 
+    test("can search contacts by username", async ({ page }) => {
+      await addContacts(page, [user2, user3]);
+
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill(user3.username);
+
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) })
+      ).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) })
+      ).not.toBeVisible();
+    });
+
     test("can toggle block a contact", async ({ page }) => {
       await addContacts(page, [user2]);
       await page.getByRole("link", { name: user2.username }).click();
