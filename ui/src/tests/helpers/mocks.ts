@@ -491,6 +491,16 @@ export const userChatsMock = [
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
+  {
+    id: "2",
+    type: GROUP_CHAT_DETAILS.type,
+    name: "Test Chat 2",
+    avatar: null,
+    unreadCount: 1,
+    members: GROUP_CHAT_DETAILS.members,
+    latestMessage:
+      GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
+  },
 ];
 
 export const allChatsByUser: MockLink.MockedResponse<
