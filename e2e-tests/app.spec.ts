@@ -300,6 +300,32 @@ test.describe("App", () => {
       await page.getByTestId("chats-nav-item").click();
     });
 
+    test.describe("Filtering", () => {
+      test.beforeEach(async ({ page }) => {
+        await createPrivateChat(page, user2, "Hello World!");
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user3, user4],
+          "Hello World!"
+        );
+      });
+
+      test("can search private chats by name", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill(user2.name);
+
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).not.toBeVisible();
+      });
+    });
+
     test.describe("Creation", () => {
       test("prevents creation without contact", async ({ page }) => {
         await createPrivateChat(page);
