@@ -58,6 +58,10 @@ export const addContacts = async (
     await page.getByRole("button", { name: user.username }).click();
   }
   await page.getByTestId("add-contacts-button").click();
+
+  await expect(
+    page.getByRole("heading", { name: "Add Contacts" })
+  ).not.toBeVisible();
 };
 
 export const blockContact = async (page: Page) => {
