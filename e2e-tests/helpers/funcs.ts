@@ -126,6 +126,8 @@ export const createPrivateChat = async (
 
   await page.getByTestId("create-chat-button").click();
 
+  await page.waitForTimeout(1000);
+
   if (initialMessage) {
     await sendMessage(page, initialMessage);
   }
@@ -153,6 +155,8 @@ export const createGroupChat = async (
   await addMembersToChat(page, users);
 
   await page.getByTestId("create-chat-button").click();
+
+  await page.waitForTimeout(1000);
 
   if (initialMessage) {
     await sendMessage(page, initialMessage);

@@ -324,6 +324,32 @@ test.describe("App", () => {
           page.getByRole("link", { name: "New Group Chat" })
         ).not.toBeVisible();
       });
+
+      test("can search group chats by name", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill("New Group Chat");
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).not.toBeVisible();
+      });
+
+      test("can search group chats by description", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill("New Group Chat Description");
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).not.toBeVisible();
+      });
     });
 
     test.describe("Creation", () => {
