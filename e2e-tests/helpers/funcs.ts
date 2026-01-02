@@ -58,6 +58,10 @@ export const addContacts = async (
     await page.getByRole("button", { name: user.username }).click();
   }
   await page.getByTestId("add-contacts-button").click();
+
+  await expect(
+    page.getByRole("heading", { name: "Add Contacts" })
+  ).not.toBeVisible();
 };
 
 export const blockContact = async (page: Page) => {
@@ -122,6 +126,8 @@ export const createPrivateChat = async (
 
   await page.getByTestId("create-chat-button").click();
 
+  await page.waitForTimeout(1000);
+
   if (initialMessage) {
     await sendMessage(page, initialMessage);
   }
@@ -149,6 +155,8 @@ export const createGroupChat = async (
   await addMembersToChat(page, users);
 
   await page.getByTestId("create-chat-button").click();
+
+  await page.waitForTimeout(1000);
 
   if (initialMessage) {
     await sendMessage(page, initialMessage);

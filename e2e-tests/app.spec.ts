@@ -216,6 +216,54 @@ test.describe("App", () => {
       }
     });
 
+    test("can search contacts by name", async ({ page }) => {
+      await addContacts(page, [user2, user3]);
+
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill(user2.name);
+
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) })
+      ).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) })
+      ).not.toBeVisible();
+    });
+
+    test("can search contacts by username", async ({ page }) => {
+      await addContacts(page, [user2, user3]);
+
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill(user3.username);
+
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) })
+      ).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) })
+      ).not.toBeVisible();
+    });
+
+    test("shows no contacts found message when search has no results", async ({
+      page,
+    }) => {
+      await addContacts(page, [user2, user3]);
+
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill("nonexistent");
+
+      await expect(page.getByText("No contacts found.")).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) })
+      ).not.toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) })
+      ).not.toBeVisible();
+    });
+
     test("can toggle block a contact", async ({ page }) => {
       await addContacts(page, [user2]);
       await page.getByRole("link", { name: user2.username }).click();
@@ -250,6 +298,58 @@ test.describe("App", () => {
 
       await addContacts(page, [user2, user3, user4]);
       await page.getByTestId("chats-nav-item").click();
+    });
+
+    test.describe("Filtering", () => {
+      test.beforeEach(async ({ page }) => {
+        await createPrivateChat(page, user2, "Hello World!");
+        await createGroupChat(
+          page,
+          "New Group Chat",
+          "New Group Chat Description",
+          [user3, user4],
+          "Hello World!"
+        );
+      });
+
+      test("can search private chats by name", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill(user2.name);
+
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).not.toBeVisible();
+      });
+
+      test("can search group chats by name", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill("New Group Chat");
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).not.toBeVisible();
+      });
+
+      test("can search group chats by description", async ({ page }) => {
+        await page
+          .getByPlaceholder("Search by title or description...")
+          .fill("New Group Chat Description");
+
+        await expect(
+          page.getByRole("link", { name: "New Group Chat" })
+        ).toBeVisible();
+        await expect(
+          page.getByRole("link", { name: new RegExp(user2.name) })
+        ).not.toBeVisible();
+      });
     });
 
     test.describe("Creation", () => {
