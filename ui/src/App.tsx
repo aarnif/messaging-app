@@ -1,6 +1,4 @@
 import { Routes, Route, Navigate } from "react-router";
-import { useQuery } from "@apollo/client/react";
-import { ME } from "./graphql/queries";
 import useField from "./hooks/useField";
 import ModalProvider from "./components/ModalProvider";
 import Home from "./components/Home";
@@ -15,23 +13,15 @@ import Settings from "./components/Settings";
 import Profile from "./components/Profile";
 import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
-import LoadingPage from "./components/LoadingPage";
 import { useState } from "react";
 
 const App = () => {
   const [token, setToken] = useState(localStorage.getItem("token") || null);
-  const { data, loading } = useQuery(ME);
   const searchWord = useField(
     "search-chats",
     "text",
     "Search by title or description..."
   );
-
-  if (loading) {
-    return <LoadingPage />;
-  }
-
-  const currentUser = data?.me;
 
   return (
     <ModalProvider>
@@ -39,7 +29,7 @@ const App = () => {
         <Route
           path="/"
           element={
-            currentUser ? (
+            token ? (
               <Home setToken={setToken} />
             ) : (
               <Navigate to="/signin" replace />
@@ -92,22 +82,14 @@ const App = () => {
         <Route
           path="/signin"
           element={
-            currentUser ? (
-              <Navigate to="/" replace />
-            ) : (
-              <SignIn setToken={setToken} />
-            )
+            token ? <Navigate to="/" replace /> : <SignIn setToken={setToken} />
           }
         />
 
         <Route
           path="/signup"
           element={
-            currentUser ? (
-              <Navigate to="/" replace />
-            ) : (
-              <SignUp setToken={setToken} />
-            )
+            token ? <Navigate to="/" replace /> : <SignUp setToken={setToken} />
           }
         />
 
