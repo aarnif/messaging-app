@@ -16,6 +16,7 @@ import {
   loginMock,
   mockClient,
   mockNavigate,
+  mockSetToken,
 } from "./helpers/mocks";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import type { MockLink } from "@apollo/client/testing";
@@ -40,7 +41,7 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <SignUp />
+        <SignUp setToken={mockSetToken} />
       </MemoryRouter>
     </MockedProvider>
   );

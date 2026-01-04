@@ -16,8 +16,10 @@ import Profile from "./components/Profile";
 import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import LoadingPage from "./components/LoadingPage";
+import { useState } from "react";
 
 const App = () => {
+  const [token, setToken] = useState(localStorage.getItem("token") || null);
   const { data, loading } = useQuery(ME);
   const searchWord = useField(
     "search-chats",
@@ -36,7 +38,13 @@ const App = () => {
       <Routes>
         <Route
           path="/"
-          element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
+          element={
+            currentUser ? (
+              <Home setToken={setToken} />
+            ) : (
+              <Navigate to="/signin" replace />
+            )
+          }
         >
           <Route path="/" element={<Chats searchWord={searchWord} />}>
             <Route
@@ -83,12 +91,24 @@ const App = () => {
 
         <Route
           path="/signin"
-          element={currentUser ? <Navigate to="/" replace /> : <SignIn />}
+          element={
+            currentUser ? (
+              <Navigate to="/" replace />
+            ) : (
+              <SignIn setToken={setToken} />
+            )
+          }
         />
 
         <Route
           path="/signup"
-          element={currentUser ? <Navigate to="/" replace /> : <SignUp />}
+          element={
+            currentUser ? (
+              <Navigate to="/" replace />
+            ) : (
+              <SignUp setToken={setToken} />
+            )
+          }
         />
 
         <Route path="/*" element={<p>Page Not Found</p>} />

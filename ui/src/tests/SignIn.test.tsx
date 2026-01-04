@@ -13,6 +13,7 @@ import {
   loginErrorMock,
   mockClient,
   mockNavigate,
+  mockSetToken,
 } from "./helpers/mocks";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 
@@ -36,7 +37,7 @@ const renderComponent = (mocks = [loginMock]) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <SignIn />
+        <SignIn setToken={mockSetToken} />
       </MemoryRouter>
     </MockedProvider>
   );

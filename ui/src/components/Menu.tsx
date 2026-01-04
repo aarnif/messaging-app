@@ -3,7 +3,11 @@ import { useApolloClient } from "@apollo/client/react";
 import { useNavigate, NavLink } from "react-router";
 import useModal from "../hooks/useModal";
 
-const Menu = () => {
+const Menu = ({
+  setToken,
+}: {
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+}) => {
   const modal = useModal();
   const client = useApolloClient();
   const navigate = useNavigate();
@@ -52,6 +56,7 @@ const Menu = () => {
   const handleLogout = () => {
     console.log("Logging out...");
     localStorage.clear();
+    setToken(null);
     client.resetStore();
     navigate("/signin");
   };
