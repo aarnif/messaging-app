@@ -1,4 +1,4 @@
-import { useMatch, useNavigate } from "react-router";
+import { useMatch, useNavigate, useOutletContext } from "react-router";
 import { useQuery, useLazyQuery, useMutation } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
 import {
@@ -178,7 +178,11 @@ const ContactContent = ({
   );
 };
 
-const Contact = ({ currentUser }: { currentUser: User }) => {
+const Contact = () => {
+  const { currentUser } = useOutletContext<{
+    currentUser: User;
+  }>();
+
   const match = useMatch("/contacts/:id")?.params;
 
   const { data: contactData, loading: contactLoading } = useQuery(

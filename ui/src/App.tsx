@@ -68,10 +68,7 @@ const App = () => {
                 <SelectionPrompt message="Select a contact for further information." />
               }
             />
-            <Route
-              path="/contacts/:id"
-              element={<Contact currentUser={currentUser as User} />}
-            />
+            <Route path="/contacts/:id" element={<Contact />} />
             <Route
               path="/contacts/removed"
               element={<SelectionPrompt message="You removed the contact." />}

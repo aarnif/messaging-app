@@ -1,5 +1,9 @@
 import useField from "../hooks/useField";
-import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../graphql/queries";
+import {
+  ALL_CONTACTS_BY_USER,
+  ME,
+  NON_CONTACT_USERS,
+} from "../graphql/queries";
 import { ADD_CONTACTS } from "../graphql/mutations";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
@@ -268,11 +272,15 @@ const ListMenu = ({
 };
 
 const Contacts = () => {
+  const { data } = useQuery(ME);
+  const currentUser = data?.me;
+
   const [isAddContactsModalOpen, setIsAddContactsModalOpen] = useState(false);
+
   return (
     <div className="flex grow">
       <ListMenu setIsAddContactsModalOpen={setIsAddContactsModalOpen} />
-      <Outlet />
+      <Outlet context={{ currentUser }} />
       <AnimatePresence>
         {isAddContactsModalOpen && (
           <AddContactsModal
