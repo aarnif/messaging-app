@@ -1,7 +1,8 @@
 import { render, screen } from "@testing-library/react";
 import { describe, test, expect, vi } from "vitest";
+import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
-import { mockNavigate } from "./helpers/mocks";
+import { mockNavigate, meMock } from "./helpers/mocks";
 import Settings from "../components/Settings";
 
 vi.mock("react-router", async () => {
@@ -14,9 +15,11 @@ vi.mock("react-router", async () => {
 
 const renderComponent = () =>
   render(
-    <MemoryRouter>
-      <Settings />
-    </MemoryRouter>
+    <MockedProvider mocks={[meMock]}>
+      <MemoryRouter>
+        <Settings />
+      </MemoryRouter>
+    </MockedProvider>
   );
 
 describe("<Settings />", () => {

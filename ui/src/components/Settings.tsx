@@ -1,5 +1,8 @@
 import { NavLink, Outlet, useLocation } from "react-router";
+import { useQuery } from "@apollo/client/react";
+import { ME } from "../graphql/queries";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
+import Spinner from "../ui/Spinner";
 
 const SettingsItem = ({
   item,
@@ -64,11 +67,22 @@ const ListMenu = () => {
   );
 };
 
-const Settings = () => (
-  <div className="flex flex-grow">
-    <ListMenu />
-    <Outlet />
-  </div>
-);
+const Settings = () => {
+  const { data, loading } = useQuery(ME);
+  const currentUser = data?.me;
+
+  return (
+    <div className="flex flex-grow">
+      <ListMenu />
+      {loading ? (
+        <div className="flex grow items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <Outlet context={{ currentUser }} />
+      )}
+    </div>
+  );
+};
 
 export default Settings;

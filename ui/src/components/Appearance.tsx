@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import { useMutation } from "@apollo/client/react";
 import { IoChevronBack } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
@@ -55,7 +55,11 @@ const SettingsToggle = ({
   );
 };
 
-const Appearance = ({ currentUser }: { currentUser: User }) => {
+const Appearance = () => {
+  const { currentUser } = useOutletContext<{
+    currentUser: User;
+  }>();
+
   const navigate = useNavigate();
   const [theme, setTheme] = useState(
     localStorage.theme === "dark" ||

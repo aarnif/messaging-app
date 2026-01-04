@@ -16,7 +16,6 @@ import Profile from "./components/Profile";
 import Appearance from "./components/Appearance";
 import SelectionPrompt from "./ui/SelectionPrompt";
 import LoadingPage from "./components/LoadingPage";
-import type { User } from "./__generated__/graphql";
 
 const App = () => {
   const { data, loading } = useQuery(ME);
@@ -76,18 +75,9 @@ const App = () => {
           </Route>
 
           <Route path="/settings" element={<Settings />}>
-            <Route
-              index
-              element={<Profile currentUser={currentUser as User} />}
-            />
-            <Route
-              path="profile"
-              element={<Profile currentUser={currentUser as User} />}
-            />
-            <Route
-              path="appearance"
-              element={<Appearance currentUser={currentUser as User} />}
-            />
+            <Route index element={<Profile />} />
+            <Route path="profile" element={<Profile />} />
+            <Route path="appearance" element={<Appearance />} />
           </Route>
         </Route>
 
