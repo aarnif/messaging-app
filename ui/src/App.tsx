@@ -39,35 +39,16 @@ const App = () => {
           path="/"
           element={currentUser ? <Home /> : <Navigate to="/signin" replace />}
         >
-          <Route
-            path="/"
-            element={
-              <Chats
-                currentUser={currentUser as User}
-                searchWord={searchWord}
-              />
-            }
-          >
+          <Route path="/" element={<Chats searchWord={searchWord} />}>
             <Route
               index
               element={
                 <SelectionPrompt message="Select Chat to Start Messaging." />
               }
             />
-            <Route
-              path="/chats/:id"
-              element={
-                <Chat
-                  currentUser={currentUser as User}
-                  searchWord={searchWord}
-                />
-              }
-            />
+            <Route path="/chats/:id" element={<Chat />} />
 
-            <Route
-              path="/chats/new"
-              element={<NewChat currentUser={currentUser as User} />}
-            />
+            <Route path="/chats/new" element={<NewChat />} />
 
             <Route
               path="/chats/left"

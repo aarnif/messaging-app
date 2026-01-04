@@ -6,6 +6,7 @@ import type { MockLink } from "@apollo/client/testing";
 import { MemoryRouter } from "react-router";
 import {
   mockNavigate,
+  mockUseOutletContext,
   currentUserChatAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
@@ -24,6 +25,7 @@ vi.mock("react-router", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useOutletContext: () => mockUseOutletContext(),
   };
 });
 
@@ -34,14 +36,19 @@ const renderComponent = (
     sendMessage,
     createChat,
   ]
-) =>
-  render(
+) => {
+  mockUseOutletContext.mockReturnValue({
+    currentUser: currentUserChatAdminMock,
+  });
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <NewChat currentUser={currentUserChatAdminMock} />
+        <NewChat />
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 describe("<NewChat />", () => {
   beforeEach(() => {

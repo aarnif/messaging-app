@@ -5,7 +5,7 @@ import type { UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
-  currentUserChatAdminMock,
+  meMock,
   allChatsByUserEmpty,
   allChatsByUser,
   userChatsMock,
@@ -48,6 +48,7 @@ const contact2username = userContactsMock[1].contactDetails.username;
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
+    meMock,
     allChatsByUser,
     userChatCreatedSubscription,
     userChatUpdatedSubscription,
@@ -58,10 +59,7 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Chats
-          currentUser={currentUserChatAdminMock}
-          searchWord={mockChatsSearchWord}
-        />
+        <Chats searchWord={mockChatsSearchWord} />
       </MemoryRouter>
     </MockedProvider>
   );
@@ -83,10 +81,12 @@ const openNewChatModal = async (user: UserEvent, type: string) => {
   await openNewChatDropDownMenu(user);
   await user.click(screen.getByRole("button", { name: type }));
 
-  expect(screen.getByText(type)).toBeDefined();
-  expect(
-    screen.getByPlaceholderText("Search by name or username...")
-  ).toBeDefined();
+  await waitFor(() => {
+    expect(screen.getByText(type)).toBeDefined();
+    expect(
+      screen.getByPlaceholderText("Search by name or username...")
+    ).toBeDefined();
+  });
 };
 
 describe("<Chats />", () => {
@@ -103,6 +103,7 @@ describe("<Chats />", () => {
 
     test("displays no chats found if user has none", async () => {
       renderComponent([
+        meMock,
         allChatsByUserEmpty,
         userChatCreatedSubscription,
         userChatUpdatedSubscription,
@@ -180,6 +181,7 @@ describe("<Chats />", () => {
     test("shows new private chat modal when new private chat button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
@@ -199,6 +201,7 @@ describe("<Chats />", () => {
     test("closes new private chat modal when close button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
@@ -219,6 +222,7 @@ describe("<Chats />", () => {
     test("show no contacts if user has none", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChatsEmpty,
         userChatCreatedSubscription,
@@ -237,6 +241,7 @@ describe("<Chats />", () => {
     test("displays error if contact is not selected", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
@@ -261,6 +266,7 @@ describe("<Chats />", () => {
     test("displays error if contact has blocked the user", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserTrue,
@@ -291,6 +297,7 @@ describe("<Chats />", () => {
     test("selects contact when contact button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         userChatCreatedSubscription,
@@ -316,6 +323,7 @@ describe("<Chats />", () => {
     test("saves new private chat info and navigates to chat preview when new chat button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserFalse,
@@ -355,6 +363,7 @@ describe("<Chats />", () => {
     test("shows new group chat modal when new group chat button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
@@ -374,6 +383,7 @@ describe("<Chats />", () => {
     test("closes new group chat modal when close button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
@@ -399,6 +409,7 @@ describe("<Chats />", () => {
     test("show no contacts if user has none", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUserEmpty,
         userChatCreatedSubscription,
@@ -417,6 +428,7 @@ describe("<Chats />", () => {
     test("selects contact when contact button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
@@ -442,6 +454,7 @@ describe("<Chats />", () => {
     test("displays error if chat name is not given", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
@@ -467,6 +480,7 @@ describe("<Chats />", () => {
     test("displays error if not at least two contacts has been selected", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
@@ -494,6 +508,7 @@ describe("<Chats />", () => {
     test("saves new group chat info and navigates to chat preview when new chat button is clicked", async () => {
       const user = userEvent.setup();
       renderComponent([
+        meMock,
         allChatsByUser,
         allContactsByUser,
         userChatCreatedSubscription,
