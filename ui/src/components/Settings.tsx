@@ -51,14 +51,14 @@ const ListMenu = () => {
 
   return (
     <div
-      className={`flex flex-grow flex-col border-r border-slate-200 bg-white p-4 sm:max-w-[360px] dark:border-slate-700 dark:bg-slate-800 ${
+      className={`flex grow flex-col border-r border-slate-200 bg-white p-4 sm:max-w-90 dark:border-slate-700 dark:bg-slate-800 ${
         showListOnMobile ? "" : "hidden sm:flex"
       }`}
     >
       <h1 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
         Settings
       </h1>
-      <div className="flex flex-grow flex-col gap-4 py-4">
+      <div className="flex grow flex-col gap-4 py-4">
         {settingsItems.map((item) => (
           <SettingsItem key={item.title} item={item} />
         ))}
@@ -72,7 +72,7 @@ const Settings = () => {
   const currentUser = data?.me;
 
   return (
-    <div className="flex flex-grow">
+    <div className="flex grow">
       <ListMenu />
       {loading ? (
         <div className="flex grow items-center justify-center">
