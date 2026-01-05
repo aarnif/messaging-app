@@ -47,7 +47,12 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
   );
 
 const assertSignUpPageLoaded = async () => {
-  expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
+  expect(screen.getByRole("heading", { name: "Messaging App" })).toBeDefined();
+  expect(
+    screen.getByText(
+      "Create an account to start connecting with friends and family."
+    )
+  ).toBeDefined();
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
   expect(screen.getByLabelText("Confirm Password")).toBeDefined();
