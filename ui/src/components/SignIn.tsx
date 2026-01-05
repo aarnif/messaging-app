@@ -9,7 +9,11 @@ import { LOGIN } from "../graphql/mutations";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import { AnimatePresence } from "motion/react";
 
-const SignIn = () => {
+const SignIn = ({
+  setToken,
+}: {
+  setToken: React.Dispatch<React.SetStateAction<string | null>>;
+}) => {
   const client = useApolloClient();
   const navigate = useNavigate();
   const { message, showMessage, closeMessage } = useNotifyMessage();
@@ -48,6 +52,7 @@ const SignIn = () => {
 
     if (data?.login?.value) {
       localStorage.setItem("token", data.login.value);
+      setToken(data.login.value);
       client.resetStore();
       navigate("/");
       console.log("Form submitted succesfully!");

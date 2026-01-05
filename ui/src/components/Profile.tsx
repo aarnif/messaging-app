@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router";
+import { useNavigate, useLocation, useOutletContext } from "react-router";
 import { useMutation } from "@apollo/client/react";
 import { useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
@@ -287,7 +287,10 @@ const ProfileContent = ({
   );
 };
 
-const Profile = ({ currentUser }: { currentUser: User }) => {
+const Profile = () => {
+  const { currentUser } = useOutletContext<{
+    currentUser: User;
+  }>();
   const location = useLocation();
   const showListOnMobile = location.pathname === "/settings/profile";
 

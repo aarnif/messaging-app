@@ -10,6 +10,7 @@ import {
   editProfile24h,
   editProfile12h,
   mockNavigate,
+  mockUseOutletContext,
   windowMockContent,
 } from "./helpers/mocks";
 
@@ -18,19 +19,25 @@ vi.mock("react-router", async () => {
   return {
     ...actual,
     useNavigate: () => mockNavigate,
+    useOutletContext: () => mockUseOutletContext(),
   };
 });
 
 Object.defineProperty(window, "matchMedia", windowMockContent);
 
-const renderComponent = (mocks = [editProfile24h]) =>
-  render(
+const renderComponent = (mocks = [editProfile24h]) => {
+  mockUseOutletContext.mockReturnValue({
+    currentUser: currentUserChatAdminMock,
+  });
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Appearance currentUser={currentUserChatAdminMock} />
+        <Appearance />
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 const waitForAppearancePageRender = async () => {
   await waitFor(() => {

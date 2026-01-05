@@ -1,4 +1,4 @@
-import { useNavigate } from "react-router";
+import { useNavigate, useOutletContext } from "react-router";
 import type { User } from "../__generated__/graphql";
 import type { NewChatDetails, NewChatMember } from "../types";
 import useField from "../hooks/useField";
@@ -87,7 +87,11 @@ const NewChatContent = ({
   );
 };
 
-const NewChat = ({ currentUser }: { currentUser: User }) => {
+const NewChat = () => {
+  const { currentUser } = useOutletContext<{
+    currentUser: User;
+  }>();
+
   const storedChatInfo = localStorage.getItem("new-chat-info");
   const newChatInfo = storedChatInfo ? JSON.parse(storedChatInfo) : null;
 

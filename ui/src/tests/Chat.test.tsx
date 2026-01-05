@@ -8,6 +8,7 @@ import { MemoryRouter } from "react-router";
 import {
   mockNavigate,
   mockMatch,
+  mockUseOutletContext,
   findChatByIdGroup,
   findChatByIdPrivate,
   findChatByIdNull,
@@ -42,6 +43,7 @@ vi.mock("react-router", async () => {
     ...actual,
     useMatch: () => mockMatch(),
     useNavigate: () => mockNavigate,
+    useOutletContext: () => mockUseOutletContext(),
   };
 });
 
@@ -57,16 +59,22 @@ const renderComponent = (
     messageSentSubscription,
   ],
   currentUser = currentUserChatAdminMock
-) =>
-  render(
+) => {
+  mockUseOutletContext.mockReturnValue({
+    currentUser,
+    searchWord: mockChatsSearchWord,
+  });
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
         <ModalProvider>
-          <Chat currentUser={currentUser} searchWord={mockChatsSearchWord} />
+          <Chat />
         </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 const openChatInfoModal = async (user: UserEvent) => {
   await waitFor(async () => {
@@ -229,18 +237,15 @@ describe("<Chat />", () => {
 
   test("does not send message in private chat if contact has blocked user", async () => {
     const user = userEvent.setup();
-    renderComponent(
-      [
-        findChatByIdPrivate,
-        findChatByIdNull,
-        allChatsByUser,
-        sendMessage,
-        isBlockedByUserTrue,
-        markChatAsRead,
-        messageSentSubscription,
-      ],
-      currentUserChatAdminMock
-    );
+    renderComponent([
+      findChatByIdPrivate,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      isBlockedByUserTrue,
+      markChatAsRead,
+      messageSentSubscription,
+    ]);
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
 

@@ -1372,6 +1372,10 @@ export const mockNavigate = vi.fn();
 
 export const mockMatch = vi.fn();
 
+export const mockUseOutletContext = vi.fn();
+
+export const mockSetToken = vi.fn();
+
 export const windowMockContent = {
   writable: true,
   value: vi.fn().mockImplementation((query) => ({

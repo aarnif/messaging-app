@@ -20,6 +20,7 @@ import {
   messageSentSubscription,
   userChatDeletedSubscription,
   userChatLeftSubscription,
+  LOGIN_TOKEN,
 } from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -28,19 +29,25 @@ Object.defineProperty(window, "matchMedia", windowMockContent);
 
 const renderComponent = (
   initialEntries = ["/"],
-  mocks: MockLink.MockedResponse[] = [meMock]
-) =>
-  render(
+  mocks: MockLink.MockedResponse[] = [meMock],
+  token: string | null = LOGIN_TOKEN
+) => {
+  if (token) {
+    localStorage.setItem("token", token);
+  }
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={initialEntries}>
         <App />
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 describe("<App />", () => {
   test("renders sign in page", async () => {
-    renderComponent(["/signin"], [meNullMock]);
+    renderComponent(["/signin"], [meNullMock], null);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
@@ -48,7 +55,7 @@ describe("<App />", () => {
   });
 
   test("renders sign up page", async () => {
-    renderComponent(["/signup"], [meNullMock]);
+    renderComponent(["/signup"], [meNullMock], null);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign Up" })).toBeDefined();
@@ -56,7 +63,7 @@ describe("<App />", () => {
   });
 
   test("redirects from home page to sign in when not authenticated", async () => {
-    renderComponent(["/"], [meNullMock]);
+    renderComponent(["/"], [meNullMock], null);
 
     await waitFor(() => {
       expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();

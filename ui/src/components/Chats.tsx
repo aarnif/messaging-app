@@ -1,4 +1,4 @@
-import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "../graphql/queries";
+import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID, ME } from "../graphql/queries";
 import {
   USER_CHAT_UPDATED,
   USER_CHAT_CREATED,
@@ -28,7 +28,7 @@ const ChatItem = ({
   currentUser,
   chat,
 }: {
-  currentUser: User;
+  currentUser: User | undefined | null;
   chat: UserChat;
 }) => {
   const { id, latestMessage, unreadCount } = chat;
@@ -36,7 +36,10 @@ const ChatItem = ({
   const { sender, content, createdAt } = latestMessage;
   const messagePreview = content ? truncateText(content) : "";
 
-  const formattedTime = formatDisplayDate(createdAt, currentUser.is24HourClock);
+  const formattedTime = formatDisplayDate(
+    createdAt,
+    currentUser?.is24HourClock
+  );
 
   return (
     <div data-testid={`chat-item-${id}`} className="flex gap-4 p-2">
@@ -47,7 +50,7 @@ const ChatItem = ({
       <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
-            {getChatName(chat, currentUser.id)}
+            {getChatName(chat, currentUser?.id ?? "")}
           </h2>
           {formattedTime && (
             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
@@ -77,10 +80,12 @@ const ChatItem = ({
 const ListMenu = ({
   currentUser,
   searchWord,
+  meLoading,
   setIsNewChatDropdownOpen,
 }: {
-  currentUser: User;
+  currentUser: User | undefined | null;
   searchWord: InputField;
+  meLoading: boolean;
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const client = useApolloClient();
@@ -90,6 +95,7 @@ const ListMenu = ({
     variables: {
       search: searchWord.value,
     },
+    skip: !currentUser,
   });
 
   const [recentlyUpdatedChatId, setRecentlyUpdatedChatId] = useState<
@@ -98,11 +104,12 @@ const ListMenu = ({
 
   useSubscription(USER_CHAT_UPDATED, {
     fetchPolicy: "no-cache",
+    skip: !currentUser,
     onData: ({ data }) => {
       console.log("Use CHAT_UPDATED-subscription:");
       const updatedChat = data.data?.userChatUpdated;
 
-      if (!updatedChat) {
+      if (!updatedChat || !currentUser) {
         console.log("No latest message found, skipping cache update");
         return;
       }
@@ -156,11 +163,12 @@ const ListMenu = ({
   });
 
   useSubscription(USER_CHAT_CREATED, {
+    skip: !currentUser,
     onData: ({ data }) => {
       console.log("Use USER_CHAT_CREATED-subscription:");
       const createdChat = data.data?.userChatCreated;
 
-      if (!createdChat) {
+      if (!createdChat || !currentUser) {
         console.log("No latest message found, skipping cache update");
         return;
       }
@@ -198,6 +206,7 @@ const ListMenu = ({
   });
 
   useSubscription(USER_CHAT_DELETED, {
+    skip: !currentUser,
     onData: ({ data }) => {
       const deletedChatId = data.data?.userChatDeleted;
 
@@ -214,11 +223,12 @@ const ListMenu = ({
   });
 
   useSubscription(USER_CHAT_LEFT, {
+    skip: !currentUser,
     onData: ({ data }) => {
       console.log("Use USER_CHAT_LEFT-subscription:");
       const leftGroupChatDetails = data.data?.userChatLeft;
 
-      if (leftGroupChatDetails) {
+      if (leftGroupChatDetails && currentUser) {
         const { chatId, memberId } = leftGroupChatDetails;
 
         if (currentUser.id !== memberId) {
@@ -265,7 +275,7 @@ const ListMenu = ({
         buttonTestId="create-new-chat"
         callback={() => setIsNewChatDropdownOpen(true)}
       />
-      {loading ? (
+      {meLoading || loading ? (
         <div className="mt-8">
           <Spinner />
         </div>
@@ -303,13 +313,10 @@ const ListMenu = ({
   );
 };
 
-const Chats = ({
-  currentUser,
-  searchWord,
-}: {
-  currentUser: User;
-  searchWord: InputField;
-}) => {
+const Chats = ({ searchWord }: { searchWord: InputField }) => {
+  const { data, loading: meLoading } = useQuery(ME);
+  const currentUser = data?.me;
+
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
   const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
   const [newChatModalType, setNewChatModalType] = useState<
@@ -332,9 +339,16 @@ const Chats = ({
       <ListMenu
         currentUser={currentUser}
         searchWord={searchWord}
+        meLoading={meLoading}
         setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
       />
-      <Outlet />
+      {meLoading ? (
+        <div className="flex grow items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <Outlet context={{ currentUser, searchWord }} />
+      )}
       <AnimatePresence>
         {isNewChatDropdownOpen && (
           <NewChatDropDownBox
@@ -342,7 +356,7 @@ const Chats = ({
             handleOpenNewChatModal={handleOpenNewChatModal}
           />
         )}
-        {isNewChatModalOpen && (
+        {isNewChatModalOpen && currentUser && (
           <NewChatModal
             currentUser={currentUser}
             newChatModalType={newChatModalType}

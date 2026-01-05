@@ -4,6 +4,7 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import {
+  meMock,
   allContactsByUserEmpty,
   allContactsByUser,
   userContactsMock,
@@ -27,7 +28,7 @@ const contact1username = nonContactUsersMock[0].username;
 const contact2username = nonContactUsersMock[1].username;
 
 const renderComponent = (
-  mocks: MockLink.MockedResponse[] = [allContactsByUser]
+  mocks: MockLink.MockedResponse[] = [meMock, allContactsByUser]
 ) =>
   render(
     <MockedProvider mocks={mocks}>
@@ -77,7 +78,7 @@ describe("<Contacts />", () => {
   });
 
   test("displays no contacts found if user has none", async () => {
-    renderComponent([allContactsByUserEmpty]);
+    renderComponent([meMock, allContactsByUserEmpty]);
 
     await waitFor(() => {
       expect(screen.getByText("No contacts found.")).toBeDefined();
@@ -95,7 +96,7 @@ describe("<Contacts />", () => {
   describe("adding new contacts", () => {
     test("shows add contacts modal when new add contacts button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsers]);
+      renderComponent([meMock, allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
@@ -103,7 +104,7 @@ describe("<Contacts />", () => {
 
     test("closes add contacts modal when close modal button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsers]);
+      renderComponent([meMock, allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
@@ -117,7 +118,7 @@ describe("<Contacts />", () => {
 
     test("show no users if every user is already a contact", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsersEmpty]);
+      renderComponent([meMock, allContactsByUser, nonContactUsersEmpty]);
 
       await waitForPageRender();
       await openAddContactsModal(user);
@@ -125,7 +126,12 @@ describe("<Contacts />", () => {
 
     test("displays error if no user is selected", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsers, addContactsEmpty]);
+      renderComponent([
+        meMock,
+        allContactsByUser,
+        nonContactUsers,
+        addContactsEmpty,
+      ]);
 
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
@@ -137,7 +143,7 @@ describe("<Contacts />", () => {
 
     test("selects users when user button is clicked", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsers]);
+      renderComponent([meMock, allContactsByUser, nonContactUsers]);
 
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
@@ -150,7 +156,12 @@ describe("<Contacts />", () => {
 
     test("closes modal when new contacts has been added", async () => {
       const user = userEvent.setup();
-      renderComponent([allContactsByUser, nonContactUsers, addContacts]);
+      renderComponent([
+        meMock,
+        allContactsByUser,
+        nonContactUsers,
+        addContacts,
+      ]);
 
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);

@@ -14,6 +14,7 @@ import {
   findPrivateChatWithContactNull,
   mockMatch,
   mockNavigate,
+  mockUseOutletContext,
   CONTACT_DETAILS,
   PRIVATE_CHAT_DETAILS,
   NewPrivateChatDetails,
@@ -33,6 +34,7 @@ vi.mock("react-router", async () => {
     ...actual,
     useMatch: () => mockMatch(),
     useNavigate: () => mockNavigate,
+    useOutletContext: () => mockUseOutletContext(),
   };
 });
 
@@ -40,16 +42,21 @@ const contactDetails = CONTACT_DETAILS.contactDetails;
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse]
-) =>
-  render(
+) => {
+  mockUseOutletContext.mockReturnValue({
+    currentUser: currentUserChatAdminMock,
+  });
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/contacts/1"]}>
         <ModalProvider>
-          <Contact currentUser={currentUserChatAdminMock} />
+          <Contact />
         </ModalProvider>
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 const waitForPageRender = async () => {
   await waitFor(() => {

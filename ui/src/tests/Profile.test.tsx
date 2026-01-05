@@ -10,6 +10,7 @@ import {
   changePassword,
   changePasswordError,
   mockNavigate,
+  mockUseOutletContext,
 } from "./helpers/mocks";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import Profile from "../components/Profile";
@@ -21,19 +22,27 @@ vi.mock("react-router", async () => {
     ...actual,
     useMatch: vi.fn(),
     useNavigate: () => mockNavigate,
+    useOutletContext: () => mockUseOutletContext(),
   };
 });
 
 const { name, username } = currentUserChatAdminMock;
 
-const renderComponent = (mocks: MockLink.MockedResponse[] = [editProfile24h]) =>
-  render(
+const renderComponent = (
+  mocks: MockLink.MockedResponse[] = [editProfile24h]
+) => {
+  mockUseOutletContext.mockReturnValue({
+    currentUser: currentUserChatAdminMock,
+  });
+
+  return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Profile currentUser={currentUserChatAdminMock} />
+        <Profile />
       </MemoryRouter>
     </MockedProvider>
   );
+};
 
 const assertProfilePageLoaded = async () => {
   expect(screen.getByRole("heading", { name: "Profile" })).toBeDefined();

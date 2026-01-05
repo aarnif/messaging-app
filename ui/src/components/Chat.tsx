@@ -1,4 +1,4 @@
-import { useMatch, useNavigate } from "react-router";
+import { useMatch, useNavigate, useOutletContext } from "react-router";
 import {
   useApolloClient,
   useQuery,
@@ -622,13 +622,12 @@ const ChatContent = ({
   );
 };
 
-const Chat = ({
-  currentUser,
-  searchWord,
-}: {
-  currentUser: User;
-  searchWord: InputField;
-}) => {
+const Chat = () => {
+  const { currentUser, searchWord } = useOutletContext<{
+    currentUser: User;
+    searchWord: InputField;
+  }>();
+
   const client = useApolloClient();
   const match = useMatch("/chats/:id")?.params;
   const { data, loading } = useQuery(FIND_CHAT_BY_ID, {
