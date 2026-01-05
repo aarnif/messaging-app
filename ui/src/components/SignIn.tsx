@@ -63,7 +63,7 @@ const SignIn = ({
       <div className="max-w-105 grow bg-[url(/background-light.svg)] dark:bg-[url(/background-dark.svg)]"></div>
       <div className="flex grow items-center justify-center bg-slate-50 p-8 dark:bg-slate-900">
         <form
-          className="flex w-full max-w-96 flex-col gap-12 rounded-2xl p-4 sm:mt-16"
+          className="flex w-full max-w-96 flex-col gap-12 rounded-2xl p-4"
           onSubmit={handleSubmit}
         >
           <div className="flex flex-col gap-6">
