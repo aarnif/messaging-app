@@ -68,4 +68,11 @@
 | 26.12 | 2    |                                   |
 | 27.12 | 2    |                                   |
 | 28.12 | 2    | bugien korjaus                    |
-|  yht  | 185  |                                   |
+| 29.12 | 2    | animaatioiden lisäys              |
+| 30.12 | 2    | sovellus tuotantoon               |
+| 31.12 | 2    |                                   |
+|  1.1  | 2    | testien kirjoitus                 |
+|  2.1  | 1    |                                   |
+|  3.1  | 2    | koodin refaktorointi              |
+|  4.1  | 2    |                                   |
+|  yht  | 198  |                                   |
