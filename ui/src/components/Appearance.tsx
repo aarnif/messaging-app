@@ -94,7 +94,7 @@ const Appearance = () => {
   };
 
   return (
-    <div className="flex flex-grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800">
+    <div className="flex grow flex-col items-center gap-4 bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800">
       <div className="flex w-full items-center justify-center">
         <button
           data-testid="go-back-button"
