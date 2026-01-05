@@ -43,7 +43,12 @@ const renderComponent = (mocks = [loginMock]) =>
   );
 
 const assertSignInPageLoaded = async () => {
-  expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
+  expect(screen.getByRole("heading", { name: "Messaging App" })).toBeDefined();
+  expect(
+    screen.getByText(
+      "Add contacts, create private or group chats, and send text messages. Stay connected with the people that matter most."
+    )
+  ).toBeDefined();
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
   expect(screen.getByRole("button", { name: "Sign In" })).toBeDefined();

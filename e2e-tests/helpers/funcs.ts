@@ -38,7 +38,9 @@ export const signIn = async (
 export const logout = async (page: Page) => {
   await page.getByTestId("logout-button").click();
   await page.getByRole("button", { name: "Logout" }).click();
-  await expect(page.getByRole("heading", { name: "Sign In" })).toBeVisible();
+  await expect(
+    page.getByRole("heading", { name: "Messaging App" })
+  ).toBeVisible();
 };
 
 export const addContacts = async (
