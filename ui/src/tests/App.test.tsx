@@ -50,7 +50,9 @@ describe("<App />", () => {
     renderComponent(["/signin"], [meNullMock], null);
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
+      expect(
+        screen.getByRole("heading", { name: "Messaging App" })
+      ).toBeDefined();
     });
   });
 
@@ -66,7 +68,9 @@ describe("<App />", () => {
     renderComponent(["/"], [meNullMock], null);
 
     await waitFor(() => {
-      expect(screen.getByRole("heading", { name: "Sign In" })).toBeDefined();
+      expect(
+        screen.getByRole("heading", { name: "Messaging App" })
+      ).toBeDefined();
     });
   });
 
