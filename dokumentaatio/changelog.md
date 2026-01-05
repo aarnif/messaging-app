@@ -120,3 +120,10 @@ Ei muutoksia
 ## Viikko 14 (22.12-28.12.2025)
 
 - Lukemattomien viestin lukumäärä merkin lisäys käyttäjän chatteihin.
+
+## Viikko 15 (29.12.2025-4.1.2026)
+
+- Uuden viestin lähetyksen animointi
+- Uuden chatin luonnin animointi
+- Sovellus tuotantoon
+- GraphQL tilaukset tuotannossa (Redis)
