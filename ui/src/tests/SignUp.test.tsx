@@ -161,7 +161,10 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await waitFor(() => {
-      expect(localStorage.setItem).toHaveBeenCalledWith("token", LOGIN_TOKEN);
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "messaging-app-token",
+        LOGIN_TOKEN
+      );
     });
 
     expect(mockClient.resetStore).toHaveBeenCalled();

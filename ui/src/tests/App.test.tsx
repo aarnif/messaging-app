@@ -33,7 +33,7 @@ const renderComponent = (
   token: string | null = LOGIN_TOKEN
 ) => {
   if (token) {
-    localStorage.setItem("token", token);
+    localStorage.setItem("messaging-app-token", token);
   }
 
   return render(

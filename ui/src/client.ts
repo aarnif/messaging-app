@@ -14,7 +14,7 @@ const httpLink = new HttpLink({
 });
 
 const authLink = new SetContextLink(({ headers }) => {
-  const token = localStorage.getItem("token");
+  const token = localStorage.getItem("messaging-app-token");
 
   return {
     headers: {
@@ -28,7 +28,7 @@ const wsLink = new GraphQLWsLink(
   createClient({
     url: import.meta.env.VITE_WS_URL,
     connectionParams: () => {
-      const token = localStorage.getItem("token");
+      const token = localStorage.getItem("messaging-app-token");
 
       return {
         Authorization: token ? `Bearer ${token}` : "",
