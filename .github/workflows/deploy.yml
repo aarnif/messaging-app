@@ -51,6 +51,9 @@ jobs:
           CI: true
       - name: Start UI dev server
         run: npm run dev:ui &
+        env:
+          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+          VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
       - name: Wait for UI server to be ready
         run: sleep 10
       - name: Run e2e tests
@@ -60,6 +63,8 @@ jobs:
           PORT: ${{ secrets.PORT }}
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
+          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
+          VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
 
   deploy:
     needs: [deployment_pipeline]
