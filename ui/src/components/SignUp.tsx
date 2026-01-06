@@ -135,18 +135,15 @@ const SignUp = ({
             </AnimatePresence>
             <FormField
               field={username}
-              labelBgClass="bg-slate-100 dark:bg-slate-800"
-              peerFocusBgClass="peer-focus:bg-slate-50 peer-focus:dark:bg-slate-900"
+              inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
             />
             <FormField
               field={password}
-              labelBgClass="bg-slate-100 dark:bg-slate-800"
-              peerFocusBgClass="peer-focus:bg-slate-50 peer-focus:dark:bg-slate-900"
+              inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
             />
             <FormField
               field={confirmPassword}
-              labelBgClass="bg-slate-100 dark:bg-slate-800"
-              peerFocusBgClass="peer-focus:bg-slate-50 peer-focus:dark:bg-slate-900"
+              inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
             />
           </div>
           <div className="flex w-full flex-col gap-2">
