@@ -55,7 +55,7 @@ const Menu = ({
 
   const handleLogout = () => {
     console.log("Logging out...");
-    localStorage.clear();
+    localStorage.removeItem("messaging-app-token");
     setToken(null);
     client.resetStore();
     navigate("/signin");
