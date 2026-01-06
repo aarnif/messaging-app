@@ -16,7 +16,9 @@ import SelectionPrompt from "./ui/SelectionPrompt";
 import { useState } from "react";
 
 const App = () => {
-  const [token, setToken] = useState(localStorage.getItem("token") || null);
+  const [token, setToken] = useState(
+    localStorage.getItem("messaging-app-token") || null
+  );
   const searchWord = useField(
     "search-chats",
     "text",

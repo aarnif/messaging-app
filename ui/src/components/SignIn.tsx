@@ -50,7 +50,7 @@ const SignIn = ({
     });
 
     if (data?.login?.value) {
-      localStorage.setItem("token", data.login.value);
+      localStorage.setItem("messaging-app-token", data.login.value);
       setToken(data.login.value);
       client.resetStore();
       navigate("/");

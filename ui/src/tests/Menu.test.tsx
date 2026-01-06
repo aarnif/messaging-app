@@ -75,7 +75,7 @@ describe("<Menu />", () => {
 
     await user.click(screen.getByRole("button", { name: "Logout" }));
 
-    expect(localStorage.clear).toHaveBeenCalled();
+    expect(localStorage.removeItem).toHaveBeenCalled();
     expect(mockClient.resetStore).toHaveBeenCalled();
     expect(mockNavigate).toHaveBeenCalledWith("/signin");
   });
