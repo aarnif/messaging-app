@@ -7,6 +7,7 @@ import { useMutation, useApolloClient } from "@apollo/client/react";
 import { LOGIN } from "../graphql/mutations";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
 
 const SignIn = ({
   setToken,
@@ -22,11 +23,13 @@ const SignIn = ({
     "password",
     "Enter your password here..."
   );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const [mutate] = useMutation(LOGIN, {
     onError: (error) => {
       console.log(error);
       showMessage(error.message);
+      setIsSubmitting(false);
     },
   });
 
@@ -39,6 +42,7 @@ const SignIn = ({
     }
 
     console.log("Submitting form...");
+    setIsSubmitting(true);
 
     const { data } = await mutate({
       variables: {
@@ -53,6 +57,7 @@ const SignIn = ({
       localStorage.setItem("messaging-app-token", data.login.value);
       setToken(data.login.value);
       client.resetStore();
+      setIsSubmitting(false);
       navigate("/");
       console.log("Form submitted succesfully!");
     }
@@ -85,14 +90,20 @@ const SignIn = ({
             <FormField
               field={username}
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
+              disabled={isSubmitting}
             />
             <FormField
               field={password}
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
+              disabled={isSubmitting}
             />
           </div>
           <div className="flex w-full flex-col gap-2">
-            <Button type="submit" variant="primary" text="Sign In" />
+            <Button
+              type="submit"
+              variant="primary"
+              text={isSubmitting ? "Signing In..." : "Sign In"}
+            />
             <div>
               <p className="text-sm text-slate-700 dark:text-slate-200">
                 Don't have an account?
