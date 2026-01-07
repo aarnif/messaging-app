@@ -288,8 +288,8 @@ const ListMenu = ({
                 to={`/chats/${chat.id}`}
                 className={({ isActive }) =>
                   isActive
-                    ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
-                    : `rounded-xl transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatId === chat.id && "bg-slate-200 dark:bg-slate-700"}`
+                    ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700"
+                    : `rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatId === chat.id && "bg-slate-200 dark:bg-slate-700"}`
                 }
                 layout
                 onLayoutAnimationComplete={() => setRecentlyUpdatedChatId(null)}

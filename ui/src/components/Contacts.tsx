@@ -135,7 +135,7 @@ const AddContactsModal = ({
       transition={{ type: "tween" }}
     >
       <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,
@@ -191,8 +191,8 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
       to={`/contacts/${id}`}
       className={({ isActive }) =>
         isActive
-          ? "rounded-xl bg-slate-200 transition-colors dark:bg-slate-700"
-          : "rounded-xl transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
+          ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700"
+          : "rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
       }
     >
       <div className="flex gap-4 p-2">

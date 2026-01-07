@@ -21,7 +21,7 @@ const SettingsToggle = ({
   inactiveColor?: string;
 }) => {
   return (
-    <div className="flex w-full items-center justify-between rounded-2xl bg-slate-200 px-4 py-2 dark:bg-slate-900">
+    <div className="flex w-full items-center justify-between rounded-lg bg-slate-200 px-4 py-2 dark:bg-slate-900">
       <p className="text-sm font-semibold text-slate-800 dark:text-slate-100">
         {label}
       </p>

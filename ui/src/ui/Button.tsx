@@ -23,7 +23,7 @@ const Button = ({
     | ((event: React.MouseEvent<HTMLButtonElement>) => void | Promise<void>)
     | (() => void | Promise<void>);
 }) => {
-  const baseStyles = `w-full px-6 py-3 text-base font-bold border-2 rounded-2xl shadow-[0px_2px] transition focus:outline-none ${disabled ? "cursor-default" : "cursor-pointer active:shadow-[0px_0px] active:translate-y-[2px]"}`;
+  const baseStyles = `w-full px-6 py-3 text-base font-bold border-2 rounded-lg shadow-[0px_2px] transition focus:outline-none ${disabled ? "cursor-default" : "cursor-pointer active:shadow-[0px_0px] active:translate-y-[2px]"}`;
 
   const variantStyles = {
     primary:

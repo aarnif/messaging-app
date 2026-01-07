@@ -13,7 +13,7 @@ const Notify = ({
     animate={{ opacity: 1, y: 0 }}
     exit={{ opacity: 0, y: 30 }}
     transition={{ duration: 0.3 }}
-    className="text-md flex w-full items-center justify-between rounded-xl border-2 border-red-600 bg-slate-100 px-4 py-2 dark:border-red-400 dark:bg-slate-900"
+    className="text-md flex w-full items-center justify-between rounded-lg border-2 border-red-600 bg-slate-100 px-4 py-2 dark:border-red-400 dark:bg-slate-900"
   >
     <p className="font-semibold text-red-600 dark:text-red-400">{message}</p>
     <button
