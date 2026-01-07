@@ -19,7 +19,7 @@ const NewChatDropDownBox = ({
     transition={{ type: "tween" }}
   >
     <motion.div
-      className="absolute top-17 right-12 flex flex-col items-center justify-center rounded-xl bg-slate-200 p-4 lg:right-auto lg:left-110 dark:bg-slate-900"
+      className="absolute top-17 right-12 flex flex-col items-center justify-center rounded-lg bg-slate-200 p-4 lg:right-auto lg:left-110 dark:bg-slate-900"
       initial={{ y: -50, opacity: 0 }}
       animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
       exit={{ y: -50, opacity: 0 }}

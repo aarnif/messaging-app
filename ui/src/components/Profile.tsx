@@ -178,7 +178,7 @@ const ChangePasswordModal = ({
       transition={{ type: "tween" }}
     >
       <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,

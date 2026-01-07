@@ -20,8 +20,8 @@ const SettingsItem = ({
       end={end}
       className={({ isActive }) =>
         isActive
-          ? `${baseStyles} rounded-xl border-slate-200 bg-slate-200 dark:border-slate-700 dark:bg-slate-600`
-          : `${baseStyles} rounded-xl border-slate-200 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-700`
+          ? `${baseStyles} rounded-lg border-slate-200 bg-slate-200 dark:border-slate-700 dark:bg-slate-600`
+          : `${baseStyles} rounded-lg border-slate-200 hover:bg-slate-100 dark:border-slate-700 dark:hover:bg-slate-700`
       }
     >
       <p className="text-sm font-bold text-slate-900 dark:text-slate-50">
