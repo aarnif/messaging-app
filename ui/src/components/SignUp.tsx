@@ -1,3 +1,4 @@
+import { useState } from "react";
 import useField from "../hooks/useField";
 import Notify from "../ui/Notify";
 import FormField from "../ui/FormField";
@@ -16,6 +17,7 @@ const SignUp = ({
   const client = useApolloClient();
   const navigate = useNavigate();
   const { message, showMessage, closeMessage } = useNotifyMessage();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(
     "password",
@@ -32,6 +34,7 @@ const SignUp = ({
     onError: (error) => {
       console.log(error);
       showMessage(error.message);
+      setIsSubmitting(false);
     },
   });
 
@@ -39,6 +42,7 @@ const SignUp = ({
     onError: (error) => {
       console.log(error);
       showMessage(error.message);
+      setIsSubmitting(false);
     },
   });
 
@@ -81,6 +85,7 @@ const SignUp = ({
     }
 
     console.log("Submitting form...");
+    setIsSubmitting(true);
 
     const { data } = await createUser({
       variables: {
@@ -105,6 +110,7 @@ const SignUp = ({
         localStorage.setItem("messaging-app-token", data.login.value);
         setToken(data.login.value);
         client.resetStore();
+        setIsSubmitting(false);
         navigate("/");
         console.log("Form submitted succesfully!");
       }
@@ -136,14 +142,17 @@ const SignUp = ({
             <FormField
               field={username}
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
+              disabled={isSubmitting}
             />
             <FormField
               field={password}
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
+              disabled={isSubmitting}
             />
             <FormField
               field={confirmPassword}
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
+              disabled={isSubmitting}
             />
           </div>
           <div className="flex w-full flex-col gap-2">
@@ -151,7 +160,8 @@ const SignUp = ({
               testId="submit-button"
               type="submit"
               variant="primary"
-              text="Sign Up"
+              text={isSubmitting ? "Signing Up..." : "Sign Up"}
+              disabled={isSubmitting}
             />
 
             <div>

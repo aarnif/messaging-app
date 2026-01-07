@@ -146,6 +146,8 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
+    expect(screen.getByRole("button", { name: "Signing Up..." }));
+
     await assertErrorMessageAndDismissal("Username already exists");
   });
 
@@ -159,6 +161,8 @@ describe("<SignUp />", () => {
 
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
+
+    expect(screen.getByRole("button", { name: "Signing Up..." }));
 
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
