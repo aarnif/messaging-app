@@ -630,19 +630,16 @@ test.describe("App", () => {
     });
 
     test("can toggle 24 hour clock", async ({ page }) => {
-      for (const user of [user1, user2]) {
-        await signUp(page, user.username, user.password, user.confirmPassword);
-        await logout(page);
-      }
-      await signIn(page, user1.username, user1.password);
+      await logout(page);
+      await signUp(page, user2.username, user2.password, user2.confirmPassword);
 
       await expect(
         page.getByText("Select Chat to Start Messaging.")
       ).toBeVisible();
 
-      await addContacts(page, [user2]);
+      await addContacts(page, [user1]);
       await page.getByTestId("chats-nav-item").click();
-      await createPrivateChat(page, user2, "Hello World!");
+      await createPrivateChat(page, user1, "Hello World!");
 
       await expect(page.getByText(/AM|PM/)).not.toBeVisible();
 
