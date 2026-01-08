@@ -20,7 +20,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
-import { getChatName } from "../helpers";
+import { updateUserChatsCache, getChatName } from "../helpers";
 
 const MotionNavLink = motion.create(NavLink);
 
@@ -109,56 +109,29 @@ const ListMenu = ({
       console.log("Use CHAT_UPDATED-subscription:");
       const updatedChat = data.data?.userChatUpdated;
 
-      if (!updatedChat || !currentUser) {
-        console.log("No latest message found, skipping cache update");
+      if (
+        !updatedChat ||
+        !currentUser ||
+        updatedChat.userId !== currentUser.id
+      ) {
+        console.log("Skipping cache update");
         return;
       }
 
-      if (updatedChat.userId === currentUser.id) {
-        console.log("Updating cache for current user");
+      const isViewingChat = match?.params.id === updatedChat.id;
+      setRecentlyUpdatedChatId(updatedChat.id);
 
-        const isViewingChat = match?.params.id === updatedChat.id;
-
-        setRecentlyUpdatedChatId(updatedChat.id);
-
-        client.cache.updateQuery(
-          {
-            query: ALL_CHATS_BY_USER,
-            variables: {
-              search: searchWord.value,
-            },
-          },
-          (existingData) => {
-            if (!existingData?.allChatsByUser) {
-              console.log("No existing chat data found in cache");
-              return existingData;
-            }
-
-            return {
-              allChatsByUser: existingData.allChatsByUser
-                .map((chat) =>
-                  chat.id === updatedChat.id
-                    ? {
-                        ...updatedChat,
-                        unreadCount: isViewingChat
-                          ? 0
-                          : updatedChat.unreadCount,
-                        name: getChatName(updatedChat, currentUser.id),
-                      }
-                    : chat
-                )
-                .sort(
-                  (a, b) =>
-                    b.latestMessage.createdAt - a.latestMessage.createdAt
-                ),
-            };
-          }
-        );
-      } else {
-        console.log(
-          `Skipping cache update - subscription is for user ${updatedChat.userId}, not current user ${currentUser.id}`
-        );
-      }
+      updateUserChatsCache(client.cache, searchWord.value, (chats) =>
+        chats.map((chat) =>
+          chat.id === updatedChat.id
+            ? {
+                ...updatedChat,
+                unreadCount: isViewingChat ? 0 : updatedChat.unreadCount,
+                name: getChatName(updatedChat, currentUser.id),
+              }
+            : chat
+        )
+      );
     },
   });
 
@@ -168,40 +141,21 @@ const ListMenu = ({
       console.log("Use USER_CHAT_CREATED-subscription:");
       const createdChat = data.data?.userChatCreated;
 
-      if (!createdChat || !currentUser) {
-        console.log("No latest message found, skipping cache update");
+      if (
+        !createdChat ||
+        !currentUser ||
+        createdChat.userId !== currentUser.id
+      ) {
+        console.log("Skipping cache update");
         return;
       }
 
-      if (createdChat.userId === currentUser.id) {
-        setRecentlyUpdatedChatId(createdChat.id);
+      setRecentlyUpdatedChatId(createdChat.id);
 
-        client.cache.updateQuery(
-          {
-            query: ALL_CHATS_BY_USER,
-            variables: {
-              search: searchWord.value,
-            },
-          },
-          (existingData) => {
-            if (!existingData?.allChatsByUser) {
-              console.log("No existing chat data found in cache");
-              return existingData;
-            }
-            return {
-              allChatsByUser: existingData.allChatsByUser
-                .concat({
-                  ...createdChat,
-                  name: getChatName(createdChat, currentUser.id),
-                })
-                .sort(
-                  (a, b) =>
-                    b.latestMessage.createdAt - a.latestMessage.createdAt
-                ),
-            };
-          }
-        );
-      }
+      updateUserChatsCache(client.cache, searchWord.value, (chats) => [
+        ...chats,
+        { ...createdChat, name: getChatName(createdChat, currentUser.id) },
+      ]);
     },
   });
 
