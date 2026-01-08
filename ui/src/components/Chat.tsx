@@ -26,7 +26,7 @@ import type {
   IsBlockedByUserQuery,
   Exact,
 } from "../__generated__/graphql";
-import { formatDisplayDate } from "../helpers";
+import { updateChatByIdCache, formatDisplayDate } from "../helpers";
 import { useEffect, useRef, useState } from "react";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useField from "../hooks/useField";
@@ -665,26 +665,10 @@ const Chat = () => {
 
       setLatestAddedMessageId(latestMessage.id);
 
-      client.cache.updateQuery(
-        {
-          query: FIND_CHAT_BY_ID,
-          variables: {
-            id: match?.id ?? "",
-          },
-        },
-        (existingData) => {
-          const chat = existingData?.findChatById;
-          if (!chat) {
-            return existingData;
-          }
-          return {
-            findChatById: {
-              ...chat,
-              messages: chat?.messages.concat(latestMessage),
-            },
-          };
-        }
-      );
+      updateChatByIdCache(client.cache, match.id, (chat) => ({
+        ...chat,
+        messages: chat?.messages.concat(latestMessage),
+      }));
     },
   });
 

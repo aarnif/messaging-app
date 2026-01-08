@@ -1,5 +1,7 @@
 import { format, isToday, isThisWeek } from "date-fns";
-import type { UserChat } from "./__generated__/graphql";
+import type { ApolloCache } from "@apollo/client";
+import type { UserChat, User, Chat } from "./__generated__/graphql";
+import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "./graphql/queries";
 
 export const formatDisplayDate = (
   messageTime: number,
@@ -34,4 +36,64 @@ export const getChatName = (chat: UserChat, currentUserId: string): string => {
     (member) => member.id !== currentUserId
   );
   return otherMember?.name || "Private Chat";
+};
+
+export const isValidChatForUser = (
+  chat: UserChat | undefined | null,
+  currentUser: User | undefined | null
+): chat is UserChat => {
+  if (!chat || !currentUser || chat.userId !== currentUser.id) {
+    console.log("Skipping cache update");
+    return false;
+  }
+  return true;
+};
+
+const sortChatsByLatestMessage = (chats: UserChat[]) =>
+  chats.sort((a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt);
+
+export const updateUserChatsCache = (
+  cache: ApolloCache,
+  searchValue: string,
+  updateFn: (chats: UserChat[]) => UserChat[]
+) => {
+  cache.updateQuery(
+    {
+      query: ALL_CHATS_BY_USER,
+      variables: { search: searchValue },
+    },
+    (existingData) => {
+      if (!existingData?.allChatsByUser) {
+        console.log("No existing chat data found in cache");
+        return existingData;
+      }
+      return {
+        allChatsByUser: sortChatsByLatestMessage(
+          updateFn(existingData.allChatsByUser)
+        ),
+      };
+    }
+  );
+};
+
+export const updateChatByIdCache = (
+  cache: ApolloCache,
+  chatId: string,
+  updateFn: (chat: Chat) => Chat
+) => {
+  cache.updateQuery(
+    {
+      query: FIND_CHAT_BY_ID,
+      variables: { id: chatId },
+    },
+    (existingData) => {
+      if (!existingData?.findChatById) {
+        console.log("No existing chat data found in cache");
+        return existingData;
+      }
+      return {
+        findChatById: updateFn(existingData.findChatById),
+      };
+    }
+  );
 };
