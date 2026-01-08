@@ -623,6 +623,7 @@ const ChatContent = ({
 };
 
 const Chat = () => {
+  const latestAddedMessageIdRef = useRef<string | null>(null);
   const { currentUser, searchWord } = useOutletContext<{
     currentUser: User;
     searchWord: InputField;
@@ -663,7 +664,7 @@ const Chat = () => {
         return;
       }
 
-      setLatestAddedMessageId(latestMessage.id);
+      latestAddedMessageIdRef.current = latestMessage.id;
 
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
@@ -674,9 +675,6 @@ const Chat = () => {
 
   const [isChatInfoOpen, setIsChatInfoOpen] = useState(false);
   const [isEditChatOpen, setIsEditChatOpen] = useState(false);
-  const [latestAddedMessageId, setLatestAddedMessageId] = useState<
-    string | null
-  >(null);
 
   useEffect(() => {
     setIsChatInfoOpen(false);
@@ -698,7 +696,7 @@ const Chat = () => {
             currentUser={currentUser}
             chat={chat}
             setIsChatInfoOpen={setIsChatInfoOpen}
-            latestAddedMessageId={latestAddedMessageId}
+            latestAddedMessageId={latestAddedMessageIdRef.current}
           />
           <AnimatePresence>
             {isChatInfoOpen && (

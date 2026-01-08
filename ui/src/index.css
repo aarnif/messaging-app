@@ -32,4 +32,30 @@
       opacity: 1;
     }
   }
+
+  --animate-highlight-light: highlight-light 1s ease-out forwards;
+  @keyframes highlight-light {
+    0% {
+      background-color: white;
+    }
+    50% {
+      background-color: #e2e8f0;
+    }
+    100% {
+      background-color: white;
+    }
+  }
+
+  --animate-highlight-dark: highlight-dark 1s ease-out forwards;
+  @keyframes highlight-dark {
+    0% {
+      background-color: #1d293d;
+    }
+    50% {
+      background-color: #314158;
+    }
+    100% {
+      background-color: #1d293d;
+    }
+  }
 }
