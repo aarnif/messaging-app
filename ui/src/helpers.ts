@@ -1,6 +1,6 @@
 import { format, isToday, isThisWeek } from "date-fns";
 import type { ApolloCache } from "@apollo/client";
-import type { UserChat } from "./__generated__/graphql";
+import type { UserChat, User } from "./__generated__/graphql";
 import { ALL_CHATS_BY_USER } from "./graphql/queries";
 
 export const formatDisplayDate = (
@@ -36,6 +36,17 @@ export const getChatName = (chat: UserChat, currentUserId: string): string => {
     (member) => member.id !== currentUserId
   );
   return otherMember?.name || "Private Chat";
+};
+
+export const isValidChatForUser = (
+  chat: UserChat | undefined | null,
+  currentUser: User | undefined | null
+): chat is UserChat => {
+  if (!chat || !currentUser || chat.userId !== currentUser.id) {
+    console.log("Skipping cache update");
+    return false;
+  }
+  return true;
 };
 
 const sortChatsByLatestMessage = (chats: UserChat[]) =>

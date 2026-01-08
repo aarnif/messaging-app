@@ -20,7 +20,11 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
-import { updateUserChatsCache, getChatName } from "../helpers";
+import {
+  isValidChatForUser,
+  updateUserChatsCache,
+  getChatName,
+} from "../helpers";
 
 const MotionNavLink = motion.create(NavLink);
 
@@ -109,12 +113,7 @@ const ListMenu = ({
       console.log("Use CHAT_UPDATED-subscription:");
       const updatedChat = data.data?.userChatUpdated;
 
-      if (
-        !updatedChat ||
-        !currentUser ||
-        updatedChat.userId !== currentUser.id
-      ) {
-        console.log("Skipping cache update");
+      if (!isValidChatForUser(updatedChat, currentUser)) {
         return;
       }
 
@@ -127,7 +126,7 @@ const ListMenu = ({
             ? {
                 ...updatedChat,
                 unreadCount: isViewingChat ? 0 : updatedChat.unreadCount,
-                name: getChatName(updatedChat, currentUser.id),
+                name: getChatName(updatedChat, currentUser!.id),
               }
             : chat
         )
@@ -141,12 +140,7 @@ const ListMenu = ({
       console.log("Use USER_CHAT_CREATED-subscription:");
       const createdChat = data.data?.userChatCreated;
 
-      if (
-        !createdChat ||
-        !currentUser ||
-        createdChat.userId !== currentUser.id
-      ) {
-        console.log("Skipping cache update");
+      if (!isValidChatForUser(createdChat, currentUser)) {
         return;
       }
 
@@ -154,7 +148,7 @@ const ListMenu = ({
 
       updateUserChatsCache(client.cache, searchWord.value, (chats) => [
         ...chats,
-        { ...createdChat, name: getChatName(createdChat, currentUser.id) },
+        { ...createdChat, name: getChatName(createdChat, currentUser!.id) },
       ]);
     },
   });
