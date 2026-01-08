@@ -16,7 +16,7 @@ import MenuHeader from "../ui/MenuHeader";
 import type { User, UserChat } from "../__generated__/graphql";
 import type { InputField } from "../types";
 import { formatDisplayDate, truncateText } from "../helpers";
-import { useState } from "react";
+import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
@@ -93,6 +93,7 @@ const ListMenu = ({
   meLoading: boolean;
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
+  const recentlyUpdatedChatIdRef = useRef<string | null>(null);
   const client = useApolloClient();
   const match = useMatch("/chats/:id");
 
@@ -102,10 +103,6 @@ const ListMenu = ({
     },
     skip: !currentUser,
   });
-
-  const [recentlyUpdatedChatId, setRecentlyUpdatedChatId] = useState<
-    string | null
-  >(null);
 
   useSubscription(USER_CHAT_UPDATED, {
     fetchPolicy: "no-cache",
@@ -119,7 +116,7 @@ const ListMenu = ({
       }
 
       const isViewingChat = match?.params.id === updatedChat.id;
-      setRecentlyUpdatedChatId(updatedChat.id);
+      recentlyUpdatedChatIdRef.current = updatedChat.id;
 
       updateUserChatsCache(client.cache, searchWord.value, (chats) =>
         chats.map((chat) =>
@@ -145,7 +142,7 @@ const ListMenu = ({
         return;
       }
 
-      setRecentlyUpdatedChatId(createdChat.id);
+      recentlyUpdatedChatIdRef.current = createdChat.id;
 
       updateUserChatsCache(client.cache, searchWord.value, (chats) => [
         ...chats,
@@ -222,10 +219,12 @@ const ListMenu = ({
                 className={({ isActive }) =>
                   isActive
                     ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700"
-                    : `rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatId === chat.id && "bg-slate-200 dark:bg-slate-700"}`
+                    : `rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatIdRef.current === chat.id && "animate-highlight-light dark:animate-highlight-dark"}`
                 }
                 layout
-                onLayoutAnimationComplete={() => setRecentlyUpdatedChatId(null)}
+                onLayoutAnimationComplete={() =>
+                  (recentlyUpdatedChatIdRef.current = null)
+                }
                 transition={{
                   duration: 0.5,
                 }}
