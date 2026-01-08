@@ -3,7 +3,6 @@ import type { User } from "../__generated__/graphql";
 import type { NewChatDetails, NewChatMember } from "../types";
 import useField from "../hooks/useField";
 import NotFound from "../ui/NotFound";
-import { ALL_CHATS_BY_USER } from "../graphql/queries";
 import { CREATE_CHAT } from "../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import ChatHeader from "../ui/ChatHeader";
@@ -24,7 +23,6 @@ const NewMessageBox = ({
     onError: (error) => {
       console.log(error);
     },
-    refetchQueries: [ALL_CHATS_BY_USER],
   });
 
   const handleCreateChat = async () => {
