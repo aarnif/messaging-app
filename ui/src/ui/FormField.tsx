@@ -18,7 +18,7 @@ const FormField = ({
   const colors = inputBgColor || defaultColors;
 
   return (
-    <label htmlFor={name} className="relative">
+    <label htmlFor={name} className="relative w-full">
       <input
         disabled={disabled}
         id={name}
