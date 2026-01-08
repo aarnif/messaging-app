@@ -1,7 +1,7 @@
 import { format, isToday, isThisWeek } from "date-fns";
 import type { ApolloCache } from "@apollo/client";
-import type { UserChat, User } from "./__generated__/graphql";
-import { ALL_CHATS_BY_USER } from "./graphql/queries";
+import type { UserChat, User, Chat } from "./__generated__/graphql";
+import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "./graphql/queries";
 
 export const formatDisplayDate = (
   messageTime: number,
@@ -71,6 +71,28 @@ export const updateUserChatsCache = (
         allChatsByUser: sortChatsByLatestMessage(
           updateFn(existingData.allChatsByUser)
         ),
+      };
+    }
+  );
+};
+
+export const updateChatByIdCache = (
+  cache: ApolloCache,
+  chatId: string,
+  updateFn: (chat: Chat) => Chat
+) => {
+  cache.updateQuery(
+    {
+      query: FIND_CHAT_BY_ID,
+      variables: { id: chatId },
+    },
+    (existingData) => {
+      if (!existingData?.findChatById) {
+        console.log("No existing chat data found in cache");
+        return existingData;
+      }
+      return {
+        findChatById: updateFn(existingData.findChatById),
       };
     }
   );

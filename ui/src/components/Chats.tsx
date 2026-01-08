@@ -1,4 +1,4 @@
-import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID, ME } from "../graphql/queries";
+import { ALL_CHATS_BY_USER, ME } from "../graphql/queries";
 import {
   USER_CHAT_UPDATED,
   USER_CHAT_CREATED,
@@ -23,6 +23,7 @@ import NewChatModal from "./NewChatModal";
 import {
   isValidChatForUser,
   updateUserChatsCache,
+  updateChatByIdCache,
   getChatName,
 } from "../helpers";
 
@@ -180,26 +181,10 @@ const ListMenu = ({
         const { chatId, memberId } = leftGroupChatDetails;
 
         if (currentUser.id !== memberId) {
-          client.cache.updateQuery(
-            {
-              query: FIND_CHAT_BY_ID,
-              variables: { id: chatId },
-            },
-            (existingData) => {
-              if (!existingData?.findChatById) {
-                return existingData;
-              }
-
-              return {
-                findChatById: {
-                  ...existingData.findChatById,
-                  members: existingData.findChatById.members.filter(
-                    (member) => member.id !== memberId
-                  ),
-                },
-              };
-            }
-          );
+          updateChatByIdCache(client.cache, chatId, (chat) => ({
+            ...chat,
+            members: chat.members.filter((member) => member.id !== memberId),
+          }));
         }
       }
     },
