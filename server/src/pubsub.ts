@@ -6,7 +6,6 @@ import { z } from "zod";
 
 const recordSchema = z.record(z.string(), z.unknown());
 
-// Implementation mostly developed by Claude Sonnet 4.5 LLM.
 const convertDatesToObjects = (data: unknown): unknown => {
   if (!data) return data;
 
