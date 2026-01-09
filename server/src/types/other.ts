@@ -32,3 +32,8 @@ export interface HTTPGraphQLResponse<T> {
     };
   }>;
 }
+
+export interface PubSubEngine {
+  publish(triggerName: string, payload: unknown): Promise<void>;
+  asyncIterableIterator<T>(triggers: string[]): AsyncIterableIterator<T>;
+}

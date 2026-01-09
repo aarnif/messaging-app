@@ -3,6 +3,7 @@ import Redis from "ioredis";
 import { RedisPubSub } from "graphql-redis-subscriptions";
 import config, { isDevelopment } from "config";
 import { z } from "zod";
+import type { PubSubEngine } from "./types/other";
 
 const recordSchema = z.record(z.string(), z.unknown());
 
@@ -82,7 +83,7 @@ const connectToGraphQLPubSub = () => {
   return new PubSub();
 };
 
-const pubsub = isDevelopment
+const pubsub: PubSubEngine = isDevelopment
   ? connectToGraphQLPubSub()
   : connectToRedisPubSub();
 

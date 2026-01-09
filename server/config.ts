@@ -9,9 +9,11 @@ export const isDevelopment =
 
 const SERVER_URL = isDevelopment
   ? `http://localhost:${PORT}`
-  : process.env.SERVER_URL;
+  : process.env.SERVER_URL || "";
 
-const WS_URL = isDevelopment ? `ws://localhost:${PORT}` : process.env.WS_URL;
+const WS_URL = isDevelopment
+  ? `ws://localhost:${PORT}`
+  : process.env.WS_URL || "";
 
 const REDIS_URI = process.env.REDIS_URI || "";
 
