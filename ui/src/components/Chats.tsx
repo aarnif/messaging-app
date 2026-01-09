@@ -133,6 +133,7 @@ const ListMenu = ({
   });
 
   useSubscription(USER_CHAT_CREATED, {
+    fetchPolicy: "no-cache",
     skip: !currentUser,
     onData: ({ data }) => {
       console.log("Use USER_CHAT_CREATED-subscription:");
