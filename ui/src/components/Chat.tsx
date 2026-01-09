@@ -70,7 +70,7 @@ const ChatMessage = ({
     >
       <div
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
-        className={`relative flex max-w-62.5 min-w-25 flex-col rounded-xl px-2 pt-2 sm:max-w-150 ${
+        className={`relative flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
         } ${isLatestMessage && "animate-pop-in"}`}
       >
@@ -121,7 +121,7 @@ const NotificationMessage = ({ message }: { message: Message }) => {
     <div className="flex flex-col items-center">
       <div
         data-testid={"notification-message"}
-        className="relative flex max-w-62.5 min-w-25 flex-col rounded-xl bg-slate-200 p-2 sm:sm:max-w-150 dark:bg-slate-700"
+        className="relative flex max-w-62.5 min-w-25 flex-col rounded-lg bg-slate-200 p-2 sm:sm:max-w-150 dark:bg-slate-700"
       >
         <p className="text-xs font-medium wrap-break-word text-slate-800 dark:text-slate-100">
           {message.content}
@@ -502,7 +502,7 @@ const EditChatModal = ({
     >
       <motion.div
         data-testid="edit-chat-modal"
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-xl rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-xl dark:bg-slate-800"
+        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
         onClick={(e) => e.stopPropagation()}
         initial={{
           y: isMobileScreen ? "100vh" : -50,
