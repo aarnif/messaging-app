@@ -275,7 +275,7 @@ const ListMenu = ({
 };
 
 const Contacts = () => {
-  const { data } = useQuery(ME);
+  const { data, loading } = useQuery(ME);
   const currentUser = data?.me;
 
   const [isAddContactsModalOpen, setIsAddContactsModalOpen] = useState(false);
@@ -283,7 +283,13 @@ const Contacts = () => {
   return (
     <div className="flex grow">
       <ListMenu setIsAddContactsModalOpen={setIsAddContactsModalOpen} />
-      <Outlet context={{ currentUser }} />
+      {loading ? (
+        <div className="flex grow items-center justify-center">
+          <Spinner />
+        </div>
+      ) : (
+        <Outlet context={{ currentUser }} />
+      )}
       <AnimatePresence>
         {isAddContactsModalOpen && (
           <AddContactsModal
