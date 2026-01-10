@@ -20,6 +20,7 @@ import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "./NewChatDropDown";
 import NewChatModal from "./NewChatModal";
+import Skeleton from "../ui/Skeleton";
 import {
   isValidChatForUser,
   updateUserChatsCache,
@@ -207,8 +208,10 @@ const ListMenu = ({
         callback={() => setIsNewChatDropdownOpen(true)}
       />
       {meLoading || loading ? (
-        <div className="mt-8">
-          <Spinner />
+        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
+          {Array.from({ length: 15 }).map((_, index) => (
+            <Skeleton key={index} />
+          ))}
         </div>
       ) : hasChats ? (
         <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
