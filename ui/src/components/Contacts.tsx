@@ -19,6 +19,7 @@ import Notify from "../ui/Notify";
 import SearchBox from "../ui/SearchBox";
 import SelectUserButton from "../ui/SelectUserButton";
 import Avatar from "../ui/Avatar";
+import Skeleton from "../ui/Skeleton";
 import type { Contact } from "../__generated__/graphql";
 import type { AddContactOption } from "../types";
 
@@ -251,8 +252,10 @@ const ListMenu = ({
         callback={() => setIsAddContactsModalOpen(true)}
       />
       {loading ? (
-        <div className="mt-8">
-          <Spinner />
+        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
+          {Array.from({ length: 15 }).map((_, index) => (
+            <Skeleton key={index} />
+          ))}
         </div>
       ) : hasContacts ? (
         <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
