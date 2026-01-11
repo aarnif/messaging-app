@@ -127,3 +127,10 @@ Ei muutoksia
 - Uuden chatin luonnin animointi
 - Sovellus tuotantoon
 - GraphQL tilaukset tuotannossa (Redis)
+
+## Viikko 16 (5.1.2026-11.1.2026)
+
+- Kirjautumissivun ulkoasun päivitys
+- Käyttäjän luonti sivun ulkoasun päivitys
+- Lataus "skeletonien" lisäys chattien ja kontaktien näkymään
+- Debouncen lisäys hakuihin

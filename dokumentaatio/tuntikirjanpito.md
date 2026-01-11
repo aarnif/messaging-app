@@ -75,4 +75,11 @@
 |  2.1  | 1    |                                   |
 |  3.1  | 2    | koodin refaktorointi              |
 |  4.1  | 2    |                                   |
-|  yht  | 198  |                                   |
+|  5.1  | 3    | käyttöliittymän ulkoasun päivitys |
+|  6.1  | 2    | bugien korjaus                    |
+|  7.1  | 2    | käyttäjäkokemuksen parantaminen   |
+|  8.1  | 2    | bugien korjaus                    |
+|  9.1  | 2    |                                   |
+| 10.1  | 1    | käyttäjäkokemuksen parantaminen   |
+| 11.1  | 1    |                                   |
+|  yht  | 211  |                                   |
