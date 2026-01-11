@@ -13,6 +13,8 @@ import {
   IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
 import { useQuery, useLazyQuery } from "@apollo/client/react";
+import { useDebounce } from "use-debounce";
+import { DEBOUNCE_DELAY } from "../constants";
 import type { User, Contact } from "../__generated__/graphql";
 import Spinner from "../ui/Spinner";
 import Notify from "../ui/Notify";
@@ -70,10 +72,11 @@ const PrivateChatContent = ({
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const { message, showMessage, closeMessage } = useNotifyMessage();
+  const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
     variables: {
-      search: searchWord.value,
+      search: debouncedSearch,
     },
     fetchPolicy: "network-only",
   });
@@ -177,10 +180,11 @@ const GroupChatContent = ({
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { message, showMessage, closeMessage } = useNotifyMessage();
+  const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
-      search: searchWord.value,
+      search: debouncedSearch,
     },
   });
 

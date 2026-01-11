@@ -7,10 +7,12 @@ import {
 import { ADD_CONTACTS } from "../graphql/mutations";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
+import { useDebounce } from "use-debounce";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import { DEBOUNCE_DELAY } from "../constants";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useNotifyMessage from "../hooks/useNotifyMessage";
 import Spinner from "../ui/Spinner";
@@ -76,6 +78,7 @@ const AddContactsModal = ({
     "text",
     "Search by name or username..."
   );
+  const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
   const { message, showMessage, closeMessage } = useNotifyMessage();
   const width = useResponsiveWidth();
 
@@ -84,7 +87,7 @@ const AddContactsModal = ({
 
   const { data, loading } = useQuery(NON_CONTACT_USERS, {
     variables: {
-      search: searchWord.value,
+      search: debouncedSearch,
     },
     fetchPolicy: "network-only",
   });
@@ -226,10 +229,11 @@ const ListMenu = ({
     "text",
     "Search by name or username..."
   );
+  const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
-      search: searchWord.value,
+      search: debouncedSearch,
     },
   });
 
