@@ -12,11 +12,13 @@ import {
   IS_BLOCKED_BY_USER,
   FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
+import { useDebounce } from "use-debounce";
 import { MESSAGE_SENT } from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import { DEBOUNCE_DELAY } from "../constants";
 import type { InputField, UserContact } from "../types";
 import type {
   Chat as ChatType,
@@ -433,6 +435,8 @@ const EditChatModal = ({
     "text",
     "Search by name or username..."
   );
+  const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
+
   const name = useField("name", "text", "Enter name here...", chat?.name ?? "");
   const description = useField(
     "description",
@@ -443,7 +447,7 @@ const EditChatModal = ({
 
   const { data } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
-      search: searchWord.value,
+      search: debouncedSearch,
     },
   });
 

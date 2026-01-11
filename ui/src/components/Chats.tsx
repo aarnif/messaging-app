@@ -11,6 +11,8 @@ import {
   useSubscription,
 } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation, useMatch } from "react-router";
+import { useDebounce } from "use-debounce";
+import { DEBOUNCE_DELAY } from "../constants";
 import Spinner from "../ui/Spinner";
 import MenuHeader from "../ui/MenuHeader";
 import type { User, UserChat } from "../__generated__/graphql";
@@ -97,10 +99,11 @@ const ListMenu = ({
   const recentlyUpdatedChatIdRef = useRef<string | null>(null);
   const client = useApolloClient();
   const match = useMatch("/chats/:id");
+  const [debouncedValue] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
     variables: {
-      search: searchWord.value,
+      search: debouncedValue,
     },
     skip: !currentUser,
   });
