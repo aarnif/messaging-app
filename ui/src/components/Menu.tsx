@@ -62,7 +62,7 @@ const Menu = ({
   };
 
   return (
-    <div className="flex w-full flex-row justify-around bg-slate-200/90 sm:w-auto sm:flex-col sm:justify-start sm:gap-4 sm:bg-slate-100 dark:bg-slate-900/90 sm:dark:bg-slate-900">
+    <div className="flex w-full flex-row justify-around bg-slate-50/90 sm:w-auto sm:flex-col sm:justify-start sm:gap-4 sm:bg-slate-50 dark:bg-slate-900/90 sm:dark:bg-slate-900">
       {navItems.map((item) => (
         <NavLink
           key={item.path}
