@@ -61,13 +61,13 @@
 }
 
 aside.EmojiPickerReact {
-  --epr-emoji-size: 30px;
-  --epr-emoji-padding: 5px;
+  --epr-emoji-size: 24px;
+  --epr-emoji-padding: 4px;
   --epr-bg-color: var(--color-white);
   --epr-text-color: var(--color-slate-700);
   --epr-picker-border-color: var(--color-slate-200);
   --epr-picker-border-radius: 8px 8px 0 0;
-  --epr-horizontal-padding: 10px;
+  --epr-horizontal-padding: 8px;
   --epr-highlight-color: var(--color-purple-500);
   --epr-hover-bg-color: var(--color-slate-100);
   --epr-focus-bg-color: var(--color-slate-100);
@@ -78,9 +78,9 @@ aside.EmojiPickerReact {
   --epr-search-border-color: var(--epr-search-input-bg-color);
   --epr-search-border-color-active: var(--epr-highlight-color);
   --epr-search-input-border-radius: calc(infinity * 1px);
-  --epr-search-input-height: 40px;
+  --epr-search-input-height: 36px;
   --epr-search-icon-color: var(--color-slate-800);
-  --epr-category-navigation-button-size: 30px;
+  --epr-category-navigation-button-size: 32px;
   --epr-category-icon-active-color: var(--color-white);
   --epr-category-label-bg-color: color-mix(
     in srgb,
@@ -88,8 +88,8 @@ aside.EmojiPickerReact {
     transparent
   );
   --epr-category-label-text-color: var(--epr-text-color);
-  --epr-category-label-height: 40px;
-  --epr-preview-height: 70px;
+  --epr-category-label-height: 32px;
+  --epr-preview-height: 44px;
   --epr-preview-text-size: 14px;
   --epr-preview-text-color: var(--epr-text-color);
   --epr-skin-tone-picker-menu-color: color-mix(
@@ -97,7 +97,7 @@ aside.EmojiPickerReact {
     var(--color-white) 58%,
     transparent
   );
-  --epr-skin-tone-size: 20px;
+  --epr-skin-tone-size: 16px;
 
   &:where(.dark, .dark *) {
     --epr-bg-color: var(--color-slate-800);
