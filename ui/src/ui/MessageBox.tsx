@@ -2,6 +2,7 @@ import EmojiPicker from "emoji-picker-react";
 import { FaRegSmile } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
 import { useState } from "react";
+import { AnimatePresence, motion } from "motion/react";
 import type { InputField } from "../types";
 
 const MessageBox = ({
@@ -17,12 +18,23 @@ const MessageBox = ({
 
   return (
     <>
-      <div data-testid="emoji-picker" className="absolute bottom-11.5 -left-px">
-        <EmojiPicker
-          open={isEmojiPickerOpen}
-          onEmojiClick={(emoji) => setValue((prev) => prev + emoji.emoji)}
-        />
-      </div>
+      <AnimatePresence>
+        {isEmojiPickerOpen && (
+          <motion.div
+            data-testid="emoji-picker"
+            className="absolute bottom-11.5 -left-px"
+            initial={{ opacity: 0, translateY: 12, scale: 0.95 }}
+            animate={{ opacity: 1, translateY: 0, scale: 1 }}
+            exit={{ opacity: 0, translateY: 12, scale: 0.95 }}
+            transition={{ duration: 0.3, ease: "easeInOut" }}
+          >
+            <EmojiPicker
+              open={isEmojiPickerOpen}
+              onEmojiClick={(emoji) => setValue((prev) => prev + emoji.emoji)}
+            />
+          </motion.div>
+        )}
+      </AnimatePresence>
       <div className="flex gap-2 bg-white p-2 dark:bg-slate-800">
         <button
           data-testid="add-emoji-button"
