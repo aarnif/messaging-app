@@ -22,7 +22,7 @@ const MessageBox = ({
         {isEmojiPickerOpen && (
           <motion.div
             data-testid="emoji-picker"
-            className="absolute bottom-11.5 -left-px"
+            className="absolute bottom-11.75 -left-px"
             initial={{ opacity: 0, translateY: 12, scale: 0.95 }}
             animate={{ opacity: 1, translateY: 0, scale: 1 }}
             exit={{ opacity: 0, translateY: 12, scale: 0.95 }}
@@ -35,7 +35,7 @@ const MessageBox = ({
           </motion.div>
         )}
       </AnimatePresence>
-      <div className="flex gap-2 bg-white p-2 dark:bg-slate-800">
+      <div className="flex gap-2 border-t border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-800">
         <button
           data-testid="add-emoji-button"
           className="cursor-pointer"
