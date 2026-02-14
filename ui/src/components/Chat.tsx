@@ -52,6 +52,7 @@ import SearchBox from "../ui/SearchBox";
 import SelectContactsList from "../ui/SelectContactsList";
 import Button from "../ui/Button";
 import Avatar from "../ui/Avatar";
+import { checkIfMessageIsSingleEmoji } from "../helpers";
 
 const ChatMessage = ({
   currentUser,
@@ -65,6 +66,7 @@ const ChatMessage = ({
   const isCurrentUser = message.sender.id === currentUser.id;
   const senderName = isCurrentUser ? "You" : message.sender.name;
   const isLatestMessage = message.id === latestAddedMessageId;
+  const isSingleEmoji = checkIfMessageIsSingleEmoji(message.content);
 
   return (
     <div
@@ -86,7 +88,7 @@ const ChatMessage = ({
           {senderName}
         </h3>
         <p
-          className={`text-xs font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"}`}
+          className={`font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"} ${isSingleEmoji ? "text-center text-2xl" : "text-xs"}`}
         >
           {message.content}
         </p>
