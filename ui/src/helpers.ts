@@ -1,5 +1,6 @@
 import { format, isToday, isThisWeek } from "date-fns";
 import type { ApolloCache } from "@apollo/client";
+import emojiRegex from "emoji-regex";
 import type { UserChat, User, Chat } from "./__generated__/graphql";
 import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "./graphql/queries";
 
@@ -96,4 +97,17 @@ export const updateChatByIdCache = (
       };
     }
   );
+};
+
+export const checkIfMessageIsSingleEmoji = (content: string) => {
+  const regex = emojiRegex();
+  let numberOfEmojis = 0;
+  let numberofEmojiCharacters = 0;
+  for (const match of content.matchAll(regex)) {
+    const emoji = match[0];
+    numberOfEmojis += 1;
+    numberofEmojiCharacters += emoji.length;
+  }
+
+  return numberofEmojiCharacters === content.length && numberOfEmojis === 1;
 };
