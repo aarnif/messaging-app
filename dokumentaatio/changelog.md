@@ -134,3 +134,19 @@ Ei muutoksia
 - Käyttäjän luonti sivun ulkoasun päivitys
 - Lataus "skeletonien" lisäys chattien ja kontaktien näkymään
 - Debouncen lisäys hakuihin
+
+## Viikko 17 (12.1-18.1.2026)
+
+Ei muutoksia
+
+## Viikko 18 (19.1-25.1.2026)
+
+Ei muutoksia
+
+## Viikko 19 (26.1-1.2.2026)
+
+Ei muutoksia
+
+## Viikko 20 (2.2-8.2.2026)
+
+Ei muutoksia
