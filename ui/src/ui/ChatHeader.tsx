@@ -33,7 +33,7 @@ const ChatHeader = ({
   const hasCallBack = !!callBack;
 
   return (
-    <div className="relative flex items-center justify-center bg-white p-2 dark:bg-slate-800">
+    <div className="relative flex items-center justify-center border-b border-slate-200 bg-white p-2 dark:border-slate-700 dark:bg-slate-800">
       <button
         data-testid="go-back-button"
         className="absolute left-2 cursor-pointer sm:hidden"
