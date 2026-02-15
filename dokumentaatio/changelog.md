@@ -150,3 +150,9 @@ Ei muutoksia
 ## Viikko 20 (2.2-8.2.2026)
 
 Ei muutoksia
+
+## Viikko 21 (9.2-15.2.2026)
+
+- Asennusohjeiden lisäys README
+- React-Router 404 error bugin korjaus Netlifyssa
+- Emojien lisäys viesteihin
