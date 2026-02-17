@@ -134,3 +134,25 @@ Ei muutoksia
 - Käyttäjän luonti sivun ulkoasun päivitys
 - Lataus "skeletonien" lisäys chattien ja kontaktien näkymään
 - Debouncen lisäys hakuihin
+
+## Viikko 17 (12.1-18.1.2026)
+
+Ei muutoksia
+
+## Viikko 18 (19.1-25.1.2026)
+
+Ei muutoksia
+
+## Viikko 19 (26.1-1.2.2026)
+
+Ei muutoksia
+
+## Viikko 20 (2.2-8.2.2026)
+
+Ei muutoksia
+
+## Viikko 21 (9.2-15.2.2026)
+
+- Asennusohjeiden lisäys README
+- React-Router 404 error bugin korjaus Netlifyssa
+- Emojien lisäys viesteihin

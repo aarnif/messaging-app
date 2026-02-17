@@ -82,4 +82,7 @@
 |  9.1  | 2    |                                   |
 | 10.1  | 1    | käyttäjäkokemuksen parantaminen   |
 | 11.1  | 1    |                                   |
-|  yht  | 211  |                                   |
+| 12.2  | 0.5  | README:n paivitys                 |
+| 12.2  | 0.5  | netlify 404 error korjaus         |
+| 14.2  | 2    | emojien lisäys viesteihin         |
+|  yht  | 214  |                                   |
