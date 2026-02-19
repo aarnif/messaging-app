@@ -85,6 +85,7 @@ type Mutation {
   editChat(input: EditChatInput!): Chat
   leaveChat(id: ID!): Chat
   sendMessage(input: SendMessageInput!): Chat
+  editMessage(input: EditMessageInput!): Chat
   changePassword(input: ChangePasswordInput!): User
   markChatAsRead(id: ID!): Boolean
   resetDatabase: Boolean
@@ -125,6 +126,11 @@ input SendMessageInput {
   id: ID!
   content: String!
   isNotification: Boolean!
+}
+
+input EditMessageInput {
+  id: ID!
+  content: String!
 }
 
 input ChangePasswordInput {

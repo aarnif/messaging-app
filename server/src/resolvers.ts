@@ -1405,6 +1405,94 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    editMessage: async (
+      _,
+      { input },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { id, content } = input;
+
+      const editMessageInputSchema = z.object({
+        id: z.string(),
+        content: z.string().min(1, "Message content cannot be empty"),
+      });
+
+      try {
+        editMessageInputSchema.parse({ id, content });
+      } catch (error) {
+        if (error instanceof z.ZodError) {
+          throw new GraphQLError("Input validation failed", {
+            extensions: {
+              code: "BAD_USER_INPUT",
+              validationErrors: error.issues,
+            },
+          });
+        }
+      }
+
+      const message = await Message.findOne({
+        where: {
+          id: Number(id),
+          senderId: context.currentUser.id,
+        },
+        include: [{ model: User, as: "sender" }],
+      });
+
+      if (!message) {
+        throw new GraphQLError("Message not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      try {
+        message.content = content;
+        await message.save();
+
+        const chat = await Chat.findByPk(message.chatId, {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role", "unreadCount"],
+              },
+            },
+          ],
+        });
+
+        if (!chat) {
+          throw new GraphQLError("Chat not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: message.chatId,
+            },
+          });
+        }
+
+        return chat;
+      } catch (error) {
+        throw new GraphQLError("Failed to edit message", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
     changePassword: async (
       _,
       { input },
