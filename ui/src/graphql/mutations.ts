@@ -51,6 +51,37 @@ export const SEND_MESSAGE =
   }
 }`);
 
+export const EDIT_MESSAGE =
+  gql(`mutation EditMessage($input: EditMessageInput!) {
+  editMessage(input: $input) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}`);
+
 export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
   createChat(input: $input) {
     id
