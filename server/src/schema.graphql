@@ -63,6 +63,7 @@ type Message {
   sender: User!
   content: String!
   createdAt: Date!
+  updatedAt: Date!
 }
 
 type Contact {

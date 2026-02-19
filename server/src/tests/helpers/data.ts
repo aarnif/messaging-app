@@ -85,6 +85,7 @@ export const expectedPrivateChat = {
       sender: expectedUser1,
       content: "Hello world",
       createdAt: 1759094100000,
+      updatedAt: 1759094100000,
     },
   ],
 };
@@ -109,6 +110,7 @@ export const expectedGroupChat = {
       sender: expectedUser1,
       content: "Hello world",
       createdAt: 1759094100000,
+      updatedAt: 1759094100000,
     },
   ],
 };

@@ -1787,6 +1787,7 @@ void describe("GraphQL API", () => {
             sender: expectedUser2,
             content: "User2 was removed from the chat",
             createdAt: 1759094100000,
+            updatedAt: 1759094100000,
           }),
         });
       });
@@ -2025,6 +2026,7 @@ void describe("GraphQL API", () => {
             sender: expectedUser2,
             content: "Hello from chat!",
             createdAt: 1759094100000 + 86400000,
+            updatedAt: 1759094100000 + 86400000,
           }),
         });
       });
@@ -2093,6 +2095,7 @@ void describe("GraphQL API", () => {
             sender: expectedUser2,
             content: "User2 left the chat",
             createdAt: 1759094100000,
+            updatedAt: 1759094100000,
           }),
         });
       });

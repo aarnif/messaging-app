@@ -16,6 +16,7 @@ export const MESSAGE_SENT = gql(`
       }
       content
       createdAt
+      updatedAt
     }
   }
 `);
@@ -53,6 +54,7 @@ export const USER_CHAT_UPDATED = gql(`
         }
         content
         createdAt
+        updatedAt
       }
     }
 }`);
@@ -90,6 +92,7 @@ export const USER_CHAT_CREATED = gql(`
         }
         content
         createdAt
+        updatedAt
       }
     }
 }`);
