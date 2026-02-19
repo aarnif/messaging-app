@@ -1483,6 +1483,14 @@ export const resolvers: Resolvers = {
           });
         }
 
+        const editedMessage = chat
+          .toJSON()
+          .messages?.find((msg) => msg.id === Number(id));
+
+        await pubsub.publish("MESSAGE_EDITED", {
+          messageEdited: editedMessage,
+        });
+
         return chat;
       } catch (error) {
         throw new GraphQLError("Failed to edit message", {
@@ -1606,6 +1614,9 @@ export const resolvers: Resolvers = {
   Subscription: {
     messageSent: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_SENT"]),
+    },
+    messageEdited: {
+      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_EDITED"]),
     },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),

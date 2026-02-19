@@ -150,6 +150,7 @@ type leftGroupChatDetails {
 
 type Subscription {
   messageSent: Message!
+  messageEdited: Message!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
   userChatDeleted: ID!
