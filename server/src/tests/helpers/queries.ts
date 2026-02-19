@@ -230,6 +230,37 @@ export const SEND_MESSAGE = `
   }
 `;
 
+export const EDIT_MESSAGE = `
+  mutation EditMessage($input: EditMessageInput!) {
+    editMessage(input: $input) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+        unreadCount
+      }
+      messages {
+        id
+        isNotification
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 export const LEAVE_CHAT = `
   mutation LeaveChat($id: ID!) {
     leaveChat(id: $id) {

@@ -46,6 +46,7 @@ import {
   DELETE_CHAT,
   TOGGLE_BLOCK_CONTACT,
   SEND_MESSAGE,
+  EDIT_MESSAGE,
   LEAVE_CHAT,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
@@ -2028,6 +2029,153 @@ void describe("GraphQL API", () => {
             createdAt: 1759094100000 + 86400000,
             updatedAt: 1759094100000 + 86400000,
           }),
+        });
+      });
+    });
+
+    void describe("Edit message", () => {
+      let messageId: string;
+      let token2: string;
+
+      beforeEach(async () => {
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        messageId = chatBody.data.createChat.messages[0].id;
+
+        const loginResponseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user2Details.username,
+            password: user2Details.password,
+          },
+        });
+
+        assert.ok(
+          loginResponseBody.data,
+          "User2 login token value should be defined"
+        );
+        token2 = loginResponseBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const responseBody = await query<
+          { editMessage: Chat },
+          { input: { id: string; content: string } }
+        >(
+          EDIT_MESSAGE,
+          {
+            input: {
+              id: messageId,
+              content: "Updated message",
+            },
+          },
+          ""
+        );
+
+        const chat = responseBody.data?.editMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+      });
+
+      void test("fails with empty message content", async () => {
+        const responseBody = await query<
+          { editMessage: Chat },
+          { input: { id: string; content: string } }
+        >(
+          EDIT_MESSAGE,
+          {
+            input: {
+              id: messageId,
+              content: "",
+            },
+          },
+          token
+        );
+
+        const chat = responseBody.data?.editMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertValidationError(responseBody, "Message content cannot be empty");
+      });
+
+      void test("fails with non-existent message ID", async () => {
+        const responseBody = await query<
+          { editMessage: Chat },
+          { input: { id: string; content: string } }
+        >(
+          EDIT_MESSAGE,
+          {
+            input: {
+              id: "999",
+              content: "Updated message",
+            },
+          },
+          token
+        );
+
+        const chat = responseBody.data?.editMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Message not found", "NOT_FOUND");
+      });
+
+      void test("fails when trying to edit another user's message", async () => {
+        const responseBody = await query<
+          { editMessage: Chat },
+          { input: { id: string; content: string } }
+        >(
+          EDIT_MESSAGE,
+          {
+            input: {
+              id: messageId,
+              content: "Updated message",
+            },
+          },
+          token2
+        );
+
+        const chat = responseBody.data?.editMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Message not found", "NOT_FOUND");
+      });
+
+      void test("succeeds editing own message", async () => {
+        const updatedContent = "Updated message content";
+        const responseBody = await query<
+          { editMessage: Chat },
+          { input: { id: string; content: string } }
+        >(
+          EDIT_MESSAGE,
+          {
+            input: {
+              id: messageId,
+              content: updatedContent,
+            },
+          },
+          token
+        );
+
+        const chat = responseBody.data?.editMessage;
+
+        assertChatEquality(chat, {
+          ...expectedPrivateChat,
+          members: [
+            expectedPrivateChat.members[0],
+            { ...expectedPrivateChat.members[1], unreadCount: 1 },
+          ],
+          messages: [
+            {
+              ...expectedPrivateChat.messages[0],
+              content: updatedContent,
+            },
+          ],
         });
       });
     });
