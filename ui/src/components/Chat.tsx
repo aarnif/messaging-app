@@ -119,6 +119,11 @@ const ChatMessage = ({
     setIsEditing(true);
   };
 
+  const handleCancel = () => {
+    setEditedContent(message.content);
+    setIsEditing(false);
+  };
+
   return (
     <div
       className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"}`}
@@ -130,7 +135,7 @@ const ChatMessage = ({
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 bg-black/50"
-            onClick={() => setIsEditing(false)}
+            onClick={handleCancel}
           />
         )}
       </AnimatePresence>
@@ -167,7 +172,7 @@ const ChatMessage = ({
               <button
                 type="button"
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
-                onClick={() => setIsEditing(false)}
+                onClick={handleCancel}
               >
                 <MdClose className="h-4 w-4 text-slate-800" />
               </button>
