@@ -114,6 +114,7 @@ const ChatMessage = ({
   const senderName = isCurrentUser ? "You" : message.sender.name;
   const isLatestMessage = message.id === latestAddedMessageId;
   const isSingleEmoji = checkIfMessageIsSingleEmoji(message.content);
+  const isEdited = message.updatedAt !== message.createdAt;
 
   const [editMessage] = useMutation(EDIT_MESSAGE, {
     fetchPolicy: "no-cache",
@@ -218,15 +219,29 @@ const ChatMessage = ({
             {message.content}
           </p>
         )}
-        <p
-          className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
-            isCurrentUser
-              ? "text-slate-700"
-              : "text-slate-700 dark:text-slate-200"
-          }`}
-        >
-          {formatDisplayDate(message?.createdAt, currentUser.is24HourClock)}
-        </p>
+        <div className={`flex ${isEdited ? "justify-between" : "justify-end"}`}>
+          {isEdited && (
+            <p
+              className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
+                isCurrentUser
+                  ? "text-slate-700"
+                  : "text-slate-700 dark:text-slate-200"
+              }`}
+            >
+              Edited
+            </p>
+          )}
+
+          <p
+            className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
+              isCurrentUser
+                ? "text-slate-700"
+                : "text-slate-700 dark:text-slate-200"
+            }`}
+          >
+            {formatDisplayDate(message?.createdAt, currentUser.is24HourClock)}
+          </p>
+        </div>
         <div
           className={`absolute bottom-0 border-t-16 border-t-transparent ${isCurrentUser ? "-right-2 border-l-16 border-l-green-300" : "-left-2 border-r-16 border-r-slate-200 dark:border-r-slate-700"}`}
         ></div>
