@@ -13,7 +13,7 @@ import {
   FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
 import { useDebounce } from "use-debounce";
-import { MESSAGE_SENT } from "../graphql/subscriptions";
+import { MESSAGE_SENT, MESSAGE_EDITED } from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import {
@@ -42,6 +42,7 @@ import useModal from "../hooks/useModal";
 import { FiEdit } from "react-icons/fi";
 import {
   SEND_MESSAGE,
+  EDIT_MESSAGE,
   EDIT_CHAT,
   LEAVE_CHAT,
   DELETE_CHAT,
@@ -114,6 +115,13 @@ const ChatMessage = ({
   const isLatestMessage = message.id === latestAddedMessageId;
   const isSingleEmoji = checkIfMessageIsSingleEmoji(message.content);
 
+  const [editMessage] = useMutation(EDIT_MESSAGE, {
+    fetchPolicy: "no-cache",
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const handleOpenEditModal = () => {
     console.log("Open edit modal for message:", message.id);
     setIsEditing(true);
@@ -121,6 +129,24 @@ const ChatMessage = ({
 
   const handleCancel = () => {
     setEditedContent(message.content);
+    setIsEditing(false);
+  };
+
+  const handleEditMessage = async () => {
+    if (!editedContent || editedContent === message.content) {
+      setIsEditing(false);
+      return;
+    }
+
+    await editMessage({
+      variables: {
+        input: {
+          id: message.id,
+          content: editedContent,
+        },
+      },
+    });
+
     setIsEditing(false);
   };
 
@@ -179,7 +205,7 @@ const ChatMessage = ({
               <button
                 type="button"
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
-                onClick={() => setIsEditing(false)}
+                onClick={handleEditMessage}
               >
                 <IoCheckmark className="h-5 w-5 text-slate-800" />
               </button>
@@ -775,6 +801,25 @@ const Chat = () => {
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
         messages: chat?.messages.concat(latestMessage),
+      }));
+    },
+  });
+
+  useSubscription(MESSAGE_EDITED, {
+    onData: ({ data }) => {
+      console.log("Use MESSAGE_EDITED-subscription:");
+      const editedMessage = data.data?.messageEdited;
+
+      if (!editedMessage || editedMessage.chatId !== match?.id) {
+        console.log("Message is not for this chat, skipping cache update");
+        return;
+      }
+
+      updateChatByIdCache(client.cache, match.id, (chat) => ({
+        ...chat,
+        messages: chat?.messages.map((message) =>
+          message.id === editedMessage.id ? editedMessage : message
+        ),
       }));
     },
   });
