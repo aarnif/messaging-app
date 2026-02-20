@@ -20,6 +20,7 @@ import {
   IoChevronBack,
   IoChevronForward,
   IoChevronDown,
+  IoCheckmark,
 } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { DEBOUNCE_DELAY } from "../constants";
@@ -106,6 +107,8 @@ const ChatMessage = ({
   message: Message;
   latestAddedMessageId: string | null;
 }) => {
+  const [isEditing, setIsEditing] = useState(false);
+  const [editedContent, setEditedContent] = useState(message.content);
   const isCurrentUser = message.sender.id === currentUser.id;
   const senderName = isCurrentUser ? "You" : message.sender.name;
   const isLatestMessage = message.id === latestAddedMessageId;
@@ -113,25 +116,38 @@ const ChatMessage = ({
 
   const handleOpenEditModal = () => {
     console.log("Open edit modal for message:", message.id);
+    setIsEditing(true);
   };
 
   return (
     <div
       className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"}`}
     >
-      <div
+      <AnimatePresence>
+        {isEditing && (
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            className="fixed inset-0 z-40 bg-black/50"
+            onClick={() => setIsEditing(false)}
+          />
+        )}
+      </AnimatePresence>
+      <motion.div
+        layout
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
-        className={`group relative flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
+        className={`group flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
-        } ${isLatestMessage && "animate-pop-in"}`}
+        } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"}`}
       >
-        {isCurrentUser && (
+        {isCurrentUser && !isEditing && (
           <div className="invisible absolute top-1 right-1 group-hover:visible">
             <MessageMenu handleOpenEditModal={handleOpenEditModal} />
           </div>
         )}
         <h3
-          className={`text-xs font-semibold ${
+          className={`font-semibold ${isEditing ? "text-sm" : "text-xs"} ${
             isCurrentUser
               ? "text-slate-900"
               : "text-slate-900 dark:text-slate-50"
@@ -139,13 +155,40 @@ const ChatMessage = ({
         >
           {senderName}
         </h3>
+        {isEditing ? (
+          <div className="flex flex-col gap-2 py-1">
+            <textarea
+              className="w-full resize-none rounded text-sm font-normal text-slate-800 outline-none"
+              rows={3}
+              value={editedContent}
+              onChange={(e) => setEditedContent(e.target.value)}
+            />
+            <div className="flex justify-end gap-2">
+              <button
+                type="button"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
+                onClick={() => setIsEditing(false)}
+              >
+                <MdClose className="h-4 w-4 text-slate-800" />
+              </button>
+              <button
+                type="button"
+                className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
+                onClick={() => setIsEditing(false)}
+              >
+                <IoCheckmark className="h-5 w-5 text-slate-800" />
+              </button>
+            </div>
+          </div>
+        ) : (
+          <p
+            className={`font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"} ${isSingleEmoji ? "text-center text-2xl" : "text-xs"}`}
+          >
+            {message.content}
+          </p>
+        )}
         <p
-          className={`font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"} ${isSingleEmoji ? "text-center text-2xl" : "text-xs"}`}
-        >
-          {message.content}
-        </p>
-        <p
-          className={`my-1 text-end text-[10px] ${
+          className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
             isCurrentUser
               ? "text-slate-700"
               : "text-slate-700 dark:text-slate-200"
@@ -156,7 +199,7 @@ const ChatMessage = ({
         <div
           className={`absolute bottom-0 border-t-16 border-t-transparent ${isCurrentUser ? "-right-2 border-l-16 border-l-green-300" : "-left-2 border-r-16 border-r-slate-200 dark:border-r-slate-700"}`}
         ></div>
-      </div>
+      </motion.div>
 
       {!isCurrentUser && (
         <div className="relative right-3 w-full">
