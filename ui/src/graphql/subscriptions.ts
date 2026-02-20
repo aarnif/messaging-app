@@ -21,6 +21,27 @@ export const MESSAGE_SENT = gql(`
   }
 `);
 
+export const MESSAGE_EDITED = gql(`
+  subscription MessageEdited {
+    messageEdited {
+      id
+      chatId
+      isNotification
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+      }
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
 export const USER_CHAT_UPDATED = gql(`
   subscription UserChatUpdated {
     userChatUpdated {
