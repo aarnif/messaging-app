@@ -72,6 +72,7 @@ const MessageMenu = ({
       <button
         onClick={() => setIsOpen(!isOpen)}
         className="cursor-pointer rounded-lg bg-slate-200 p-1 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500"
+        data-testid="message-menu-button"
       >
         <IoChevronDown className="h-3.5 w-3.5 text-slate-700 dark:text-slate-100" />
       </button>
@@ -190,6 +191,7 @@ const ChatMessage = ({
         {isEditing ? (
           <div className="flex flex-col gap-2 py-1">
             <textarea
+              data-testid="edit-message-input"
               className="w-full resize-none rounded text-sm font-normal text-slate-800 outline-none"
               rows={3}
               value={editedContent}

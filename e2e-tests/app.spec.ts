@@ -491,6 +491,17 @@ test.describe("App", () => {
           await sendMessage(page, message);
         }
       });
+
+      test("can open edit mode for own message", async ({ page }) => {
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+
+        await expect(editMessageInput).toBeVisible();
+        await expect(editMessageInput).toHaveValue("Hello World!");
+      });
     });
 
     test.describe("Editing", () => {
