@@ -43,6 +43,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
       }
       content
       createdAt
+      updatedAt
     }
   }
 }`);
@@ -94,6 +95,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
       }
       content
       createdAt
+      updatedAt
     }
   }
 }`);

@@ -63,6 +63,7 @@ type Message {
   sender: User!
   content: String!
   createdAt: Date!
+  updatedAt: Date!
 }
 
 type Contact {
@@ -84,6 +85,7 @@ type Mutation {
   editChat(input: EditChatInput!): Chat
   leaveChat(id: ID!): Chat
   sendMessage(input: SendMessageInput!): Chat
+  editMessage(input: EditMessageInput!): Chat
   changePassword(input: ChangePasswordInput!): User
   markChatAsRead(id: ID!): Boolean
   resetDatabase: Boolean
@@ -126,6 +128,11 @@ input SendMessageInput {
   isNotification: Boolean!
 }
 
+input EditMessageInput {
+  id: ID!
+  content: String!
+}
+
 input ChangePasswordInput {
   currentPassword: String!
   newPassword: String!
@@ -143,6 +150,7 @@ type leftGroupChatDetails {
 
 type Subscription {
   messageSent: Message!
+  messageEdited: Message!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
   userChatDeleted: ID!

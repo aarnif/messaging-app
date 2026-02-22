@@ -438,9 +438,7 @@ test.describe("App", () => {
     });
 
     test.describe("Messages", () => {
-      test("prevents sending an empty message to existing chat", async ({
-        page,
-      }) => {
+      test.beforeEach(async ({ page }) => {
         await createGroupChat(
           page,
           "New Group Chat",
@@ -453,38 +451,21 @@ test.describe("App", () => {
           page.getByRole("link", { name: "New Group Chat" })
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      });
 
+      test("prevents sending an empty message to existing chat", async ({
+        page,
+      }) => {
         await sendMessage(page, "");
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
       });
 
       test("can send a message to existing chat", async ({ page }) => {
-        await createGroupChat(
-          page,
-          "New Group Chat",
-          "New Group Chat Description",
-          [user2, user3],
-          "Hello World!"
-        );
-
-        await expect(
-          page.getByRole("link", { name: "New Group Chat" })
-        ).toBeVisible();
-        await expect(page.getByText("User1: Hello World!")).toBeVisible();
-
         await sendMessage(page, "Another message.");
         await expect(page.getByText("User1: Another message.")).toBeVisible();
       });
 
       test("marks chat as read when opened", async ({ page }) => {
-        await createGroupChat(
-          page,
-          "New Group Chat",
-          "New Group Chat Description",
-          [user2, user3],
-          "Message from user1"
-        );
-
         const testCases = [
           { user: user2, unreadCount: "1", message: "Message from user2" },
           { user: user3, unreadCount: "2", message: "Message from user3" },
@@ -509,6 +490,51 @@ test.describe("App", () => {
 
           await sendMessage(page, message);
         }
+      });
+
+      test("can open edit mode for own message", async ({ page }) => {
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+
+        await expect(editMessageInput).toBeVisible();
+        await expect(editMessageInput).toHaveValue("Hello World!");
+      });
+
+      test("can cancel editing message", async ({ page }) => {
+        await page.pause();
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+        await editMessageInput.fill("Edited message");
+
+        await page.getByTestId("cancel-edit-message-button").click();
+
+        await expect(editMessageInput).not.toBeVisible();
+        await expect(
+          page.getByTestId("current-user-message").getByText("Hello World!")
+        ).toBeVisible();
+      });
+
+      test("can edit a message", async ({ page }) => {
+        await page.pause();
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+        await editMessageInput.fill("Edited message");
+
+        await page.getByTestId("submit-edit-message-button").click();
+
+        await expect(editMessageInput).not.toBeVisible();
+        await expect(
+          page.getByTestId("current-user-message").getByText("Edited message")
+        ).toBeVisible();
       });
     });
 

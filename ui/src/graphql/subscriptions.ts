@@ -16,6 +16,28 @@ export const MESSAGE_SENT = gql(`
       }
       content
       createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const MESSAGE_EDITED = gql(`
+  subscription MessageEdited {
+    messageEdited {
+      id
+      chatId
+      isNotification
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+      }
+      content
+      createdAt
+      updatedAt
     }
   }
 `);
@@ -53,6 +75,7 @@ export const USER_CHAT_UPDATED = gql(`
         }
         content
         createdAt
+        updatedAt
       }
     }
 }`);
@@ -90,6 +113,7 @@ export const USER_CHAT_CREATED = gql(`
         }
         content
         createdAt
+        updatedAt
       }
     }
 }`);
