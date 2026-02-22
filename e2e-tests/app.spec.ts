@@ -519,6 +519,23 @@ test.describe("App", () => {
           page.getByTestId("current-user-message").getByText("Hello World!")
         ).toBeVisible();
       });
+
+      test("can edit a message", async ({ page }) => {
+        await page.pause();
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+        await editMessageInput.fill("Edited message");
+
+        await page.getByTestId("submit-edit-message-button").click();
+
+        await expect(editMessageInput).not.toBeVisible();
+        await expect(
+          page.getByTestId("current-user-message").getByText("Edited message")
+        ).toBeVisible();
+      });
     });
 
     test.describe("Editing", () => {

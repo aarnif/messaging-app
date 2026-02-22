@@ -208,6 +208,7 @@ const ChatMessage = ({
               </button>
               <button
                 type="button"
+                data-testid="submit-edit-message-button"
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
                 onClick={handleEditMessage}
               >
