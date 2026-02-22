@@ -200,6 +200,7 @@ const ChatMessage = ({
             <div className="flex justify-end gap-2">
               <button
                 type="button"
+                data-testid="cancel-edit-message-button"
                 className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full border-2 border-slate-700 transition-colors hover:bg-green-400"
                 onClick={handleCancel}
               >

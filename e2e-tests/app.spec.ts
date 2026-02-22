@@ -502,6 +502,23 @@ test.describe("App", () => {
         await expect(editMessageInput).toBeVisible();
         await expect(editMessageInput).toHaveValue("Hello World!");
       });
+
+      test("can cancel editing message", async ({ page }) => {
+        await page.pause();
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Edit" }).click();
+
+        const editMessageInput = page.getByTestId("edit-message-input");
+        await editMessageInput.fill("Edited message");
+
+        await page.getByTestId("cancel-edit-message-button").click();
+
+        await expect(editMessageInput).not.toBeVisible();
+        await expect(
+          page.getByTestId("current-user-message").getByText("Hello World!")
+        ).toBeVisible();
+      });
     });
 
     test.describe("Editing", () => {
