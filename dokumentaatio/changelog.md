@@ -156,3 +156,7 @@ Ei muutoksia
 - Asennusohjeiden lisäys README
 - React-Router 404 error bugin korjaus Netlifyssa
 - Emojien lisäys viesteihin
+
+## Viikko 22 (16.2-22.2.2026)
+
+- Viestien muokkaus

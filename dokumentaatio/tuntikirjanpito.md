@@ -85,4 +85,7 @@
 | 12.2  | 0.5  | README:n paivitys                 |
 | 12.2  | 0.5  | netlify 404 error korjaus         |
 | 14.2  | 2    | emojien lisäys viesteihin         |
-|  yht  | 214  |                                   |
+| 19.2  | 1    | viestien muokkaus                 |
+| 20.2  | 2    |                                   |
+| 22.2  | 2    |                                   |
+|  yht  | 219  |                                   |
