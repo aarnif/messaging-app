@@ -60,6 +60,7 @@ type Message {
   id: ID!
   chatId: ID!
   isNotification: Boolean
+  isDeleted: Boolean!
   sender: User!
   content: String!
   createdAt: Date!

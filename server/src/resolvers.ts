@@ -901,6 +901,7 @@ export const resolvers: Resolvers = {
           chatId: Number(newChat.id),
           content: initialMessage,
           isNotification: false,
+          isDeleted: false
         });
 
         const chat = await Chat.findByPk(newChat.id, {
@@ -1111,6 +1112,7 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was added to the chat`,
               isNotification: true,
+              isDeleted: false
             }))
           );
 
@@ -1141,6 +1143,7 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was removed from the chat`,
               isNotification: true,
+              isDeleted: false
             }))
           );
 
@@ -1236,6 +1239,7 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: `${currentUser?.name} left the chat`,
           isNotification: true,
+          isDeleted: false
         });
 
         const messageWithSender = await Message.findByPk(
@@ -1330,6 +1334,7 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: content,
           isNotification: isNotification,
+          isDeleted: false
         });
 
         await ChatMember.increment(
