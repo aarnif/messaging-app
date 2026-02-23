@@ -11,6 +11,7 @@ class Message extends Model<
   declare chatId: number;
   declare content: string;
   declare isNotification: boolean;
+  declare isDeleted: boolean;
 }
 Message.init(
   {
@@ -40,6 +41,11 @@ Message.init(
       allowNull: false,
     },
     isNotification: {
+      type: DataTypes.BOOLEAN,
+      defaultValue: false,
+      allowNull: false,
+    },
+    isDeleted: {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
       allowNull: false,
