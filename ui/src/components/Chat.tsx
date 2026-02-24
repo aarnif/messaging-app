@@ -62,9 +62,12 @@ import { checkIfMessageIsSingleEmoji } from "../helpers";
 
 const MessageMenu = ({
   handleOpenEditModal,
+  handleDeleteMessage,
 }: {
   handleOpenEditModal: () => void;
+  handleDeleteMessage: () => void;
 }) => {
+  const modal = useModal();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -92,6 +95,22 @@ const MessageMenu = ({
               className="w-full cursor-pointer rounded-lg px-4 py-2 text-left text-xs font-semibold text-slate-900 hover:bg-slate-300 dark:text-slate-50 dark:hover:bg-slate-600"
             >
               Edit
+            </button>
+            <button
+              onClick={() => {
+                modal({
+                  type: "danger",
+                  title: "Delete Message?",
+                  message: "Are you sure you want to delete the message?",
+                  close: "Cancel",
+                  confirm: "Delete",
+                  callback: handleDeleteMessage,
+                });
+                setIsOpen(false);
+              }}
+              className="w-full cursor-pointer rounded-lg px-4 py-2 text-left text-xs font-semibold text-slate-900 hover:bg-slate-300 dark:text-slate-50 dark:hover:bg-slate-600"
+            >
+              Delete
             </button>
           </div>
         </>
@@ -152,6 +171,10 @@ const ChatMessage = ({
     setIsEditing(false);
   };
 
+  const handleDeleteMessage = async () => {
+    console.log("Delete message");
+  };
+
   return (
     <div
       className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"}`}
@@ -176,7 +199,10 @@ const ChatMessage = ({
       >
         {isCurrentUser && !isEditing && (
           <div className="invisible absolute top-1 right-1 group-hover:visible">
-            <MessageMenu handleOpenEditModal={handleOpenEditModal} />
+            <MessageMenu
+              handleOpenEditModal={handleOpenEditModal}
+              handleDeleteMessage={handleDeleteMessage}
+            />
           </div>
         )}
         <h3
