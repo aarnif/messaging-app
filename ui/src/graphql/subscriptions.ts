@@ -44,6 +44,28 @@ export const MESSAGE_EDITED = gql(`
   }
 `);
 
+export const MESSAGE_DELETED = gql(`
+  subscription MessageDeleted {
+    messageDeleted {
+      id
+      chatId
+      isNotification
+      isDeleted
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+      }
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
 export const USER_CHAT_UPDATED = gql(`
   subscription UserChatUpdated {
     userChatUpdated {
