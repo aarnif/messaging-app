@@ -13,7 +13,11 @@ import {
   FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
 import { useDebounce } from "use-debounce";
-import { MESSAGE_SENT, MESSAGE_EDITED } from "../graphql/subscriptions";
+import {
+  MESSAGE_SENT,
+  MESSAGE_EDITED,
+  MESSAGE_DELETED,
+} from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import {
@@ -43,6 +47,7 @@ import { FiEdit } from "react-icons/fi";
 import {
   SEND_MESSAGE,
   EDIT_MESSAGE,
+  DELETE_MESSAGE,
   EDIT_CHAT,
   LEAVE_CHAT,
   DELETE_CHAT,
@@ -143,6 +148,13 @@ const ChatMessage = ({
     },
   });
 
+  const [deleteMessage] = useMutation(DELETE_MESSAGE, {
+    fetchPolicy: "no-cache",
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
   const handleOpenEditModal = () => {
     console.log("Open edit modal for message:", message.id);
     setIsEditing(true);
@@ -172,7 +184,11 @@ const ChatMessage = ({
   };
 
   const handleDeleteMessage = async () => {
-    console.log("Delete message");
+    await deleteMessage({
+      variables: {
+        id: message.id,
+      },
+    });
   };
 
   return (
@@ -864,6 +880,25 @@ const Chat = () => {
         ...chat,
         messages: chat?.messages.map((message) =>
           message.id === editedMessage.id ? editedMessage : message
+        ),
+      }));
+    },
+  });
+
+  useSubscription(MESSAGE_DELETED, {
+    onData: ({ data }) => {
+      console.log("Use MESSAGE_DELETED-subscription:");
+      const deletedMessage = data.data?.messageDeleted;
+
+      if (!deletedMessage || deletedMessage.chatId !== match?.id) {
+        console.log("Message is not for this chat, skipping cache update");
+        return;
+      }
+
+      updateChatByIdCache(client.cache, match.id, (chat) => ({
+        ...chat,
+        messages: chat?.messages.map((message) =>
+          message.id === deletedMessage.id ? deletedMessage : message
         ),
       }));
     },
