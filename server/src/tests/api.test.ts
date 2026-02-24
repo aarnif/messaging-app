@@ -47,6 +47,7 @@ import {
   TOGGLE_BLOCK_CONTACT,
   SEND_MESSAGE,
   EDIT_MESSAGE,
+  DELETE_MESSAGE,
   LEAVE_CHAT,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
@@ -2176,6 +2177,96 @@ void describe("GraphQL API", () => {
             {
               ...expectedPrivateChat.messages[0],
               content: updatedContent,
+            },
+          ],
+        });
+      });
+    });
+
+    void describe("Delete message", () => {
+      let messageId: string;
+      let token2: string;
+
+      beforeEach(async () => {
+        const chatBody = await query<
+          { createChat: Chat },
+          { input: CreateChatInput }
+        >(CREATE_CHAT, { input: privateChatDetails }, token);
+        assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+        messageId = chatBody.data.createChat.messages[0].id;
+
+        const loginResponseBody = await query<
+          { login: { value: string } },
+          { input: LoginInput }
+        >(LOGIN, {
+          input: {
+            username: user2Details.username,
+            password: user2Details.password,
+          },
+        });
+
+        assert.ok(
+          loginResponseBody.data,
+          "User2 login token value should be defined"
+        );
+        token2 = loginResponseBody.data.login.value;
+      });
+
+      void test("fails without authentication", async () => {
+        const responseBody = await query<
+          { deleteMessage: Chat },
+          { id: string }
+        >(DELETE_MESSAGE, { id: messageId }, "");
+
+        const chat = responseBody.data?.deleteMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+      });
+
+      void test("fails with non-existent message ID", async () => {
+        const responseBody = await query<
+          { deleteMessage: Chat },
+          { id: string }
+        >(DELETE_MESSAGE, { id: "999" }, token);
+
+        const chat = responseBody.data?.deleteMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Message not found", "NOT_FOUND");
+      });
+
+      void test("fails when trying to delete another user's message", async () => {
+        const responseBody = await query<
+          { deleteMessage: Chat },
+          { id: string }
+        >(DELETE_MESSAGE, { id: messageId }, token2);
+
+        const chat = responseBody.data?.deleteMessage;
+
+        assert.strictEqual(chat, null, "Chat should be null");
+        assertError(responseBody, "Message not found", "NOT_FOUND");
+      });
+
+      void test("succeeds deleting own message", async () => {
+        const responseBody = await query<
+          { deleteMessage: Chat },
+          { id: string }
+        >(DELETE_MESSAGE, { id: messageId }, token);
+
+        const chat = responseBody.data?.deleteMessage;
+
+        assertChatEquality(chat, {
+          ...expectedPrivateChat,
+          members: [
+            expectedPrivateChat.members[0],
+            { ...expectedPrivateChat.members[1], unreadCount: 1 },
+          ],
+          messages: [
+            {
+              ...expectedPrivateChat.messages[0],
+              content: "This message has been deleted",
+              isDeleted: true,
             },
           ],
         });

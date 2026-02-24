@@ -261,6 +261,38 @@ export const EDIT_MESSAGE = `
   }
 `;
 
+export const DELETE_MESSAGE = `
+  mutation DeleteMessage($id: ID!) {
+    deleteMessage(id: $id) {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        avatar
+        role
+        unreadCount
+      }
+      messages {
+        id
+        isNotification
+        isDeleted
+        sender {
+          id
+          username
+          name
+        }
+        content
+        createdAt
+      }
+    }
+  }
+`;
+
 export const LEAVE_CHAT = `
   mutation LeaveChat($id: ID!) {
     leaveChat(id: $id) {
