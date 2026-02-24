@@ -1565,6 +1565,14 @@ export const resolvers: Resolvers = {
           });
         }
 
+        const deletedMessage = chat
+          .toJSON()
+          .messages?.find((msg) => msg.id === Number(id));
+
+        await pubsub.publish("MESSAGE_DELETED", {
+          messageDeleted: deletedMessage,
+        });
+
         return chat;
       } catch (error) {
         throw new GraphQLError("Failed to delete message", {
@@ -1691,6 +1699,9 @@ export const resolvers: Resolvers = {
     },
     messageEdited: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_EDITED"]),
+    },
+    messageDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_DELETED"]),
     },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
