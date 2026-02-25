@@ -565,6 +565,24 @@ test.describe("App", () => {
           page.getByTestId("current-user-message").getByText("Hello World!")
         ).toBeVisible();
       });
+
+      test("can delete a message", async ({ page }) => {
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Delete" }).click();
+
+        await expect(page.getByText("Delete Message?")).toBeVisible();
+        await expect(
+          page.getByText("Are you sure you want to delete the message?")
+        ).toBeVisible();
+
+        await page.getByRole("button", { name: "Delete" }).click();
+
+        await expect(page.getByText("Delete Message?")).not.toBeVisible();
+        await expect(
+          page.getByTestId("current-user-message").getByText("This message was deleted.")
+        ).toBeVisible();
+      });
     });
 
     test.describe("Editing", () => {
