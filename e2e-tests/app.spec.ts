@@ -536,6 +536,17 @@ test.describe("App", () => {
           page.getByTestId("current-user-message").getByText("Edited message")
         ).toBeVisible();
       });
+
+      test("can open delete confirm modal for own message", async ({ page }) => {
+        await page.getByTestId("current-user-message").hover();
+        await page.getByTestId("message-menu-button").click();
+        await page.getByRole("button", { name: "Delete" }).click();
+
+        await expect(page.getByText("Delete Message?")).toBeVisible();
+        await expect(
+          page.getByText("Are you sure you want to delete the message?")
+        ).toBeVisible();
+      });
     });
 
     test.describe("Editing", () => {
