@@ -32,8 +32,8 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 - [x] Käyttäjä voi admin-roolissa muokata ryhmächatin tietoja
 - [x] Käyttäjä voi admin-roolissa poistaa chatin
 - [x] Käyttäjä voi lähettää tekstipohjaisia viestejä sovelluksessa
-- [ ] Käyttäjä voi muokata omia viestejään
-- [ ] Käyttäjä voi poistaa omia viestejään
+- [x] Käyttäjä voi muokata omia viestejään
+- [x] Käyttäjä voi poistaa omia viestejään
 - [x] Käyttäjä voi poistua chatista
 - [x] Käyttäjä saa tiedon uusista viesteitä reaaliaikaisesti
 
