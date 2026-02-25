@@ -27,6 +27,7 @@ import {
   IoCheckmark,
 } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import { FaBan } from "react-icons/fa";
 import { DEBOUNCE_DELAY } from "../constants";
 import type { InputField, UserContact } from "../types";
 import type {
@@ -213,7 +214,7 @@ const ChatMessage = ({
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
         } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"}`}
       >
-        {isCurrentUser && !isEditing && (
+        {isCurrentUser && !isEditing && !message.isDeleted && (
           <div className="invisible absolute top-1 right-1 group-hover:visible">
             <MessageMenu
               handleOpenEditModal={handleOpenEditModal}
@@ -262,11 +263,20 @@ const ChatMessage = ({
           <p
             className={`font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"} ${isSingleEmoji ? "text-center text-2xl" : "text-xs"}`}
           >
-            {message.content}
+            {message.isDeleted ? (
+              <span className="flex items-center gap-0.5 font-medium text-slate-600 italic">
+                <FaBan className="h-3 w-3" />
+                This message was deleted.
+              </span>
+            ) : (
+              message.content
+            )}
           </p>
         )}
-        <div className={`flex ${isEdited ? "justify-between" : "justify-end"}`}>
-          {isEdited && (
+        <div
+          className={`flex ${isEdited && !message.isDeleted ? "justify-between" : "justify-end"}`}
+        >
+          {isEdited && !message.isDeleted && (
             <p
               className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
                 isCurrentUser
