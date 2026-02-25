@@ -6,6 +6,7 @@ export const MESSAGE_SENT = gql(`
       id
       chatId
       isNotification
+      isDeleted
       sender {
         id
         username
@@ -27,6 +28,29 @@ export const MESSAGE_EDITED = gql(`
       id
       chatId
       isNotification
+      isDeleted
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+      }
+      content
+      createdAt
+      updatedAt
+    }
+  }
+`);
+
+export const MESSAGE_DELETED = gql(`
+  subscription MessageDeleted {
+    messageDeleted {
+      id
+      chatId
+      isNotification
+      isDeleted
       sender {
         id
         username
@@ -65,6 +89,7 @@ export const USER_CHAT_UPDATED = gql(`
         id
         chatId
         isNotification
+        isDeleted
         sender {
           id
           username
@@ -103,6 +128,7 @@ export const USER_CHAT_CREATED = gql(`
         id
         chatId
         isNotification
+        isDeleted
         sender {
           id
           username

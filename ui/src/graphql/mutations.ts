@@ -82,6 +82,36 @@ export const EDIT_MESSAGE =
   }
 }`);
 
+export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
+  deleteMessage(id: $id) {
+    id
+    type
+    name
+    description
+    avatar
+    members {
+      id
+      username
+      name
+      avatar
+      role
+    }
+    messages {
+      id
+      sender {
+        id
+        username
+        name
+        about
+        avatar
+      }
+      content
+      createdAt
+      updatedAt
+    }
+  }
+}`);
+
 export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
   createChat(input: $input) {
     id

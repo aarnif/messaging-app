@@ -13,7 +13,11 @@ import {
   FIND_CONTACT_BY_USER_ID,
 } from "../graphql/queries";
 import { useDebounce } from "use-debounce";
-import { MESSAGE_SENT, MESSAGE_EDITED } from "../graphql/subscriptions";
+import {
+  MESSAGE_SENT,
+  MESSAGE_EDITED,
+  MESSAGE_DELETED,
+} from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
 import {
@@ -23,6 +27,7 @@ import {
   IoCheckmark,
 } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import { FaBan } from "react-icons/fa";
 import { DEBOUNCE_DELAY } from "../constants";
 import type { InputField, UserContact } from "../types";
 import type {
@@ -43,6 +48,7 @@ import { FiEdit } from "react-icons/fi";
 import {
   SEND_MESSAGE,
   EDIT_MESSAGE,
+  DELETE_MESSAGE,
   EDIT_CHAT,
   LEAVE_CHAT,
   DELETE_CHAT,
@@ -62,9 +68,12 @@ import { checkIfMessageIsSingleEmoji } from "../helpers";
 
 const MessageMenu = ({
   handleOpenEditModal,
+  handleDeleteMessage,
 }: {
   handleOpenEditModal: () => void;
+  handleDeleteMessage: () => void;
 }) => {
+  const modal = useModal();
   const [isOpen, setIsOpen] = useState(false);
 
   return (
@@ -93,6 +102,22 @@ const MessageMenu = ({
             >
               Edit
             </button>
+            <button
+              onClick={() => {
+                modal({
+                  type: "danger",
+                  title: "Delete Message?",
+                  message: "Are you sure you want to delete the message?",
+                  close: "Cancel",
+                  confirm: "Delete",
+                  callback: handleDeleteMessage,
+                });
+                setIsOpen(false);
+              }}
+              className="w-full cursor-pointer rounded-lg px-4 py-2 text-left text-xs font-semibold text-slate-900 hover:bg-slate-300 dark:text-slate-50 dark:hover:bg-slate-600"
+            >
+              Delete
+            </button>
           </div>
         </>
       )}
@@ -118,6 +143,13 @@ const ChatMessage = ({
   const isEdited = message.updatedAt !== message.createdAt;
 
   const [editMessage] = useMutation(EDIT_MESSAGE, {
+    fetchPolicy: "no-cache",
+    onError: (error) => {
+      console.log(error);
+    },
+  });
+
+  const [deleteMessage] = useMutation(DELETE_MESSAGE, {
     fetchPolicy: "no-cache",
     onError: (error) => {
       console.log(error);
@@ -152,6 +184,14 @@ const ChatMessage = ({
     setIsEditing(false);
   };
 
+  const handleDeleteMessage = async () => {
+    await deleteMessage({
+      variables: {
+        id: message.id,
+      },
+    });
+  };
+
   return (
     <div
       className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"}`}
@@ -174,9 +214,12 @@ const ChatMessage = ({
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
         } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"}`}
       >
-        {isCurrentUser && !isEditing && (
+        {isCurrentUser && !isEditing && !message.isDeleted && (
           <div className="invisible absolute top-1 right-1 group-hover:visible">
-            <MessageMenu handleOpenEditModal={handleOpenEditModal} />
+            <MessageMenu
+              handleOpenEditModal={handleOpenEditModal}
+              handleDeleteMessage={handleDeleteMessage}
+            />
           </div>
         )}
         <h3
@@ -220,11 +263,20 @@ const ChatMessage = ({
           <p
             className={`font-normal wrap-break-word text-slate-800 ${isCurrentUser ? "text-slate-800" : "text-slate-800 dark:text-slate-100"} ${isSingleEmoji ? "text-center text-2xl" : "text-xs"}`}
           >
-            {message.content}
+            {message.isDeleted ? (
+              <span className="flex items-center gap-0.5 font-medium text-slate-600 italic">
+                <FaBan className="h-3 w-3" />
+                This message was deleted.
+              </span>
+            ) : (
+              message.content
+            )}
           </p>
         )}
-        <div className={`flex ${isEdited ? "justify-between" : "justify-end"}`}>
-          {isEdited && (
+        <div
+          className={`flex ${isEdited && !message.isDeleted ? "justify-between" : "justify-end"}`}
+        >
+          {isEdited && !message.isDeleted && (
             <p
               className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
                 isCurrentUser
@@ -838,6 +890,25 @@ const Chat = () => {
         ...chat,
         messages: chat?.messages.map((message) =>
           message.id === editedMessage.id ? editedMessage : message
+        ),
+      }));
+    },
+  });
+
+  useSubscription(MESSAGE_DELETED, {
+    onData: ({ data }) => {
+      console.log("Use MESSAGE_DELETED-subscription:");
+      const deletedMessage = data.data?.messageDeleted;
+
+      if (!deletedMessage || deletedMessage.chatId !== match?.id) {
+        console.log("Message is not for this chat, skipping cache update");
+        return;
+      }
+
+      updateChatByIdCache(client.cache, match.id, (chat) => ({
+        ...chat,
+        messages: chat?.messages.map((message) =>
+          message.id === deletedMessage.id ? deletedMessage : message
         ),
       }));
     },

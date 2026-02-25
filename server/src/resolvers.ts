@@ -901,6 +901,7 @@ export const resolvers: Resolvers = {
           chatId: Number(newChat.id),
           content: initialMessage,
           isNotification: false,
+          isDeleted: false
         });
 
         const chat = await Chat.findByPk(newChat.id, {
@@ -1111,6 +1112,7 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was added to the chat`,
               isNotification: true,
+              isDeleted: false
             }))
           );
 
@@ -1141,6 +1143,7 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was removed from the chat`,
               isNotification: true,
+              isDeleted: false
             }))
           );
 
@@ -1236,6 +1239,7 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: `${currentUser?.name} left the chat`,
           isNotification: true,
+          isDeleted: false
         });
 
         const messageWithSender = await Message.findByPk(
@@ -1330,6 +1334,7 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: content,
           isNotification: isNotification,
+          isDeleted: false
         });
 
         await ChatMember.increment(
@@ -1501,6 +1506,83 @@ export const resolvers: Resolvers = {
         });
       }
     },
+    deleteMessage: async (
+      _,
+      { id },
+      context: { currentUser: User | null }
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const message = await Message.findOne({
+        where: {
+          id: Number(id),
+          senderId: context.currentUser.id,
+        },
+        include: [{ model: User, as: "sender" }],
+      });
+
+      if (!message) {
+        throw new GraphQLError("Message not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      try {
+        message.content = "This message has been deleted";
+        message.isDeleted = true;
+        await message.save();
+
+        const chat = await Chat.findByPk(message.chatId, {
+          include: [
+            {
+              model: Message,
+              as: "messages",
+              include: [{ model: User, as: "sender" }],
+            },
+            {
+              model: User,
+              as: "members",
+              through: {
+                attributes: ["role", "unreadCount"],
+              },
+            },
+          ],
+        });
+
+        if (!chat) {
+          throw new GraphQLError("Chat not found", {
+            extensions: {
+              code: "NOT_FOUND",
+              invalidArgs: message.chatId,
+            },
+          });
+        }
+
+        const deletedMessage = chat
+          .toJSON()
+          .messages?.find((msg) => msg.id === Number(id));
+
+        await pubsub.publish("MESSAGE_DELETED", {
+          messageDeleted: deletedMessage,
+        });
+
+        return chat;
+      } catch (error) {
+        throw new GraphQLError("Failed to delete message", {
+          extensions: {
+            code: "INTERNAL_SERVER_ERROR",
+            error,
+          },
+        });
+      }
+    },
     changePassword: async (
       _,
       { input },
@@ -1617,6 +1699,9 @@ export const resolvers: Resolvers = {
     },
     messageEdited: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_EDITED"]),
+    },
+    messageDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_DELETED"]),
     },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
