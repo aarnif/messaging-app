@@ -583,6 +583,21 @@ test.describe("App", () => {
           page.getByTestId("current-user-message").getByText("This message was deleted.")
         ).toBeVisible();
       });
+
+      test("cannot delete another user's message", async ({ page }) => {
+        await page.pause();
+        await logout(page);
+        await signIn(page, user2.username, user2.password);
+        await page
+          .getByRole("link", { name: new RegExp("New Group Chat") })
+          .click();
+
+        await page.getByTestId("contact-message").hover();
+
+        await expect(
+          page.getByTestId("message-menu-button")
+        ).not.toBeVisible();
+      });
     });
 
     test.describe("Editing", () => {
