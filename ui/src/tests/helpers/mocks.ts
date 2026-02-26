@@ -177,6 +177,7 @@ export const GROUP_CHAT_DETAILS = {
       id: "1",
       chatId: "1",
       isNotification: false,
+      isDeleted: false,
       sender: {
         id: USER_ONE_DETAILS.id,
         username: USER_ONE_DETAILS.username,
@@ -187,11 +188,13 @@ export const GROUP_CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
+      updatedAt: 1759094100000,
     },
     {
       id: "2",
       chatId: "1",
       isNotification: false,
+      isDeleted: false,
       sender: {
         id: USER_TWO_DETAILS.id,
         username: USER_TWO_DETAILS.username,
@@ -202,11 +205,13 @@ export const GROUP_CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
+      updatedAt: 1759094100000 + 86400000,
     },
     {
       id: "3",
       chatId: "1",
       isNotification: false,
+      isDeleted: false,
       sender: {
         id: USER_THREE_DETAILS.id,
         username: USER_THREE_DETAILS.username,
@@ -217,6 +222,7 @@ export const GROUP_CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
       createdAt: 1759094100000 + 2 * 86400000,
+      updatedAt: 1759094100000 + 2 * 86400000,
     },
   ],
 };
@@ -256,6 +262,7 @@ export const PRIVATE_CHAT_DETAILS = {
       id: "1",
       chatId: "1",
       isNotification: false,
+      isDeleted: false,
       sender: {
         id: USER_ONE_DETAILS.id,
         username: USER_ONE_DETAILS.username,
@@ -266,11 +273,13 @@ export const PRIVATE_CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
+      updatedAt: 1759094100000,
     },
     {
       id: "2",
       chatId: "1",
       isNotification: false,
+      isDeleted: false,
       sender: {
         id: USER_TWO_DETAILS.id,
         username: USER_TWO_DETAILS.username,
@@ -281,6 +290,7 @@ export const PRIVATE_CHAT_DETAILS = {
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
+      updatedAt: 1759094100000 + 86400000,
     },
   ],
 };
@@ -289,6 +299,7 @@ export const MESSAGE_DETAILS = {
   id: "4",
   chatId: GROUP_CHAT_DETAILS.id,
   isNotification: false,
+  isDeleted: false,
   sender: {
     id: USER_ONE_DETAILS.id,
     username: USER_ONE_DETAILS.username,
@@ -299,6 +310,7 @@ export const MESSAGE_DETAILS = {
   },
   content: "This is a new message.",
   createdAt: 1759094100000 + 3 * 86400000,
+  updatedAt: 1759094100000 + 3 * 86400000,
 };
 
 export const CONTACT_DETAILS = {
