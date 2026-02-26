@@ -9,5 +9,8 @@ export default defineConfig({
     globals: true,
     setupFiles: ["testSetup.ts", "vitest-localstorage-mock"],
     include: ["src/tests/*.test.{ts,tsx}"],
+    coverage: {
+      exclude: ["src/__generated__/**"],
+    },
   },
 });
