@@ -56,7 +56,7 @@ The Full Stack Open Course Project: Messaging App
    If using the provided Docker containers, your environment variables should be:
 
    ```bash
-   DATABASE_URL=postgres://postgres:example@localhost:5432/postgres
+   DATABASE_URL=postgres://postgres:mysecretpassword@localhost:6001/postgres
    JWT_SECRET=your-development-secret-key
    SERVER_URL=http://localhost:4000
    WS_URL=ws://localhost:4000
