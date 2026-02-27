@@ -1,16 +1,16 @@
 # Messaging App
 
-The Full Stack Open Course Project: Messaging App
+Full Stack Open -kurssin projekti: Messaging App
 
-## Prerequisites
+## Vaatimukset
 
-- Node.js (v24 or higher)
-- Docker and Docker Compose (for local database setup)
+- Node.js (v24 tai uudempi)
+- Docker ja Docker Compose (paikallista tietokantaa varten)
 - npm
 
-## Development
+## Kehitys
 
-1. Clone the repository
+1. Kloonaa repositorio
 
    HTTPS:
 
@@ -24,23 +24,23 @@ The Full Stack Open Course Project: Messaging App
    git clone git@github.com:aarnif/messaging-app.git
    ```
 
-2. Navigate to the project root directory
+2. Siirry projektin juurihakemistoon
 
    ```bash
    cd messaging-app
    ```
 
-3. Install all dependencies
+3. Asenna kaikki riippuvuudet
 
    ```bash
    npm run install:all
    ```
 
-4. Set up environment variables
+4. Määritä ympäristömuuttujat
 
-   **Server**
+   **Palvelin**
 
-   Create a `.env` file in the `server` directory with the following contents:
+   Luo `.env`-tiedosto `server`-hakemistoon seuraavilla muuttujilla:
 
    ```bash
    DATABASE_URL=YOUR_DATABASE_URL_HERE
@@ -51,9 +51,9 @@ The Full Stack Open Course Project: Messaging App
    CI=false
    ```
 
-   **Option A: Using Docker PostgreSQL and Redis (recommended for development)**
+   **Vaihtoehto A: Docker PostgreSQL ja Redis (suositeltava kehitykseen)**
 
-   If using the provided Docker containers, your environment variables should be:
+   Jos käytät Docker-kontteja, ympäristömuuttujien tulisi olla:
 
    ```bash
    DATABASE_URL=postgres://postgres:mysecretpassword@localhost:6001/postgres
@@ -64,19 +64,19 @@ The Full Stack Open Course Project: Messaging App
    CI=false
    ```
 
-   Start the database and Redis containers in a new terminal (leave it running):
+   Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa (jätä ne käyntiin):
 
    ```bash
    npm run start:db
    ```
 
-   **Option B: Using your own PostgreSQL and Redis**
+   **Vaihtoehto B: Oma PostgreSQL ja Redis**
 
-   Configure `DATABASE_URL` and `REDIS_URI` to point to your existing databases.
+   Määritä `DATABASE_URL` ja `REDIS_URI` osoittamaan omiin tietokantoihisi.
 
-   **UI**
+   **Käyttöliittymä**
 
-   Create `.env.development` and `.env.production` files in the `ui` directory with the following contents:
+   Luo `.env.development` ja `.env.production` tiedostot `ui`-hakemistoon seuraavilla tiedoilla:
 
    `.env.development`:
 
@@ -92,55 +92,55 @@ The Full Stack Open Course Project: Messaging App
    VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
    ```
 
-5. Add seed data to the database
+5. Lisää seed data tietokantaan
 
    ```bash
    npm run populate:db
    ```
 
-6. Start the server development server (in a new terminal)
+6. Käynnistä palvelin kehitystilassa (uudessa terminaalissa)
 
    ```bash
    npm run dev:server
    ```
 
-7. Start the UI development server (in a new terminal)
+7. Käynnistä käyttöliittymä kehitystilassa (uudessa terminaalissa)
 
    ```bash
    npm run dev:ui
    ```
 
-## npm commands
+## npm-komennot
 
-### General
+### Yleiset
 
-- `npm run install:all` - Install dependencies for both server and UI
+- `npm run install:all` - Asenna riippuvuudet sekä palvelimelle että käyttöliittymälle
 
-### Database
+### Tietokanta
 
-- `npm run start:db` - Start PostgreSQL and Redis in Docker containers
-- `npm run populate:db` - Add seed data to the database
+- `npm run start:db` - Käynnistä PostgreSQL ja Redis Docker-konteissa
+- `npm run populate:db` - Lisää seed data tietokantaan
 
-### Server
+### Palvelin
 
-- `npm run dev:server` - Start server in development mode
-- `npm run prod:server` - Start server in production mode
-- `npm run test:server` - Run server tests
-- `npm run typecheck:server` - Run TypeScript type checking for server
-- `npm run lint:server` - Run linter for server code
-- `npm run generate:server` - Generate GraphQL types
+- `npm run dev:server` - Käynnistä palvelin kehitystilassa
+- `npm run prod:server` - Käynnistä palvelin tuotantotilassa
+- `npm run test:server` - Suorita palvelimen testit
+- `npm run typecheck:server` - Suorita TypeScript-tyyppitarkistus palvelimelle
+- `npm run lint:server` - Suorita linttaus palvelimen koodille
+- `npm run generate:server` - Generoi GraphQL-tyypit
 
-### UI
+### Käyttöliittymä
 
-- `npm run dev:ui` - Start UI development server
-- `npm run build:ui` - Build UI for production
-- `npm run preview:ui` - Preview production build locally
-- `npm run test:ui` - Run UI tests
-- `npm run test:ui:coverage` - Run UI tests with coverage
-- `npm run typecheck:ui` - Run TypeScript type checking for UI
-- `npm run lint:ui` - Run linter for UI code
-- `npm run generate:ui` - Generate GraphQL types
+- `npm run dev:ui` - Käynnistä käyttöliittymä kehitystilassa
+- `npm run build:ui` - Buildaa käyttöliittymä tuotantoa varten
+- `npm run preview:ui` - Esikatsele tuotantobuild paikallisesti
+- `npm run test:ui` - Suorita käyttöliittymän testit
+- `npm run test:ui:coverage` - Suorita käyttöliittymän testit kattavuusraportin kanssa
+- `npm run typecheck:ui` - Suorita TypeScript-tyyppitarkistus käyttöliittymälle
+- `npm run lint:ui` - Suorita linttaus käyttöliittymän koodille
+- `npm run generate:ui` - Generoi GraphQL-tyypit
 
-### End-to-End Testing
+### End-to-End-testaus
 
-- `npm run test:e2e` - Run Playwright end-to-end tests
+- `npm run test:e2e` - Suorita Playwright end-to-end-testit
