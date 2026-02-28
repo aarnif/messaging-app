@@ -30,28 +30,12 @@ jobs:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      - name: Start server
-        run: npm run dev:server &
-        env:
-          NODE_ENV: development
-          PORT: ${{ secrets.PORT }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
-          JWT_SECRET: ${{ secrets.JWT_SECRET }}
-      - name: Wait for server to be ready
-        run: sleep 10
       - name: Generate GraphQL ui types
         run: npm run generate:ui
       - name: Run ui tests
         run: npm run test:ui
         env:
           CI: true
-      - name: Start UI dev server
-        run: npm run dev:ui &
-        env:
-          VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
-          VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
-      - name: Wait for UI server to be ready
-        run: sleep 10
       - name: Run e2e tests
         run: npm run test:e2e
         env:
