@@ -38,13 +38,11 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 - [x] Käyttäjä saa tiedon uusista viesteitä reaaliaikaisesti
 
 - [x] **Kontaktit**
-
   - [x] Käyttäjä voi lisätä uuden kontaktin
   - [x] Käyttäjä voi poistaa kontaktin
   - [x] Käyttäjä voi blokata kontaktin
 
 - [x] **Profiili**
-
   - [x] Käyttäjä voi vaihtaa päivittää tietojaan, kuten nimensä ja salasanan
   - [x] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
 

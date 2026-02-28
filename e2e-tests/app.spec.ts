@@ -46,7 +46,7 @@ test.describe("App", () => {
         await signUp(page, "u", user1.password, user1.confirmPassword);
         await assertErrorNotifyAndClose(
           page,
-          "Username must be at least 3 characters long"
+          "Username must be at least 3 characters long",
         );
       });
 
@@ -54,7 +54,7 @@ test.describe("App", () => {
         await signUp(page, user1.username, "passw", user1.confirmPassword);
         await assertErrorNotifyAndClose(
           page,
-          "Password must be at least 6 characters long"
+          "Password must be at least 6 characters long",
         );
       });
 
@@ -70,10 +70,10 @@ test.describe("App", () => {
           page,
           user1.username,
           user1.password,
-          user1.confirmPassword
+          user1.confirmPassword,
         );
         await expect(
-          page.getByText("Select Chat to Start Messaging.")
+          page.getByText("Select Chat to Start Messaging."),
         ).toBeVisible();
       });
 
@@ -82,14 +82,14 @@ test.describe("App", () => {
           page,
           user1.username,
           user1.password,
-          user1.confirmPassword
+          user1.confirmPassword,
         );
         await logout(page);
         await signUp(
           page,
           user1.username,
           user1.password,
-          user1.confirmPassword
+          user1.confirmPassword,
         );
         await assertErrorNotifyAndClose(page, "Username already exists");
       });
@@ -101,7 +101,7 @@ test.describe("App", () => {
           page,
           user1.username,
           user1.password,
-          user1.confirmPassword
+          user1.confirmPassword,
         );
         await logout(page);
       });
@@ -124,7 +124,7 @@ test.describe("App", () => {
       test("can sign in with valid credentials", async ({ page }) => {
         await signIn(page, user1.username, user1.password);
         await expect(
-          page.getByText("Select Chat to Start Messaging.")
+          page.getByText("Select Chat to Start Messaging."),
         ).toBeVisible();
       });
     });
@@ -135,7 +135,7 @@ test.describe("App", () => {
           page,
           user1.username,
           user1.password,
-          user1.confirmPassword
+          user1.confirmPassword,
         );
       });
 
@@ -144,7 +144,7 @@ test.describe("App", () => {
 
         await assertErrorNotifyAndClose(
           page,
-          "Profile name must be at least three characters long"
+          "Profile name must be at least three characters long",
         );
       });
 
@@ -176,12 +176,12 @@ test.describe("App", () => {
           page,
           "wrongPassword",
           "newPassword",
-          "newPassword"
+          "newPassword",
         );
 
         await assertErrorNotifyAndClose(
           page,
-          "Current password does not match"
+          "Current password does not match",
         );
       });
     });
@@ -193,7 +193,7 @@ test.describe("App", () => {
       await signIn(page, user1.username, user1.password);
 
       await expect(
-        page.getByText("Select Chat to Start Messaging.")
+        page.getByText("Select Chat to Start Messaging."),
       ).toBeVisible();
     });
 
@@ -201,7 +201,7 @@ test.describe("App", () => {
       await addContacts(page, [user2]);
 
       await expect(
-        page.getByRole("link", { name: new RegExp(user2.name) })
+        page.getByRole("link", { name: new RegExp(user2.name) }),
       ).toBeVisible();
     });
 
@@ -211,7 +211,7 @@ test.describe("App", () => {
 
       for (const user of users) {
         await expect(
-          page.getByRole("link", { name: new RegExp(user.name) })
+          page.getByRole("link", { name: new RegExp(user.name) }),
         ).toBeVisible();
       }
     });
@@ -224,10 +224,10 @@ test.describe("App", () => {
         .fill(user2.name);
 
       await expect(
-        page.getByRole("link", { name: new RegExp(user2.name) })
+        page.getByRole("link", { name: new RegExp(user2.name) }),
       ).toBeVisible();
       await expect(
-        page.getByRole("link", { name: new RegExp(user3.name) })
+        page.getByRole("link", { name: new RegExp(user3.name) }),
       ).not.toBeVisible();
     });
 
@@ -239,10 +239,10 @@ test.describe("App", () => {
         .fill(user3.username);
 
       await expect(
-        page.getByRole("link", { name: new RegExp(user3.name) })
+        page.getByRole("link", { name: new RegExp(user3.name) }),
       ).toBeVisible();
       await expect(
-        page.getByRole("link", { name: new RegExp(user2.name) })
+        page.getByRole("link", { name: new RegExp(user2.name) }),
       ).not.toBeVisible();
     });
 
@@ -257,10 +257,10 @@ test.describe("App", () => {
 
       await expect(page.getByText("No contacts found.")).toBeVisible();
       await expect(
-        page.getByRole("link", { name: new RegExp(user2.name) })
+        page.getByRole("link", { name: new RegExp(user2.name) }),
       ).not.toBeVisible();
       await expect(
-        page.getByRole("link", { name: new RegExp(user3.name) })
+        page.getByRole("link", { name: new RegExp(user3.name) }),
       ).not.toBeVisible();
     });
 
@@ -273,7 +273,7 @@ test.describe("App", () => {
       await page.getByRole("button", { name: "Unblock", exact: true }).click();
 
       await expect(
-        page.getByText("You have blocked the contact.")
+        page.getByText("You have blocked the contact."),
       ).not.toBeVisible();
     });
 
@@ -293,7 +293,7 @@ test.describe("App", () => {
       await signIn(page, user1.username, user1.password);
 
       await expect(
-        page.getByText("Select Chat to Start Messaging.")
+        page.getByText("Select Chat to Start Messaging."),
       ).toBeVisible();
 
       await addContacts(page, [user2, user3, user4]);
@@ -308,7 +308,7 @@ test.describe("App", () => {
           "New Group Chat",
           "New Group Chat Description",
           [user3, user4],
-          "Hello World!"
+          "Hello World!",
         );
       });
 
@@ -318,10 +318,10 @@ test.describe("App", () => {
           .fill(user2.name);
 
         await expect(
-          page.getByRole("link", { name: new RegExp(user2.name) })
+          page.getByRole("link", { name: new RegExp(user2.name) }),
         ).toBeVisible();
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).not.toBeVisible();
       });
 
@@ -331,10 +331,10 @@ test.describe("App", () => {
           .fill("New Group Chat");
 
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(
-          page.getByRole("link", { name: new RegExp(user2.name) })
+          page.getByRole("link", { name: new RegExp(user2.name) }),
         ).not.toBeVisible();
       });
 
@@ -344,10 +344,10 @@ test.describe("App", () => {
           .fill("New Group Chat Description");
 
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(
-          page.getByRole("link", { name: new RegExp(user2.name) })
+          page.getByRole("link", { name: new RegExp(user2.name) }),
         ).not.toBeVisible();
       });
     });
@@ -358,7 +358,7 @@ test.describe("App", () => {
 
         await assertErrorNotifyAndClose(
           page,
-          "Please select a contact to create a chat with"
+          "Please select a contact to create a chat with",
         );
       });
 
@@ -389,7 +389,7 @@ test.describe("App", () => {
 
         await assertErrorNotifyAndClose(
           page,
-          "Chat name must be at least three characters long"
+          "Chat name must be at least three characters long",
         );
       });
 
@@ -398,12 +398,12 @@ test.describe("App", () => {
           page,
           "New Group Chat",
           "New Group Chat Description",
-          []
+          [],
         );
 
         await assertErrorNotifyAndClose(
           page,
-          "Chat must have at least two members"
+          "Chat must have at least two members",
         );
       });
 
@@ -412,12 +412,12 @@ test.describe("App", () => {
           page,
           "New Group Chat",
           "New Group Chat Description",
-          [user2]
+          [user2],
         );
 
         await assertErrorNotifyAndClose(
           page,
-          "Chat must have at least two members"
+          "Chat must have at least two members",
         );
       });
 
@@ -427,11 +427,11 @@ test.describe("App", () => {
           "New Group Chat",
           "New Group Chat Description",
           [user2, user3],
-          "Hello World!"
+          "Hello World!",
         );
 
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
       });
@@ -444,11 +444,11 @@ test.describe("App", () => {
           "New Group Chat",
           "New Group Chat Description",
           [user2, user3],
-          "Hello World!"
+          "Hello World!",
         );
 
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
       });
@@ -477,7 +477,7 @@ test.describe("App", () => {
 
           await expect(page.getByTestId("unread-messages-badge")).toBeVisible();
           await expect(page.getByTestId("unread-messages-badge")).toHaveText(
-            unreadCount
+            unreadCount,
           );
 
           await page
@@ -485,7 +485,7 @@ test.describe("App", () => {
             .click();
 
           await expect(
-            page.getByTestId("unread-messages-badge")
+            page.getByTestId("unread-messages-badge"),
           ).not.toBeVisible();
 
           await sendMessage(page, message);
@@ -516,7 +516,7 @@ test.describe("App", () => {
 
         await expect(editMessageInput).not.toBeVisible();
         await expect(
-          page.getByTestId("current-user-message").getByText("Hello World!")
+          page.getByTestId("current-user-message").getByText("Hello World!"),
         ).toBeVisible();
       });
 
@@ -533,18 +533,20 @@ test.describe("App", () => {
 
         await expect(editMessageInput).not.toBeVisible();
         await expect(
-          page.getByTestId("current-user-message").getByText("Edited message")
+          page.getByTestId("current-user-message").getByText("Edited message"),
         ).toBeVisible();
       });
 
-      test("can open delete confirm modal for own message", async ({ page }) => {
+      test("can open delete confirm modal for own message", async ({
+        page,
+      }) => {
         await page.getByTestId("current-user-message").hover();
         await page.getByTestId("message-menu-button").click();
         await page.getByRole("button", { name: "Delete" }).click();
 
         await expect(page.getByText("Delete Message?")).toBeVisible();
         await expect(
-          page.getByText("Are you sure you want to delete the message?")
+          page.getByText("Are you sure you want to delete the message?"),
         ).toBeVisible();
       });
 
@@ -555,14 +557,14 @@ test.describe("App", () => {
 
         await expect(page.getByText("Delete Message?")).toBeVisible();
         await expect(
-          page.getByText("Are you sure you want to delete the message?")
+          page.getByText("Are you sure you want to delete the message?"),
         ).toBeVisible();
 
         await page.getByRole("button", { name: "Cancel" }).click();
 
         await expect(page.getByText("Delete Message?")).not.toBeVisible();
         await expect(
-          page.getByTestId("current-user-message").getByText("Hello World!")
+          page.getByTestId("current-user-message").getByText("Hello World!"),
         ).toBeVisible();
       });
 
@@ -573,14 +575,16 @@ test.describe("App", () => {
 
         await expect(page.getByText("Delete Message?")).toBeVisible();
         await expect(
-          page.getByText("Are you sure you want to delete the message?")
+          page.getByText("Are you sure you want to delete the message?"),
         ).toBeVisible();
 
         await page.getByRole("button", { name: "Delete" }).click();
 
         await expect(page.getByText("Delete Message?")).not.toBeVisible();
         await expect(
-          page.getByTestId("current-user-message").getByText("This message was deleted.")
+          page
+            .getByTestId("current-user-message")
+            .getByText("This message was deleted."),
         ).toBeVisible();
       });
 
@@ -594,9 +598,7 @@ test.describe("App", () => {
 
         await page.getByTestId("contact-message").hover();
 
-        await expect(
-          page.getByTestId("message-menu-button")
-        ).not.toBeVisible();
+        await expect(page.getByTestId("message-menu-button")).not.toBeVisible();
       });
     });
 
@@ -607,13 +609,13 @@ test.describe("App", () => {
           "New Group Chat",
           "New Group Chat Description",
           [user2, user3],
-          "Hello World!"
+          "Hello World!",
         );
       });
 
       test("prevents editing with empty chat name", async ({ page }) => {
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
@@ -621,13 +623,13 @@ test.describe("App", () => {
 
         await assertErrorNotifyAndClose(
           page,
-          "Chat name must be at least three characters long"
+          "Chat name must be at least three characters long",
         );
       });
 
       test("can edit group chat details", async ({ page }) => {
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
@@ -635,15 +637,15 @@ test.describe("App", () => {
           page,
           "Edited Group Chat Name",
           "Edited Group Chat Description",
-          [user2, user3]
+          [user2, user3],
         );
 
         await expect(page.getByTestId("chat-info-name")).toHaveText(
-          "Edited Group Chat Name"
+          "Edited Group Chat Name",
         );
 
         await expect(
-          page.getByText("Edited Group Chat Description")
+          page.getByText("Edited Group Chat Description"),
         ).toBeVisible();
 
         await expect(page.getByText("3 members")).toBeVisible();
@@ -651,7 +653,7 @@ test.describe("App", () => {
 
       test("can add chat members", async ({ page }) => {
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
@@ -659,15 +661,15 @@ test.describe("App", () => {
           page,
           "New Group Chat",
           "New Group Chat Description",
-          [user2, user3, user4]
+          [user2, user3, user4],
         );
 
         await expect(page.getByTestId("chat-info-name")).toHaveText(
-          "New Group Chat"
+          "New Group Chat",
         );
 
         await expect(
-          page.getByText("New Group Chat Description")
+          page.getByText("New Group Chat Description"),
         ).toBeVisible();
 
         await expect(page.getByText("4 members")).toBeVisible();
@@ -675,7 +677,7 @@ test.describe("App", () => {
 
       test("can remove chat members", async ({ page }) => {
         await expect(
-          page.getByRole("link", { name: "New Group Chat" })
+          page.getByRole("link", { name: "New Group Chat" }),
         ).toBeVisible();
         await expect(page.getByText("User1: Hello World!")).toBeVisible();
 
@@ -683,15 +685,15 @@ test.describe("App", () => {
           page,
           "New Group Chat",
           "New Group Chat Description",
-          [user2]
+          [user2],
         );
 
         await expect(page.getByTestId("chat-info-name")).toHaveText(
-          "New Group Chat"
+          "New Group Chat",
         );
 
         await expect(
-          page.getByText("New Group Chat Description")
+          page.getByText("New Group Chat Description"),
         ).toBeVisible();
 
         await expect(page.getByText("2 members")).toBeVisible();
@@ -722,7 +724,7 @@ test.describe("App", () => {
       await signUp(page, user2.username, user2.password, user2.confirmPassword);
 
       await expect(
-        page.getByText("Select Chat to Start Messaging.")
+        page.getByText("Select Chat to Start Messaging."),
       ).toBeVisible();
 
       await addContacts(page, [user1]);

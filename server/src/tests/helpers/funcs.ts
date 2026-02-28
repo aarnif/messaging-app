@@ -10,7 +10,7 @@ export const query = async <Data, Variables = Record<string, never>>(
   variables: Variables,
   token: string = "",
   expectedStatusCode: number = 200,
-  skipErrorCheck: boolean = false // Needed for testing invalid token
+  skipErrorCheck: boolean = false, // Needed for testing invalid token
 ): Promise<HTTPGraphQLResponse<Data>> => {
   const response = request(config.SERVER_URL).post("/").send({
     query,
@@ -45,7 +45,7 @@ export const assertValidationError = (
     }>;
   },
   expectedValidationMessage: string,
-  expectedCode: string = "BAD_USER_INPUT"
+  expectedCode: string = "BAD_USER_INPUT",
 ) => {
   assert.ok(responseBody.errors, "Response should have errors");
   assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
@@ -54,7 +54,7 @@ export const assertValidationError = (
   assert.strictEqual(error.message, "Input validation failed");
   assert.strictEqual(
     error.extensions?.validationErrors?.[0].message,
-    expectedValidationMessage
+    expectedValidationMessage,
   );
   assert.strictEqual(error.extensions?.code, expectedCode);
 };
@@ -72,7 +72,7 @@ export const assertError = (
     }>;
   },
   expectedMessage: string,
-  expectedCode?: string
+  expectedCode?: string,
 ) => {
   assert.ok(responseBody.errors, "Response should have errors");
   assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
@@ -87,7 +87,7 @@ export const assertError = (
 
 export const assertUserEquality = (
   actual: User | undefined,
-  expected: User
+  expected: User,
 ) => {
   assert.ok(actual, "User should be defined");
   assert.strictEqual(actual.id, expected.id);
@@ -100,7 +100,7 @@ export const assertUserEquality = (
 
 export const assertContactEquality = (
   actual: Contact | undefined,
-  expected: Contact
+  expected: Contact,
 ) => {
   assert.ok(actual, "Contact should be defined");
   assert.strictEqual(actual.id, expected.id);
@@ -113,7 +113,7 @@ export const assertContactEquality = (
 const assertChatBasics = <T extends UserChat | Chat>(
   actual: T | undefined,
   expected: T,
-  entityName: string
+  entityName: string,
 ): T => {
   assert.ok(actual, `${entityName} should be defined`);
   assert.strictEqual(actual.id, expected.id);
@@ -127,7 +127,7 @@ const assertChatBasics = <T extends UserChat | Chat>(
 
 export const assertUserChatEquality = (
   actual: UserChat | undefined,
-  expected: UserChat
+  expected: UserChat,
 ) => {
   const userChat = assertChatBasics<UserChat>(actual, expected, "User Chat");
 
@@ -135,14 +135,14 @@ export const assertUserChatEquality = (
   assert.ok(userChat.latestMessage, "Latest message should be defined");
   assert.strictEqual(
     userChat.latestMessage.content,
-    expected.latestMessage.content
+    expected.latestMessage.content,
   );
   assert.strictEqual(userChat.latestMessage.sender.id, user1Details.id);
 };
 
 export const assertChatEquality = (
   actual: Chat | undefined,
-  expected: Chat
+  expected: Chat,
 ) => {
   const chat = assertChatBasics<Chat>(actual, expected, "Chat");
 

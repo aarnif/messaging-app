@@ -46,7 +46,7 @@ Contact.init(
     underscored: true,
     timestamps: true,
     modelName: "contact",
-  }
+  },
 );
 
 export { Contact };

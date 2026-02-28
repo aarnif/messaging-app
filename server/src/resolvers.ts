@@ -40,7 +40,7 @@ const getChatName = (parent: Chat, currentUser: User | null): string | null => {
   }
 
   const otherMember = parent?.members?.find(
-    (member) => member?.id?.toString() !== currentUser?.id?.toString()
+    (member) => member?.id?.toString() !== currentUser?.id?.toString(),
   );
 
   return otherMember?.name || null;
@@ -89,7 +89,7 @@ export const resolvers: Resolvers = {
     allChatsByUser: async (
       _,
       { search },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -147,7 +147,7 @@ export const resolvers: Resolvers = {
             }
 
             return chat.members?.some((member) =>
-              member.name?.toLowerCase().includes(searchLower)
+              member.name?.toLowerCase().includes(searchLower),
             );
           })
         : user.chats;
@@ -212,7 +212,7 @@ export const resolvers: Resolvers = {
     contactsWithoutPrivateChat: async (
       _,
       { search },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -277,13 +277,13 @@ export const resolvers: Resolvers = {
       });
 
       const chatMemberIds = userPrivateChats?.chats?.map(
-        (chat) => chat?.members?.[0]?.id
+        (chat) => chat?.members?.[0]?.id,
       );
 
       const contactsWithoutPrivateChat = userContacts
         ?.toJSON()
         .contacts?.filter(
-          (contact) => !chatMemberIds?.includes(contact?.contactDetails?.id)
+          (contact) => !chatMemberIds?.includes(contact?.contactDetails?.id),
         );
 
       return contactsWithoutPrivateChat || [];
@@ -291,7 +291,7 @@ export const resolvers: Resolvers = {
     allContactsByUser: async (
       _,
       { search },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -329,7 +329,7 @@ export const resolvers: Resolvers = {
     nonContactUsers: async (
       _,
       { search },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -352,7 +352,7 @@ export const resolvers: Resolvers = {
       });
 
       const existingContactIds = existingContacts.map(
-        (contact) => contact.contactId
+        (contact) => contact.contactId,
       );
 
       const availableUsers = await User.findAll({
@@ -369,7 +369,7 @@ export const resolvers: Resolvers = {
     isBlockedByUser: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -390,7 +390,7 @@ export const resolvers: Resolvers = {
     findContactById: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -420,7 +420,7 @@ export const resolvers: Resolvers = {
     findPrivateChatWithContact: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -454,7 +454,7 @@ export const resolvers: Resolvers = {
     findContactByUserId: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -493,7 +493,7 @@ export const resolvers: Resolvers = {
     role: (parent: ChatMember & { chat_member?: { role: string } }) =>
       parent.chat_member?.role || null,
     unreadCount: (
-      parent: ChatMember & { chat_member?: { unreadCount: number } }
+      parent: ChatMember & { chat_member?: { unreadCount: number } },
     ) => parent.chat_member?.unreadCount ?? 0,
   },
   Mutation: {
@@ -665,7 +665,7 @@ export const resolvers: Resolvers = {
             userId: currentUserId,
             contactId: Number(id),
             isBlocked: false,
-          }))
+          })),
         );
 
         return await Contact.findAll({
@@ -733,7 +733,7 @@ export const resolvers: Resolvers = {
     toggleBlockContact: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -775,7 +775,7 @@ export const resolvers: Resolvers = {
     editProfile: async (
       _,
       { input },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -857,7 +857,7 @@ export const resolvers: Resolvers = {
           {
             message: "Group chat name must be at least 3 characters long",
             path: ["name"],
-          }
+          },
         );
 
       try {
@@ -893,7 +893,7 @@ export const resolvers: Resolvers = {
               unreadCount:
                 Number(member) === Number(context.currentUser?.id) ? 0 : 1,
             };
-          })
+          }),
         );
 
         await Message.create({
@@ -901,7 +901,7 @@ export const resolvers: Resolvers = {
           chatId: Number(newChat.id),
           content: initialMessage,
           isNotification: false,
-          isDeleted: false
+          isDeleted: false,
         });
 
         const chat = await Chat.findByPk(newChat.id, {
@@ -1083,13 +1083,13 @@ export const resolvers: Resolvers = {
         const newMemberIds = members.map((member) => Number(member));
 
         const membersToAdd = newMemberIds.filter(
-          (memberId) => !currentMemberIds.includes(memberId)
+          (memberId) => !currentMemberIds.includes(memberId),
         );
 
         const membersToRemove = currentMemberIds.filter(
           (memberId) =>
             !newMemberIds.includes(Number(memberId)) &&
-            Number(memberId) !== Number(context?.currentUser?.id)
+            Number(memberId) !== Number(context?.currentUser?.id),
         );
 
         if (membersToAdd.length > 0) {
@@ -1099,7 +1099,7 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               role: "member",
               unreadCount: 0,
-            }))
+            })),
           );
 
           const addedMembers = await User.findAll({
@@ -1112,8 +1112,8 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was added to the chat`,
               isNotification: true,
-              isDeleted: false
-            }))
+              isDeleted: false,
+            })),
           );
 
           for (const message of notificationMessages) {
@@ -1131,7 +1131,7 @@ export const resolvers: Resolvers = {
             where: {
               id: {
                 [Op.in]: membersToRemove.filter(
-                  (member) => member !== undefined
+                  (member) => member !== undefined,
                 ),
               },
             },
@@ -1143,8 +1143,8 @@ export const resolvers: Resolvers = {
               chatId: Number(chatToBeUpdated.id),
               content: `${member.name} was removed from the chat`,
               isNotification: true,
-              isDeleted: false
-            }))
+              isDeleted: false,
+            })),
           );
 
           for (const message of notificationMessages) {
@@ -1239,14 +1239,14 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: `${currentUser?.name} left the chat`,
           isNotification: true,
-          isDeleted: false
+          isDeleted: false,
         });
 
         const messageWithSender = await Message.findByPk(
           notificationMessage.id,
           {
             include: [{ model: User, as: "sender" }],
-          }
+          },
         );
 
         await pubsub.publish("MESSAGE_SENT", {
@@ -1299,7 +1299,7 @@ export const resolvers: Resolvers = {
     sendMessage: async (
       _,
       { input },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -1334,7 +1334,7 @@ export const resolvers: Resolvers = {
           chatId: Number(id),
           content: content,
           isNotification: isNotification,
-          isDeleted: false
+          isDeleted: false,
         });
 
         await ChatMember.increment(
@@ -1346,7 +1346,7 @@ export const resolvers: Resolvers = {
                 [Op.ne]: context.currentUser.id,
               },
             },
-          }
+          },
         );
 
         const chat = await Chat.findByPk(Number(id), {
@@ -1413,7 +1413,7 @@ export const resolvers: Resolvers = {
     editMessage: async (
       _,
       { input },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -1506,11 +1506,7 @@ export const resolvers: Resolvers = {
         });
       }
     },
-    deleteMessage: async (
-      _,
-      { id },
-      context: { currentUser: User | null }
-    ) => {
+    deleteMessage: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
           extensions: { code: "UNAUTHENTICATED" },
@@ -1586,7 +1582,7 @@ export const resolvers: Resolvers = {
     changePassword: async (
       _,
       { input },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -1663,7 +1659,7 @@ export const resolvers: Resolvers = {
     markChatAsRead: async (
       _,
       { id },
-      context: { currentUser: User | null }
+      context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
         throw new GraphQLError("Not authenticated", {
@@ -1679,7 +1675,7 @@ export const resolvers: Resolvers = {
               userId: context.currentUser.id,
               chatId: Number(id),
             },
-          }
+          },
         );
 
         return true;

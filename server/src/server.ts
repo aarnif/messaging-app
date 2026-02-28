@@ -24,7 +24,7 @@ const __dirname = path.dirname(__filename);
 const typeDefs = gql(
   readFileSync(path.resolve(__dirname, "./schema.graphql"), {
     encoding: "utf-8",
-  })
+  }),
 );
 
 const authenticateUser = async (auth: string | null | undefined) => {
@@ -63,7 +63,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
         return { currentUser };
       },
     },
-    wsServer
+    wsServer,
   );
 
   const server = new ApolloServer({
@@ -95,13 +95,13 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
         const currentUser = await authenticateUser(auth);
         return { currentUser };
       },
-    })
+    }),
   );
 
   const PORT = config.PORT;
 
   httpServer.listen(PORT, () =>
-    console.log(`Server is now running on ${PORT}`)
+    console.log(`Server is now running on ${PORT}`),
   );
 
   return server;

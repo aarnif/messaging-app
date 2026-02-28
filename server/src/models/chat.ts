@@ -51,7 +51,7 @@ Chat.init(
     underscored: true,
     timestamps: true,
     modelName: "chat",
-  }
+  },
 );
 
 export { Chat };

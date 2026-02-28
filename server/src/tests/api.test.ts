@@ -87,7 +87,7 @@ void describe("GraphQL API", () => {
   void test("returns document count from database", async () => {
     const responseBody = await query<{ countDocuments: number }, object>(
       COUNT_DOCUMENTS,
-      {}
+      {},
     );
     const count = responseBody.data?.countDocuments;
     assert.strictEqual(count, 0);
@@ -111,7 +111,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(user, null, "User should be null");
         assertValidationError(
           responseBody,
-          "Username must be at least 3 characters long"
+          "Username must be at least 3 characters long",
         );
       });
 
@@ -130,7 +130,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(user, null, "User should be null");
         assertValidationError(
           responseBody,
-          "Password must be at least 6 characters long"
+          "Password must be at least 6 characters long",
         );
       });
 
@@ -153,7 +153,7 @@ void describe("GraphQL API", () => {
       void test("fails if user already exists", async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
         const responseBody = await query<
           { createUser: User },
@@ -180,7 +180,7 @@ void describe("GraphQL API", () => {
       beforeEach(async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
       });
 
@@ -200,7 +200,7 @@ void describe("GraphQL API", () => {
         assertError(
           responseBody,
           "Invalid username or password",
-          "BAD_USER_INPUT"
+          "BAD_USER_INPUT",
         );
       });
 
@@ -220,7 +220,7 @@ void describe("GraphQL API", () => {
         assertError(
           responseBody,
           "Invalid username or password",
-          "BAD_USER_INPUT"
+          "BAD_USER_INPUT",
         );
       });
 
@@ -249,7 +249,7 @@ void describe("GraphQL API", () => {
       beforeEach(async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
         const loginBody = await query<
           { login: { value: string } },
@@ -286,7 +286,7 @@ void describe("GraphQL API", () => {
           {},
           "invalid-token",
           500,
-          true
+          true,
         );
         const user = responseBody.data?.me;
 
@@ -294,7 +294,7 @@ void describe("GraphQL API", () => {
         assertError(
           responseBody,
           "Context creation failed: jwt malformed",
-          "INTERNAL_SERVER_ERROR"
+          "INTERNAL_SERVER_ERROR",
         );
       });
     });
@@ -306,7 +306,7 @@ void describe("GraphQL API", () => {
       beforeEach(async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
         const user2Body = await query<
           { createUser: User },
@@ -371,7 +371,7 @@ void describe("GraphQL API", () => {
       beforeEach(async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
         const loginBody = await query<
           { login: { value: string } },
@@ -400,7 +400,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          ""
+          "",
         );
 
         const user = responseBody.data?.editProfile;
@@ -422,7 +422,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.editProfile;
@@ -430,7 +430,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(user, null, "User should be null");
         assertValidationError(
           responseBody,
-          "Name must be at least 3 characters long"
+          "Name must be at least 3 characters long",
         );
       });
 
@@ -450,7 +450,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.editProfile;
@@ -477,7 +477,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.editProfile;
@@ -495,7 +495,7 @@ void describe("GraphQL API", () => {
       beforeEach(async () => {
         await query<{ createUser: User }, { input: CreateUserInput }>(
           CREATE_USER,
-          { input: user1Input }
+          { input: user1Input },
         );
         const loginBody = await query<
           { login: { value: string } },
@@ -524,7 +524,7 @@ void describe("GraphQL API", () => {
               confirmNewPassword: "newpassword",
             },
           },
-          ""
+          "",
         );
 
         const user = responseBody.data?.changePassword;
@@ -546,7 +546,7 @@ void describe("GraphQL API", () => {
               confirmNewPassword: "newpassword",
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.changePassword;
@@ -555,7 +555,7 @@ void describe("GraphQL API", () => {
         assertError(
           responseBody,
           "Current password does not match",
-          "BAD_USER_INPUT"
+          "BAD_USER_INPUT",
         );
       });
 
@@ -572,7 +572,7 @@ void describe("GraphQL API", () => {
               confirmNewPassword: "short",
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.changePassword;
@@ -580,7 +580,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(user, null, "User should be null");
         assertValidationError(
           responseBody,
-          "Password must be at least 6 characters long"
+          "Password must be at least 6 characters long",
         );
       });
 
@@ -597,7 +597,7 @@ void describe("GraphQL API", () => {
               confirmNewPassword: "different",
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.changePassword;
@@ -619,7 +619,7 @@ void describe("GraphQL API", () => {
               confirmNewPassword: "newpassword",
             },
           },
-          token
+          token,
         );
 
         const user = responseBody.data?.changePassword;
@@ -636,15 +636,15 @@ void describe("GraphQL API", () => {
     beforeEach(async () => {
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user1Input }
+        { input: user1Input },
       );
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user2Input }
+        { input: user2Input },
       );
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user3Input }
+        { input: user3Input },
       );
 
       const user1LoginBody = await query<
@@ -659,7 +659,7 @@ void describe("GraphQL API", () => {
 
       assert.ok(
         user1LoginBody.data,
-        "User1 login token value should be defined"
+        "User1 login token value should be defined",
       );
       user1Token = user1LoginBody.data.login.value;
 
@@ -702,7 +702,7 @@ void describe("GraphQL API", () => {
         assertError(
           responseBody,
           "Cannot add yourself as a contact",
-          "BAD_USER_INPUT"
+          "BAD_USER_INPUT",
         );
       });
 
@@ -721,7 +721,7 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         const responseBody = await query<
           { addContact: Contact },
@@ -755,7 +755,7 @@ void describe("GraphQL API", () => {
         >(
           ADD_CONTACTS,
           { ids: [user2Details.id, user3Details.id] },
-          user1Token
+          user1Token,
         );
 
         const contacts = responseBody.data?.addContacts;
@@ -824,7 +824,7 @@ void describe("GraphQL API", () => {
         await query<{ removeContact: Contact }, { id: string }>(
           REMOVE_CONTACT,
           { id: contactId },
-          user1Token
+          user1Token,
         );
         const responseBody = await query<
           { removeContact: Contact },
@@ -894,7 +894,7 @@ void describe("GraphQL API", () => {
         await query<{ toggleBlockContact: Contact }, { id: string }>(
           TOGGLE_BLOCK_CONTACT,
           { id: contactId },
-          user1Token
+          user1Token,
         );
         const responseBody = await query<
           { toggleBlockContact: Contact },
@@ -921,7 +921,7 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user1Details.id },
-          user2Token
+          user2Token,
         );
       });
 
@@ -949,7 +949,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
 
@@ -965,7 +965,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
 
@@ -973,7 +973,7 @@ void describe("GraphQL API", () => {
         await query<{ toggleBlockContact: Contact }, { id: string }>(
           TOGGLE_BLOCK_CONTACT,
           { id: contactId },
-          user1Token
+          user1Token,
         );
         const responseBody = await query<
           { isBlockedByUser: boolean },
@@ -986,7 +986,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
     });
@@ -1017,7 +1017,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
 
@@ -1025,12 +1025,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1055,12 +1055,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1082,12 +1082,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const newName = "New Name";
@@ -1101,7 +1101,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          user2Token
+          user2Token,
         );
 
         const responseBody = await query<
@@ -1126,12 +1126,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1149,7 +1149,7 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1194,7 +1194,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
 
@@ -1202,17 +1202,17 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: privateChatDetails },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1234,12 +1234,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1248,7 +1248,7 @@ void describe("GraphQL API", () => {
         >(
           CONTACTS_WITHOUT_PRIVATE_CHAT,
           { search: user2Details.username },
-          user1Token
+          user1Token,
         );
 
         const contacts = responseBody.data?.contactsWithoutPrivateChat;
@@ -1265,12 +1265,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const newName = "New Name";
@@ -1284,7 +1284,7 @@ void describe("GraphQL API", () => {
               is24HourClock: true,
             },
           },
-          user2Token
+          user2Token,
         );
 
         const responseBody = await query<
@@ -1309,12 +1309,12 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user3Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1332,7 +1332,7 @@ void describe("GraphQL API", () => {
         await query<{ addContact: Contact }, { id: string }>(
           ADD_CONTACT,
           { id: user2Details.id },
-          user1Token
+          user1Token,
         );
 
         const responseBody = await query<
@@ -1490,15 +1490,15 @@ void describe("GraphQL API", () => {
     beforeEach(async () => {
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user1Input }
+        { input: user1Input },
       );
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user2Input }
+        { input: user2Input },
       );
       await query<{ createUser: User }, { input: CreateUserInput }>(
         CREATE_USER,
-        { input: user3Input }
+        { input: user3Input },
       );
 
       const loginBody = await query<
@@ -1540,7 +1540,7 @@ void describe("GraphQL API", () => {
               initialMessage: "",
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.createChat;
@@ -1561,7 +1561,7 @@ void describe("GraphQL API", () => {
               name: "",
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.createChat;
@@ -1569,7 +1569,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(chat, null, "Chat should be null");
         assertValidationError(
           responseBody,
-          "Group chat name must be at least 3 characters long"
+          "Group chat name must be at least 3 characters long",
         );
       });
 
@@ -1585,7 +1585,7 @@ void describe("GraphQL API", () => {
               name: "te",
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.createChat;
@@ -1593,7 +1593,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(chat, null, "Chat should be null");
         assertValidationError(
           responseBody,
-          "Group chat name must be at least 3 characters long"
+          "Group chat name must be at least 3 characters long",
         );
       });
 
@@ -1646,7 +1646,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id],
             },
           },
-          ""
+          "",
         );
 
         const chat = responseBody.data?.editChat;
@@ -1669,7 +1669,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id, user3Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1677,7 +1677,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(chat, null, "Chat should be null");
         assertValidationError(
           responseBody,
-          "Group chat name must be at least 3 characters long"
+          "Group chat name must be at least 3 characters long",
         );
       });
 
@@ -1695,7 +1695,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id, user3Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1703,7 +1703,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(chat, null, "Chat should be null");
         assertValidationError(
           responseBody,
-          "Group chat name must be at least 3 characters long"
+          "Group chat name must be at least 3 characters long",
         );
       });
 
@@ -1721,7 +1721,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1744,7 +1744,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id, user3Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1770,7 +1770,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1780,7 +1780,7 @@ void describe("GraphQL API", () => {
           name: "Updated Group Chat",
           description: "Updated test description",
           members: expectedGroupChat.members.filter(
-            (member) => member.id !== user3Details.id
+            (member) => member.id !== user3Details.id,
           ),
           messages: expectedGroupChat.messages.concat({
             id: "2",
@@ -1809,7 +1809,7 @@ void describe("GraphQL API", () => {
               members: [user2Details.id, user3Details.id],
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editChat;
@@ -1837,7 +1837,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
           DELETE_CHAT,
           { id: chatId },
-          ""
+          "",
         );
 
         const chat = responseBody.data?.deleteChat;
@@ -1850,7 +1850,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
           DELETE_CHAT,
           { id: "999" },
-          token
+          token,
         );
 
         const chat = responseBody.data?.deleteChat;
@@ -1863,7 +1863,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
           DELETE_CHAT,
           { id: chatId },
-          token
+          token,
         );
 
         const chat = responseBody.data?.deleteChat;
@@ -1875,12 +1875,12 @@ void describe("GraphQL API", () => {
         await query<{ deleteChat: Chat }, { id: string }>(
           DELETE_CHAT,
           { id: chatId },
-          token
+          token,
         );
         const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
           DELETE_CHAT,
           { id: chatId },
-          token
+          token,
         );
 
         const chat = responseBody.data?.deleteChat;
@@ -1900,7 +1900,7 @@ void describe("GraphQL API", () => {
         >(CREATE_CHAT, { input: groupChatDetails }, token);
         assert.ok(
           responseBody.data?.createChat.id,
-          "Chat ID should be defined"
+          "Chat ID should be defined",
         );
         chatId = responseBody.data.createChat.id;
       });
@@ -1966,7 +1966,7 @@ void describe("GraphQL API", () => {
               isNotification: false,
             },
           },
-          ""
+          "",
         );
 
         const chat = responseBody.data?.sendMessage;
@@ -1988,7 +1988,7 @@ void describe("GraphQL API", () => {
               isNotification: false,
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.sendMessage;
@@ -2011,7 +2011,7 @@ void describe("GraphQL API", () => {
               isNotification: false,
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.sendMessage;
@@ -2060,7 +2060,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           loginResponseBody.data,
-          "User2 login token value should be defined"
+          "User2 login token value should be defined",
         );
         token2 = loginResponseBody.data.login.value;
       });
@@ -2077,7 +2077,7 @@ void describe("GraphQL API", () => {
               content: "Updated message",
             },
           },
-          ""
+          "",
         );
 
         const chat = responseBody.data?.editMessage;
@@ -2098,7 +2098,7 @@ void describe("GraphQL API", () => {
               content: "",
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editMessage;
@@ -2119,7 +2119,7 @@ void describe("GraphQL API", () => {
               content: "Updated message",
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editMessage;
@@ -2140,7 +2140,7 @@ void describe("GraphQL API", () => {
               content: "Updated message",
             },
           },
-          token2
+          token2,
         );
 
         const chat = responseBody.data?.editMessage;
@@ -2162,7 +2162,7 @@ void describe("GraphQL API", () => {
               content: updatedContent,
             },
           },
-          token
+          token,
         );
 
         const chat = responseBody.data?.editMessage;
@@ -2207,7 +2207,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           loginResponseBody.data,
-          "User2 login token value should be defined"
+          "User2 login token value should be defined",
         );
         token2 = loginResponseBody.data.login.value;
       });
@@ -2297,7 +2297,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           loginResponseBody.data,
-          "User2 login token value should be defined"
+          "User2 login token value should be defined",
         );
         token2 = loginResponseBody.data.login.value;
       });
@@ -2306,7 +2306,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
           LEAVE_CHAT,
           { id: chatId },
-          ""
+          "",
         );
 
         const chat = responseBody.data?.leaveChat;
@@ -2319,7 +2319,7 @@ void describe("GraphQL API", () => {
         const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
           LEAVE_CHAT,
           { id: chatId },
-          token2
+          token2,
         );
 
         const chat = responseBody.data?.leaveChat;
@@ -2327,7 +2327,7 @@ void describe("GraphQL API", () => {
         assertChatEquality(chat, {
           ...expectedGroupChat,
           members: expectedGroupChat.members.filter(
-            (member) => member.id !== user2Details.id
+            (member) => member.id !== user2Details.id,
           ),
           messages: expectedGroupChat.messages.concat({
             id: "2",
@@ -2369,7 +2369,7 @@ void describe("GraphQL API", () => {
         assert.strictEqual(
           responseBody.errors,
           undefined,
-          "Should have no errors"
+          "Should have no errors",
         );
       });
 
@@ -2377,12 +2377,12 @@ void describe("GraphQL API", () => {
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: privateChatDetails },
-          token
+          token,
         );
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: groupChatDetails },
-          token
+          token,
         );
 
         const responseBody = await query<
@@ -2400,12 +2400,12 @@ void describe("GraphQL API", () => {
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: privateChatDetails },
-          token
+          token,
         );
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: groupChatDetails },
-          token
+          token,
         );
 
         const responseBody = await query<
@@ -2427,12 +2427,12 @@ void describe("GraphQL API", () => {
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: privateChatDetails },
-          token
+          token,
         );
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: groupChatDetails },
-          token
+          token,
         );
 
         const responseBody = await query<
@@ -2454,7 +2454,7 @@ void describe("GraphQL API", () => {
         await query<{ createChat: Chat }, { input: CreateChatInput }>(
           CREATE_CHAT,
           { input: groupChatDetails },
-          token
+          token,
         );
 
         const responseBody = await query<
@@ -2485,7 +2485,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           contactResponseBody.data?.addContact.id,
-          "Contact ID should be defined"
+          "Contact ID should be defined",
         );
         userId = contactResponseBody.data.addContact.contactDetails.id;
 
@@ -2495,7 +2495,7 @@ void describe("GraphQL API", () => {
         >(CREATE_CHAT, { input: privateChatDetails }, token);
         assert.ok(
           chatResponseBody.data?.createChat.id,
-          "Chat ID should be defined"
+          "Chat ID should be defined",
         );
         chatId = chatResponseBody.data.createChat.id;
       });
@@ -2561,7 +2561,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           contactResponseBody.data?.addContact.id,
-          "Contact ID should be defined"
+          "Contact ID should be defined",
         );
 
         const chatResponseBody = await query<
@@ -2570,7 +2570,7 @@ void describe("GraphQL API", () => {
         >(CREATE_CHAT, { input: privateChatDetails }, token);
         assert.ok(
           chatResponseBody.data?.createChat.id,
-          "Chat ID should be defined"
+          "Chat ID should be defined",
         );
         chatId = chatResponseBody.data.createChat.id;
 
@@ -2583,7 +2583,7 @@ void describe("GraphQL API", () => {
               isNotification: false,
             },
           },
-          token
+          token,
         );
 
         const loginResponseBody = await query<
@@ -2598,7 +2598,7 @@ void describe("GraphQL API", () => {
 
         assert.ok(
           loginResponseBody.data,
-          "User2 login token value should be defined"
+          "User2 login token value should be defined",
         );
         token2 = loginResponseBody.data.login.value;
       });

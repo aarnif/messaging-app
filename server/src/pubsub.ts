@@ -59,12 +59,12 @@ const connectToRedisPubSub = () => {
 
   publisher.on("connect", () => console.log("Redis publisher connected"));
   publisher.on("error", (error) =>
-    console.error("Redis publisher error", error)
+    console.error("Redis publisher error", error),
   );
 
   subscriber.on("connect", () => console.log("Redis subscriber connected"));
   subscriber.on("error", (error) =>
-    console.error("Redis subscriber error", error)
+    console.error("Redis subscriber error", error),
   );
 
   return new RedisPubSub({

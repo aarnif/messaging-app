@@ -33,23 +33,23 @@ VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
 
 1. Asenna sovelluksen vaatimat riippuvuudet:
 
-       npm run install
+   npm run install
 
 2. Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa:
 
-       npm run start:db
+   npm run start:db
 
 3. Lisää seed data tietokantaan:
 
-       npm run populate:db
+   npm run populate:db
 
 4. Käynnistä palvelin kehitystilassa uudessa terminaalissa:
 
-       npm run dev:server
+   npm run dev:server
 
 5. Käynnistä käyttöliittymä kehitystilassa uudessa terminaalissa:
 
-       npm run dev:ui
+   npm run dev:ui
 
 ## Kirjautuminen
 
