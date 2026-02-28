@@ -35,8 +35,8 @@ const createUsers = async () => {
         avatar: user.avatar,
         about: user.about,
         is24HourClock: true,
-      }))
-    )
+      })),
+    ),
   );
   console.log(`✅ Created ${createdUsers.length} users`);
 };

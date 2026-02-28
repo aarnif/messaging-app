@@ -56,7 +56,7 @@ Message.init(
     underscored: true,
     timestamps: true,
     modelName: "message",
-  }
+  },
 );
 
 export { Message };

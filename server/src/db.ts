@@ -13,7 +13,7 @@ const runMigrations = async () => {
       resolve: ({ name, path, context }) => {
         if (!path) {
           throw new Error(
-            `Migration path not found for migration file: ${name}`
+            `Migration path not found for migration file: ${name}`,
           );
         }
         return {

@@ -5,14 +5,14 @@ export const signUp = async (
   page: Page,
   username: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
 ) => {
   await page.getByRole("button", { name: "Sign Up" }).click();
   await page
     .getByRole("textbox", { name: "Confirm Password" })
     .waitFor({ state: "visible" });
   await expect(
-    page.getByRole("heading", { name: "Messaging App" })
+    page.getByRole("heading", { name: "Messaging App" }),
   ).toBeVisible();
 
   await page.getByRole("textbox", { name: "Username" }).fill(username);
@@ -30,7 +30,7 @@ export const signUp = async (
 export const signIn = async (
   page: Page,
   username: string,
-  password: string
+  password: string,
 ) => {
   await page.getByRole("textbox", { name: "Username" }).fill(username);
   await page
@@ -44,7 +44,7 @@ export const logout = async (page: Page) => {
   await page.getByTestId("logout-button").click();
   await page.getByRole("button", { name: "Logout" }).click();
   await expect(
-    page.getByRole("heading", { name: "Messaging App" })
+    page.getByRole("heading", { name: "Messaging App" }),
   ).toBeVisible();
 };
 
@@ -55,7 +55,7 @@ export const addContacts = async (
     username: string;
     password: string;
     confirmPassword: string;
-  }[]
+  }[],
 ) => {
   await page.getByTestId("contacts-nav-item").click();
   await expect(page.getByRole("heading", { name: /Contacts/ })).toBeVisible();
@@ -67,7 +67,7 @@ export const addContacts = async (
   await page.getByTestId("add-contacts-button").click();
 
   await expect(
-    page.getByRole("heading", { name: "Add Contacts" })
+    page.getByRole("heading", { name: "Add Contacts" }),
   ).not.toBeVisible();
 };
 
@@ -83,7 +83,7 @@ export const openPrivateChatModal = async (page: Page) => {
   await page.getByRole("button", { name: "New Private Chat" }).click();
 
   await expect(
-    page.getByRole("heading", { name: "New Private Chat" })
+    page.getByRole("heading", { name: "New Private Chat" }),
   ).toBeVisible();
 };
 
@@ -92,7 +92,7 @@ export const openGroupChatModal = async (page: Page) => {
   await page.getByRole("button", { name: "New Group Chat" }).click();
 
   await expect(
-    page.getByRole("heading", { name: "New Group Chat" })
+    page.getByRole("heading", { name: "New Group Chat" }),
   ).toBeVisible();
 };
 
@@ -103,7 +103,7 @@ export const addMembersToChat = async (
     username: string;
     password: string;
     confirmPassword: string;
-  }[]
+  }[],
 ) => {
   for (const user of users) {
     await page.getByRole("button", { name: user.username }).click();
@@ -123,7 +123,7 @@ export const createPrivateChat = async (
     password: string;
     confirmPassword: string;
   },
-  initialMessage?: string
+  initialMessage?: string,
 ) => {
   await openPrivateChatModal(page);
 
@@ -150,7 +150,7 @@ export const createGroupChat = async (
     password: string;
     confirmPassword: string;
   }[],
-  initialMessage?: string
+  initialMessage?: string,
 ) => {
   await openGroupChatModal(page);
 
@@ -174,7 +174,7 @@ export const openChatInfoModal = async (page: Page) => {
   await page.getByTestId("chat-info-button").click();
 
   await expect(
-    page.getByRole("heading", { name: "Chat", exact: true })
+    page.getByRole("heading", { name: "Chat", exact: true }),
   ).toBeVisible();
 };
 
@@ -187,14 +187,14 @@ export const editGroupChat = async (
     username: string;
     password: string;
     confirmPassword: string;
-  }[]
+  }[],
 ) => {
   await openChatInfoModal(page);
 
   await page.getByTestId("edit-chat-button").click();
 
   await expect(
-    page.getByRole("heading", { name: "Edit Chat", exact: true })
+    page.getByRole("heading", { name: "Edit Chat", exact: true }),
   ).toBeVisible();
 
   await page.getByRole("textbox", { name: "Name", exact: true }).fill(chatName);
@@ -235,7 +235,7 @@ export const changePassword = async (
   page: Page,
   currentPassword: string,
   newPassword: string,
-  confirmNewPassword: string
+  confirmNewPassword: string,
 ) => {
   await page.getByTestId("settings-nav-item").click();
   await page.getByRole("button", { name: "Change Password" }).click();
@@ -265,7 +265,7 @@ export const signUpMultipleUsers = async (
     username: string;
     password: string;
     confirmPassword: string;
-  }[]
+  }[],
 ) => {
   for (const user of users) {
     await signUp(page, user.username, user.password, user.confirmPassword);
@@ -275,7 +275,7 @@ export const signUpMultipleUsers = async (
 
 export const assertErrorNotifyAndClose = async (
   page: Page,
-  message: string
+  message: string,
 ) => {
   await expect(page.getByText(message)).toBeVisible();
   await page.getByTestId("close-notify-message").click();

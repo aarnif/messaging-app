@@ -56,7 +56,7 @@ ChatMember.init(
     underscored: true,
     timestamps: true,
     modelName: "chat_member",
-  }
+  },
 );
 
 export { ChatMember };

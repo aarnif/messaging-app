@@ -54,7 +54,7 @@ User.init(
     underscored: true,
     timestamps: true,
     modelName: "user",
-  }
+  },
 );
 
 export { User };

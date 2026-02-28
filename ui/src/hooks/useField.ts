@@ -5,7 +5,7 @@ const useField = (
   name: string,
   type: string,
   placeholder: string,
-  initialValue = "",
+  initialValue = ""
 ): InputField => {
   const [value, setValue] = useState(initialValue);
 
