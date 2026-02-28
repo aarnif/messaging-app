@@ -33,7 +33,7 @@ Full Stack Open -kurssin projekti: Messaging App
 3. Asenna kaikki riippuvuudet
 
    ```bash
-   npm run install:all
+   npm run install
    ```
 
 4. Määritä ympäristömuuttujat
@@ -114,7 +114,7 @@ Full Stack Open -kurssin projekti: Messaging App
 
 ### Yleiset
 
-- `npm run install:all` - Asenna riippuvuudet sekä palvelimelle että käyttöliittymälle
+- `npm run install` - Asenna kaikki sovellusriippuvuudet
 
 ### Tietokanta
 

@@ -33,7 +33,7 @@ VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
 
 1. Asenna sovelluksen vaatimat riippuvuudet:
 
-       npm run install:all
+       npm run install
 
 2. Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa:
 
