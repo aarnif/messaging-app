@@ -1,5 +1,7 @@
 # Messaging App
 
+[![codecov](https://codecov.io/gh/aarnif/messaging-app/graph/badge.svg?token=2WL0756H74)](https://codecov.io/gh/aarnif/messaging-app)
+
 Full Stack Open -kurssin projekti: Messaging App
 
 ## Vaatimukset
