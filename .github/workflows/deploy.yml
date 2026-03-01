@@ -45,6 +45,10 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
     needs: [deployment_pipeline]
