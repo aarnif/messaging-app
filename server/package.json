@@ -9,6 +9,7 @@
     "generate": "graphql-codegen --config codegen.ts",
     "dev": "npm run generate && NODE_ENV=development nodemon --exec tsx src/index.ts",
     "test": "NODE_ENV=test tsx --test src/tests/*.test.ts",
+    "test:coverage": "NODE_ENV=test NODE_V8_COVERAGE=coverage tsx --experimental-test-coverage --test src/tests/*.test.ts",
     "typecheck": "tsc",
     "lint": "eslint .",
     "prod": "npm run generate && NODE_ENV=production tsx src/index.ts"

@@ -13,6 +13,7 @@
     "generate:server": "npm run generate -w server",
     "dev:server": "npm run dev -w server",
     "test:server": "npm run test -w server",
+    "test:server:coverage": "npm run test:coverage -w server",
     "typecheck:server": "npm run typecheck -w server",
     "lint:server": "npm run lint -w server",
     "prod:server": "npm run prod -w server",
