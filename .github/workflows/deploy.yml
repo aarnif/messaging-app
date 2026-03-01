@@ -24,16 +24,16 @@ jobs:
         run: npm run generate:server
       - name: Run test database
         run: docker compose -f server/docker-compose.yml up -d
-      - name: Run server tests
-        run: npm run test:server
+      - name: Run server tests and coverage
+        run: npm run test:server:coverage
         env:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
       - name: Generate GraphQL ui types
         run: npm run generate:ui
-      - name: Run ui tests
-        run: npm run test:ui
+      - name: Run ui tests and coverage
+        run: npm run test:ui:coverage
         env:
           CI: true
       - name: Run e2e tests
@@ -45,6 +45,10 @@ jobs:
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v5
+        with:
+          token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
     needs: [deployment_pipeline]
