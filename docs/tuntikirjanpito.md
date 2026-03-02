@@ -88,4 +88,12 @@
 | 19.2  | 1    | viestien muokkaus                 |
 | 20.2  | 2    |                                   |
 | 22.2  | 2    |                                   |
-|  yht  | 219  |                                   |
+| 23.2  | 1    | viestien poisto                   |
+| 24.2  | 1    |                                   |
+| 25.2  | 1    |                                   |
+| 26.2  | 1    | käyttöohjeiden teko               |
+| 26.2  | 0.5  | testausdokumentin teko            |
+| 27.2  | 0.5  | dokumentaation päivitys           |
+| 28.2  | 1.5  | koodin refaktorointi              |
+|  1.3  | 0.5  | codecov                           |
+|  yht  | 226  |                                   |
