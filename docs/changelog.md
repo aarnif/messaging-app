@@ -160,3 +160,8 @@ Ei muutoksia
 ## Viikko 22 (16.2-22.2.2026)
 
 - Viestien muokkaus
+
+## Viikko 23 (23.2-1.3.2026)
+
+- Viestien poisto
+- Codecov raportointi
