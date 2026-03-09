@@ -19,8 +19,4 @@ Sovellusta on testattu myös manuaalisesti suorittamalla kaikki sovelluksen toim
 
 ## Testikattavuus
 
-Tällä hetkellä vain `ui` hakemiston käyttöliittymä komponentteja testaaville yksikkötesteille on olemassa testikattavuus. Se on toteutettu `vitest coverage` kirjastolla.
-
-![Testikattavuus](images/testikattavuus.png)
-
-Haarautumakattavuus hakemistossa `ui/src/components` sijaitsevien pääkomponenttien osalta on 87.29% ja niitä tukevien hakemistossa `ui/src/ui` sijaitsevien pienempien komponenttien osalta 94.11%.
+Sovelluksella on testikattavuus sekä `server` että `ui` hakemistoille. Palvelimen integraatiotestien testikattavuus on toteutettu `c8` kirjastolla ja käyttöliittymän yksikkötestien `vitest coverage` kirjastolla. Testikattavuusraportti löytyy [Codecov](https://app.codecov.io/gh/aarnif/messaging-app) palvelusta.
