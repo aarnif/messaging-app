@@ -578,4 +578,25 @@ describe("<Chat />", () => {
       expect(screen.getByText(originalContent)).toBeDefined();
     });
   });
+
+  test("can open delete confirmation modal for own message", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+    await user.click(screen.getByTestId("message-menu-button"));
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
+    });
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+  });
 });
