@@ -165,3 +165,7 @@ Ei muutoksia
 
 - Viestien poisto
 - Codecov raportointi
+
+## Viikko 24 (2.3-8.3.2026)
+
+- Codecov raportointi palvelimen osalta
