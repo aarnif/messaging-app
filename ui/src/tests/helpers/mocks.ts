@@ -24,6 +24,8 @@ import {
   LEAVE_CHAT,
   CREATE_CHAT,
   MARK_CHAT_AS_READ,
+  DELETE_MESSAGE,
+  EDIT_MESSAGE,
 } from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -83,6 +85,14 @@ import type {
   UserChatLeftSubscriptionVariables,
   MarkChatAsReadMutation,
   MarkChatAsReadMutationVariables,
+  MessageEditedSubscription,
+  MessageEditedSubscriptionVariables,
+  MessageDeletedSubscription,
+  MessageDeletedSubscriptionVariables,
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables,
+  EditMessageMutation,
+  EditMessageMutationVariables,
 } from "../../__generated__/graphql";
 import type { InputField } from "../../types";
 import { vi } from "vitest";
@@ -92,6 +102,8 @@ import {
   USER_CHAT_DELETED,
   USER_CHAT_UPDATED,
   USER_CHAT_LEFT,
+  MESSAGE_EDITED,
+  MESSAGE_DELETED,
 } from "../../graphql/subscriptions";
 
 export const LOGIN_TOKEN = "fake-token-12345";
@@ -641,6 +653,45 @@ export const findChatByIdNull: MockLink.MockedResponse<
   result: {
     data: {
       findChatById: null,
+    },
+  },
+};
+
+export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
+  FindChatByIdQuery,
+  FindChatByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CHAT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findChatById: {
+        ...GROUP_CHAT_DETAILS,
+        messages: [
+          ...GROUP_CHAT_DETAILS.messages,
+          {
+            id: "4",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: {
+              id: USER_ONE_DETAILS.id,
+              username: USER_ONE_DETAILS.username,
+              name: USER_ONE_DETAILS.name,
+              about: null,
+              avatar: null,
+              is24HourClock: true,
+            },
+            content: `${USER_ONE_DETAILS.name} created the group`,
+            createdAt: 1759094100000 + 3 * 86400000,
+            updatedAt: 1759094100000 + 3 * 86400000,
+          },
+        ],
+      },
     },
   },
 };
@@ -1306,6 +1357,34 @@ export const messageSentSubscription: MockLink.MockedResponse<
   },
 };
 
+export const messageEditedSubscription: MockLink.MockedResponse<
+  MessageEditedSubscription,
+  MessageEditedSubscriptionVariables
+> = {
+  request: {
+    query: MESSAGE_EDITED,
+  },
+  result: {
+    data: {
+      messageEdited: MESSAGE_DETAILS,
+    },
+  },
+};
+
+export const messageDeletedSubscription: MockLink.MockedResponse<
+  MessageDeletedSubscription,
+  MessageDeletedSubscriptionVariables
+> = {
+  request: {
+    query: MESSAGE_DELETED,
+  },
+  result: {
+    data: {
+      messageDeleted: { ...MESSAGE_DETAILS, isDeleted: true },
+    },
+  },
+};
+
 export const userChatUpdatedSubscription: MockLink.MockedResponse<
   UserChatUpdatedSubscription,
   UserChatUpdatedSubscriptionVariables
@@ -1375,6 +1454,55 @@ export const userChatLeftSubscription: MockLink.MockedResponse<
       userChatLeft: {
         chatId: GROUP_CHAT_DETAILS.id,
         memberId: USER_TWO_DETAILS.id,
+      },
+    },
+  },
+};
+
+export const deleteMessage: MockLink.MockedResponse<
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables
+> = {
+  request: {
+    query: DELETE_MESSAGE,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      deleteMessage: {
+        ...GROUP_CHAT_DETAILS,
+        messages: GROUP_CHAT_DETAILS.messages.map((message) =>
+          message.id === "1" ? { ...message, isDeleted: true } : message
+        ),
+      },
+    },
+  },
+};
+
+export const editMessage: MockLink.MockedResponse<
+  EditMessageMutation,
+  EditMessageMutationVariables
+> = {
+  request: {
+    query: EDIT_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: "Edited message",
+      },
+    },
+  },
+  result: {
+    data: {
+      editMessage: {
+        ...GROUP_CHAT_DETAILS,
+        messages: GROUP_CHAT_DETAILS.messages.map((message) =>
+          message.id === "1"
+            ? { ...message, content: "Edited message" }
+            : message
+        ),
       },
     },
   },

@@ -12,7 +12,10 @@ import {
   findChatByIdGroup,
   findChatByIdPrivate,
   findChatByIdNull,
+  findChatByIdGroupWithNotification,
   sendMessage,
+  deleteMessage,
+  editMessage,
   allChatsByUser,
   allContactsByUser,
   findContactByUserId,
@@ -24,6 +27,8 @@ import {
   deleteChat,
   markChatAsRead,
   messageSentSubscription,
+  messageEditedSubscription,
+  messageDeletedSubscription,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
@@ -57,6 +62,8 @@ const renderComponent = (
     sendMessage,
     markChatAsRead,
     messageSentSubscription,
+    messageEditedSubscription,
+    messageDeletedSubscription,
   ],
   currentUser = currentUserChatAdminMock
 ) => {
@@ -96,6 +103,37 @@ const openEditChatModal = async (user: UserEvent) => {
   });
 };
 
+const openMessageEditMode = async (user: UserEvent) => {
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+    ).toBeDefined();
+  });
+  const [firstMessageMenuButton] = screen.getAllByTestId("message-menu-button");
+  await user.click(firstMessageMenuButton);
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: "Edit" })).toBeDefined();
+  });
+  await user.click(screen.getByRole("button", { name: "Edit" }));
+  await waitFor(() => {
+    expect(screen.getByTestId("edit-message-input")).toBeDefined();
+  });
+};
+
+const openMessageDeleteConfirmation = async (user: UserEvent) => {
+  await waitFor(() => {
+    expect(
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+    ).toBeDefined();
+  });
+  const [firstMessageMenuButton] = screen.getAllByTestId("message-menu-button");
+  await user.click(firstMessageMenuButton);
+  await waitFor(() => {
+    expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
+  });
+  await user.click(screen.getByRole("button", { name: "Delete" }));
+};
+
 describe("<Chat />", () => {
   beforeEach(() => {
     mockMatch.mockReturnValue({
@@ -117,7 +155,12 @@ describe("<Chat />", () => {
       },
     });
 
-    renderComponent([findChatByIdNull, messageSentSubscription]);
+    renderComponent([
+      findChatByIdNull,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
 
     await waitFor(() => {
       expect(screen.getByText("Chat not found.")).toBeDefined();
@@ -175,6 +218,26 @@ describe("<Chat />", () => {
     });
   });
 
+  test("renders notification messages correctly", async () => {
+    renderComponent([
+      findChatByIdGroupWithNotification,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("notification-message")).toBeDefined();
+      expect(
+        screen.getByText(`${USER_ONE_DETAILS.name} created the group`)
+      ).toBeDefined();
+    });
+  });
+
   test("navigates to chats list when back button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent();
@@ -193,6 +256,8 @@ describe("<Chat />", () => {
       allChatsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await waitFor(async () => {
@@ -245,6 +310,8 @@ describe("<Chat />", () => {
       isBlockedByUserTrue,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
@@ -276,6 +343,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -290,6 +359,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -315,6 +386,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -337,6 +410,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -376,6 +451,8 @@ describe("<Chat />", () => {
       editChat,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -410,6 +487,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -427,6 +506,8 @@ describe("<Chat />", () => {
         leaveChat,
         markChatAsRead,
         messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
       ],
       currentUserChatMemberMock
     );
@@ -457,6 +538,8 @@ describe("<Chat />", () => {
         allContactsByUser,
         markChatAsRead,
         messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
       ],
       currentUserChatMemberMock
     );
@@ -475,6 +558,8 @@ describe("<Chat />", () => {
       deleteChat,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -494,6 +579,127 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
+    });
+  });
+
+  test("can open edit mode for own message", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+    await openMessageEditMode(user);
+  });
+
+  test("closes edit mode when cancel button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+    await openMessageEditMode(user);
+    await user.click(screen.getByTestId("cancel-edit-message-button"));
+    await waitFor(() => {
+      expect(screen.queryByTestId("edit-message-input")).toBeNull();
+    });
+  });
+
+  test("closes edit mode without sending when edited message is empty", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    const originalContent = GROUP_CHAT_DETAILS.messages.find(
+      (message) => message.sender.name === USER_ONE_DETAILS.name
+    )!.content;
+
+    await openMessageEditMode(user);
+    await user.clear(screen.getByTestId("edit-message-input"));
+
+    await user.click(screen.getByTestId("submit-edit-message-button"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("edit-message-input")).toBeNull();
+      expect(screen.getByText(originalContent)).toBeDefined();
+    });
+  });
+
+  test("edits message successfully and and closes edit mode", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      editMessage,
+    ]);
+
+    await openMessageEditMode(user);
+
+    await user.clear(screen.getByTestId("edit-message-input"));
+    await user.type(screen.getByTestId("edit-message-input"), "Edited message");
+
+    await user.click(screen.getByTestId("submit-edit-message-button"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("edit-message-input")).toBeNull();
+    });
+  });
+
+  test("can open delete confirmation modal for own message", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+    await openMessageDeleteConfirmation(user);
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+  });
+
+  test("closes delete confirmation modal when cancel button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+    await openMessageDeleteConfirmation(user);
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Are you sure you want to delete the message?")
+      ).toBeNull();
+    });
+  });
+
+  test("deletes message successfully and closes confirmation modal", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      deleteMessage,
+    ]);
+
+    await openMessageDeleteConfirmation(user);
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Are you sure you want to delete the message?")
+      ).toBeNull();
     });
   });
 });
