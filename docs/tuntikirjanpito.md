@@ -96,4 +96,6 @@
 | 27.2  | 0.5  | dokumentaation päivitys           |
 | 28.2  | 1.5  | koodin refaktorointi              |
 |  1.3  | 0.5  | codecov                           |
-|  yht  | 226  |                                   |
+|  3.3  | 0.5  |                                   |
+|  4.3  | 0.5  | linttauksen lisäys CI/CD          |
+|  yht  | 227  |                                   |
