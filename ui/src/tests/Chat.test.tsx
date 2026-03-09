@@ -13,6 +13,7 @@ import {
   findChatByIdPrivate,
   findChatByIdNull,
   sendMessage,
+  deleteMessage,
   allChatsByUser,
   allContactsByUser,
   findContactByUserId,
@@ -614,6 +615,36 @@ describe("<Chat />", () => {
     });
 
     await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Are you sure you want to delete the message?")
+      ).toBeNull();
+    });
+  });
+
+  test("deletes message successfully and closes confirmation modal", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      deleteMessage,
+    ]);
+
+    await openMessageDeleteConfirmation(user);
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Delete" }));
 
     await waitFor(() => {
       expect(
