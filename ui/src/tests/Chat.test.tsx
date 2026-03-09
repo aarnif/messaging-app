@@ -559,4 +559,23 @@ describe("<Chat />", () => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
     });
   });
+
+  test("closes edit mode without sending when edited message is empty", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    const originalContent = GROUP_CHAT_DETAILS.messages.find(
+      (message) => message.sender.name === USER_ONE_DETAILS.name
+    )!.content;
+
+    await openMessageEditMode(user);
+    await user.clear(screen.getByTestId("edit-message-input"));
+
+    await user.click(screen.getByTestId("submit-edit-message-button"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("edit-message-input")).toBeNull();
+      expect(screen.getByText(originalContent)).toBeDefined();
+    });
+  });
 });
