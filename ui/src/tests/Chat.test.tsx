@@ -24,6 +24,8 @@ import {
   deleteChat,
   markChatAsRead,
   messageSentSubscription,
+  messageEditedSubscription,
+  messageDeletedSubscription,
   USER_ONE_DETAILS,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
@@ -57,6 +59,8 @@ const renderComponent = (
     sendMessage,
     markChatAsRead,
     messageSentSubscription,
+    messageEditedSubscription,
+    messageDeletedSubscription,
   ],
   currentUser = currentUserChatAdminMock
 ) => {
@@ -117,7 +121,12 @@ describe("<Chat />", () => {
       },
     });
 
-    renderComponent([findChatByIdNull, messageSentSubscription]);
+    renderComponent([
+      findChatByIdNull,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
 
     await waitFor(() => {
       expect(screen.getByText("Chat not found.")).toBeDefined();
@@ -193,6 +202,8 @@ describe("<Chat />", () => {
       allChatsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await waitFor(async () => {
@@ -245,6 +256,8 @@ describe("<Chat />", () => {
       isBlockedByUserTrue,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
@@ -276,6 +289,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -290,6 +305,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -315,6 +332,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -337,6 +356,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -376,6 +397,8 @@ describe("<Chat />", () => {
       editChat,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -410,6 +433,8 @@ describe("<Chat />", () => {
       allContactsByUser,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -427,6 +452,8 @@ describe("<Chat />", () => {
         leaveChat,
         markChatAsRead,
         messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
       ],
       currentUserChatMemberMock
     );
@@ -457,6 +484,8 @@ describe("<Chat />", () => {
         allContactsByUser,
         markChatAsRead,
         messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
       ],
       currentUserChatMemberMock
     );
@@ -475,6 +504,8 @@ describe("<Chat />", () => {
       deleteChat,
       markChatAsRead,
       messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
     ]);
 
     await openChatInfoModal(user);

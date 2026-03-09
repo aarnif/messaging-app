@@ -83,6 +83,10 @@ import type {
   UserChatLeftSubscriptionVariables,
   MarkChatAsReadMutation,
   MarkChatAsReadMutationVariables,
+  MessageEditedSubscription,
+  MessageEditedSubscriptionVariables,
+  MessageDeletedSubscription,
+  MessageDeletedSubscriptionVariables,
 } from "../../__generated__/graphql";
 import type { InputField } from "../../types";
 import { vi } from "vitest";
@@ -92,6 +96,8 @@ import {
   USER_CHAT_DELETED,
   USER_CHAT_UPDATED,
   USER_CHAT_LEFT,
+  MESSAGE_EDITED,
+  MESSAGE_DELETED,
 } from "../../graphql/subscriptions";
 
 export const LOGIN_TOKEN = "fake-token-12345";
@@ -1302,6 +1308,34 @@ export const messageSentSubscription: MockLink.MockedResponse<
   result: {
     data: {
       messageSent: MESSAGE_DETAILS,
+    },
+  },
+};
+
+export const messageEditedSubscription: MockLink.MockedResponse<
+  MessageEditedSubscription,
+  MessageEditedSubscriptionVariables
+> = {
+  request: {
+    query: MESSAGE_EDITED,
+  },
+  result: {
+    data: {
+      messageEdited: MESSAGE_DETAILS,
+    },
+  },
+};
+
+export const messageDeletedSubscription: MockLink.MockedResponse<
+  MessageDeletedSubscription,
+  MessageDeletedSubscriptionVariables
+> = {
+  request: {
+    query: MESSAGE_DELETED,
+  },
+  result: {
+    data: {
+      messageDeleted: { ...MESSAGE_DETAILS, isDeleted: true },
     },
   },
 };
