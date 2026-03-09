@@ -599,4 +599,33 @@ describe("<Chat />", () => {
       ).toBeDefined();
     });
   });
+
+  test("closes delete confirmation modal when cancel button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+    await user.click(screen.getByTestId("message-menu-button"));
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
+    });
+    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await waitFor(() => {
+      expect(
+        screen.getByText("Are you sure you want to delete the message?")
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Cancel" }));
+
+    await waitFor(() => {
+      expect(
+        screen.queryByText("Are you sure you want to delete the message?")
+      ).toBeNull();
+    });
+  });
 });
