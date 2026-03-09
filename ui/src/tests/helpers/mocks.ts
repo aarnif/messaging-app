@@ -25,6 +25,7 @@ import {
   CREATE_CHAT,
   MARK_CHAT_AS_READ,
   DELETE_MESSAGE,
+  EDIT_MESSAGE,
 } from "../../graphql/mutations";
 import type { MockLink } from "@apollo/client/testing";
 import type {
@@ -90,6 +91,8 @@ import type {
   MessageDeletedSubscriptionVariables,
   DeleteMessageMutation,
   DeleteMessageMutationVariables,
+  EditMessageMutation,
+  EditMessageMutationVariables,
 } from "../../__generated__/graphql";
 import type { InputField } from "../../types";
 import { vi } from "vitest";
@@ -1433,6 +1436,33 @@ export const deleteMessage: MockLink.MockedResponse<
         ...GROUP_CHAT_DETAILS,
         messages: GROUP_CHAT_DETAILS.messages.map((message) =>
           message.id === "1" ? { ...message, isDeleted: true } : message
+        ),
+      },
+    },
+  },
+};
+
+export const editMessage: MockLink.MockedResponse<
+  EditMessageMutation,
+  EditMessageMutationVariables
+> = {
+  request: {
+    query: EDIT_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: "Edited message",
+      },
+    },
+  },
+  result: {
+    data: {
+      editMessage: {
+        ...GROUP_CHAT_DETAILS,
+        messages: GROUP_CHAT_DETAILS.messages.map((message) =>
+          message.id === "1"
+            ? { ...message, content: "Edited message" }
+            : message
         ),
       },
     },

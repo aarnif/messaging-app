@@ -14,6 +14,7 @@ import {
   findChatByIdNull,
   sendMessage,
   deleteMessage,
+  editMessage,
   allChatsByUser,
   allContactsByUser,
   findContactByUserId,
@@ -590,6 +591,32 @@ describe("<Chat />", () => {
     await waitFor(() => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
       expect(screen.getByText(originalContent)).toBeDefined();
+    });
+  });
+
+  test("edits message successfully and and closes edit mode", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      editMessage,
+    ]);
+
+    await openMessageEditMode(user);
+
+    await user.clear(screen.getByTestId("edit-message-input"));
+    await user.type(screen.getByTestId("edit-message-input"), "Edited message");
+
+    await user.click(screen.getByTestId("submit-edit-message-button"));
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("edit-message-input")).toBeNull();
     });
   });
 
