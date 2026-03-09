@@ -12,6 +12,7 @@ import {
   findChatByIdGroup,
   findChatByIdPrivate,
   findChatByIdNull,
+  findChatByIdGroupWithNotification,
   sendMessage,
   deleteMessage,
   editMessage,
@@ -212,6 +213,26 @@ describe("<Chat />", () => {
       contactMessages.forEach((message) => {
         expect(message.className).toContain("bg-slate-200 dark:bg-slate-700");
       });
+    });
+  });
+
+  test("renders notification messages correctly", async () => {
+    renderComponent([
+      findChatByIdGroupWithNotification,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("notification-message")).toBeDefined();
+      expect(
+        screen.getByText(`${USER_ONE_DETAILS.name} created the group`)
+      ).toBeDefined();
     });
   });
 

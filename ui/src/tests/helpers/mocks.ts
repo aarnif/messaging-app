@@ -657,6 +657,45 @@ export const findChatByIdNull: MockLink.MockedResponse<
   },
 };
 
+export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
+  FindChatByIdQuery,
+  FindChatByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CHAT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findChatById: {
+        ...GROUP_CHAT_DETAILS,
+        messages: [
+          ...GROUP_CHAT_DETAILS.messages,
+          {
+            id: "4",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: {
+              id: USER_ONE_DETAILS.id,
+              username: USER_ONE_DETAILS.username,
+              name: USER_ONE_DETAILS.name,
+              about: null,
+              avatar: null,
+              is24HourClock: true,
+            },
+            content: `${USER_ONE_DETAILS.name} created the group`,
+            createdAt: 1759094100000 + 3 * 86400000,
+            updatedAt: 1759094100000 + 3 * 86400000,
+          },
+        ],
+      },
+    },
+  },
+};
+
 export const sendMessage: MockLink.MockedResponse<
   SendMessageMutation,
   SendMessageMutationVariables
