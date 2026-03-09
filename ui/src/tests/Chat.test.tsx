@@ -527,4 +527,27 @@ describe("<Chat />", () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
     });
   });
+
+  test("can open edit mode for own message", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByTestId("message-menu-button"));
+
+    await waitFor(() => {
+      expect(screen.getByRole("button", { name: "Edit" })).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Edit" }));
+
+    await waitFor(() => {
+      expect(screen.getByTestId("edit-message-input")).toBeDefined();
+    });
+  });
 });
