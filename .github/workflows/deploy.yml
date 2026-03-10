@@ -20,14 +20,14 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Generate GraphQL server types
-        run: npm run generate:server
-      - name: Lint server
-        run: npm run lint:server
+      - name: Generate GraphQL backend types
+        run: npm run generate:backend
+      - name: Lint backend
+        run: npm run lint:backend
       - name: Run test database
-        run: docker compose -f server/docker-compose.yml up -d
-      - name: Run server tests and coverage
-        run: npm run test:server:coverage
+        run: docker compose -f backend/docker-compose.yml up -d
+      - name: Run backend tests and coverage
+        run: npm run test:backend:coverage
         env:
           NODE_ENV: test
           DATABASE_URL: ${{ secrets.DATABASE_URL }}
@@ -62,7 +62,7 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - name: Trigger server deployment
+      - name: Trigger backend deployment
         if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
         run: curl ${{ secrets.RENDER_SERVICE_URL }}
       - name: Trigger ui deployment
