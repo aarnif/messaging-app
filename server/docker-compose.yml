@@ -1,3 +1,5 @@
+name: messaging-app
+
 services:
   postgres: # PostgreSQL db for main application data
     image: postgres
