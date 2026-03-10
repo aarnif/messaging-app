@@ -513,3 +513,16 @@ export const MARK_CHAT_AS_READ = `
     markChatAsRead(id: $id)
   }
 `;
+
+export const NON_CONTACT_USERS = `
+  query NonContactUsers($search: String) {
+    nonContactUsers(search: $search) {
+      id
+      username
+      name
+      about
+      avatar
+      is24HourClock
+    }
+  }
+`;
