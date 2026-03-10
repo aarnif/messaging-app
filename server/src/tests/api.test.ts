@@ -18,6 +18,7 @@ import {
   user3Details,
   expectedUser1,
   expectedUser2,
+  expectedUser3,
   expectedContact1,
   expectedContact2,
   privateChatDetails,
@@ -61,6 +62,7 @@ import {
   CHANGE_PASSWORD,
   FIND_CONTACT_BY_USER_ID,
   MARK_CHAT_AS_READ,
+  NON_CONTACT_USERS,
 } from "./helpers/queries";
 import { sequelize } from "../db";
 import { start } from "../server";
@@ -1480,6 +1482,121 @@ void describe("GraphQL API", () => {
         const contact = responseBody.data?.findContactByUserId;
 
         assertContactEquality(contact, expectedContact1);
+      });
+    });
+
+    void describe("Non-contact users", () => {
+      void test("fails without authentication", async () => {
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, {}, "");
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.strictEqual(users, undefined, "Users should be undefined");
+        assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+      });
+
+      void test("returns all non-contact users", async () => {
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, {}, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 2, "Should have 2 non-contact users");
+        assert.strictEqual(
+          responseBody.errors,
+          undefined,
+          "Should have no errors",
+        );
+      });
+
+      void test("excludes existing contacts", async () => {
+        await query<{ addContact: Contact }, { id: string }>(
+          ADD_CONTACT,
+          { id: user2Details.id },
+          user1Token,
+        );
+
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, {}, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 1, "Should have 1 non-contact user");
+        assertUserEquality(users[0], expectedUser3);
+      });
+
+      void test("filters users by username search", async () => {
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, { search: user2Details.username }, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 1, "Should have 1 user");
+        assertUserEquality(users[0], expectedUser2);
+      });
+
+      void test("filters users by name search", async () => {
+        const newName = "New Name";
+
+        await query<{ editProfile: User }, { input: EditProfileInput }>(
+          EDIT_PROFILE,
+          {
+            input: {
+              name: newName,
+              about: null,
+              is24HourClock: true,
+            },
+          },
+          user2Token,
+        );
+
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, { search: newName }, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 1, "Should have 1 user");
+        assertUserEquality(users[0], { ...expectedUser2, name: newName });
+      });
+
+      void test("returns empty array when search has no matches", async () => {
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, { search: "nonexistent" }, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 0, "Should have no users");
+      });
+
+      void test("search is case insensitive", async () => {
+        const responseBody = await query<
+          { nonContactUsers: User[] },
+          { search?: string }
+        >(NON_CONTACT_USERS, { search: "USER2" }, user1Token);
+
+        const users = responseBody.data?.nonContactUsers;
+
+        assert.ok(Array.isArray(users), "Users should be an array");
+        assert.strictEqual(users.length, 1, "Should have 1 user");
+        assertUserEquality(users[0], expectedUser2);
       });
     });
   });
