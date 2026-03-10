@@ -140,7 +140,7 @@ vite.config.js.timestamp-*
 vite.config.ts.timestamp-*
 
 # Apollo Server types
-server/src/types/graphql.ts
+backend/src/types/graphql.ts
 
 # Apollo Client types
 ui/src/__generated__/
