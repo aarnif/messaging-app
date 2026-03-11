@@ -4,11 +4,11 @@ Sovelluksen testaus koostuu automaattisista yksikkö-, integraatio- ja järjeste
 
 ## Yksikkötestaus
 
-Sovelluksen `React` käyttöliittymä komponentteja testaavat yksikkötestit sijaitsevat `ui/src/tests` hakemistossa. Koska osalla komponenteista on alikomponentteja saavat nämä testit myös integraatiotestien piirteitä. Testit voi suorittaa komennolla `npm run test:ui`.
+Sovelluksen `React` käyttöliittymä komponentteja testaavat yksikkötestit sijaitsevat `frontend/src/tests` hakemistossa. Koska osalla komponenteista on alikomponentteja saavat nämä testit myös integraatiotestien piirteitä. Testit voi suorittaa komennolla `npm run test:frontend`.
 
 ## Integraatiotestaus
 
-Sovelluksen `GraphQL`-rajapinnan resolvereita kokonaisuudessaan testaavat testit sijaitsevat `server/src/tests` hakemistossa. Rajapinnan osalta voitaisiin puhua myös järjestelmätesteistä, mutta koska rajapinta on vain osa sovellusta, ovat nämä testin luokiteltu integraatiotestien alle. Testit voi suorittaa komennolla `npm run test:server`.
+Sovelluksen `GraphQL`-rajapinnan resolvereita kokonaisuudessaan testaavat testit sijaitsevat `backend/src/tests` hakemistossa. Rajapinnan osalta voitaisiin puhua myös järjestelmätesteistä, mutta koska rajapinta on vain osa sovellusta, ovat nämä testin luokiteltu integraatiotestien alle. Testit voi suorittaa komennolla `npm run test:backend`.
 Rajapinnan testit vaativat myös käynnissä olevan tietokannan, jonka voi käynnistää komennolla `npm run start:db`. Tietokannan taulut ja seed-datan voi luoda komennolla `npm run populate:db`.
 
 ## Järjestelmätestaus
@@ -19,4 +19,4 @@ Sovellusta on testattu myös manuaalisesti suorittamalla kaikki sovelluksen toim
 
 ## Testikattavuus
 
-Sovelluksella on testikattavuus sekä `server` että `ui` hakemistoille. Palvelimen integraatiotestien testikattavuus on toteutettu `c8` kirjastolla ja käyttöliittymän yksikkötestien `vitest coverage` kirjastolla. Testikattavuusraportti löytyy [Codecov](https://app.codecov.io/gh/aarnif/messaging-app) palvelusta.
+Sovelluksella on testikattavuus sekä `backend` että `frontend` hakemistoille. Palvelimen integraatiotestien testikattavuus on toteutettu `c8` kirjastolla ja käyttöliittymän yksikkötestien `vitest coverage` kirjastolla. Testikattavuusraportti löytyy [Codecov](https://app.codecov.io/gh/aarnif/messaging-app) palvelusta.
