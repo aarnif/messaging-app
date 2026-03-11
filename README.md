@@ -40,9 +40,9 @@ Full Stack Open -kurssin projekti: Messaging App
 
 4. Määritä ympäristömuuttujat
 
-   **Palvelin**
+   **Backend**
 
-   Luo `.env`-tiedosto `server`-hakemistoon seuraavilla muuttujilla:
+   Luo `.env`-tiedosto `backend`-hakemistoon seuraavilla muuttujilla:
 
    ```bash
    DATABASE_URL=YOUR_DATABASE_URL_HERE
@@ -76,9 +76,9 @@ Full Stack Open -kurssin projekti: Messaging App
 
    Määritä `DATABASE_URL` ja `REDIS_URI` osoittamaan omiin tietokantoihisi.
 
-   **Käyttöliittymä**
+   **Frontend**
 
-   Luo `.env.development` ja `.env.production` tiedostot `ui`-hakemistoon seuraavilla tiedoilla:
+   Luo `.env.development` ja `.env.production` tiedostot `frontend`-hakemistoon seuraavilla tiedoilla:
 
    `.env.development`:
 
@@ -100,16 +100,16 @@ Full Stack Open -kurssin projekti: Messaging App
    npm run populate:db
    ```
 
-6. Käynnistä palvelin kehitystilassa (uudessa terminaalissa)
+6. Käynnistä backend kehitystilassa (uudessa terminaalissa)
 
    ```bash
-   npm run dev:server
+   npm run dev:backend
    ```
 
-7. Käynnistä käyttöliittymä kehitystilassa (uudessa terminaalissa)
+7. Käynnistä frontend kehitystilassa (uudessa terminaalissa)
 
    ```bash
-   npm run dev:ui
+   npm run dev:frontend
    ```
 
 ## npm-komennot
@@ -123,25 +123,25 @@ Full Stack Open -kurssin projekti: Messaging App
 - `npm run start:db` - Käynnistä PostgreSQL ja Redis Docker-konteissa
 - `npm run populate:db` - Lisää seed data tietokantaan
 
-### Palvelin
+### Backend
 
-- `npm run dev:server` - Käynnistä palvelin kehitystilassa
-- `npm run prod:server` - Käynnistä palvelin tuotantotilassa
-- `npm run test:server` - Suorita palvelimen testit
-- `npm run typecheck:server` - Suorita TypeScript-tyyppitarkistus palvelimelle
-- `npm run lint:server` - Suorita linttaus palvelimen koodille
-- `npm run generate:server` - Generoi GraphQL-tyypit
+- `npm run dev:backend` - Käynnistä backend kehitystilassa
+- `npm run prod:backend` - Käynnistä backend tuotantotilassa
+- `npm run test:backend` - Suorita backendin testit
+- `npm run typecheck:backend` - Suorita TypeScript-tyyppitarkistus backendille
+- `npm run lint:backend` - Suorita linttaus backendin koodille
+- `npm run generate:backend` - Generoi GraphQL-tyypit
 
-### Käyttöliittymä
+### Frontend
 
-- `npm run dev:ui` - Käynnistä käyttöliittymä kehitystilassa
-- `npm run build:ui` - Buildaa käyttöliittymä tuotantoa varten
-- `npm run preview:ui` - Esikatsele tuotantobuild paikallisesti
-- `npm run test:ui` - Suorita käyttöliittymän testit
-- `npm run test:ui:coverage` - Suorita käyttöliittymän testit kattavuusraportin kanssa
-- `npm run typecheck:ui` - Suorita TypeScript-tyyppitarkistus käyttöliittymälle
-- `npm run lint:ui` - Suorita linttaus käyttöliittymän koodille
-- `npm run generate:ui` - Generoi GraphQL-tyypit
+- `npm run dev:frontend` - Käynnistä frontend kehitystilassa
+- `npm run build:frontend` - Buildaa frontend tuotantoa varten
+- `npm run preview:frontend` - Esikatsele tuotantobuild paikallisesti
+- `npm run test:frontend` - Suorita frontendin testit
+- `npm run test:frontend:coverage` - Suorita frontendin testit kattavuusraportin kanssa
+- `npm run typecheck:frontend` - Suorita TypeScript-tyyppitarkistus käyttöliittymälle
+- `npm run lint:frontend` - Suorita linttaus frontendin koodille
+- `npm run generate:frontend` - Generoi GraphQL-tyypit
 
 ### End-to-End-testaus
 
