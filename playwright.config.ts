@@ -21,7 +21,7 @@ export default defineConfig({
       stderr: "pipe",
     },
     {
-      command: "npm run dev:ui",
+      command: "npm run dev:frontend",
       url: "http://localhost:5173",
       reuseExistingServer: !process.env.CI,
       stdout: "ignore",
