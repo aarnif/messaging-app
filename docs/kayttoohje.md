@@ -2,7 +2,7 @@
 
 ## Sovelluksen konfigurointi
 
-Luo `.env`-tiedosto `server`-hakemistoon seuraavilla tiedoilla:
+Luo `.env`-tiedosto `backend`-hakemistoon seuraavilla tiedoilla:
 
 ```bash
 DATABASE_URL=postgres://postgres:example@localhost:6001/postgres
@@ -13,7 +13,7 @@ REDIS_URI=redis://localhost:6379
 CI=false
 ```
 
-Luo `.env.development` ja `.env.production` tiedostot `ui`-hakemistoon seuraavilla tiedoilla:
+Luo `.env.development` ja `.env.production` tiedostot `frontend`-hakemistoon seuraavilla tiedoilla:
 
 `.env.development`:
 
@@ -43,13 +43,13 @@ VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
 
    npm run populate:db
 
-4. Käynnistä palvelin kehitystilassa uudessa terminaalissa:
+4. Käynnistä backend kehitystilassa uudessa terminaalissa:
 
-   npm run dev:server
+   npm run dev:backend
 
-5. Käynnistä käyttöliittymä kehitystilassa uudessa terminaalissa:
+5. Käynnistä frontend kehitystilassa uudessa terminaalissa:
 
-   npm run dev:ui
+   npm run dev:frontend
 
 ## Kirjautuminen
 
