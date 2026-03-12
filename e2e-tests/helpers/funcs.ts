@@ -1,5 +1,22 @@
-import type { Page } from "@playwright/test";
+import type { Page, APIRequestContext } from "@playwright/test";
 import { expect } from "@playwright/test";
+
+export const resetDatabaseAndOpenApp = async (
+  page: Page,
+  request: APIRequestContext,
+) => {
+  await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+      mutation Mutation {
+        resetDatabase
+      }
+    `,
+    },
+  });
+
+  await page.goto("http://localhost:5173");
+};
 
 export const signUp = async (
   page: Page,

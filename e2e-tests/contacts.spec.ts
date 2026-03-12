@@ -1,5 +1,6 @@
 import { test, expect } from "@playwright/test";
 import {
+  resetDatabaseAndOpenApp,
   signIn,
   signUpMultipleUsers,
   addContacts,
@@ -9,16 +10,7 @@ import { user1, user2, user3 } from "./helpers/data";
 
 test.describe("Contacts", () => {
   test.beforeEach(async ({ page, request }) => {
-    await request.post("http://localhost:4000/", {
-      data: {
-        query: `
-        mutation Mutation {
-          resetDatabase
-        }
-      `,
-      },
-    });
-    await page.goto("http://localhost:5173");
+    await resetDatabaseAndOpenApp(page, request);
 
     await signUpMultipleUsers(page, [user1, user2, user3]);
     await signIn(page, user1.username, user1.password);
