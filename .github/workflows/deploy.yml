@@ -11,6 +11,22 @@ on:
 jobs:
   deployment_pipeline:
     runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:alpine
+        env:
+          POSTGRES_PASSWORD: mysecretpassword
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+        ports:
+          - 5432:5432
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
     steps:
       - uses: actions/checkout@v5
       - uses: actions/setup-node@v6
@@ -24,13 +40,11 @@ jobs:
         run: npm run generate:backend
       - name: Lint backend
         run: npm run lint:backend
-      - name: Run test database
-        run: docker compose -f backend/docker-compose.yml up -d
       - name: Run backend tests and coverage
         run: npm run test:backend:coverage
         env:
           NODE_ENV: test
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/postgres
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
       - name: Generate GraphQL frontend types
         run: npm run generate:frontend
@@ -45,7 +59,7 @@ jobs:
         env:
           CI: true
           PORT: ${{ secrets.PORT }}
-          DATABASE_URL: ${{ secrets.DATABASE_URL }}
+          DATABASE_URL: postgres://postgres:mysecretpassword@localhost:5432/postgres
           JWT_SECRET: ${{ secrets.JWT_SECRET }}
           VITE_SERVER_URL: ${{ secrets.VITE_SERVER_URL }}
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
