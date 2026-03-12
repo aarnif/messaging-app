@@ -15,6 +15,11 @@ jobs:
       JWT_SECRET: ${{ secrets.JWT_SECRET }}
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
+  frontend:
+    uses: ./.github/workflows/frontend.yml
+    secrets:
+      CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
+
   deployment_pipeline:
     runs-on: ubuntu-latest
     services:
@@ -42,14 +47,6 @@ jobs:
         run: npm ci
       - name: Install Playwright Browsers
         run: npx playwright install --with-deps
-      - name: Generate GraphQL frontend types
-        run: npm run generate:frontend
-      - name: Lint frontend
-        run: npm run lint:frontend
-      - name: Run frontend tests and coverage
-        run: npm run test:frontend:coverage
-        env:
-          CI: true
       - name: Run e2e tests
         run: npm run test:e2e
         env:
@@ -65,7 +62,7 @@ jobs:
           token: ${{ secrets.CODECOV_TOKEN }}
 
   deploy:
-    needs: [backend, deployment_pipeline]
+    needs: [backend, frontend, deployment_pipeline]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
