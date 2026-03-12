@@ -20,7 +20,7 @@ jobs:
     secrets:
       CODECOV_TOKEN: ${{ secrets.CODECOV_TOKEN }}
 
-  deployment_pipeline:
+  e2e:
     runs-on: ubuntu-latest
     services:
       postgres:
@@ -58,7 +58,7 @@ jobs:
           VITE_WS_URL: ${{ secrets.VITE_WS_URL }}
 
   deploy:
-    needs: [backend, frontend, deployment_pipeline]
+    needs: [backend, frontend, e2e]
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
