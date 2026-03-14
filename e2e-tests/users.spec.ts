@@ -1,6 +1,7 @@
 import { test, expect } from "@playwright/test";
 import {
   resetDatabaseAndOpenApp,
+  createUserViaApi,
   signUp,
   signIn,
   logout,
@@ -60,9 +61,8 @@ test.describe("Users", () => {
   });
 
   test.describe("Authentication", () => {
-    test.beforeEach(async ({ page }) => {
-      await signUp(page, user1.username, user1.password, user1.confirmPassword);
-      await logout(page);
+    test.beforeEach(async ({ request }) => {
+      await createUserViaApi(request, user1);
     });
 
     test("prevents sign in with empty credentials", async ({ page }) => {

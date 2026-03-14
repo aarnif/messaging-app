@@ -1,8 +1,8 @@
 import { test, expect } from "@playwright/test";
 import {
   resetDatabaseAndOpenApp,
+  createUserViaApi,
   signIn,
-  signUpMultipleUsers,
   addContacts,
   blockContact,
 } from "./helpers/funcs";
@@ -12,7 +12,9 @@ test.describe("Contacts", () => {
   test.beforeEach(async ({ page, request }) => {
     await resetDatabaseAndOpenApp(page, request);
 
-    await signUpMultipleUsers(page, [user1, user2, user3]);
+    await createUserViaApi(request, user1);
+    await createUserViaApi(request, user2);
+    await createUserViaApi(request, user3);
     await signIn(page, user1.username, user1.password);
 
     await expect(

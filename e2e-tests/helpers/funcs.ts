@@ -18,6 +18,39 @@ export const resetDatabaseAndOpenApp = async (
   await page.goto("http://localhost:5173");
 };
 
+export const createUserViaApi = async (
+  request: APIRequestContext,
+  user: {
+    username: string;
+    password: string;
+    confirmPassword: string;
+  },
+) => {
+  await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+        mutation CreateUser($input: CreateUserInput!) {
+          createUser(input: $input) {
+            id
+            username
+            name
+            about
+            avatar
+            is24HourClock
+          }
+        }
+      `,
+      variables: {
+        input: {
+          username: user.username,
+          password: user.password,
+          confirmPassword: user.confirmPassword,
+        },
+      },
+    },
+  });
+};
+
 export const signUp = async (
   page: Page,
   username: string,
