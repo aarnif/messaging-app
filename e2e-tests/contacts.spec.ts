@@ -24,105 +24,102 @@ test.describe("Contacts", () => {
     ).toBeVisible();
   });
 
-  test("can add a contact", async ({ page }) => {
-    await addContacts(page, [user2]);
+  test.describe("Adding", () => {
+    test("can add a contact", async ({ page }) => {
+      await addContacts(page, [user2]);
 
-    await expect(
-      page.getByRole("link", { name: new RegExp(user2.name) }),
-    ).toBeVisible();
-  });
-
-  test("can add several contacts", async ({ page }) => {
-    const users = [user2, user3];
-    await addContacts(page, users);
-
-    for (const user of users) {
       await expect(
-        page.getByRole("link", { name: new RegExp(user.name) }),
+        page.getByRole("link", { name: new RegExp(user2.name) }),
       ).toBeVisible();
-    }
+    });
+
+    test("can add several contacts", async ({ page }) => {
+      const users = [user2, user3];
+      await addContacts(page, users);
+
+      for (const user of users) {
+        await expect(
+          page.getByRole("link", { name: new RegExp(user.name) }),
+        ).toBeVisible();
+      }
+    });
   });
 
-  test("can search contacts by name", async ({ page, request }) => {
-    await loginViaApi(request, user1.username, user1.password);
-    await addContactsViaApi(request, ["2", "3"]);
-    await page.getByTestId("contacts-nav-item").click();
+  test.describe("Searching", () => {
+    test.beforeEach(async ({ page, request }) => {
+      await loginViaApi(request, user1.username, user1.password);
+      await addContactsViaApi(request, ["2", "3"]);
+      await page.getByTestId("contacts-nav-item").click();
+    });
 
-    await page
-      .getByPlaceholder("Search by name or username...")
-      .fill(user2.name);
+    test("can search contacts by name", async ({ page }) => {
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill(user2.name);
 
-    await expect(
-      page.getByRole("link", { name: new RegExp(user2.name) }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: new RegExp(user3.name) }),
-    ).not.toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) }),
+      ).not.toBeVisible();
+    });
+
+    test("can search contacts by username", async ({ page }) => {
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill(user3.username);
+
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) }),
+      ).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) }),
+      ).not.toBeVisible();
+    });
+
+    test("shows no contacts found message when search has no results", async ({
+      page,
+    }) => {
+      await page
+        .getByPlaceholder("Search by name or username...")
+        .fill("nonexistent");
+
+      await expect(page.getByText("No contacts found.")).toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user2.name) }),
+      ).not.toBeVisible();
+      await expect(
+        page.getByRole("link", { name: new RegExp(user3.name) }),
+      ).not.toBeVisible();
+    });
   });
 
-  test("can search contacts by username", async ({ page, request }) => {
-    await loginViaApi(request, user1.username, user1.password);
-    await addContactsViaApi(request, ["2", "3"]);
-    await page.getByTestId("contacts-nav-item").click();
+  test.describe("Modifying", () => {
+    test.beforeEach(async ({ page, request }) => {
+      await loginViaApi(request, user1.username, user1.password);
+      await addContactsViaApi(request, ["2"]);
+      await page.getByTestId("contacts-nav-item").click();
+    });
 
-    await page
-      .getByPlaceholder("Search by name or username...")
-      .fill(user3.username);
+    test("can toggle block a contact", async ({ page }) => {
+      await page.getByRole("link", { name: user2.username }).click();
+      await blockContact(page);
 
-    await expect(
-      page.getByRole("link", { name: new RegExp(user3.name) }),
-    ).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: new RegExp(user2.name) }),
-    ).not.toBeVisible();
-  });
+      await page.getByRole("button", { name: "Unblock Contact" }).click();
+      await page.getByRole("button", { name: "Unblock", exact: true }).click();
 
-  test("shows no contacts found message when search has no results", async ({
-    page,
-    request,
-  }) => {
-    await loginViaApi(request, user1.username, user1.password);
-    await addContactsViaApi(request, ["2", "3"]);
-    await page.getByTestId("contacts-nav-item").click();
+      await expect(
+        page.getByText("You have blocked the contact."),
+      ).not.toBeVisible();
+    });
 
-    await page
-      .getByPlaceholder("Search by name or username...")
-      .fill("nonexistent");
+    test("can remove a contact", async ({ page }) => {
+      await page.getByRole("link", { name: user2.username }).click();
+      await page.getByRole("button", { name: "Remove Contact" }).click();
+      await page.getByRole("button", { name: "Remove", exact: true }).click();
 
-    await expect(page.getByText("No contacts found.")).toBeVisible();
-    await expect(
-      page.getByRole("link", { name: new RegExp(user2.name) }),
-    ).not.toBeVisible();
-    await expect(
-      page.getByRole("link", { name: new RegExp(user3.name) }),
-    ).not.toBeVisible();
-  });
-
-  test("can toggle block a contact", async ({ page, request }) => {
-    await loginViaApi(request, user1.username, user1.password);
-    await addContactsViaApi(request, ["2"]);
-    await page.getByTestId("contacts-nav-item").click();
-
-    await page.getByRole("link", { name: user2.username }).click();
-    await blockContact(page);
-
-    await page.getByRole("button", { name: "Unblock Contact" }).click();
-    await page.getByRole("button", { name: "Unblock", exact: true }).click();
-
-    await expect(
-      page.getByText("You have blocked the contact."),
-    ).not.toBeVisible();
-  });
-
-  test("can remove a contact", async ({ page, request }) => {
-    await loginViaApi(request, user1.username, user1.password);
-    await addContactsViaApi(request, ["2"]);
-    await page.getByTestId("contacts-nav-item").click();
-
-    await page.getByRole("link", { name: user2.username }).click();
-    await page.getByRole("button", { name: "Remove Contact" }).click();
-    await page.getByRole("button", { name: "Remove", exact: true }).click();
-
-    await expect(page.getByText("No contacts found.")).toBeVisible();
+      await expect(page.getByText("No contacts found.")).toBeVisible();
+    });
   });
 });
