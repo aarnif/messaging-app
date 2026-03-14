@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 import {
   resetDatabaseAndOpenApp,
   createUserViaApi,
+  loginViaApi,
+  addContactsViaApi,
   signIn,
   logout,
   addContacts,
@@ -28,7 +30,8 @@ test.describe("Chats", () => {
       page.getByText("Select Chat to Start Messaging."),
     ).toBeVisible();
 
-    await addContacts(page, [user2, user3, user4]);
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2", "3", "4"]);
     await page.getByTestId("chats-nav-item").click();
   });
 
@@ -96,10 +99,14 @@ test.describe("Chats", () => {
 
     test("prevents creation with a contact that has blocked user", async ({
       page,
+      request,
     }) => {
+      await loginViaApi(request, user2.username, user2.password);
+      await addContactsViaApi(request, ["1"]);
+
       await logout(page);
       await signIn(page, user2.username, user2.password);
-      await addContacts(page, [user1]);
+      await page.getByTestId("contacts-nav-item").click();
       await page.getByRole("link", { name: user1.username }).click();
       await blockContact(page);
 
