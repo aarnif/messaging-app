@@ -1,6 +1,8 @@
 import type { Page, APIRequestContext } from "@playwright/test";
 import { expect } from "@playwright/test";
 
+let token: string | null = null;
+
 export const resetDatabaseAndOpenApp = async (
   page: Page,
   request: APIRequestContext,
@@ -49,6 +51,33 @@ export const createUserViaApi = async (
       },
     },
   });
+};
+
+export const loginViaApi = async (
+  request: APIRequestContext,
+  username: string,
+  password: string,
+) => {
+  const response = await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+        mutation Login($input: LoginInput!) {
+          login(input: $input) {
+            value
+          }
+        }
+      `,
+      variables: {
+        input: {
+          username,
+          password,
+        },
+      },
+    },
+  });
+
+  const json = await response.json();
+  token = json.data?.login?.value;
 };
 
 export const signUp = async (
