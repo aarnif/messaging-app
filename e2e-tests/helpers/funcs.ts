@@ -80,6 +80,37 @@ export const loginViaApi = async (
   token = json.data?.login?.value;
 };
 
+export const addContactsViaApi = async (
+  request: APIRequestContext,
+  userIds: string[],
+) => {
+  await request.post("http://localhost:4000/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: {
+      query: `
+        mutation AddContacts($ids: [ID!]!) {
+          addContacts(ids: $ids) {
+            id
+            isBlocked
+            contactDetails {
+              id
+              username
+              name
+              about
+              avatar
+            }
+          }
+        }
+      `,
+      variables: {
+        ids: userIds,
+      },
+    },
+  });
+};
+
 export const signUp = async (
   page: Page,
   username: string,
