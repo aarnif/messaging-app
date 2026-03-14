@@ -2,6 +2,8 @@ import { test, expect } from "@playwright/test";
 import {
   resetDatabaseAndOpenApp,
   createUserViaApi,
+  loginViaApi,
+  addContactsViaApi,
   signIn,
   addContacts,
   blockContact,
@@ -41,8 +43,10 @@ test.describe("Contacts", () => {
     }
   });
 
-  test("can search contacts by name", async ({ page }) => {
-    await addContacts(page, [user2, user3]);
+  test("can search contacts by name", async ({ page, request }) => {
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2", "3"]);
+    await page.getByTestId("contacts-nav-item").click();
 
     await page
       .getByPlaceholder("Search by name or username...")
@@ -56,8 +60,10 @@ test.describe("Contacts", () => {
     ).not.toBeVisible();
   });
 
-  test("can search contacts by username", async ({ page }) => {
-    await addContacts(page, [user2, user3]);
+  test("can search contacts by username", async ({ page, request }) => {
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2", "3"]);
+    await page.getByTestId("contacts-nav-item").click();
 
     await page
       .getByPlaceholder("Search by name or username...")
@@ -73,8 +79,11 @@ test.describe("Contacts", () => {
 
   test("shows no contacts found message when search has no results", async ({
     page,
+    request,
   }) => {
-    await addContacts(page, [user2, user3]);
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2", "3"]);
+    await page.getByTestId("contacts-nav-item").click();
 
     await page
       .getByPlaceholder("Search by name or username...")
@@ -89,8 +98,11 @@ test.describe("Contacts", () => {
     ).not.toBeVisible();
   });
 
-  test("can toggle block a contact", async ({ page }) => {
-    await addContacts(page, [user2]);
+  test("can toggle block a contact", async ({ page, request }) => {
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2"]);
+    await page.getByTestId("contacts-nav-item").click();
+
     await page.getByRole("link", { name: user2.username }).click();
     await blockContact(page);
 
@@ -102,8 +114,11 @@ test.describe("Contacts", () => {
     ).not.toBeVisible();
   });
 
-  test("can remove a contact", async ({ page }) => {
-    await addContacts(page, [user2]);
+  test("can remove a contact", async ({ page, request }) => {
+    await loginViaApi(request, user1.username, user1.password);
+    await addContactsViaApi(request, ["2"]);
+    await page.getByTestId("contacts-nav-item").click();
+
     await page.getByRole("link", { name: user2.username }).click();
     await page.getByRole("button", { name: "Remove Contact" }).click();
     await page.getByRole("button", { name: "Remove", exact: true }).click();
