@@ -352,15 +352,14 @@ test.describe("Chats", () => {
         "New Group Chat",
         "New Group Chat Description",
       );
-    });
-
-    test("prevents editing with empty chat name", async ({ page }) => {
       await expect(
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
       await page.getByRole("link", { name: "New Group Chat" }).click();
+    });
 
+    test("prevents editing with empty chat name", async ({ page }) => {
       await editGroupChat(page, "", "", [user2, user3]);
 
       await assertErrorNotifyAndClose(
@@ -370,12 +369,6 @@ test.describe("Chats", () => {
     });
 
     test("can edit group chat details", async ({ page }) => {
-      await expect(
-        page.getByRole("link", { name: "New Group Chat" }),
-      ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
-      await page.getByRole("link", { name: "New Group Chat" }).click();
-
       await editGroupChat(
         page,
         "Edited Group Chat Name",
@@ -395,12 +388,6 @@ test.describe("Chats", () => {
     });
 
     test("can add chat members", async ({ page }) => {
-      await expect(
-        page.getByRole("link", { name: "New Group Chat" }),
-      ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
-      await page.getByRole("link", { name: "New Group Chat" }).click();
-
       await editGroupChat(
         page,
         "New Group Chat",
@@ -418,12 +405,6 @@ test.describe("Chats", () => {
     });
 
     test("can remove chat members", async ({ page }) => {
-      await expect(
-        page.getByRole("link", { name: "New Group Chat" }),
-      ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
-      await page.getByRole("link", { name: "New Group Chat" }).click();
-
       await editGroupChat(
         page,
         "New Group Chat",
