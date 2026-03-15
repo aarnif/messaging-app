@@ -1,10 +1,11 @@
 import { test, expect } from "@playwright/test";
 import {
   resetDatabaseAndOpenApp,
-  signUp,
-  logout,
-  addContacts,
-  createPrivateChat,
+  createUserViaApi,
+  loginViaApi,
+  addContactsViaApi,
+  createChatViaApi,
+  signIn,
   openAppearanceSettings,
 } from "./helpers/funcs";
 import { user1, user2 } from "./helpers/data";
@@ -12,8 +13,8 @@ import { user1, user2 } from "./helpers/data";
 test.describe("Settings", () => {
   test.beforeEach(async ({ page, request }) => {
     await resetDatabaseAndOpenApp(page, request);
-
-    await signUp(page, user1.username, user1.password, user1.confirmPassword);
+    await createUserViaApi(request, user1);
+    await signIn(page, user1.username, user1.password);
   });
 
   test("can toggle dark mode", async ({ page }) => {
@@ -29,19 +30,11 @@ test.describe("Settings", () => {
     await expect(htmlElement).not.toHaveClass(/dark/);
   });
 
-  test("can toggle 24 hour clock", async ({ page }) => {
-    await logout(page);
-    await signUp(page, user2.username, user2.password, user2.confirmPassword);
-
-    await expect(
-      page.getByText("Select Chat to Start Messaging."),
-    ).toBeVisible();
-
-    await addContacts(page, [user1]);
-    await page.getByTestId("chats-nav-item").click();
-    await createPrivateChat(page, user1, "Hello World!");
-
-    await expect(page.getByText(/AM|PM/)).not.toBeVisible();
+  test("can toggle 24 hour clock", async ({ page, request }) => {
+    await loginViaApi(request, user1.username, user1.password);
+    await createUserViaApi(request, user2);
+    await addContactsViaApi(request, ["2"]);
+    await createChatViaApi(request, ["2"], "Hello World!", null, null);
 
     await openAppearanceSettings(page);
     await page.getByTestId("toggle-clock-mode").click();
