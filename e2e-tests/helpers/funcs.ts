@@ -111,6 +111,38 @@ export const addContactsViaApi = async (
   });
 };
 
+export const createChatViaApi = async (
+  request: APIRequestContext,
+  contactIds: string[],
+  initialMessage: string,
+  name: string | null,
+  description: string | null,
+) => {
+  await request.post("http://localhost:4000/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: {
+      query: `
+        mutation CreateChat($input: CreateChatInput!) {
+          createChat(input: $input) {
+            id
+            type
+          }
+        }
+      `,
+      variables: {
+        input: {
+          name: name,
+          description: description,
+          members: contactIds,
+          initialMessage: initialMessage,
+        },
+      },
+    },
+  });
+};
+
 export const signUp = async (
   page: Page,
   username: string,

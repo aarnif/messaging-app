@@ -4,6 +4,7 @@ import {
   createUserViaApi,
   loginViaApi,
   addContactsViaApi,
+  createChatViaApi,
   signIn,
   logout,
   addContacts,
@@ -125,17 +126,17 @@ test.describe("Chats", () => {
   });
 
   test.describe("Filtering", () => {
-    test.beforeEach(async ({ page }) => {
-      await createPrivateChat(page, user2, "Hello World!");
-      await createGroupChat(
-        page,
+    test.beforeEach(async ({ page, request }) => {
+      await loginViaApi(request, user1.username, user1.password);
+      await createChatViaApi(request, ["2"], "Hello World!", null, null);
+      await createChatViaApi(
+        request,
+        ["3", "4"],
+        "Hello World!",
         "New Group Chat",
         "New Group Chat Description",
-        [user3, user4],
-        "Hello World!",
       );
     });
-
     test("can search private chats by name", async ({ page }) => {
       await page
         .getByPlaceholder("Search by title or description...")
@@ -177,19 +178,21 @@ test.describe("Chats", () => {
   });
 
   test.describe("Messages", () => {
-    test.beforeEach(async ({ page }) => {
-      await createGroupChat(
-        page,
+    test.beforeEach(async ({ page, request }) => {
+      await loginViaApi(request, user1.username, user1.password);
+      await createChatViaApi(
+        request,
+        ["2", "3"],
+        "Hello World!",
         "New Group Chat",
         "New Group Chat Description",
-        [user2, user3],
-        "Hello World!",
       );
 
       await expect(
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await page.getByRole("link", { name: "New Group Chat" }).click();
     });
 
     test("prevents sending an empty message to existing chat", async ({
@@ -340,13 +343,14 @@ test.describe("Chats", () => {
   });
 
   test.describe("Editing", () => {
-    test.beforeEach(async ({ page }) => {
-      await createGroupChat(
-        page,
+    test.beforeEach(async ({ page, request }) => {
+      await loginViaApi(request, user1.username, user1.password);
+      await createChatViaApi(
+        request,
+        ["2", "3"],
+        "Hello World!",
         "New Group Chat",
         "New Group Chat Description",
-        [user2, user3],
-        "Hello World!",
       );
     });
 
@@ -355,6 +359,7 @@ test.describe("Chats", () => {
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await page.getByRole("link", { name: "New Group Chat" }).click();
 
       await editGroupChat(page, "", "", [user2, user3]);
 
@@ -369,6 +374,7 @@ test.describe("Chats", () => {
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await page.getByRole("link", { name: "New Group Chat" }).click();
 
       await editGroupChat(
         page,
@@ -393,6 +399,7 @@ test.describe("Chats", () => {
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await page.getByRole("link", { name: "New Group Chat" }).click();
 
       await editGroupChat(
         page,
@@ -415,6 +422,7 @@ test.describe("Chats", () => {
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
       await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await page.getByRole("link", { name: "New Group Chat" }).click();
 
       await editGroupChat(
         page,
