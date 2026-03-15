@@ -14,6 +14,7 @@ import {
   editGroupChat,
   assertErrorNotifyAndClose,
   openEditMessageMode,
+  openDeleteMessageConfirm,
 } from "./helpers/funcs";
 import { user1, user2, user3, user4 } from "./helpers/data";
 
@@ -272,9 +273,7 @@ test.describe("Chats", () => {
     });
 
     test("can open delete confirm modal for own message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Delete" }).click();
+      await openDeleteMessageConfirm(page);
 
       await expect(page.getByText("Delete Message?")).toBeVisible();
       await expect(
@@ -283,10 +282,7 @@ test.describe("Chats", () => {
     });
 
     test("can cancel deleting message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Delete" }).click();
-
+      await openDeleteMessageConfirm(page);
       await expect(page.getByText("Delete Message?")).toBeVisible();
       await expect(
         page.getByText("Are you sure you want to delete the message?"),
@@ -301,9 +297,7 @@ test.describe("Chats", () => {
     });
 
     test("can delete a message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Delete" }).click();
+      await openDeleteMessageConfirm(page);
 
       await expect(page.getByText("Delete Message?")).toBeVisible();
       await expect(

@@ -429,3 +429,9 @@ export const openEditMessageMode = async (page: Page) => {
   await page.getByTestId("message-menu-button").click();
   await page.getByRole("button", { name: "Edit" }).click();
 };
+
+export const openDeleteMessageConfirm = async (page: Page) => {
+  await page.getByTestId("current-user-message").hover();
+  await page.getByTestId("message-menu-button").click();
+  await page.getByRole("button", { name: "Delete" }).click();
+};
