@@ -7,7 +7,6 @@ import {
   createChatViaApi,
   signIn,
   logout,
-  addContacts,
   blockContact,
   sendMessage,
   createPrivateChat,
@@ -246,7 +245,6 @@ test.describe("Chats", () => {
     });
 
     test("can cancel editing message", async ({ page }) => {
-      await page.pause();
       await page.getByTestId("current-user-message").hover();
       await page.getByTestId("message-menu-button").click();
       await page.getByRole("button", { name: "Edit" }).click();
@@ -263,7 +261,6 @@ test.describe("Chats", () => {
     });
 
     test("can edit a message", async ({ page }) => {
-      await page.pause();
       await page.getByTestId("current-user-message").hover();
       await page.getByTestId("message-menu-button").click();
       await page.getByRole("button", { name: "Edit" }).click();
@@ -329,7 +326,6 @@ test.describe("Chats", () => {
     });
 
     test("cannot delete another user's message", async ({ page }) => {
-      await page.pause();
       await logout(page);
       await signIn(page, user2.username, user2.password);
       await page
