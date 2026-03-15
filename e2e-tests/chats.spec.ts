@@ -13,6 +13,7 @@ import {
   createGroupChat,
   editGroupChat,
   assertErrorNotifyAndClose,
+  openEditMessageMode,
 } from "./helpers/funcs";
 import { user1, user2, user3, user4 } from "./helpers/data";
 
@@ -234,9 +235,7 @@ test.describe("Chats", () => {
     });
 
     test("can open edit mode for own message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMessageMode(page);
 
       const editMessageInput = page.getByTestId("edit-message-input");
 
@@ -245,9 +244,7 @@ test.describe("Chats", () => {
     });
 
     test("can cancel editing message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMessageMode(page);
 
       const editMessageInput = page.getByTestId("edit-message-input");
       await editMessageInput.fill("Edited message");
@@ -261,9 +258,7 @@ test.describe("Chats", () => {
     });
 
     test("can edit a message", async ({ page }) => {
-      await page.getByTestId("current-user-message").hover();
-      await page.getByTestId("message-menu-button").click();
-      await page.getByRole("button", { name: "Edit" }).click();
+      await openEditMessageMode(page);
 
       const editMessageInput = page.getByTestId("edit-message-input");
       await editMessageInput.fill("Edited message");
