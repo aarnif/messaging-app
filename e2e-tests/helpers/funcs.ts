@@ -347,10 +347,12 @@ export const editGroupChat = async (
 
   const modal = page.getByTestId("edit-chat-modal");
 
-  const currentMembers = await modal.getByTestId("selected").all();
+  const selectedMembers = modal.getByTestId("selected");
 
-  for (let i = 0; i < currentMembers.length; ++i) {
-    await currentMembers[i].click();
+  while ((await selectedMembers.count()) > 0) {
+    await selectedMembers.first().click();
+    // Chromium engine requires delay between member removals
+    await page.waitForTimeout(100);
   }
 
   for (const user of chatMembers) {
