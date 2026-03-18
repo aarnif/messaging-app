@@ -1,5 +1,147 @@
-import type { Page } from "@playwright/test";
+import type { Page, APIRequestContext } from "@playwright/test";
 import { expect } from "@playwright/test";
+
+let token: string | null = null;
+
+export const resetDatabaseAndOpenApp = async (
+  page: Page,
+  request: APIRequestContext,
+) => {
+  await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+      mutation Mutation {
+        resetDatabase
+      }
+    `,
+    },
+  });
+
+  await page.goto("http://localhost:5173");
+};
+
+export const createUserViaApi = async (
+  request: APIRequestContext,
+  user: {
+    username: string;
+    password: string;
+    confirmPassword: string;
+  },
+) => {
+  await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+        mutation CreateUser($input: CreateUserInput!) {
+          createUser(input: $input) {
+            id
+            username
+            name
+            about
+            avatar
+            is24HourClock
+          }
+        }
+      `,
+      variables: {
+        input: {
+          username: user.username,
+          password: user.password,
+          confirmPassword: user.confirmPassword,
+        },
+      },
+    },
+  });
+};
+
+export const loginViaApi = async (
+  request: APIRequestContext,
+  username: string,
+  password: string,
+) => {
+  const response = await request.post("http://localhost:4000/", {
+    data: {
+      query: `
+        mutation Login($input: LoginInput!) {
+          login(input: $input) {
+            value
+          }
+        }
+      `,
+      variables: {
+        input: {
+          username,
+          password,
+        },
+      },
+    },
+  });
+
+  const json = await response.json();
+  token = json.data?.login?.value;
+};
+
+export const addContactsViaApi = async (
+  request: APIRequestContext,
+  userIds: string[],
+) => {
+  await request.post("http://localhost:4000/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: {
+      query: `
+        mutation AddContacts($ids: [ID!]!) {
+          addContacts(ids: $ids) {
+            id
+            isBlocked
+            contactDetails {
+              id
+              username
+              name
+              about
+              avatar
+            }
+          }
+        }
+      `,
+      variables: {
+        ids: userIds,
+      },
+    },
+  });
+};
+
+export const createChatViaApi = async (
+  request: APIRequestContext,
+  contactIds: string[],
+  initialMessage: string,
+  name: string | null,
+  description: string | null,
+) => {
+  await request.post("http://localhost:4000/", {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+    data: {
+      query: `
+        mutation CreateChat($input: CreateChatInput!) {
+          createChat(input: $input) {
+            id
+            type
+          }
+        }
+      `,
+      variables: {
+        input: {
+          name: name,
+          description: description,
+          members: contactIds,
+          initialMessage: initialMessage,
+        },
+      },
+    },
+  });
+};
 
 export const signUp = async (
   page: Page,
@@ -205,10 +347,12 @@ export const editGroupChat = async (
 
   const modal = page.getByTestId("edit-chat-modal");
 
-  const currentMembers = await modal.getByTestId("selected").all();
+  const selectedMembers = modal.getByTestId("selected");
 
-  for (let i = 0; i < currentMembers.length; ++i) {
-    await currentMembers[i].click();
+  while ((await selectedMembers.count()) > 0) {
+    await selectedMembers.first().click();
+    // Chromium engine requires delay between member removals
+    await page.waitForTimeout(100);
   }
 
   for (const user of chatMembers) {
@@ -280,4 +424,16 @@ export const assertErrorNotifyAndClose = async (
   await expect(page.getByText(message)).toBeVisible();
   await page.getByTestId("close-notify-message").click();
   await expect(page.getByText(message)).not.toBeVisible();
+};
+
+export const openEditMessageMode = async (page: Page) => {
+  await page.getByTestId("current-user-message").hover();
+  await page.getByTestId("message-menu-button").click();
+  await page.getByRole("button", { name: "Edit" }).click();
+};
+
+export const openDeleteMessageConfirm = async (page: Page) => {
+  await page.getByTestId("current-user-message").hover();
+  await page.getByTestId("message-menu-button").click();
+  await page.getByRole("button", { name: "Delete" }).click();
 };
