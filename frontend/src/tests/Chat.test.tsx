@@ -109,7 +109,9 @@ const openMessageEditMode = async (user: UserEvent) => {
       screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
     ).toBeDefined();
   });
-  const [firstMessageMenuButton] = screen.getAllByTestId("message-menu-button");
+  const [firstMessageMenuButton] = screen.getAllByTestId(
+    "current-user-message"
+  );
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Edit" })).toBeDefined();
@@ -126,7 +128,9 @@ const openMessageDeleteConfirmation = async (user: UserEvent) => {
       screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
     ).toBeDefined();
   });
-  const [firstMessageMenuButton] = screen.getAllByTestId("message-menu-button");
+  const [firstMessageMenuButton] = screen.getAllByTestId(
+    "current-user-message"
+  );
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
