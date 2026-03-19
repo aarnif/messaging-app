@@ -20,12 +20,7 @@ import {
 } from "../graphql/subscriptions";
 import Spinner from "../ui/Spinner";
 import NotFound from "../ui/NotFound";
-import {
-  IoChevronBack,
-  IoChevronForward,
-  IoChevronDown,
-  IoCheckmark,
-} from "react-icons/io5";
+import { IoChevronBack, IoChevronForward, IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaBan } from "react-icons/fa";
 import { DEBOUNCE_DELAY } from "../constants";
@@ -69,34 +64,33 @@ import { checkIfMessageIsSingleEmoji } from "../helpers";
 const MessageMenu = ({
   handleOpenEditModal,
   handleDeleteMessage,
+  isMessageMenuOpen,
+  setIsMessageMenuOpen,
 }: {
   handleOpenEditModal: () => void;
   handleDeleteMessage: () => void;
+  isMessageMenuOpen: boolean;
+  setIsMessageMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const modal = useModal();
-  const [isOpen, setIsOpen] = useState(false);
 
   return (
-    <div className="relative">
-      <button
-        onClick={() => setIsOpen(!isOpen)}
-        className="cursor-pointer rounded-lg bg-slate-200 p-1 hover:bg-slate-300 dark:bg-slate-600 dark:hover:bg-slate-500"
-        data-testid="message-menu-button"
-      >
-        <IoChevronDown className="h-3.5 w-3.5 text-slate-700 dark:text-slate-100" />
-      </button>
-
-      {isOpen && (
+    <>
+      {isMessageMenuOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsOpen(false)}
-          />
-          <div className="absolute right-0 z-20 w-32 rounded-lg bg-slate-200 shadow-lg dark:bg-slate-700">
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="fixed inset-0 z-10 bg-black/50"
+              onClick={() => setIsMessageMenuOpen(false)}
+            />
+          </AnimatePresence>
+          <div className="absolute right-0 z-100 w-32 rounded-lg bg-slate-200 shadow-lg dark:bg-slate-700">
             <button
               onClick={() => {
                 handleOpenEditModal();
-                setIsOpen(false);
+                setIsMessageMenuOpen(false);
               }}
               className="w-full cursor-pointer rounded-lg px-4 py-2 text-left text-xs font-semibold text-slate-900 hover:bg-slate-300 dark:text-slate-50 dark:hover:bg-slate-600"
             >
@@ -112,7 +106,7 @@ const MessageMenu = ({
                   confirm: "Delete",
                   callback: handleDeleteMessage,
                 });
-                setIsOpen(false);
+                setIsMessageMenuOpen(false);
               }}
               className="w-full cursor-pointer rounded-lg px-4 py-2 text-left text-xs font-semibold text-slate-900 hover:bg-slate-300 dark:text-slate-50 dark:hover:bg-slate-600"
             >
@@ -121,7 +115,7 @@ const MessageMenu = ({
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
@@ -134,6 +128,7 @@ const ChatMessage = ({
   message: Message;
   latestAddedMessageId: string | null;
 }) => {
+  const [isMessageMenuOpen, setIsMessageMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(message.content);
   const isCurrentUser = message.sender.id === currentUser.id;
@@ -163,11 +158,13 @@ const ChatMessage = ({
 
   const handleCancel = () => {
     setEditedContent(message.content);
+    setIsMessageMenuOpen(false);
     setIsEditing(false);
   };
 
   const handleEditMessage = async () => {
     if (!editedContent || editedContent === message.content) {
+      setIsMessageMenuOpen(false);
       setIsEditing(false);
       return;
     }
@@ -181,6 +178,7 @@ const ChatMessage = ({
       },
     });
 
+    setIsMessageMenuOpen(false);
     setIsEditing(false);
   };
 
@@ -192,6 +190,8 @@ const ChatMessage = ({
     });
   };
 
+  const canOpenMessageMenu = isCurrentUser && !isEditing && !message.isDeleted;
+
   return (
     <div
       className={`flex flex-col ${isCurrentUser ? "items-end" : "items-start"}`}
@@ -199,7 +199,7 @@ const ChatMessage = ({
       <AnimatePresence>
         {isEditing && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 bg-black/50"
@@ -209,19 +209,16 @@ const ChatMessage = ({
       </AnimatePresence>
       <motion.div
         layout
+        onClick={
+          canOpenMessageMenu
+            ? () => setIsMessageMenuOpen(!isMessageMenuOpen)
+            : undefined
+        }
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
-        className={`group flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
+        className={`flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
-        } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"}`}
+        } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"} ${canOpenMessageMenu && !isMessageMenuOpen && "cursor-pointer"} ${isMessageMenuOpen && "z-50 -translate-y-2 scale-105"}`}
       >
-        {isCurrentUser && !isEditing && !message.isDeleted && (
-          <div className="invisible absolute top-1 right-1 group-hover:visible">
-            <MessageMenu
-              handleOpenEditModal={handleOpenEditModal}
-              handleDeleteMessage={handleDeleteMessage}
-            />
-          </div>
-        )}
         <h3
           className={`font-semibold ${isEditing ? "text-sm" : "text-xs"} ${
             isCurrentUser
@@ -302,6 +299,17 @@ const ChatMessage = ({
           className={`absolute bottom-0 border-t-16 border-t-transparent ${isCurrentUser ? "-right-2 border-l-16 border-l-green-300" : "-left-2 border-r-16 border-r-slate-200 dark:border-r-slate-700"}`}
         ></div>
       </motion.div>
+
+      {canOpenMessageMenu && (
+        <div className="relative cursor-auto">
+          <MessageMenu
+            handleOpenEditModal={handleOpenEditModal}
+            handleDeleteMessage={handleDeleteMessage}
+            isMessageMenuOpen={isMessageMenuOpen}
+            setIsMessageMenuOpen={setIsMessageMenuOpen}
+          />
+        </div>
+      )}
 
       {!isCurrentUser && (
         <div className="relative right-3 w-full">
