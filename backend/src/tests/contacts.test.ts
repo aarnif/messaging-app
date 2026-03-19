@@ -1,4 +1,3 @@
-import type { ApolloServer, BaseContext } from "@apollo/server";
 import type {
   User,
   Contact,
@@ -8,6 +7,7 @@ import type {
   EditProfileInput,
   CreateChatInput,
 } from "~/types/graphql";
+import { describeGraphQLSuite } from "./helpers/setup";
 import {
   user1Details,
   user2Details,
@@ -40,28 +40,14 @@ import {
   FIND_CONTACT_BY_USER_ID,
   NON_CONTACT_USERS,
 } from "./helpers/queries";
-import { sequelize } from "../db";
-import { start } from "../server";
-import { emptyDatabase, createDatabase } from "../populateDatabase";
-import { describe, before, beforeEach, test, after } from "node:test";
+import { describe, beforeEach, test } from "node:test";
 import assert from "node:assert";
 
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;
 const { id: _id2, name: _name3, ...user3Input } = user3Details;
 
-void describe("Contacts", () => {
-  let server: ApolloServer<BaseContext>;
-
-  before(async () => {
-    server = await start();
-  });
-
-  beforeEach(async () => {
-    await emptyDatabase();
-    await createDatabase();
-  });
-
+describeGraphQLSuite("Contacts", () => {
   let user1Token: string;
   let user2Token: string;
 
@@ -1027,10 +1013,5 @@ void describe("Contacts", () => {
       assert.strictEqual(users.length, 1, "Should have 1 user");
       assertUserEquality(users[0], expectedUser2);
     });
-  });
-
-  after(async () => {
-    await server.stop();
-    await sequelize.close();
   });
 });

@@ -1,4 +1,3 @@
-import type { ApolloServer, BaseContext } from "@apollo/server";
 import type {
   User,
   CreateUserInput,
@@ -6,6 +5,7 @@ import type {
   EditProfileInput,
   ChangePasswordInput,
 } from "~/types/graphql";
+import { describeGraphQLSuite } from "./helpers/setup";
 import {
   user1Details,
   user2Details,
@@ -26,27 +26,13 @@ import {
   FIND_USER_BY_ID,
   CHANGE_PASSWORD,
 } from "./helpers/queries";
-import { sequelize } from "../db";
-import { start } from "../server";
-import { emptyDatabase, createDatabase } from "../populateDatabase";
-import { describe, before, beforeEach, test, after } from "node:test";
+import { describe, beforeEach, test } from "node:test";
 import assert from "node:assert";
 
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;
 
-void describe("Users", () => {
-  let server: ApolloServer<BaseContext>;
-
-  before(async () => {
-    server = await start();
-  });
-
-  beforeEach(async () => {
-    await emptyDatabase();
-    await createDatabase();
-  });
-
+describeGraphQLSuite("Users", () => {
   void describe("User creation", () => {
     void test("fails with username shorter than 3 characters", async () => {
       const responseBody = await query<
@@ -582,10 +568,5 @@ void describe("Users", () => {
 
       assertUserEquality(user, expectedUser1);
     });
-  });
-
-  after(async () => {
-    await server.stop();
-    await sequelize.close();
   });
 });
