@@ -75,7 +75,7 @@ const MessageMenu = ({
   const modal = useModal();
 
   return (
-    <div className="relative cursor-auto">
+    <>
       {isMessageMenuOpen && (
         <>
           <div
@@ -111,7 +111,7 @@ const MessageMenu = ({
           </div>
         </>
       )}
-    </div>
+    </>
   );
 };
 
@@ -215,16 +215,6 @@ const ChatMessage = ({
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
         } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"} ${canOpenMessageMenu && "cursor-pointer"}`}
       >
-        {canOpenMessageMenu && (
-          <div className="absolute top-1 right-1">
-            <MessageMenu
-              handleOpenEditModal={handleOpenEditModal}
-              handleDeleteMessage={handleDeleteMessage}
-              isMessageMenuOpen={isMessageMenuOpen}
-              setIsMessageMenuOpen={setIsMessageMenuOpen}
-            />
-          </div>
-        )}
         <h3
           className={`font-semibold ${isEditing ? "text-sm" : "text-xs"} ${
             isCurrentUser
@@ -305,6 +295,17 @@ const ChatMessage = ({
           className={`absolute bottom-0 border-t-16 border-t-transparent ${isCurrentUser ? "-right-2 border-l-16 border-l-green-300" : "-left-2 border-r-16 border-r-slate-200 dark:border-r-slate-700"}`}
         ></div>
       </motion.div>
+
+      {canOpenMessageMenu && (
+        <div className="relative top-1 cursor-auto">
+          <MessageMenu
+            handleOpenEditModal={handleOpenEditModal}
+            handleDeleteMessage={handleDeleteMessage}
+            isMessageMenuOpen={isMessageMenuOpen}
+            setIsMessageMenuOpen={setIsMessageMenuOpen}
+          />
+        </div>
+      )}
 
       {!isCurrentUser && (
         <div className="relative right-3 w-full">
