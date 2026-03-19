@@ -49,7 +49,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
 
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/",
+    path: "/graphql",
   });
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });
@@ -86,7 +86,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
   await server.start();
 
   app.use(
-    "/",
+    "/graphql",
     cors<cors.CorsRequest>(),
     express.json(),
     expressMiddleware(server, {

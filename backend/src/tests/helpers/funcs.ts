@@ -12,7 +12,7 @@ export const query = async <Data, Variables = Record<string, never>>(
   expectedStatusCode: number = 200,
   skipErrorCheck: boolean = false, // Needed for testing invalid token
 ): Promise<HTTPGraphQLResponse<Data>> => {
-  const response = request(config.SERVER_URL).post("/").send({
+  const response = request(config.SERVER_URL).post("/graphql").send({
     query,
     variables,
   });
