@@ -78,11 +78,15 @@ const MessageMenu = ({
     <>
       {isMessageMenuOpen && (
         <>
-          <div
-            className="fixed inset-0 z-10"
-            onClick={() => setIsMessageMenuOpen(false)}
-          />
-          <div className="absolute right-0 z-20 w-32 rounded-lg bg-slate-200 shadow-lg dark:bg-slate-700">
+          <AnimatePresence>
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              className="fixed inset-0 z-10 bg-black/50"
+              onClick={() => setIsMessageMenuOpen(false)}
+            />
+          </AnimatePresence>
+          <div className="absolute right-0 z-100 w-32 rounded-lg bg-slate-200 shadow-lg dark:bg-slate-700">
             <button
               onClick={() => {
                 handleOpenEditModal();
@@ -195,7 +199,7 @@ const ChatMessage = ({
       <AnimatePresence>
         {isEditing && (
           <motion.div
-            initial={{ opacity: 0 }}
+            initial={{ opacity: 1 }}
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             className="fixed inset-0 z-40 bg-black/50"
@@ -213,7 +217,7 @@ const ChatMessage = ({
         data-testid={isCurrentUser ? "current-user-message" : "contact-message"}
         className={`flex max-w-62.5 min-w-25 flex-col rounded-lg px-2 pt-2 sm:max-w-150 ${
           isCurrentUser ? "bg-green-300" : "ml-8 bg-slate-200 dark:bg-slate-700"
-        } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"} ${canOpenMessageMenu && "cursor-pointer"}`}
+        } ${isLatestMessage && "animate-pop-in"} ${isEditing ? "fixed top-1/2 left-1/2 z-50 w-64 -translate-x-1/2 -translate-y-1/2 sm:w-96" : "relative"} ${canOpenMessageMenu && !isMessageMenuOpen && "cursor-pointer"} ${isMessageMenuOpen && "z-50 -translate-y-2 scale-105"}`}
       >
         <h3
           className={`font-semibold ${isEditing ? "text-sm" : "text-xs"} ${
@@ -297,7 +301,7 @@ const ChatMessage = ({
       </motion.div>
 
       {canOpenMessageMenu && (
-        <div className="relative top-1 cursor-auto">
+        <div className="relative cursor-auto">
           <MessageMenu
             handleOpenEditModal={handleOpenEditModal}
             handleDeleteMessage={handleDeleteMessage}
