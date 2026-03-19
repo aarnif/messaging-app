@@ -7,7 +7,7 @@ export const resetDatabaseAndOpenApp = async (
   page: Page,
   request: APIRequestContext,
 ) => {
-  await request.post("http://localhost:4000/", {
+  await request.post("http://localhost:4000/graphql", {
     data: {
       query: `
       mutation Mutation {
@@ -28,7 +28,7 @@ export const createUserViaApi = async (
     confirmPassword: string;
   },
 ) => {
-  await request.post("http://localhost:4000/", {
+  await request.post("http://localhost:4000/graphql", {
     data: {
       query: `
         mutation CreateUser($input: CreateUserInput!) {
@@ -58,7 +58,7 @@ export const loginViaApi = async (
   username: string,
   password: string,
 ) => {
-  const response = await request.post("http://localhost:4000/", {
+  const response = await request.post("http://localhost:4000/graphql", {
     data: {
       query: `
         mutation Login($input: LoginInput!) {
@@ -84,7 +84,7 @@ export const addContactsViaApi = async (
   request: APIRequestContext,
   userIds: string[],
 ) => {
-  await request.post("http://localhost:4000/", {
+  await request.post("http://localhost:4000/graphql", {
     headers: {
       Authorization: `Bearer ${token}`,
     },
@@ -118,7 +118,7 @@ export const createChatViaApi = async (
   name: string | null,
   description: string | null,
 ) => {
-  await request.post("http://localhost:4000/", {
+  await request.post("http://localhost:4000/graphql", {
     headers: {
       Authorization: `Bearer ${token}`,
     },

@@ -15,7 +15,7 @@ export default defineConfig({
   webServer: [
     {
       command: "npm run dev:backend",
-      url: "http://localhost:4000",
+      url: "http://localhost:4000/graphql",
       reuseExistingServer: !process.env.CI,
       stdout: "ignore",
       stderr: "pipe",
