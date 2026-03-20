@@ -1,6 +1,6 @@
 import type { InferAttributes, InferCreationAttributes } from "sequelize";
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../db";
+import { sequelize } from "../db.js";
 
 class Contact extends Model<
   InferAttributes<Contact>,

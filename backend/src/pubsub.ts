@@ -3,7 +3,7 @@ import Redis from "ioredis";
 import { RedisPubSub } from "graphql-redis-subscriptions";
 import config, { isDevelopment } from "config";
 import { z } from "zod";
-import type { PubSubEngine } from "./types/other";
+import type { PubSubEngine } from "./types/other.js";
 
 const recordSchema = z.record(z.string(), z.unknown());
 

@@ -12,11 +12,11 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { gql } from "graphql-tag";
-import { resolvers } from "./resolvers";
-import { connectToDatabase } from "./db";
+import { resolvers } from "./resolvers.js";
+import { connectToDatabase } from "./db.js";
 import config from "config";
 import jwt from "jsonwebtoken";
-import { User } from "./models";
+import { User } from "./models/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);

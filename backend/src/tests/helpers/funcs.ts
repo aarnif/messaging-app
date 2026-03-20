@@ -1,7 +1,7 @@
 import request from "supertest";
-import type { HTTPGraphQLResponse } from "../../types/other";
+import type { HTTPGraphQLResponse } from "../../types/other.js";
 import type { User, Contact, Chat, UserChat } from "~/types/graphql";
-import { user1Details } from "./data";
+import { user1Details } from "./data.js";
 import config from "config";
 import assert from "node:assert";
 

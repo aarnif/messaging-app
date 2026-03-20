@@ -1,4 +1,4 @@
-import type { Contact } from "../types/other";
+import type { Contact } from "../types/other.js";
 
 const contacts: Contact[] = [
   { userId: 1, contactId: 2, isBlocked: false },

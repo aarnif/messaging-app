@@ -5,19 +5,19 @@ import type {
   EditProfileInput,
   ChangePasswordInput,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
   user1Details,
   user2Details,
   expectedUser1,
   expectedUser2,
-} from "./helpers/data";
+} from "./helpers/data.js";
 import {
   query,
   assertValidationError,
   assertError,
   assertUserEquality,
-} from "./helpers/funcs";
+} from "./helpers/funcs.js";
 import {
   ME,
   CREATE_USER,
@@ -25,7 +25,7 @@ import {
   EDIT_PROFILE,
   FIND_USER_BY_ID,
   CHANGE_PASSWORD,
-} from "./helpers/queries";
+} from "./helpers/queries.js";
 import { describe, beforeEach, test } from "node:test";
 import assert from "node:assert";
 

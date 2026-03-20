@@ -1,8 +1,8 @@
 import type { InferAttributes, InferCreationAttributes } from "sequelize";
 import { Model, DataTypes } from "sequelize";
-import { sequelize } from "../db";
-import { ChatMember } from "./chatMember";
-import { Message } from "./message";
+import { sequelize } from "../db.js";
+import { ChatMember } from "./chatMember.js";
+import { Message } from "./message.js";
 
 class Chat extends Model<InferAttributes<Chat>, InferCreationAttributes<Chat>> {
   declare id?: number;
