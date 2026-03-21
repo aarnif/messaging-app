@@ -10,7 +10,7 @@ import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
 import { createClient } from "graphql-ws";
 
 const httpLink = new HttpLink({
-  uri: import.meta.env.VITE_SERVER_URL,
+  uri: import.meta.env.VITE_SERVER_URL || "/graphql",
 });
 
 const authLink = new SetContextLink(({ headers }) => {
@@ -26,7 +26,7 @@ const authLink = new SetContextLink(({ headers }) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: import.meta.env.VITE_WS_URL,
+    url: import.meta.env.VITE_WS_URL || "/graphql",
     connectionParams: () => {
       const token = localStorage.getItem("messaging-app-token");
 
