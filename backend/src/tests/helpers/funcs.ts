@@ -2,7 +2,7 @@ import request from "supertest";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
 import type { User, Contact, Chat, UserChat } from "~/types/graphql";
 import { user1Details } from "./data.js";
-import config from "config";
+import config from "../../../config.js";
 import assert from "node:assert";
 
 export const query = async <Data, Variables = Record<string, never>>(

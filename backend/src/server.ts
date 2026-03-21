@@ -14,7 +14,7 @@ import { fileURLToPath } from "url";
 import { gql } from "graphql-tag";
 import { resolvers } from "./resolvers.js";
 import { connectToDatabase } from "./db.js";
-import config from "config";
+import config from "../config.js";
 import jwt from "jsonwebtoken";
 import { User } from "./models/index.js";
 

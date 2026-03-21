@@ -1,6 +1,6 @@
 import type { Resolvers } from "./types/graphql.js";
 import { User, Contact, Chat, ChatMember, Message } from "./models/index.js";
-import config from "config";
+import config from "../config.js";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { z } from "zod";
 import bcrypt from "bcrypt";
