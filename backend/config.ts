@@ -16,6 +16,7 @@ const WS_URL = isDevelopment
   : process.env.WS_URL || "";
 
 const REDIS_URI = process.env.REDIS_URI || "";
+const NODE_ENV = process.env.NODE_ENV;
 
 export default {
   DATABASE_URL,
@@ -24,4 +25,5 @@ export default {
   SERVER_URL,
   WS_URL,
   REDIS_URI,
+  NODE_ENV,
 };
