@@ -7,13 +7,14 @@
     "module": "ES2022",
     "moduleResolution": "bundler",
     "rootDirs": ["."],
+    "outDir": "./build",
     "baseUrl": ".",
     "paths": {
       "~/*": ["./src/*"]
     },
     "esModuleInterop": true,
     "verbatimModuleSyntax": false,
-    "noEmit": true,
+    "noEmit": false,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "strict": true
