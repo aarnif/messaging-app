@@ -98,6 +98,15 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
     }),
   );
 
+  if (config.NODE_ENV === "production") {
+    app.use(express.static("build/dist"));
+
+    // This allows React Router to handle client-side routing when page is refreshed in the browser
+    app.use((_req, res) => {
+      res.sendFile(path.resolve(process.cwd(), "build/dist/index.html"));
+    });
+  }
+
   const PORT = config.PORT;
 
   httpServer.listen(PORT, () =>
