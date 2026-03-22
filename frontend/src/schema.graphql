@@ -1,0 +1,161 @@
+type Query {
+  countDocuments: Int!
+  me: User
+  findUserById(id: ID!): User
+  allChatsByUser(search: String): [UserChat!]!
+  allContactsByUser(search: String): [Contact!]!
+  nonContactUsers(search: String): [User!]!
+  findChatById(id: ID!): Chat
+  contactsWithoutPrivateChat(search: String): [Contact!]!
+  isBlockedByUser(id: ID!): Boolean
+  findContactById(id: ID!): Contact
+  findPrivateChatWithContact(id: ID!): Chat
+  findContactByUserId(id: ID!): Contact
+}
+
+type User {
+  id: ID!
+  username: String!
+  name: String!
+  about: String
+  avatar: String
+  is24HourClock: Boolean!
+}
+
+type UserChat {
+  id: ID!
+  type: String!
+  name: String
+  avatar: String
+  members: [ChatMember!]!
+  latestMessage: Message!
+  unreadCount: Int!
+  userId: ID
+}
+
+type Chat {
+  id: ID!
+  type: String!
+  name: String
+  description: String
+  avatar: String
+  members: [ChatMember!]!
+  messages: [Message!]!
+}
+
+type ChatMember {
+  id: ID!
+  username: String!
+  name: String!
+  about: String
+  avatar: String
+  is24HourClock: Boolean!
+  role: String
+  unreadCount: Int!
+}
+
+scalar Date
+
+type Message {
+  id: ID!
+  chatId: ID!
+  isNotification: Boolean
+  isDeleted: Boolean!
+  sender: User!
+  content: String!
+  createdAt: Date!
+  updatedAt: Date!
+}
+
+type Contact {
+  id: ID!
+  isBlocked: Boolean!
+  contactDetails: User!
+}
+
+type Mutation {
+  createUser(input: CreateUserInput!): User
+  login(input: LoginInput!): Token
+  addContact(id: ID!): Contact
+  addContacts(ids: [ID!]!): [Contact!]!
+  removeContact(id: ID!): Contact
+  toggleBlockContact(id: ID!): Contact
+  editProfile(input: EditProfileInput!): User
+  createChat(input: CreateChatInput!): Chat
+  deleteChat(id: ID!): Chat
+  editChat(input: EditChatInput!): Chat
+  leaveChat(id: ID!): Chat
+  sendMessage(input: SendMessageInput!): Chat
+  editMessage(input: EditMessageInput!): Chat
+  deleteMessage(id: ID!): Chat
+  changePassword(input: ChangePasswordInput!): User
+  markChatAsRead(id: ID!): Boolean
+  resetDatabase: Boolean
+}
+
+input CreateUserInput {
+  username: String!
+  password: String!
+  confirmPassword: String!
+}
+
+input LoginInput {
+  username: String!
+  password: String!
+}
+
+input EditProfileInput {
+  name: String!
+  about: String
+  is24HourClock: Boolean!
+}
+
+input CreateChatInput {
+  name: String
+  description: String
+  members: [ID!]!
+  initialMessage: String!
+}
+
+input EditChatInput {
+  id: ID!
+  name: String!
+  description: String
+  members: [ID!]!
+}
+
+input SendMessageInput {
+  id: ID!
+  content: String!
+  isNotification: Boolean!
+}
+
+input EditMessageInput {
+  id: ID!
+  content: String!
+}
+
+input ChangePasswordInput {
+  currentPassword: String!
+  newPassword: String!
+  confirmNewPassword: String!
+}
+
+type Token {
+  value: String!
+}
+
+type leftGroupChatDetails {
+  chatId: ID!
+  memberId: ID!
+}
+
+type Subscription {
+  messageSent: Message!
+  messageEdited: Message!
+  messageDeleted: Message!
+  userChatUpdated: UserChat!
+  userChatCreated: UserChat!
+  userChatDeleted: ID!
+  userChatLeft: leftGroupChatDetails!
+}
