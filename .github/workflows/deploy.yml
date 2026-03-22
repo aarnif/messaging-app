@@ -48,9 +48,6 @@ jobs:
           context: .
           push: true
           tags: ghcr.io/${{ github.repository_owner }}/messaging-app:staging
-      - name: Trigger backend deployment
+      - name: Trigger production deployment
         if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
         run: curl ${{ secrets.RENDER_SERVICE_URL }}
-      - name: Trigger frontend deployment
-        if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
-        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_SERVICE_URL }}
