@@ -9,7 +9,7 @@ import type {
   SendMessageInput,
   UserChat,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
   user1Details,
   user2Details,
@@ -19,13 +19,13 @@ import {
   groupChatDetails,
   expectedPrivateChat,
   expectedGroupChat,
-} from "./helpers/data";
+} from "./helpers/data.js";
 import {
   query,
   assertValidationError,
   assertError,
   assertChatEquality,
-} from "./helpers/funcs";
+} from "./helpers/funcs.js";
 import {
   CREATE_USER,
   LOGIN,
@@ -41,7 +41,7 @@ import {
   ALL_CHATS_BY_USER,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   MARK_CHAT_AS_READ,
-} from "./helpers/queries";
+} from "./helpers/queries.js";
 import { describe, beforeEach, test } from "node:test";
 import assert from "node:assert";
 

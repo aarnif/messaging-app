@@ -1,11 +1,11 @@
-import { User, Contact, Chat, ChatMember, Message } from "./models/index";
-import { sequelize, connectToDatabase } from "./db";
+import { User, Contact, Chat, ChatMember, Message } from "./models/index.js";
+import { sequelize, connectToDatabase } from "./db.js";
 import { hash } from "bcrypt";
-import users from "./seedData/users";
-import contacts from "./seedData/contacts";
-import chats from "./seedData/chats";
-import chatMembers from "./seedData/chatMembers";
-import messages from "./seedData/messages";
+import users from "./seedData/users.js";
+import contacts from "./seedData/contacts.js";
+import chats from "./seedData/chats.js";
+import chatMembers from "./seedData/chatMembers.js";
+import messages from "./seedData/messages.js";
 
 export const emptyDatabase = async () => {
   console.log("Dropping tables...");

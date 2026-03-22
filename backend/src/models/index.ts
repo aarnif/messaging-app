@@ -1,8 +1,8 @@
-import { User } from "./user";
-import { Contact } from "./contact";
-import { Chat } from "./chat";
-import { ChatMember } from "./chatMember";
-import { Message } from "./message";
+import { User } from "./user.js";
+import { Contact } from "./contact.js";
+import { Chat } from "./chat.js";
+import { ChatMember } from "./chatMember.js";
+import { Message } from "./message.js";
 
 User.hasMany(Contact, { foreignKey: "userId", as: "contacts" });
 Contact.belongsTo(User, { foreignKey: "userId", as: "owner" });

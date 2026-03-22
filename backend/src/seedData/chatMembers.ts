@@ -1,4 +1,4 @@
-import { ChatMember } from "../types/other";
+import { ChatMember } from "../types/other.js";
 
 const chatMembers: ChatMember[] = [
   { userId: 1, chatId: 1, role: "admin", unreadCount: 0 },

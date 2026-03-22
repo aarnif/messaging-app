@@ -12,11 +12,11 @@ import { readFileSync } from "fs";
 import path from "path";
 import { fileURLToPath } from "url";
 import { gql } from "graphql-tag";
-import { resolvers } from "./resolvers";
-import { connectToDatabase } from "./db";
-import config from "config";
+import { resolvers } from "./resolvers.js";
+import { connectToDatabase } from "./db.js";
+import config from "../config.js";
 import jwt from "jsonwebtoken";
-import { User } from "./models";
+import { User } from "./models/index.js";
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -97,6 +97,15 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
       },
     }),
   );
+
+  if (config.NODE_ENV === "production") {
+    app.use(express.static("build/dist"));
+
+    // This allows React Router to handle client-side routing when page is refreshed in the browser
+    app.use((_req, res) => {
+      res.sendFile(path.resolve(process.cwd(), "build/dist/index.html"));
+    });
+  }
 
   const PORT = config.PORT;
 

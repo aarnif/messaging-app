@@ -36,9 +36,18 @@ jobs:
       - uses: actions/setup-node@v6
         with:
           node-version: "24"
-      - name: Trigger backend deployment
+      - name: Log in to GitHub Container Registry
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.repository_owner }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ghcr.io/${{ github.repository_owner }}/messaging-app:staging
+      - name: Trigger production deployment
         if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
         run: curl ${{ secrets.RENDER_SERVICE_URL }}
-      - name: Trigger frontend deployment
-        if: ${{ github.event_name == 'push' && contains(join(github.event.commits.*.message, ', '), '#skip') == false }}
-        run: curl -X POST -d '{}' ${{ secrets.NETLIFY_SERVICE_URL }}

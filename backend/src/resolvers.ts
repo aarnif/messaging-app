@@ -1,13 +1,13 @@
-import type { Resolvers } from "./types/graphql";
-import { User, Contact, Chat, ChatMember, Message } from "./models";
-import config from "config";
+import type { Resolvers } from "./types/graphql.js";
+import { User, Contact, Chat, ChatMember, Message } from "./models/index.js";
+import config from "../config.js";
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { z } from "zod";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
-import pubsub from "./pubsub";
-import { emptyDatabase, createDatabase } from "./populateDatabase";
+import pubsub from "./pubsub.js";
+import { emptyDatabase, createDatabase } from "./populateDatabase.js";
 
 // Date scalar implementation from Apollo Server documentation
 // https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar

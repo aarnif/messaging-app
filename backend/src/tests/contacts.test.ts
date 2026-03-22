@@ -7,7 +7,7 @@ import type {
   EditProfileInput,
   CreateChatInput,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
   user1Details,
   user2Details,
@@ -17,13 +17,13 @@ import {
   expectedContact1,
   expectedContact2,
   privateChatDetails,
-} from "./helpers/data";
+} from "./helpers/data.js";
 import {
   query,
   assertError,
   assertUserEquality,
   assertContactEquality,
-} from "./helpers/funcs";
+} from "./helpers/funcs.js";
 import {
   CREATE_USER,
   LOGIN,
@@ -39,7 +39,7 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   NON_CONTACT_USERS,
-} from "./helpers/queries";
+} from "./helpers/queries.js";
 import { describe, beforeEach, test } from "node:test";
 import assert from "node:assert";
 

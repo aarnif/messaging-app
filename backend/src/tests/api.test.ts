@@ -1,6 +1,6 @@
-import { describeGraphQLSuite } from "./helpers/setup";
-import { query } from "./helpers/funcs";
-import { COUNT_DOCUMENTS } from "./helpers/queries";
+import { describeGraphQLSuite } from "./helpers/setup.js";
+import { query } from "./helpers/funcs.js";
+import { COUNT_DOCUMENTS } from "./helpers/queries.js";
 import { test } from "node:test";
 import assert from "node:assert";
 
