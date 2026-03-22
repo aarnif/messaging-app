@@ -7,7 +7,8 @@ RUN npm install
 
 COPY /backend .
 
-RUN npm run typecheck
+RUN npm run generate && \ 
+    npm run typecheck
 
 
 FROM node:alpine AS frontend-build
@@ -19,7 +20,8 @@ RUN npm install
 
 COPY /frontend .
 
-RUN npm run build
+RUN npm run generate && \ 
+    npm run build
 
 
 FROM node:alpine
