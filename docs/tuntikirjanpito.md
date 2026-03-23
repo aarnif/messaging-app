@@ -98,4 +98,17 @@
 |  1.3  | 0.5  | codecov                           |
 |  3.3  | 0.5  |                                   |
 |  4.3  | 0.5  | linttauksen lisäys CI/CD          |
-|  yht  | 227  |                                   |
+|  9.3  | 1.5  | testikattavuuden laajennus        |
+| 10.3  | 0.5  |                                   |
+| 10.3  | 0.5  | arkkitehtuurin päivitys           |
+| 11.3  | 0.5  |                                   |
+| 12.3  | 1    | koodin refaktrointi               |
+| 14.3  | 2    |                                   |
+| 15.3  | 2    |                                   |
+| 16.3  | 1    |                                   |
+| 17.3  | 1    |                                   |
+| 18.3  | 1    |                                   |
+| 19.3  | 2    |                                   |
+| 21.3  | 2    | docker-imagen käyttö tuotannossa  |
+| 22.3  | 2    |                                   |
+|  yht  | 244  |                                   |
