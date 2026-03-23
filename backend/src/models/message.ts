@@ -1,4 +1,8 @@
-import type { InferAttributes, InferCreationAttributes } from "sequelize";
+import type {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../db.js";
 
@@ -6,7 +10,7 @@ class Message extends Model<
   InferAttributes<Message>,
   InferCreationAttributes<Message>
 > {
-  declare id?: number;
+  declare id: CreationOptional<number>;
   declare senderId: number;
   declare chatId: number;
   declare content: string;

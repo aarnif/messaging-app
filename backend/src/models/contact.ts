@@ -1,4 +1,8 @@
-import type { InferAttributes, InferCreationAttributes } from "sequelize";
+import type {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../db.js";
 
@@ -6,7 +10,7 @@ class Contact extends Model<
   InferAttributes<Contact>,
   InferCreationAttributes<Contact>
 > {
-  declare id?: number;
+  declare id: CreationOptional<number>;
   declare userId: number;
   declare contactId: number;
   declare isBlocked: boolean;
