@@ -169,3 +169,12 @@ Ei muutoksia
 ## Viikko 24 (2.3-8.3.2026)
 
 - Codecov raportointi palvelimen osalta
+
+## Viikko 25 (9.3-15.3.2026)
+
+- Projektin hakemistorakenteen uudelleennimeäminen
+
+## Viikko 26 (16.3-22.3.2026)
+
+- Järjestelmätestien laajentaminen Firefox- ja WebKit-selaimiin
+- Sovelluksen siirto tuotantoon Docker-kontissa
