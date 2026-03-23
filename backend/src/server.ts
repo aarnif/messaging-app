@@ -49,7 +49,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
 
   const wsServer = new WebSocketServer({
     server: httpServer,
-    path: "/graphql",
+    path: "/subscriptions",
   });
 
   const schema = makeExecutableSchema({ typeDefs, resolvers });

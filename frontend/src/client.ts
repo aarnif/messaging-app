@@ -26,7 +26,7 @@ const authLink = new SetContextLink(({ headers }) => {
 
 const wsLink = new GraphQLWsLink(
   createClient({
-    url: import.meta.env.VITE_WS_URL || "/graphql",
+    url: import.meta.env.VITE_WS_URL || "/subscriptions",
     connectionParams: () => {
       const token = localStorage.getItem("messaging-app-token");
 
