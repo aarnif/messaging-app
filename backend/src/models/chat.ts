@@ -1,11 +1,15 @@
-import type { InferAttributes, InferCreationAttributes } from "sequelize";
+import type {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../db.js";
 import { ChatMember } from "./chatMember.js";
 import { Message } from "./message.js";
 
 class Chat extends Model<InferAttributes<Chat>, InferCreationAttributes<Chat>> {
-  declare id?: number;
+  declare id: CreationOptional<number>;
   declare type: "private" | "group";
   declare name: string | null;
   declare description: string | null;

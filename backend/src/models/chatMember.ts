@@ -1,4 +1,8 @@
-import type { InferAttributes, InferCreationAttributes } from "sequelize";
+import type {
+  CreationOptional,
+  InferAttributes,
+  InferCreationAttributes,
+} from "sequelize";
 import { Model, DataTypes } from "sequelize";
 import { sequelize } from "../db.js";
 
@@ -6,7 +10,7 @@ class ChatMember extends Model<
   InferAttributes<ChatMember>,
   InferCreationAttributes<ChatMember>
 > {
-  declare id?: number;
+  declare id: CreationOptional<number>;
   declare userId: number;
   declare chatId: number;
   declare role: "member" | "admin";
