@@ -37,19 +37,19 @@ VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
 
 2. Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa:
 
-   npm run start:db
+   npm run backend:db:start
 
 3. Lisää seed data tietokantaan:
 
-   npm run populate:db
+   npm run backend:db:populate
 
 4. Käynnistä backend kehitystilassa uudessa terminaalissa:
 
-   npm run dev:backend
+   npm run backend:dev
 
 5. Käynnistä frontend kehitystilassa uudessa terminaalissa:
 
-   npm run dev:frontend
+   npm run frontend:dev
 
 ## Kirjautuminen
 

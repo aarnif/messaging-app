@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "start:db": "docker compose -f docker-compose.yml up",
-    "populate:db": "POPULATE_DB=true tsx src/populateDatabase.ts",
+    "db:start": "docker compose -f docker-compose.yml up",
+    "db:populate": "POPULATE_DB=true tsx src/populateDatabase.ts",
     "generate": "graphql-codegen --config codegen.ts",
     "dev": "npm run generate && NODE_ENV=development nodemon --exec tsx src/index.ts",
     "test": "NODE_ENV=test tsx --test --test-concurrency=1 src/tests/*.test.ts",

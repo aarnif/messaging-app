@@ -14,14 +14,14 @@ import { defineConfig, devices } from "@playwright/test";
 export default defineConfig({
   webServer: [
     {
-      command: "npm run dev:backend",
+      command: "npm run backend:dev",
       url: "http://localhost:4000/graphql",
       reuseExistingServer: !process.env.CI,
       stdout: "ignore",
       stderr: "pipe",
     },
     {
-      command: "npm run dev:frontend",
+      command: "npm run frontend:dev",
       url: "http://localhost:5173",
       reuseExistingServer: !process.env.CI,
       stdout: "ignore",
