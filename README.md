@@ -69,7 +69,7 @@ Full Stack Open -kurssin projekti: Messaging App
    Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa (jätä ne käyntiin):
 
    ```bash
-   npm run start:db
+   npm run backend:db:start
    ```
 
    **Vaihtoehto B: Oma PostgreSQL ja Redis**
@@ -97,19 +97,19 @@ Full Stack Open -kurssin projekti: Messaging App
 5. Lisää seed data tietokantaan
 
    ```bash
-   npm run populate:db
+   npm run backend:db:populate
    ```
 
 6. Käynnistä backend kehitystilassa (uudessa terminaalissa)
 
    ```bash
-   npm run dev:backend
+   npm run backend:dev
    ```
 
 7. Käynnistä frontend kehitystilassa (uudessa terminaalissa)
 
    ```bash
-   npm run dev:frontend
+   npm run frontend:dev
    ```
 
 ## npm-komennot
@@ -120,29 +120,29 @@ Full Stack Open -kurssin projekti: Messaging App
 
 ### Tietokanta
 
-- `npm run start:db` - Käynnistä PostgreSQL ja Redis Docker-konteissa
-- `npm run populate:db` - Lisää seed data tietokantaan
+- `npm run backend:db:start` - Käynnistä PostgreSQL ja Redis Docker-konteissa
+- `npm run backend:db:populate` - Lisää seed data tietokantaan
 
 ### Backend
 
-- `npm run dev:backend` - Käynnistä backend kehitystilassa
-- `npm run prod:backend` - Käynnistä backend tuotantotilassa
-- `npm run test:backend` - Suorita backendin testit
-- `npm run typecheck:backend` - Suorita TypeScript-tyyppitarkistus backendille
-- `npm run lint:backend` - Suorita linttaus backendin koodille
-- `npm run generate:backend` - Generoi GraphQL-tyypit
+- `npm run backend:dev` - Käynnistä backend kehitystilassa
+- `npm run backend:prod` - Käynnistä backend tuotantotilassa
+- `npm run backend:test` - Suorita backendin testit
+- `npm run backend:typecheck` - Suorita TypeScript-tyyppitarkistus backendille
+- `npm run backend:lint` - Suorita linttaus backendin koodille
+- `npm run backend:generate` - Generoi GraphQL-tyypit
 
 ### Frontend
 
-- `npm run dev:frontend` - Käynnistä frontend kehitystilassa
-- `npm run build:frontend` - Buildaa frontend tuotantoa varten
-- `npm run preview:frontend` - Esikatsele tuotantobuild paikallisesti
-- `npm run test:frontend` - Suorita frontendin testit
-- `npm run test:frontend:coverage` - Suorita frontendin testit kattavuusraportin kanssa
-- `npm run typecheck:frontend` - Suorita TypeScript-tyyppitarkistus käyttöliittymälle
-- `npm run lint:frontend` - Suorita linttaus frontendin koodille
-- `npm run generate:frontend` - Generoi GraphQL-tyypit
+- `npm run frontend:dev` - Käynnistä frontend kehitystilassa
+- `npm run frontend:build` - Buildaa frontend tuotantoa varten
+- `npm run frontend:preview` - Esikatsele tuotantobuild paikallisesti
+- `npm run frontend:test` - Suorita frontendin testit
+- `npm run frontend:test:coverage` - Suorita frontendin testit kattavuusraportin kanssa
+- `npm run frontend:typecheck` - Suorita TypeScript-tyyppitarkistus käyttöliittymälle
+- `npm run frontend:lint` - Suorita linttaus frontendin koodille
+- `npm run frontend:generate` - Generoi GraphQL-tyypit
 
 ### End-to-End-testaus
 
-- `npm run test:e2e` - Suorita Playwright end-to-end-testit
+- `npm run e2e:test` - Suorita Playwright end-to-end-testit
