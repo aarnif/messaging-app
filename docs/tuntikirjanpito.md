@@ -111,4 +111,6 @@
 | 19.3  | 2    |                                   |
 | 21.3  | 2    | docker-imagen käyttö tuotannossa  |
 | 22.3  | 2    |                                   |
-|  yht  | 244  |                                   |
+| 23.3  | 1.5  | koodin refaktorointi              |
+| 24.3  | 0.5  |                                   |
+|  yht  | 246  |                                   |

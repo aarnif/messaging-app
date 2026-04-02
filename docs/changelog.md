@@ -178,3 +178,7 @@ Ei muutoksia
 
 - Järjestelmätestien laajentaminen Firefox- ja WebKit-selaimiin
 - Sovelluksen siirto tuotantoon Docker-kontissa
+
+## Viikko 27 (23.3-29.3.2026)
+
+- Npm scriptien uudelleennimeäminen
