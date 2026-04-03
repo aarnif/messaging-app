@@ -4,16 +4,16 @@ import { useState } from "react";
 import { IoChevronBack, IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FiEdit } from "react-icons/fi";
-import type { User } from "../__generated__/graphql";
-import { EDIT_PROFILE, CHANGE_PASSWORD } from "../graphql/mutations";
-import useNotifyMessage from "../hooks/useNotifyMessage";
-import useField from "../hooks/useField";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
+import type { User } from "../../../__generated__/graphql";
+import { EDIT_PROFILE, CHANGE_PASSWORD } from "../../../graphql/mutations";
+import useNotifyMessage from "../../../hooks/useNotifyMessage";
+import useField from "../../../hooks/useField";
+import useResponsiveWidth from "../../../hooks/useResponsiveWidth";
 import { motion, AnimatePresence } from "motion/react";
-import Notify from "../ui/Notify";
-import FormField from "../ui/FormField";
-import Button from "../ui/Button";
-import Avatar from "../ui/Avatar";
+import Notify from "../../../ui/Notify";
+import FormField from "../../../ui/FormField";
+import Button from "../../../ui/Button";
+import Avatar from "../../../ui/Avatar";
 
 const EditProfileModal = ({
   currentUser,

@@ -18,7 +18,7 @@ import {
   NewGroupChatDetails,
 } from "./helpers/mocks";
 import { sendNewMessage } from "./helpers/funcs";
-import NewChat from "../components/NewChat";
+import NewChat from "../pages/NewChat";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

@@ -1,15 +1,15 @@
-import { useState } from "react";
-import useField from "../hooks/useField";
-import Notify from "../ui/Notify";
-import FormField from "../ui/FormField";
-import Button from "../ui/Button";
+import useField from "../../hooks/useField";
+import Notify from "../../ui/Notify";
+import FormField from "../../ui/FormField";
+import Button from "../../ui/Button";
 import { useNavigate } from "react-router";
 import { useMutation, useApolloClient } from "@apollo/client/react";
-import { CREATE_USER, LOGIN } from "../graphql/mutations";
-import useNotifyMessage from "../hooks/useNotifyMessage";
+import { LOGIN } from "../../graphql/mutations";
+import useNotifyMessage from "../../hooks/useNotifyMessage";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
 
-const SignUp = ({
+const SignIn = ({
   setToken,
 }: {
   setToken: React.Dispatch<React.SetStateAction<string | null>>;
@@ -17,103 +17,49 @@ const SignUp = ({
   const client = useApolloClient();
   const navigate = useNavigate();
   const { message, showMessage, closeMessage } = useNotifyMessage();
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(
     "password",
     "password",
     "Enter your password here..."
   );
-  const confirmPassword = useField(
-    "Confirm Password",
-    "password",
-    "Confirm your password here..."
-  );
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
-  const [createUser] = useMutation(CREATE_USER, {
+  const [mutate] = useMutation(LOGIN, {
     onError: (error) => {
       console.log(error);
       showMessage(error.message);
       setIsSubmitting(false);
     },
   });
-
-  const [login] = useMutation(LOGIN, {
-    onError: (error) => {
-      console.log(error);
-      showMessage(error.message);
-      setIsSubmitting(false);
-    },
-  });
-
-  const validateSignUpForm = (
-    username: string,
-    password: string,
-    confirmPassword: string
-  ): string | null => {
-    if (!username.length || !password.length || !confirmPassword.length) {
-      return "Please fill all fields.";
-    }
-
-    if (username.length < 3) {
-      return "Username must be at least 3 characters long";
-    }
-
-    if (password.length < 6) {
-      return "Password must be at least 6 characters long";
-    }
-
-    if (password !== confirmPassword) {
-      return "Passwords do not match";
-    }
-
-    return null;
-  };
 
   const handleSubmit = async (event: React.SyntheticEvent) => {
     event.preventDefault();
 
-    const validationError = validateSignUpForm(
-      username.value,
-      password.value,
-      confirmPassword.value
-    );
-
-    if (validationError) {
-      showMessage(validationError);
+    if (!username.value.length || !password.value.length) {
+      showMessage("Please fill all fields.");
       return;
     }
 
     console.log("Submitting form...");
     setIsSubmitting(true);
 
-    const { data } = await createUser({
+    const { data } = await mutate({
       variables: {
         input: {
           username: username.value,
           password: password.value,
-          confirmPassword: confirmPassword.value,
         },
       },
     });
 
-    if (data) {
-      const { data } = await login({
-        variables: {
-          input: {
-            username: username.value,
-            password: password.value,
-          },
-        },
-      });
-      if (data?.login?.value) {
-        localStorage.setItem("messaging-app-token", data.login.value);
-        setToken(data.login.value);
-        client.resetStore();
-        setIsSubmitting(false);
-        navigate("/");
-        console.log("Form submitted succesfully!");
-      }
+    if (data?.login?.value) {
+      localStorage.setItem("messaging-app-token", data.login.value);
+      setToken(data.login.value);
+      client.resetStore();
+      setIsSubmitting(false);
+      navigate("/");
+      console.log("Form submitted succesfully!");
     }
   };
 
@@ -130,9 +76,11 @@ const SignUp = ({
               Messaging App
             </h1>
             <p className="max-w-100 text-left font-medium text-slate-700 dark:text-slate-200">
-              Create an account to start connecting with friends and family.
+              Add contacts, create private or group chats, and send text
+              messages. Stay connected with the people that matter most.
             </p>
           </div>
+
           <div className="flex w-full flex-col gap-4">
             <AnimatePresence>
               {message && (
@@ -149,30 +97,22 @@ const SignUp = ({
               inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
               disabled={isSubmitting}
             />
-            <FormField
-              field={confirmPassword}
-              inputBgColor="bg-slate-200 border-slate-200 dark:bg-slate-800 dark:border-slate-800"
-              disabled={isSubmitting}
-            />
           </div>
           <div className="flex w-full flex-col gap-2">
             <Button
-              testId="submit-button"
               type="submit"
               variant="primary"
-              text={isSubmitting ? "Signing Up..." : "Sign Up"}
-              disabled={isSubmitting}
+              text={isSubmitting ? "Signing In..." : "Sign In"}
             />
-
             <div>
               <p className="text-sm text-slate-700 dark:text-slate-200">
-                Already have an account?
+                Don't have an account?
               </p>
               <Button
                 type="button"
                 variant="secondary"
-                text="Return to Sign In"
-                onClick={() => navigate("/signin")}
+                text="Sign Up"
+                onClick={() => navigate("/signup")}
               />
             </div>
           </div>
@@ -182,4 +122,4 @@ const SignUp = ({
   );
 };
 
-export default SignUp;
+export default SignIn;

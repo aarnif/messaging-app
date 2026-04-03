@@ -1,10 +1,10 @@
-import { ALL_CHATS_BY_USER, ME } from "../graphql/queries";
+import { ALL_CHATS_BY_USER, ME } from "../../graphql/queries";
 import {
   USER_CHAT_UPDATED,
   USER_CHAT_CREATED,
   USER_CHAT_DELETED,
   USER_CHAT_LEFT,
-} from "../graphql/subscriptions";
+} from "../../graphql/subscriptions";
 import {
   useApolloClient,
   useQuery,
@@ -12,23 +12,23 @@ import {
 } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation, useMatch } from "react-router";
 import { useDebounce } from "use-debounce";
-import { DEBOUNCE_DELAY } from "../constants";
-import Spinner from "../ui/Spinner";
-import MenuHeader from "../ui/MenuHeader";
-import type { User, UserChat } from "../__generated__/graphql";
-import type { InputField } from "../types";
-import { formatDisplayDate, truncateText } from "../helpers";
+import { DEBOUNCE_DELAY } from "../../constants";
+import Spinner from "../../ui/Spinner";
+import MenuHeader from "../../ui/MenuHeader";
+import type { User, UserChat } from "../../__generated__/graphql";
+import type { InputField } from "../../types";
+import { formatDisplayDate, truncateText } from "../../helpers";
 import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
-import NewChatDropDownBox from "./NewChatDropDown";
-import NewChatModal from "./NewChatModal";
-import Skeleton from "../ui/Skeleton";
+import NewChatDropDownBox from "../../components/NewChatDropDown";
+import NewChatModal from "../../components/NewChatModal";
+import Skeleton from "../../ui/Skeleton";
 import {
   isValidChatForUser,
   updateUserChatsCache,
   updateChatByIdCache,
   getChatName,
-} from "../helpers";
+} from "../../helpers";
 
 const MotionNavLink = motion.create(NavLink);
 

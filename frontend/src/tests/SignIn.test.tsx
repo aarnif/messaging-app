@@ -4,7 +4,7 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
-import SignIn from "../components/SignIn";
+import SignIn from "../pages/SignIn";
 import {
   LOGIN_TOKEN,
   loginInput,

@@ -13,7 +13,7 @@ import {
   mockUseOutletContext,
 } from "./helpers/mocks";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
-import Profile from "../components/Profile";
+import Profile from "../pages/Settings/Profile";
 import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {

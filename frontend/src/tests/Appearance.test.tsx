@@ -4,7 +4,7 @@ import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
-import Appearance from "../components/Appearance";
+import Appearance from "../pages/Settings/Appearance";
 import {
   currentUserChatAdminMock,
   editProfile24h,

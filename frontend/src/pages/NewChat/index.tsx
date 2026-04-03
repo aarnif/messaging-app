@@ -1,12 +1,12 @@
 import { useNavigate, useOutletContext } from "react-router";
-import type { User } from "../__generated__/graphql";
-import type { NewChatDetails, NewChatMember } from "../types";
-import useField from "../hooks/useField";
-import NotFound from "../ui/NotFound";
-import { CREATE_CHAT } from "../graphql/mutations";
+import type { User } from "../../__generated__/graphql";
+import type { NewChatDetails, NewChatMember } from "../../types";
+import useField from "../../hooks/useField";
+import NotFound from "../../ui/NotFound";
+import { CREATE_CHAT } from "../../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
-import ChatHeader from "../ui/ChatHeader";
-import MessageBox from "../ui/MessageBox";
+import ChatHeader from "../../ui/ChatHeader";
+import MessageBox from "../../ui/MessageBox";
 
 const NewMessageBox = ({
   chatName,

@@ -4,8 +4,8 @@ import { IoChevronBack } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaCheck } from "react-icons/fa6";
 import { useState } from "react";
-import type { User } from "../__generated__/graphql";
-import { EDIT_PROFILE } from "../graphql/mutations";
+import type { User } from "../../../__generated__/graphql";
+import { EDIT_PROFILE } from "../../../graphql/mutations";
 
 const SettingsToggle = ({
   label,

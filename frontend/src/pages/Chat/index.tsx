@@ -11,20 +11,20 @@ import {
   ALL_CONTACTS_BY_USER,
   IS_BLOCKED_BY_USER,
   FIND_CONTACT_BY_USER_ID,
-} from "../graphql/queries";
+} from "../../graphql/queries";
 import { useDebounce } from "use-debounce";
 import {
   MESSAGE_SENT,
   MESSAGE_EDITED,
   MESSAGE_DELETED,
-} from "../graphql/subscriptions";
-import Spinner from "../ui/Spinner";
-import NotFound from "../ui/NotFound";
+} from "../../graphql/subscriptions";
+import Spinner from "../../ui/Spinner";
+import NotFound from "../../ui/NotFound";
 import { IoChevronBack, IoChevronForward, IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaBan } from "react-icons/fa";
-import { DEBOUNCE_DELAY } from "../constants";
-import type { InputField, UserContact } from "../types";
+import { DEBOUNCE_DELAY } from "../../constants";
+import type { InputField, UserContact } from "../../types";
 import type {
   Chat as ChatType,
   User,
@@ -32,13 +32,13 @@ import type {
   ChatMember,
   IsBlockedByUserQuery,
   Exact,
-} from "../__generated__/graphql";
-import { updateChatByIdCache, formatDisplayDate } from "../helpers";
+} from "../../__generated__/graphql";
+import { updateChatByIdCache, formatDisplayDate } from "../../helpers";
 import { useEffect, useRef, useState } from "react";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
-import useField from "../hooks/useField";
-import useNotifyMessage from "../hooks/useNotifyMessage";
-import useModal from "../hooks/useModal";
+import useResponsiveWidth from "../../hooks/useResponsiveWidth";
+import useField from "../../hooks/useField";
+import useNotifyMessage from "../../hooks/useNotifyMessage";
+import useModal from "../../hooks/useModal";
 import { FiEdit } from "react-icons/fi";
 import {
   SEND_MESSAGE,
@@ -48,18 +48,18 @@ import {
   LEAVE_CHAT,
   DELETE_CHAT,
   MARK_CHAT_AS_READ,
-} from "../graphql/mutations";
+} from "../../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
-import ChatHeader from "../ui/ChatHeader";
-import MessageBox from "../ui/MessageBox";
-import Notify from "../ui/Notify";
-import FormField from "../ui/FormField";
-import SearchBox from "../ui/SearchBox";
-import SelectContactsList from "../ui/SelectContactsList";
-import Button from "../ui/Button";
-import Avatar from "../ui/Avatar";
-import { checkIfMessageIsSingleEmoji } from "../helpers";
+import ChatHeader from "../../ui/ChatHeader";
+import MessageBox from "../../ui/MessageBox";
+import Notify from "../../ui/Notify";
+import FormField from "../../ui/FormField";
+import SearchBox from "../../ui/SearchBox";
+import SelectContactsList from "../../ui/SelectContactsList";
+import Button from "../../ui/Button";
+import Avatar from "../../ui/Avatar";
+import { checkIfMessageIsSingleEmoji } from "../../helpers";
 
 const MessageMenu = ({
   handleOpenEditModal,

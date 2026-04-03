@@ -6,15 +6,15 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
-} from "../graphql/queries";
-import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../graphql/mutations";
-import Spinner from "../ui/Spinner";
-import NotFound from "../ui/NotFound";
-import Button from "../ui/Button";
-import Avatar from "../ui/Avatar";
-import type { User, Contact as ContactType } from "../__generated__/graphql";
+} from "../../graphql/queries";
+import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../../graphql/mutations";
+import Spinner from "../../ui/Spinner";
+import NotFound from "../../ui/NotFound";
+import Button from "../../ui/Button";
+import Avatar from "../../ui/Avatar";
+import type { User, Contact as ContactType } from "../../__generated__/graphql";
 import { useState, useEffect } from "react";
-import useModal from "../hooks/useModal";
+import useModal from "../../hooks/useModal";
 
 const ContactContent = ({
   currentUser,

@@ -1,10 +1,10 @@
-import useField from "../hooks/useField";
+import useField from "../../hooks/useField";
 import {
   ALL_CONTACTS_BY_USER,
   ME,
   NON_CONTACT_USERS,
-} from "../graphql/queries";
-import { ADD_CONTACTS } from "../graphql/mutations";
+} from "../../graphql/queries";
+import { ADD_CONTACTS } from "../../graphql/mutations";
 import { useMutation, useQuery } from "@apollo/client/react";
 import { NavLink, Outlet, useLocation } from "react-router";
 import { useDebounce } from "use-debounce";
@@ -12,18 +12,18 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import { DEBOUNCE_DELAY } from "../constants";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
-import useNotifyMessage from "../hooks/useNotifyMessage";
-import Spinner from "../ui/Spinner";
-import MenuHeader from "../ui/MenuHeader";
-import Notify from "../ui/Notify";
-import SearchBox from "../ui/SearchBox";
-import SelectUserButton from "../ui/SelectUserButton";
-import Avatar from "../ui/Avatar";
-import Skeleton from "../ui/Skeleton";
-import type { Contact } from "../__generated__/graphql";
-import type { AddContactOption } from "../types";
+import { DEBOUNCE_DELAY } from "../../constants";
+import useResponsiveWidth from "../../hooks/useResponsiveWidth";
+import useNotifyMessage from "../../hooks/useNotifyMessage";
+import Spinner from "../../ui/Spinner";
+import MenuHeader from "../../ui/MenuHeader";
+import Notify from "../../ui/Notify";
+import SearchBox from "../../ui/SearchBox";
+import SelectUserButton from "../../ui/SelectUserButton";
+import Avatar from "../../ui/Avatar";
+import Skeleton from "../../ui/Skeleton";
+import type { Contact } from "../../__generated__/graphql";
+import type { AddContactOption } from "../../types";
 
 export const SelectUserList = ({
   users,

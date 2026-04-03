@@ -3,7 +3,7 @@ import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import ModalProvider from "../components/ModalProvider";
-import Home from "../components/Home";
+import Home from "../pages/Home";
 import { mockSetToken } from "./helpers/mocks";
 
 describe("<Home />", () => {

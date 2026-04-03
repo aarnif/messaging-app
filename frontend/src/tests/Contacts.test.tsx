@@ -20,7 +20,7 @@ import {
   assertContactsSelected,
   assertErrorMessageAndDismissal,
 } from "./helpers/funcs";
-import Contacts from "../components/Contacts";
+import Contacts from "../pages/Contacts";
 import type { MockLink } from "@apollo/client/testing";
 import type { User } from "../__generated__/graphql";
 

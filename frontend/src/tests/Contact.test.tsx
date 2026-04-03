@@ -26,7 +26,7 @@ import {
   isBlockedByUserNull,
 } from "./helpers/mocks";
 import ModalProvider from "../components/ModalProvider";
-import Contact from "../components/Contact";
+import Contact from "../pages/Contact";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

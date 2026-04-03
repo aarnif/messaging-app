@@ -1,5 +1,5 @@
-import Header from "../ui/Header";
-import Menu from "./Menu";
+import Header from "../../ui/Header";
+import Menu from "../../components/Menu";
 import { Outlet } from "react-router";
 
 const Home = ({
