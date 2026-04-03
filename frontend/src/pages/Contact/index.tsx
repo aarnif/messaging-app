@@ -8,10 +8,10 @@ import {
   IS_BLOCKED_BY_USER,
 } from "../../graphql/queries";
 import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../../graphql/mutations";
-import Spinner from "../../ui/Spinner";
-import NotFound from "../../ui/NotFound";
-import Button from "../../ui/Button";
-import Avatar from "../../ui/Avatar";
+import Spinner from "../../components/ui/Spinner";
+import NotFound from "../../components/ui/NotFound";
+import Button from "../../components/ui/Button";
+import Avatar from "../../components/ui/Avatar";
 import type { User, Contact as ContactType } from "../../__generated__/graphql";
 import { useState, useEffect } from "react";
 import useModal from "../../hooks/useModal";

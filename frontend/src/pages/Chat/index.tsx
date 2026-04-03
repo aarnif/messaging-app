@@ -18,8 +18,8 @@ import {
   MESSAGE_EDITED,
   MESSAGE_DELETED,
 } from "../../graphql/subscriptions";
-import Spinner from "../../ui/Spinner";
-import NotFound from "../../ui/NotFound";
+import Spinner from "../../components/ui/Spinner";
+import NotFound from "../../components/ui/NotFound";
 import { IoChevronBack, IoChevronForward, IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { FaBan } from "react-icons/fa";
@@ -51,14 +51,14 @@ import {
 } from "../../graphql/mutations";
 import { useMutation } from "@apollo/client/react";
 import { motion, AnimatePresence } from "framer-motion";
-import ChatHeader from "../../ui/ChatHeader";
-import MessageBox from "../../ui/MessageBox";
-import Notify from "../../ui/Notify";
-import FormField from "../../ui/FormField";
-import SearchBox from "../../ui/SearchBox";
-import SelectContactsList from "../../ui/SelectContactsList";
-import Button from "../../ui/Button";
-import Avatar from "../../ui/Avatar";
+import ChatHeader from "../../components/ui/ChatHeader";
+import MessageBox from "../../components/ui/MessageBox";
+import Notify from "../../components/ui/Notify";
+import FormField from "../../components/ui/FormField";
+import SearchBox from "../../components/ui/SearchBox";
+import SelectContactsList from "../../components/ui/SelectContactsList";
+import Button from "../../components/ui/Button";
+import Avatar from "../../components/ui/Avatar";
 import { checkIfMessageIsSingleEmoji } from "../../helpers";
 
 const MessageMenu = ({

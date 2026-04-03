@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router";
-import { truncateText } from "../helpers";
+import { truncateText } from "../../helpers";
 import { IoChevronBack } from "react-icons/io5";
-import type { User, ChatMember } from "../__generated__/graphql";
-import type { NewChatMember } from "../types";
+import type { User, ChatMember } from "../../__generated__/graphql";
+import type { NewChatMember } from "../../types";
 
 const ChatHeader = ({
   type,

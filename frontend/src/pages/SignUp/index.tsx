@@ -1,8 +1,8 @@
 import { useState } from "react";
 import useField from "../../hooks/useField";
-import Notify from "../../ui/Notify";
-import FormField from "../../ui/FormField";
-import Button from "../../ui/Button";
+import Notify from "../../components/ui/Notify";
+import FormField from "../../components/ui/FormField";
+import Button from "../../components/ui/Button";
 import { useNavigate } from "react-router";
 import { useMutation, useApolloClient } from "@apollo/client/react";
 import { CREATE_USER, LOGIN } from "../../graphql/mutations";

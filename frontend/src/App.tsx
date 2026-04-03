@@ -12,7 +12,7 @@ import Contact from "./pages/Contact";
 import Settings from "./pages/Settings";
 import Profile from "./pages/Settings/Profile";
 import Appearance from "./pages/Settings/Appearance";
-import SelectionPrompt from "./ui/SelectionPrompt";
+import SelectionPrompt from "./components/ui/SelectionPrompt";
 import { useState } from "react";
 
 const App = () => {

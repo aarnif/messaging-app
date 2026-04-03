@@ -1,4 +1,4 @@
-import Header from "../../ui/Header";
+import Header from "../../components/ui/Header";
 import Menu from "../../components/Menu";
 import { Outlet } from "react-router";
 

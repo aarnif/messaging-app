@@ -13,8 +13,8 @@ import {
 import { NavLink, Outlet, useLocation, useMatch } from "react-router";
 import { useDebounce } from "use-debounce";
 import { DEBOUNCE_DELAY } from "../../constants";
-import Spinner from "../../ui/Spinner";
-import MenuHeader from "../../ui/MenuHeader";
+import Spinner from "../../components/ui/Spinner";
+import MenuHeader from "../../components/ui/MenuHeader";
 import type { User, UserChat } from "../../__generated__/graphql";
 import type { InputField } from "../../types";
 import { formatDisplayDate, truncateText } from "../../helpers";
@@ -22,7 +22,7 @@ import { useState, useRef } from "react";
 import { AnimatePresence, motion } from "motion/react";
 import NewChatDropDownBox from "../../components/NewChatDropDown";
 import NewChatModal from "../../components/NewChatModal";
-import Skeleton from "../../ui/Skeleton";
+import Skeleton from "../../components/ui/Skeleton";
 import {
   isValidChatForUser,
   updateUserChatsCache,

@@ -10,10 +10,10 @@ import useNotifyMessage from "../../../hooks/useNotifyMessage";
 import useField from "../../../hooks/useField";
 import useResponsiveWidth from "../../../hooks/useResponsiveWidth";
 import { motion, AnimatePresence } from "motion/react";
-import Notify from "../../../ui/Notify";
-import FormField from "../../../ui/FormField";
-import Button from "../../../ui/Button";
-import Avatar from "../../../ui/Avatar";
+import Notify from "../../../components/ui/Notify";
+import FormField from "../../../components/ui/FormField";
+import Button from "../../../components/ui/Button";
+import Avatar from "../../../components/ui/Avatar";
 
 const EditProfileModal = ({
   currentUser,

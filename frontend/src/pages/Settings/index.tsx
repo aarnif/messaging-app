@@ -2,7 +2,7 @@ import { NavLink, Outlet, useLocation } from "react-router";
 import { useQuery } from "@apollo/client/react";
 import { ME } from "../../graphql/queries";
 import useResponsiveWidth from "../../hooks/useResponsiveWidth";
-import Spinner from "../../ui/Spinner";
+import Spinner from "../../components/ui/Spinner";
 
 const SettingsItem = ({
   item,
