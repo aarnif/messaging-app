@@ -3,7 +3,7 @@ import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
 import { MemoryRouter } from "react-router";
 import { mockNavigate, meMock } from "./helpers/mocks";
-import Settings from "../components/Settings";
+import Settings from "../pages/Settings";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

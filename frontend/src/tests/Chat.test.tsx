@@ -39,7 +39,7 @@ import {
   assertErrorMessageAndDismissal,
 } from "./helpers/funcs";
 import ModalProvider from "../components/ModalProvider";
-import Chat from "../components/Chat";
+import Chat from "../pages/Chat";
 import { formatDisplayDate } from "../helpers";
 
 vi.mock("react-router", async () => {

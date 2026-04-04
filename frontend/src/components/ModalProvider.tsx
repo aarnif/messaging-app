@@ -4,7 +4,7 @@ import { useState } from "react";
 import { AnimatePresence, motion } from "framer-motion";
 import { FaExclamation } from "react-icons/fa6";
 import ModalContext from "../contexts/ModalContext";
-import Button from "../ui/Button";
+import Button from "./ui/Button";
 
 const ModalContent = ({
   options,

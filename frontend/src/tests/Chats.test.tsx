@@ -31,7 +31,7 @@ import {
   assertContactsSelected,
   assertErrorMessageAndDismissal,
 } from "./helpers/funcs";
-import Chats from "../components/Chats";
+import Chats from "../pages/Chats";
 import { formatDisplayDate, truncateText } from "../helpers";
 import type { MockLink } from "@apollo/client/testing";
 

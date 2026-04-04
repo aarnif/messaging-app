@@ -1,18 +1,18 @@
 import { Routes, Route, Navigate } from "react-router";
 import useField from "./hooks/useField";
 import ModalProvider from "./components/ModalProvider";
-import Home from "./components/Home";
-import SignIn from "./components/SignIn";
-import SignUp from "./components/SignUp";
-import Chats from "./components/Chats";
-import Contacts from "./components/Contacts";
-import Chat from "./components/Chat";
-import NewChat from "./components/NewChat";
-import Contact from "./components/Contact";
-import Settings from "./components/Settings";
-import Profile from "./components/Profile";
-import Appearance from "./components/Appearance";
-import SelectionPrompt from "./ui/SelectionPrompt";
+import Home from "./pages/Home";
+import SignIn from "./pages/SignIn";
+import SignUp from "./pages/SignUp";
+import Chats from "./pages/Chats";
+import Contacts from "./pages/Contacts";
+import Chat from "./pages/Chat";
+import NewChat from "./pages/NewChat";
+import Contact from "./pages/Contact";
+import Settings from "./pages/Settings";
+import Profile from "./pages/Settings/Profile";
+import Appearance from "./pages/Settings/Appearance";
+import SelectionPrompt from "./components/ui/SelectionPrompt";
 import { useState } from "react";
 
 const App = () => {

@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import useField from "../hooks/useField";
 import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import useNotifyMessage from "../hooks/useNotifyMessage";
-import SearchBox from "../ui/SearchBox";
+import SearchBox from "./ui/SearchBox";
 import type { InputField, UserContact } from "../types";
 import {
   ALL_CONTACTS_BY_USER,
@@ -16,12 +16,12 @@ import { useQuery, useLazyQuery } from "@apollo/client/react";
 import { useDebounce } from "use-debounce";
 import { DEBOUNCE_DELAY } from "../constants";
 import type { User, Contact } from "../__generated__/graphql";
-import Spinner from "../ui/Spinner";
-import Notify from "../ui/Notify";
-import FormField from "../ui/FormField";
+import Spinner from "./ui/Spinner";
+import Notify from "./ui/Notify";
+import FormField from "./ui/FormField";
 import { useNavigate } from "react-router";
-import SelectContactsList from "../ui/SelectContactsList";
-import SelectUserButton from "../ui/SelectUserButton";
+import SelectContactsList from "./ui/SelectContactsList";
+import SelectUserButton from "./ui/SelectUserButton";
 
 export const SelectContactList = ({
   contacts,
