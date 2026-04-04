@@ -1,5 +1,5 @@
 import { FaSearch } from "react-icons/fa";
-import type { InputField } from "../types";
+import type { InputField } from "../../types";
 
 const SearchBox = ({ searchWord }: { searchWord: InputField }) => {
   const { name, type, value, placeholder, onChange, onReset } = searchWord;

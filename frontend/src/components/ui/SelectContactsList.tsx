@@ -1,4 +1,4 @@
-import type { UserContact } from "../types";
+import type { UserContact } from "../../types";
 import SelectUserButton from "./SelectUserButton";
 
 const SelectContactsList = ({

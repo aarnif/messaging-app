@@ -1,4 +1,4 @@
-import type { InputField } from "../types";
+import type { InputField } from "../../types";
 
 const FormField = ({
   field,

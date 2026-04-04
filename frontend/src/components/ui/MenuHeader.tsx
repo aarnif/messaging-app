@@ -1,5 +1,5 @@
 import { MdOpenInNew } from "react-icons/md";
-import type { InputField } from "../types";
+import type { InputField } from "../../types";
 import SearchBox from "./SearchBox";
 
 const MenuHeader = ({
