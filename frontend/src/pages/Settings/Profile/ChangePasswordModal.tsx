@@ -1,13 +1,13 @@
 import { useMutation } from "@apollo/client/react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import useResponsiveWidth from "../../../hooks/useResponsiveWidth";
-import useNotifyMessage from "../../../hooks/useNotifyMessage";
-import useField from "../../../hooks/useField";
-import { CHANGE_PASSWORD } from "../../../graphql/mutations";
-import Notify from "../../../components/ui/Notify";
 import FormField from "../../../components/ui/FormField";
+import Notify from "../../../components/ui/Notify";
+import { CHANGE_PASSWORD } from "../../../graphql/mutations";
+import useField from "../../../hooks/useField";
+import useNotifyMessage from "../../../hooks/useNotifyMessage";
+import useResponsiveWidth from "../../../hooks/useResponsiveWidth";
 
 const ChangePasswordModal = ({
   setIsChangePasswordModalOpen,
@@ -18,17 +18,17 @@ const ChangePasswordModal = ({
   const currentPassword = useField(
     "Current Password",
     "password",
-    "Enter your current password..."
+    "Enter your current password...",
   );
   const newPassword = useField(
     "New Password",
     "password",
-    "Enter your new password..."
+    "Enter your new password...",
   );
   const confirmNewPassword = useField(
     "Confirm New Password",
     "password",
-    "Confirm your new password..."
+    "Confirm your new password...",
   );
 
   const [mutate] = useMutation(CHANGE_PASSWORD, {
@@ -36,7 +36,7 @@ const ChangePasswordModal = ({
       console.log(error);
       const cleanErrorMessage = String(error).replace(
         "CombinedGraphQLErrors: ",
-        ""
+        "",
       );
       showMessage(cleanErrorMessage);
     },

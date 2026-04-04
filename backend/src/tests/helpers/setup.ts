@@ -1,8 +1,8 @@
 import type { ApolloServer, BaseContext } from "@apollo/server";
-import { describe, before, beforeEach, after } from "node:test";
+import { after, before, beforeEach, describe } from "node:test";
 import { sequelize } from "../../db.js";
+import { createDatabase, emptyDatabase } from "../../populateDatabase.js";
 import { start } from "../../server.js";
-import { emptyDatabase, createDatabase } from "../../populateDatabase.js";
 
 export const describeGraphQLSuite = (title: string, callback: () => void) => {
   void describe(title, () => {

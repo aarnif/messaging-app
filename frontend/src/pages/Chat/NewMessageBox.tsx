@@ -1,7 +1,7 @@
-import { useMutation, useLazyQuery } from "@apollo/client/react";
+import { useLazyQuery, useMutation } from "@apollo/client/react";
+import type { Exact, IsBlockedByUserQuery } from "../../__generated__/graphql";
 import MessageBox from "../../components/ui/MessageBox";
 import { SEND_MESSAGE } from "../../graphql/mutations";
-import type { Exact, IsBlockedByUserQuery } from "../../__generated__/graphql";
 import useField from "../../hooks/useField";
 import useModal from "../../hooks/useModal";
 

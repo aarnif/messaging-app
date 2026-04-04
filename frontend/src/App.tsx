@@ -1,28 +1,28 @@
-import { Routes, Route, Navigate } from "react-router";
-import useField from "./hooks/useField";
+import { useState } from "react";
+import { Navigate, Route, Routes } from "react-router";
 import ModalProvider from "./components/ModalProvider";
+import SelectionPrompt from "./components/ui/SelectionPrompt";
+import useField from "./hooks/useField";
+import Chat from "./pages/Chat";
+import Chats from "./pages/Chats";
+import Contact from "./pages/Contact";
+import Contacts from "./pages/Contacts";
 import Home from "./pages/Home";
+import NewChat from "./pages/NewChat";
+import Settings from "./pages/Settings";
+import Appearance from "./pages/Settings/Appearance";
+import Profile from "./pages/Settings/Profile";
 import SignIn from "./pages/SignIn";
 import SignUp from "./pages/SignUp";
-import Chats from "./pages/Chats";
-import Contacts from "./pages/Contacts";
-import Chat from "./pages/Chat";
-import NewChat from "./pages/NewChat";
-import Contact from "./pages/Contact";
-import Settings from "./pages/Settings";
-import Profile from "./pages/Settings/Profile";
-import Appearance from "./pages/Settings/Appearance";
-import SelectionPrompt from "./components/ui/SelectionPrompt";
-import { useState } from "react";
 
 const App = () => {
   const [token, setToken] = useState(
-    localStorage.getItem("messaging-app-token") || null
+    localStorage.getItem("messaging-app-token") || null,
   );
   const searchWord = useField(
     "search-chats",
     "text",
-    "Search by title or description..."
+    "Search by title or description...",
   );
 
   return (

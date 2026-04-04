@@ -1,7 +1,7 @@
 import type { User } from "../../__generated__/graphql";
-import type { NewChatDetails } from "../../types";
-import NotFound from "../../components/ui/NotFound";
 import ChatHeader from "../../components/ui/ChatHeader";
+import NotFound from "../../components/ui/NotFound";
+import type { NewChatDetails } from "../../types";
 import NewMessageBox from "./NewMessageBox";
 
 const NewChatContent = ({

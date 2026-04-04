@@ -1,13 +1,13 @@
-import useField from "../../hooks/useField";
-import Notify from "../../components/ui/Notify";
-import FormField from "../../components/ui/FormField";
-import Button from "../../components/ui/Button";
-import { useNavigate } from "react-router";
-import { useMutation, useApolloClient } from "@apollo/client/react";
-import { LOGIN } from "../../graphql/mutations";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
+import { useNavigate } from "react-router";
+import Button from "../../components/ui/Button";
+import FormField from "../../components/ui/FormField";
+import Notify from "../../components/ui/Notify";
+import { LOGIN } from "../../graphql/mutations";
+import useField from "../../hooks/useField";
+import useNotifyMessage from "../../hooks/useNotifyMessage";
 
 const SignIn = ({
   setToken,
@@ -21,7 +21,7 @@ const SignIn = ({
   const password = useField(
     "password",
     "password",
-    "Enter your password here..."
+    "Enter your password here...",
   );
   const [isSubmitting, setIsSubmitting] = useState(false);
 

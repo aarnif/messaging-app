@@ -1,8 +1,8 @@
+import { RedisPubSub } from "graphql-redis-subscriptions";
 import { PubSub } from "graphql-subscriptions";
 import Redis from "ioredis";
-import { RedisPubSub } from "graphql-redis-subscriptions";
-import config, { isDevelopment } from "../config.js";
 import { z } from "zod";
+import config, { isDevelopment } from "../config.js";
 import type { PubSubEngine } from "./types/other.js";
 
 const recordSchema = z.record(z.string(), z.unknown());

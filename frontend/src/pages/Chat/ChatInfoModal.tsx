@@ -3,15 +3,15 @@ import { motion } from "framer-motion";
 import { FiEdit } from "react-icons/fi";
 import { IoChevronBack } from "react-icons/io5";
 import { useNavigate } from "react-router";
+import type {
+  ChatMember,
+  Chat as ChatType,
+  User,
+} from "../../__generated__/graphql";
 import Button from "../../components/ui/Button";
 import { DELETE_CHAT, LEAVE_CHAT } from "../../graphql/mutations";
 import { ALL_CHATS_BY_USER } from "../../graphql/queries";
 import useModal from "../../hooks/useModal";
-import type {
-  Chat as ChatType,
-  ChatMember,
-  User,
-} from "../../__generated__/graphql";
 
 const ChatMemberItem = ({
   member,

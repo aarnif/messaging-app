@@ -1,16 +1,16 @@
-import { IoChevronBack } from "react-icons/io5";
 import { useLazyQuery, useMutation } from "@apollo/client/react";
-import { useNavigate } from "react-router";
 import { useState } from "react";
-import type { User, Contact as ContactType } from "../../__generated__/graphql";
+import { IoChevronBack } from "react-icons/io5";
+import { useNavigate } from "react-router";
+import type { Contact as ContactType, User } from "../../__generated__/graphql";
+import Avatar from "../../components/ui/Avatar";
+import Button from "../../components/ui/Button";
+import { REMOVE_CONTACT, TOGGLE_BLOCK_CONTACT } from "../../graphql/mutations";
 import {
   ALL_CONTACTS_BY_USER,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
 } from "../../graphql/queries";
-import { TOGGLE_BLOCK_CONTACT, REMOVE_CONTACT } from "../../graphql/mutations";
 import useModal from "../../hooks/useModal";
-import Button from "../../components/ui/Button";
-import Avatar from "../../components/ui/Avatar";
 
 const ContactContent = ({
   currentUser,
@@ -29,7 +29,7 @@ const ContactContent = ({
     FIND_PRIVATE_CHAT_WITH_CONTACT,
     {
       fetchPolicy: "network-only",
-    }
+    },
   );
 
   const [toggleBlockContact] = useMutation(TOGGLE_BLOCK_CONTACT);

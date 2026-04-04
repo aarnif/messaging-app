@@ -1,25 +1,25 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
+import type { MockLink } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
-import { MemoryRouter } from "react-router";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import SignUp from "../pages/SignUp";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   LOGIN_TOKEN,
-  invalidUsername,
-  invalidPassword,
-  mismatchedPasswords,
+  createUserErrorMock,
   createUserInput,
   createUserMock,
-  createUserErrorMock,
+  invalidPassword,
+  invalidUsername,
   loginMock,
+  mismatchedPasswords,
   mockClient,
   mockNavigate,
   mockSetToken,
 } from "./helpers/mocks";
-import { assertErrorMessageAndDismissal } from "./helpers/funcs";
-import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -43,22 +43,22 @@ const renderComponent = (mocks: MockLink.MockedResponse[] = [createUserMock]) =>
       <MemoryRouter>
         <SignUp setToken={mockSetToken} />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 
 const assertSignUpPageLoaded = async () => {
   expect(screen.getByRole("heading", { name: "Messaging App" })).toBeDefined();
   expect(
     screen.getByText(
-      "Create an account to start connecting with friends and family."
-    )
+      "Create an account to start connecting with friends and family.",
+    ),
   ).toBeDefined();
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
   expect(screen.getByLabelText("Confirm Password")).toBeDefined();
   expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
   expect(
-    screen.getByRole("button", { name: "Return to Sign In" })
+    screen.getByRole("button", { name: "Return to Sign In" }),
   ).toBeDefined();
 };
 
@@ -66,7 +66,7 @@ const fillSignUpForm = async (
   user: UserEvent,
   username: string,
   password: string,
-  confirmPassword: string
+  confirmPassword: string,
 ) => {
   await user.type(screen.getByLabelText("Username"), username);
   await user.type(screen.getByLabelText("Password"), password);
@@ -101,7 +101,7 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await assertErrorMessageAndDismissal(
-      "Username must be at least 3 characters long"
+      "Username must be at least 3 characters long",
     );
   });
 
@@ -117,7 +117,7 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await assertErrorMessageAndDismissal(
-      "Password must be at least 6 characters long"
+      "Password must be at least 6 characters long",
     );
   });
 
@@ -167,7 +167,7 @@ describe("<SignUp />", () => {
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "messaging-app-token",
-        LOGIN_TOKEN
+        LOGIN_TOKEN,
       );
     });
 

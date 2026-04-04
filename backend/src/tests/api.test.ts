@@ -1,8 +1,8 @@
-import { describeGraphQLSuite } from "./helpers/setup.js";
+import assert from "node:assert";
+import { test } from "node:test";
 import { query } from "./helpers/funcs.js";
 import { COUNT_DOCUMENTS } from "./helpers/queries.js";
-import { test } from "node:test";
-import assert from "node:assert";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("GraphQL API", () => {
   void test("returns document count from database", async () => {

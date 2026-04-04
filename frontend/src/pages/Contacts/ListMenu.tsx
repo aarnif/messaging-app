@@ -1,10 +1,10 @@
 import { useQuery } from "@apollo/client/react";
 import { useLocation } from "react-router";
-import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
 import { useDebounce } from "use-debounce";
-import { DEBOUNCE_DELAY } from "../../constants";
 import MenuHeader from "../../components/ui/MenuHeader";
 import Skeleton from "../../components/ui/Skeleton";
+import { DEBOUNCE_DELAY } from "../../constants";
+import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
 import useField from "../../hooks/useField";
 import ContactItem from "./ContactItem";
 
@@ -16,7 +16,7 @@ const ListMenu = ({
   const searchWord = useField(
     "search-contacts",
     "text",
-    "Search by name or username..."
+    "Search by name or username...",
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 

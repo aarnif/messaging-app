@@ -1,8 +1,8 @@
-import { afterEach } from "vitest";
-import { cleanup } from "@testing-library/react";
 import "@testing-library/jest-dom/vitest";
-import { GraphQLError } from "graphql";
+import { cleanup } from "@testing-library/react";
 import { MotionGlobalConfig } from "framer-motion";
+import { GraphQLError } from "graphql";
+import { afterEach } from "vitest";
 
 // Disable Framer Motion animations in component tests
 MotionGlobalConfig.skipAnimations = true;

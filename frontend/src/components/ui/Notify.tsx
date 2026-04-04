@@ -1,5 +1,5 @@
-import { MdClose } from "react-icons/md";
 import { motion } from "motion/react";
+import { MdClose } from "react-icons/md";
 
 const Notify = ({
   message,

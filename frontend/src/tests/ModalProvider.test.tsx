@@ -1,9 +1,9 @@
-import type { ModalOptions } from "../types";
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
 import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import { describe, expect, test, vi } from "vitest";
 import useModal from "../hooks/useModal";
+import type { ModalOptions } from "../types";
 
 import ModalProvider from "../components/ModalProvider";
 
@@ -33,13 +33,13 @@ const renderComponent = (modalOptions: ModalOptions = alertModalOptions) => {
   return render(
     <ModalProvider>
       <TestComponent modalOptions={modalOptions} />
-    </ModalProvider>
+    </ModalProvider>,
   );
 };
 
 const openModal = async (
   user: UserEvent,
-  modalOptions: ModalOptions = alertModalOptions
+  modalOptions: ModalOptions = alertModalOptions,
 ) => {
   await user.click(screen.getByRole("button", { name: "Open Modal" }));
 
@@ -54,7 +54,7 @@ const openModal = async (
     } else {
       expect(screen.getByRole("button", { name: close })).toBeInTheDocument();
       expect(
-        screen.queryByRole("button", { name: "Confirm" })
+        screen.queryByRole("button", { name: "Confirm" }),
       ).not.toBeInTheDocument();
     }
   });
@@ -93,7 +93,9 @@ describe("<ModalProvider />", () => {
     await user.click(screen.getByTestId("overlay"));
 
     await waitFor(() =>
-      expect(screen.queryByTestId("notification-modal")).not.toBeInTheDocument()
+      expect(
+        screen.queryByTestId("notification-modal"),
+      ).not.toBeInTheDocument(),
     );
   });
 
@@ -154,7 +156,7 @@ describe("<ModalProvider />", () => {
     await openModal(user, alertModalOptions);
 
     await user.click(
-      screen.getByRole("button", { name: alertModalOptions.close })
+      screen.getByRole("button", { name: alertModalOptions.close }),
     );
 
     await waitFor(() => {
@@ -171,7 +173,7 @@ describe("<ModalProvider />", () => {
     await openModal(user, alertModalOptions);
 
     await user.click(
-      screen.getByRole("button", { name: alertModalOptions.confirm })
+      screen.getByRole("button", { name: alertModalOptions.confirm }),
     );
 
     await waitFor(() => {

@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 
 // Based on this article: https://www.dhiwise.com/post/react-get-screen-width-everything-you-need-to-know
 const useResponsiveWidth = () => {

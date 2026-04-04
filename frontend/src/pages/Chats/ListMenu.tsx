@@ -4,9 +4,13 @@ import {
   useSubscription,
 } from "@apollo/client/react";
 import { AnimatePresence, motion } from "motion/react";
-import { NavLink, useLocation, useMatch } from "react-router";
 import { useRef } from "react";
+import { NavLink, useLocation, useMatch } from "react-router";
 import { useDebounce } from "use-debounce";
+import type { User } from "../../__generated__/graphql";
+import MenuHeader from "../../components/ui/MenuHeader";
+import Skeleton from "../../components/ui/Skeleton";
+import { DEBOUNCE_DELAY } from "../../constants";
 import { ALL_CHATS_BY_USER } from "../../graphql/queries";
 import {
   USER_CHAT_CREATED,
@@ -14,17 +18,13 @@ import {
   USER_CHAT_LEFT,
   USER_CHAT_UPDATED,
 } from "../../graphql/subscriptions";
-import { DEBOUNCE_DELAY } from "../../constants";
-import MenuHeader from "../../components/ui/MenuHeader";
-import Skeleton from "../../components/ui/Skeleton";
-import type { User } from "../../__generated__/graphql";
-import type { InputField } from "../../types";
 import {
   getChatName,
   isValidChatForUser,
   updateChatByIdCache,
   updateUserChatsCache,
 } from "../../helpers";
+import type { InputField } from "../../types";
 import ChatItem from "./ChatItem";
 
 const MotionNavLink = motion.create(NavLink);
@@ -74,8 +74,8 @@ const ListMenu = ({
                 unreadCount: isViewingChat ? 0 : updatedChat.unreadCount,
                 name: getChatName(updatedChat, currentUser!.id),
               }
-            : chat
-        )
+            : chat,
+        ),
       );
     },
   });

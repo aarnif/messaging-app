@@ -1,13 +1,13 @@
-import { useState } from "react";
-import useField from "../../hooks/useField";
-import Notify from "../../components/ui/Notify";
-import FormField from "../../components/ui/FormField";
-import Button from "../../components/ui/Button";
-import { useNavigate } from "react-router";
-import { useMutation, useApolloClient } from "@apollo/client/react";
-import { CREATE_USER, LOGIN } from "../../graphql/mutations";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
+import { useApolloClient, useMutation } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
+import { useNavigate } from "react-router";
+import Button from "../../components/ui/Button";
+import FormField from "../../components/ui/FormField";
+import Notify from "../../components/ui/Notify";
+import { CREATE_USER, LOGIN } from "../../graphql/mutations";
+import useField from "../../hooks/useField";
+import useNotifyMessage from "../../hooks/useNotifyMessage";
 
 const SignUp = ({
   setToken,
@@ -22,12 +22,12 @@ const SignUp = ({
   const password = useField(
     "password",
     "password",
-    "Enter your password here..."
+    "Enter your password here...",
   );
   const confirmPassword = useField(
     "Confirm Password",
     "password",
-    "Confirm your password here..."
+    "Confirm your password here...",
   );
 
   const [createUser] = useMutation(CREATE_USER, {
@@ -49,7 +49,7 @@ const SignUp = ({
   const validateSignUpForm = (
     username: string,
     password: string,
-    confirmPassword: string
+    confirmPassword: string,
   ): string | null => {
     if (!username.length || !password.length || !confirmPassword.length) {
       return "Please fill all fields.";
@@ -76,7 +76,7 @@ const SignUp = ({
     const validationError = validateSignUpForm(
       username.value,
       password.value,
-      confirmPassword.value
+      confirmPassword.value,
     );
 
     if (validationError) {

@@ -1,27 +1,27 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import { MockedProvider } from "@apollo/client/testing/react";
-import { MemoryRouter } from "react-router";
 import type { MockLink } from "@apollo/client/testing";
+import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import App from "../App";
 import {
-  meMock,
-  meNullMock,
   allChatsByUser,
   allContactsByUser,
-  findChatByIdGroup,
-  GROUP_CHAT_DETAILS,
-  findContactById,
-  isBlockedByUserFalse,
   CONTACT_DETAILS,
-  windowMockContent,
+  findChatByIdGroup,
+  findContactById,
+  GROUP_CHAT_DETAILS,
+  isBlockedByUserFalse,
+  LOGIN_TOKEN,
   markChatAsRead,
-  userChatCreatedSubscription,
-  userChatUpdatedSubscription,
+  meMock,
+  meNullMock,
   messageSentSubscription,
+  userChatCreatedSubscription,
   userChatDeletedSubscription,
   userChatLeftSubscription,
-  LOGIN_TOKEN,
+  userChatUpdatedSubscription,
+  windowMockContent,
 } from "./helpers/mocks";
 
 Element.prototype.scrollIntoView = vi.fn();
@@ -31,7 +31,7 @@ Object.defineProperty(window, "matchMedia", windowMockContent);
 const renderComponent = (
   initialEntries = ["/"],
   mocks: MockLink.MockedResponse[] = [meMock],
-  token: string | null = LOGIN_TOKEN
+  token: string | null = LOGIN_TOKEN,
 ) => {
   if (token) {
     localStorage.setItem("messaging-app-token", token);
@@ -42,7 +42,7 @@ const renderComponent = (
       <MemoryRouter initialEntries={initialEntries}>
         <App />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
@@ -52,7 +52,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: "Messaging App" })
+        screen.getByRole("heading", { name: "Messaging App" }),
       ).toBeDefined();
     });
   });
@@ -62,7 +62,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: "Messaging App" })
+        screen.getByRole("heading", { name: "Messaging App" }),
       ).toBeDefined();
     });
   });
@@ -72,7 +72,7 @@ describe("<App />", () => {
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: "Messaging App" })
+        screen.getByRole("heading", { name: "Messaging App" }),
       ).toBeDefined();
     });
   });
@@ -87,7 +87,7 @@ describe("<App />", () => {
         userChatUpdatedSubscription,
         userChatDeletedSubscription,
         userChatLeftSubscription,
-      ]
+      ],
     );
 
     await waitFor(() => {
@@ -105,7 +105,7 @@ describe("<App />", () => {
         userChatUpdatedSubscription,
         userChatDeletedSubscription,
         userChatLeftSubscription,
-      ]
+      ],
     );
 
     await waitFor(() => {
@@ -123,7 +123,7 @@ describe("<App />", () => {
         userChatUpdatedSubscription,
         userChatDeletedSubscription,
         userChatLeftSubscription,
-      ]
+      ],
     );
 
     await waitFor(() => {
@@ -144,12 +144,12 @@ describe("<App />", () => {
         userChatDeletedSubscription,
         userChatLeftSubscription,
         messageSentSubscription,
-      ]
+      ],
     );
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
       ).toBeDefined();
     });
   });
@@ -165,12 +165,12 @@ describe("<App />", () => {
         userChatUpdatedSubscription,
         userChatDeletedSubscription,
         userChatLeftSubscription,
-      ]
+      ],
     );
 
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
       ).toBeDefined();
     });
   });
@@ -186,14 +186,14 @@ describe("<App />", () => {
   test("renders contact page", async () => {
     renderComponent(
       ["/contacts/1"],
-      [meMock, allContactsByUser, findContactById, isBlockedByUserFalse]
+      [meMock, allContactsByUser, findContactById, isBlockedByUserFalse],
     );
 
     await waitFor(() => {
       expect(
         screen.getByRole("heading", {
           name: CONTACT_DETAILS.contactDetails.name,
-        })
+        }),
       ).toBeDefined();
     });
   });
@@ -209,7 +209,7 @@ describe("<App />", () => {
   test("renders profile page", async () => {
     renderComponent(
       ["/settings/profile"],
-      [meMock, allChatsByUser, findChatByIdGroup]
+      [meMock, allChatsByUser, findChatByIdGroup],
     );
 
     await waitFor(() => {
@@ -221,7 +221,7 @@ describe("<App />", () => {
   test("renders appearance page", async () => {
     renderComponent(
       ["/settings/appearance"],
-      [meMock, allChatsByUser, findChatByIdGroup]
+      [meMock, allChatsByUser, findChatByIdGroup],
     );
 
     await waitFor(() => {

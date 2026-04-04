@@ -1,7 +1,7 @@
-import { useNavigate } from "react-router";
-import { truncateText } from "../../helpers";
 import { IoChevronBack } from "react-icons/io5";
-import type { User, ChatMember } from "../../__generated__/graphql";
+import { useNavigate } from "react-router";
+import type { ChatMember, User } from "../../__generated__/graphql";
+import { truncateText } from "../../helpers";
 import type { NewChatMember } from "../../types";
 
 const ChatHeader = ({
@@ -23,7 +23,7 @@ const ChatHeader = ({
     type === "group"
       ? members
           ?.map((member) =>
-            member?.username === currentUser.username ? "You" : member?.name
+            member?.username === currentUser.username ? "You" : member?.name,
           )
           .join(", ")
       : type === "private"

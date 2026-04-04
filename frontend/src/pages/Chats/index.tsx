@@ -1,12 +1,12 @@
-import { ME } from "../../graphql/queries";
 import { useQuery } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
+import { useState } from "react";
 import { Outlet } from "react-router";
-import Spinner from "../../components/ui/Spinner";
-import type { InputField } from "../../types";
 import NewChatDropDownBox from "../../components/NewChatDropDown";
 import NewChatModal from "../../components/NewChatModal";
-import { useState } from "react";
+import Spinner from "../../components/ui/Spinner";
+import { ME } from "../../graphql/queries";
+import type { InputField } from "../../types";
 import ListMenu from "./ListMenu";
 
 const Chats = ({ searchWord }: { searchWord: InputField }) => {

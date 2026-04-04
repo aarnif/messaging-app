@@ -1,27 +1,27 @@
+import { useLazyQuery, useQuery } from "@apollo/client/react";
+import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import { motion, AnimatePresence } from "framer-motion";
-import { useState, useEffect } from "react";
-import useField from "../hooks/useField";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
-import useNotifyMessage from "../hooks/useNotifyMessage";
-import SearchBox from "./ui/SearchBox";
-import type { InputField, UserContact } from "../types";
+import { useNavigate } from "react-router";
+import { useDebounce } from "use-debounce";
+import type { Contact, User } from "../__generated__/graphql";
+import { DEBOUNCE_DELAY } from "../constants";
 import {
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
-import { useQuery, useLazyQuery } from "@apollo/client/react";
-import { useDebounce } from "use-debounce";
-import { DEBOUNCE_DELAY } from "../constants";
-import type { User, Contact } from "../__generated__/graphql";
-import Spinner from "./ui/Spinner";
-import Notify from "./ui/Notify";
+import useField from "../hooks/useField";
+import useNotifyMessage from "../hooks/useNotifyMessage";
+import useResponsiveWidth from "../hooks/useResponsiveWidth";
+import type { InputField, UserContact } from "../types";
 import FormField from "./ui/FormField";
-import { useNavigate } from "react-router";
+import Notify from "./ui/Notify";
+import SearchBox from "./ui/SearchBox";
 import SelectContactsList from "./ui/SelectContactsList";
 import SelectUserButton from "./ui/SelectUserButton";
+import Spinner from "./ui/Spinner";
 
 export const SelectContactList = ({
   contacts,
@@ -92,7 +92,7 @@ const PrivateChatContent = ({
     }
 
     const chosenContact = contacts?.find(
-      (contact) => contact.id === selectedContact
+      (contact) => contact.id === selectedContact,
     );
 
     const isBlockedByContact = await isBlockedByUser({
@@ -175,7 +175,7 @@ const GroupChatContent = ({
   const description = useField(
     "description",
     "text",
-    "Enter description here..."
+    "Enter description here...",
   );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -194,7 +194,7 @@ const GroupChatContent = ({
         data?.allContactsByUser?.map((contact) => ({
           ...contact,
           isSelected: selectedIds.has(contact.contactDetails.id),
-        }))
+        })),
       );
     }
   }, [data, selectedIds]);
@@ -285,7 +285,7 @@ const NewChatModal = ({
   const searchWord = useField(
     "search-contacts",
     "text",
-    "Search by name or username..."
+    "Search by name or username...",
   );
   const width = useResponsiveWidth();
 

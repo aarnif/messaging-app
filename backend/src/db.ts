@@ -1,5 +1,5 @@
-import { Sequelize, QueryInterface } from "sequelize";
-import { Umzug, SequelizeStorage, RunnableMigration } from "umzug";
+import { QueryInterface, Sequelize } from "sequelize";
+import { RunnableMigration, SequelizeStorage, Umzug } from "umzug";
 import config from "../config.js";
 
 const sequelize = new Sequelize(config.DATABASE_URL, {
@@ -47,4 +47,4 @@ const connectToDatabase = async () => {
   }
 };
 
-export { sequelize, connectToDatabase };
+export { connectToDatabase, sequelize };

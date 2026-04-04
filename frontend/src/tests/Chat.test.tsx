@@ -1,46 +1,46 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
-import type { UserEvent } from "@testing-library/user-event";
-import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
+import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
+import ModalProvider from "../components/ModalProvider";
+import { formatDisplayDate } from "../helpers";
+import Chat from "../pages/Chat";
 import {
-  mockNavigate,
-  mockMatch,
-  mockUseOutletContext,
-  findChatByIdGroup,
-  findChatByIdPrivate,
-  findChatByIdNull,
-  findChatByIdGroupWithNotification,
-  sendMessage,
-  deleteMessage,
-  editMessage,
+  assertErrorMessageAndDismissal,
+  sendNewMessage,
+} from "./helpers/funcs";
+import {
   allChatsByUser,
   allContactsByUser,
-  findContactByUserId,
   currentUserChatAdminMock,
   currentUserChatMemberMock,
-  isBlockedByUserTrue,
-  editChat,
-  leaveChat,
   deleteChat,
-  markChatAsRead,
-  messageSentSubscription,
-  messageEditedSubscription,
-  messageDeletedSubscription,
-  USER_ONE_DETAILS,
+  deleteMessage,
+  editChat,
+  editMessage,
+  findChatByIdGroup,
+  findChatByIdGroupWithNotification,
+  findChatByIdNull,
+  findChatByIdPrivate,
+  findContactByUserId,
   GROUP_CHAT_DETAILS,
+  isBlockedByUserTrue,
+  leaveChat,
+  markChatAsRead,
   MESSAGE_DETAILS,
+  messageDeletedSubscription,
+  messageEditedSubscription,
+  messageSentSubscription,
   mockChatsSearchWord,
+  mockMatch,
+  mockNavigate,
+  mockUseOutletContext,
+  sendMessage,
+  USER_ONE_DETAILS,
 } from "./helpers/mocks";
-import {
-  sendNewMessage,
-  assertErrorMessageAndDismissal,
-} from "./helpers/funcs";
-import ModalProvider from "../components/ModalProvider";
-import Chat from "../pages/Chat";
-import { formatDisplayDate } from "../helpers";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -65,7 +65,7 @@ const renderComponent = (
     messageEditedSubscription,
     messageDeletedSubscription,
   ],
-  currentUser = currentUserChatAdminMock
+  currentUser = currentUserChatAdminMock,
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser,
@@ -79,14 +79,14 @@ const renderComponent = (
           <Chat />
         </ModalProvider>
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
 const openChatInfoModal = async (user: UserEvent) => {
   await waitFor(async () => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
     ).toBeDefined();
   });
   await user.click(screen.getByTestId("chat-info-button"));
@@ -106,11 +106,11 @@ const openEditChatModal = async (user: UserEvent) => {
 const openMessageEditMode = async (user: UserEvent) => {
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
     ).toBeDefined();
   });
   const [firstMessageMenuButton] = screen.getAllByTestId(
-    "current-user-message"
+    "current-user-message",
   );
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
@@ -125,11 +125,11 @@ const openMessageEditMode = async (user: UserEvent) => {
 const openMessageDeleteConfirmation = async (user: UserEvent) => {
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
     ).toBeDefined();
   });
   const [firstMessageMenuButton] = screen.getAllByTestId(
-    "current-user-message"
+    "current-user-message",
   );
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
@@ -169,7 +169,7 @@ describe("<Chat />", () => {
     await waitFor(() => {
       expect(screen.getByText("Chat not found.")).toBeDefined();
       expect(
-        screen.getByText("It may have been deleted or the link is incorrect.")
+        screen.getByText("It may have been deleted or the link is incorrect."),
       ).toBeDefined();
     });
   });
@@ -178,16 +178,16 @@ describe("<Chat />", () => {
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name })
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
       ).toBeDefined();
       expect(
         screen.getByText(
           GROUP_CHAT_DETAILS.members
             .map((member) =>
-              member.name === USER_ONE_DETAILS.name ? "You" : member.name
+              member.name === USER_ONE_DETAILS.name ? "You" : member.name,
             )
-            .join(", ")
-        )
+            .join(", "),
+        ),
       ).toBeDefined();
       GROUP_CHAT_DETAILS.messages.forEach((message) => {
         const { sender, content, createdAt } = message;
@@ -210,7 +210,7 @@ describe("<Chat />", () => {
     renderComponent();
     await waitFor(() => {
       const currentUserMessages = screen.queryAllByTestId(
-        "current-user-message"
+        "current-user-message",
       );
       currentUserMessages.forEach((message) => {
         expect(message.className).toContain("bg-green-300");
@@ -237,7 +237,7 @@ describe("<Chat />", () => {
     await waitFor(() => {
       expect(screen.getByTestId("notification-message")).toBeDefined();
       expect(
-        screen.getByText(`${USER_ONE_DETAILS.name} created the group`)
+        screen.getByText(`${USER_ONE_DETAILS.name} created the group`),
       ).toBeDefined();
     });
   });
@@ -333,7 +333,7 @@ describe("<Chat />", () => {
 
     await waitFor(() => {
       const input = screen.getByPlaceholderText(
-        "New Message..."
+        "New Message...",
       ) as HTMLInputElement;
       expect(input.value).toBe("");
     });
@@ -378,7 +378,7 @@ describe("<Chat />", () => {
       },
       {
         timeout: 1500,
-      }
+      },
     );
   });
 
@@ -402,7 +402,7 @@ describe("<Chat />", () => {
     await user.click(screen.getByTestId("submit-button"));
 
     await assertErrorMessageAndDismissal(
-      "Chat name must be at least three characters long"
+      "Chat name must be at least three characters long",
     );
   });
 
@@ -430,7 +430,7 @@ describe("<Chat />", () => {
       () => {
         expect(within(modal).getByText(`@${chatMember1}`)).toBeDefined();
       },
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
 
     await user.click(within(modal).getByText(`@${chatMember1}`));
@@ -441,7 +441,7 @@ describe("<Chat />", () => {
       expect(screen.getAllByText("1 contacts selected"));
       expect(selectedContacts[0]).toBeDefined();
       expect(
-        within(selectedContacts[0]).getByText(`@${chatMember2}`)
+        within(selectedContacts[0]).getByText(`@${chatMember2}`),
       ).toBeDefined();
     });
   });
@@ -464,7 +464,7 @@ describe("<Chat />", () => {
 
     const nameInput = screen.getByPlaceholderText("Enter name here...");
     const descriptionInput = screen.getByPlaceholderText(
-      "Enter description here..."
+      "Enter description here...",
     );
 
     await user.clear(nameInput);
@@ -479,7 +479,7 @@ describe("<Chat />", () => {
       async () => {
         expect(screen.queryByRole("heading", { name: "Edit Chat" })).toBeNull();
       },
-      { timeout: 2000 }
+      { timeout: 2000 },
     );
   });
 
@@ -513,7 +513,7 @@ describe("<Chat />", () => {
         messageEditedSubscription,
         messageDeletedSubscription,
       ],
-      currentUserChatMemberMock
+      currentUserChatMemberMock,
     );
 
     await openChatInfoModal(user);
@@ -522,7 +522,7 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.getByText("Are you sure you want to leave the chat?")
+        screen.getByText("Are you sure you want to leave the chat?"),
       ).toBeDefined();
     });
 
@@ -545,7 +545,7 @@ describe("<Chat />", () => {
         messageEditedSubscription,
         messageDeletedSubscription,
       ],
-      currentUserChatMemberMock
+      currentUserChatMemberMock,
     );
 
     await openChatInfoModal(user);
@@ -574,8 +574,8 @@ describe("<Chat />", () => {
       expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
       expect(
         screen.getByText(
-          /This will remove the chat and all messages for everyone\./i
-        )
+          /This will remove the chat and all messages for everyone\./i,
+        ),
       ).toBeDefined();
     });
 
@@ -607,7 +607,7 @@ describe("<Chat />", () => {
     renderComponent();
 
     const originalContent = GROUP_CHAT_DETAILS.messages.find(
-      (message) => message.sender.name === USER_ONE_DETAILS.name
+      (message) => message.sender.name === USER_ONE_DETAILS.name,
     )!.content;
 
     await openMessageEditMode(user);
@@ -653,7 +653,7 @@ describe("<Chat />", () => {
     await openMessageDeleteConfirmation(user);
     await waitFor(() => {
       expect(
-        screen.getByText("Are you sure you want to delete the message?")
+        screen.getByText("Are you sure you want to delete the message?"),
       ).toBeDefined();
     });
   });
@@ -664,7 +664,7 @@ describe("<Chat />", () => {
     await openMessageDeleteConfirmation(user);
     await waitFor(() => {
       expect(
-        screen.getByText("Are you sure you want to delete the message?")
+        screen.getByText("Are you sure you want to delete the message?"),
       ).toBeDefined();
     });
 
@@ -672,7 +672,7 @@ describe("<Chat />", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Are you sure you want to delete the message?")
+        screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
     });
   });
@@ -694,7 +694,7 @@ describe("<Chat />", () => {
     await openMessageDeleteConfirmation(user);
     await waitFor(() => {
       expect(
-        screen.getByText("Are you sure you want to delete the message?")
+        screen.getByText("Are you sure you want to delete the message?"),
       ).toBeDefined();
     });
 
@@ -702,7 +702,7 @@ describe("<Chat />", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByText("Are you sure you want to delete the message?")
+        screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
     });
   });

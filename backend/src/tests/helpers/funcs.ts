@@ -1,9 +1,9 @@
-import request from "supertest";
-import type { HTTPGraphQLResponse } from "../../types/other.js";
-import type { User, Contact, Chat, UserChat } from "~/types/graphql";
-import { user1Details } from "./data.js";
-import config from "../../../config.js";
 import assert from "node:assert";
+import request from "supertest";
+import type { Chat, Contact, User, UserChat } from "~/types/graphql";
+import config from "../../../config.js";
+import type { HTTPGraphQLResponse } from "../../types/other.js";
+import { user1Details } from "./data.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
   query: string,

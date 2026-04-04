@@ -1,9 +1,9 @@
-import type { ModalOptions } from "../types";
+import { AnimatePresence, motion } from "framer-motion";
 import type { ReactNode } from "react";
 import { useState } from "react";
-import { AnimatePresence, motion } from "framer-motion";
 import { FaExclamation } from "react-icons/fa6";
 import ModalContext from "../contexts/ModalContext";
+import type { ModalOptions } from "../types";
 import Button from "./ui/Button";
 
 const ModalContent = ({

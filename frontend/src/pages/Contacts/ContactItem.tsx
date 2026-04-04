@@ -1,6 +1,6 @@
 import { NavLink } from "react-router";
-import Avatar from "../../components/ui/Avatar";
 import type { Contact } from "../../__generated__/graphql";
+import Avatar from "../../components/ui/Avatar";
 
 const ContactItem = ({ contact }: { contact: Contact }) => {
   const { id, contactDetails } = contact;

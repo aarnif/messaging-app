@@ -1,39 +1,39 @@
-import { render, screen, waitFor, within } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
-import type { UserEvent } from "@testing-library/user-event";
+import type { MockLink } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor, within } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
-import {
-  meMock,
-  allChatsByUserEmpty,
-  allChatsByUser,
-  userChatsMock,
-  contactsWithoutPrivateChats,
-  contactsWithoutPrivateChatsEmpty,
-  allContactsByUser,
-  userContactsMock,
-  NewPrivateChatDetails,
-  NewGroupChatDetails,
-  mockNavigate,
-  allContactsByUserEmpty,
-  isBlockedByUserTrue,
-  isBlockedByUserFalse,
-  userChatCreatedSubscription,
-  userChatUpdatedSubscription,
-  userChatDeletedSubscription,
-  userChatLeftSubscription,
-  mockChatsSearchWord,
-} from "./helpers/mocks";
+import { describe, expect, test, vi } from "vitest";
+import { formatDisplayDate, truncateText } from "../helpers";
+import Chats from "../pages/Chats";
 import {
   assertContactsDisplayed,
-  selectContacts,
   assertContactsSelected,
   assertErrorMessageAndDismissal,
+  selectContacts,
 } from "./helpers/funcs";
-import Chats from "../pages/Chats";
-import { formatDisplayDate, truncateText } from "../helpers";
-import type { MockLink } from "@apollo/client/testing";
+import {
+  NewGroupChatDetails,
+  NewPrivateChatDetails,
+  allChatsByUser,
+  allChatsByUserEmpty,
+  allContactsByUser,
+  allContactsByUserEmpty,
+  contactsWithoutPrivateChats,
+  contactsWithoutPrivateChatsEmpty,
+  isBlockedByUserFalse,
+  isBlockedByUserTrue,
+  meMock,
+  mockChatsSearchWord,
+  mockNavigate,
+  userChatCreatedSubscription,
+  userChatDeletedSubscription,
+  userChatLeftSubscription,
+  userChatUpdatedSubscription,
+  userChatsMock,
+  userContactsMock,
+} from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -54,14 +54,14 @@ const renderComponent = (
     userChatUpdatedSubscription,
     userChatDeletedSubscription,
     userChatLeftSubscription,
-  ]
+  ],
 ) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <Chats searchWord={mockChatsSearchWord} />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 
 const openNewChatDropDownMenu = async (user: UserEvent) => {
@@ -84,7 +84,7 @@ const openNewChatModal = async (user: UserEvent, type: string) => {
   await waitFor(() => {
     expect(screen.getByText(type)).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Search by name or username...")
+      screen.getByPlaceholderText("Search by name or username..."),
     ).toBeDefined();
   });
 };
@@ -96,7 +96,7 @@ describe("<Chats />", () => {
       await waitFor(() => {
         expect(screen.getByRole("heading", { name: "Chats" })).toBeDefined();
         expect(
-          screen.getByPlaceholderText("Search by title or description...")
+          screen.getByPlaceholderText("Search by title or description..."),
         ).toBeDefined();
       });
     });
@@ -135,19 +135,19 @@ describe("<Chats />", () => {
           expect(within(chatItem).getByText(name)).toBeDefined();
           expect(
             within(chatItem).getByText(
-              new RegExp(`${latestMessage?.sender.name}:`)
-            )
+              new RegExp(`${latestMessage?.sender.name}:`),
+            ),
           ).toBeDefined();
           const formattedDate = formatDisplayDate(
-            latestMessage?.createdAt ?? 0
+            latestMessage?.createdAt ?? 0,
           );
           if (formattedDate) {
             expect(within(chatItem).getByText(formattedDate)).toBeDefined();
           }
           expect(
             within(chatItem).getByText(
-              truncateText(latestMessage?.content ?? "")
-            )
+              truncateText(latestMessage?.content ?? ""),
+            ),
           ).toBeDefined();
         });
       });
@@ -259,7 +259,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("create-chat-button"));
 
       await assertErrorMessageAndDismissal(
-        "Please select a contact to create a chat with"
+        "Please select a contact to create a chat with",
       );
     });
 
@@ -351,7 +351,7 @@ describe("<Chats />", () => {
       await waitFor(async () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           "new-chat-info",
-          JSON.stringify(NewPrivateChatDetails)
+          JSON.stringify(NewPrivateChatDetails),
         );
         expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
         expect(screen.queryByText("New Private Chat")).toBeNull();
@@ -473,7 +473,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("create-chat-button"));
 
       await assertErrorMessageAndDismissal(
-        "Chat name must be at least three characters long"
+        "Chat name must be at least three characters long",
       );
     });
 
@@ -501,7 +501,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("create-chat-button"));
 
       await assertErrorMessageAndDismissal(
-        "Chat must have at least two members"
+        "Chat must have at least two members",
       );
     });
 
@@ -537,7 +537,7 @@ describe("<Chats />", () => {
       await waitFor(async () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
           "new-chat-info",
-          JSON.stringify(NewGroupChatDetails)
+          JSON.stringify(NewGroupChatDetails),
         );
         expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
         expect(screen.queryByText("New Group Chat")).toBeNull();

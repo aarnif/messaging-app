@@ -1,24 +1,24 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi, beforeEach } from "vitest";
-import userEvent from "@testing-library/user-event";
-import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
+import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { beforeEach, describe, expect, test, vi } from "vitest";
+import NewChat from "../pages/NewChat";
+import { sendNewMessage } from "./helpers/funcs";
 import {
-  mockNavigate,
-  mockUseOutletContext,
+  createChat,
   currentUserChatAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
-  sendMessage,
-  createChat,
-  USER_ONE_DETAILS,
   MESSAGE_DETAILS,
-  NewPrivateChatDetails,
+  mockNavigate,
+  mockUseOutletContext,
   NewGroupChatDetails,
+  NewPrivateChatDetails,
+  sendMessage,
+  USER_ONE_DETAILS,
 } from "./helpers/mocks";
-import { sendNewMessage } from "./helpers/funcs";
-import NewChat from "../pages/NewChat";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -35,7 +35,7 @@ const renderComponent = (
     findChatByIdNull,
     sendMessage,
     createChat,
-  ]
+  ],
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser: currentUserChatAdminMock,
@@ -46,7 +46,7 @@ const renderComponent = (
       <MemoryRouter>
         <NewChat />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
@@ -54,7 +54,7 @@ describe("<NewChat />", () => {
   beforeEach(() => {
     localStorage.setItem(
       "new-chat-info",
-      JSON.stringify(NewPrivateChatDetails)
+      JSON.stringify(NewPrivateChatDetails),
     );
   });
 
@@ -62,7 +62,7 @@ describe("<NewChat />", () => {
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: NewPrivateChatDetails.name })
+        screen.getByRole("heading", { name: NewPrivateChatDetails.name }),
       ).toBeDefined();
       expect(
         screen.queryByText(
@@ -70,10 +70,10 @@ describe("<NewChat />", () => {
             ?.map((member) =>
               member?.username === USER_ONE_DETAILS.username
                 ? "You"
-                : member?.name
+                : member?.name,
             )
-            .join(", ")
-        )
+            .join(", "),
+        ),
       ).toBeNull();
     });
   });
@@ -83,7 +83,7 @@ describe("<NewChat />", () => {
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: NewGroupChatDetails.name })
+        screen.getByRole("heading", { name: NewGroupChatDetails.name }),
       ).toBeDefined();
       expect(
         screen.getByText(
@@ -91,10 +91,10 @@ describe("<NewChat />", () => {
             ?.map((member) =>
               member?.username === USER_ONE_DETAILS.username
                 ? "You"
-                : member?.name
+                : member?.name,
             )
-            .join(", ")
-        )
+            .join(", "),
+        ),
       ).toBeDefined();
     });
   });
@@ -134,7 +134,7 @@ describe("<NewChat />", () => {
 
     await waitFor(() => {
       const input = screen.getByPlaceholderText(
-        "New Message..."
+        "New Message...",
       ) as HTMLInputElement;
       expect(input.value).toBe("");
       expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
