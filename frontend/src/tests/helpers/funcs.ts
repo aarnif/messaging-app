@@ -1,7 +1,7 @@
-import { expect } from "vitest";
-import { screen, within, waitFor } from "@testing-library/react";
-import userEvent from "@testing-library/user-event";
+import { screen, waitFor, within } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import { expect } from "vitest";
 import type { Contact } from "../../__generated__/graphql";
 
 export const assertContactsDisplayed = (contacts: Contact[]) => {
@@ -25,7 +25,7 @@ export const assertContactsSelected = (usernames: string[]) => {
   usernames.forEach((username, index) => {
     expect(selectedContacts[index]).toBeDefined();
     expect(
-      within(selectedContacts[index]).getByText(`@${username}`)
+      within(selectedContacts[index]).getByText(`@${username}`),
     ).toBeDefined();
   });
 };

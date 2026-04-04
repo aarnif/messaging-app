@@ -1,49 +1,49 @@
+import assert from "node:assert";
+import { beforeEach, describe, test } from "node:test";
 import type {
-  User,
-  Contact,
   Chat,
-  CreateUserInput,
-  LoginInput,
+  Contact,
   CreateChatInput,
+  CreateUserInput,
   EditChatInput,
+  LoginInput,
   SendMessageInput,
+  User,
   UserChat,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
+  expectedGroupChat,
+  expectedPrivateChat,
+  expectedUser2,
+  groupChatDetails,
+  privateChatDetails,
   user1Details,
   user2Details,
   user3Details,
-  expectedUser2,
-  privateChatDetails,
-  groupChatDetails,
-  expectedPrivateChat,
-  expectedGroupChat,
 } from "./helpers/data.js";
 import {
-  query,
-  assertValidationError,
-  assertError,
   assertChatEquality,
+  assertError,
+  assertValidationError,
+  query,
 } from "./helpers/funcs.js";
 import {
-  CREATE_USER,
-  LOGIN,
   ADD_CONTACT,
-  CREATE_CHAT,
-  EDIT_CHAT,
-  DELETE_CHAT,
-  SEND_MESSAGE,
-  EDIT_MESSAGE,
-  DELETE_MESSAGE,
-  LEAVE_CHAT,
-  FIND_CHAT_BY_ID,
   ALL_CHATS_BY_USER,
+  CREATE_CHAT,
+  CREATE_USER,
+  DELETE_CHAT,
+  DELETE_MESSAGE,
+  EDIT_CHAT,
+  EDIT_MESSAGE,
+  FIND_CHAT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
+  LEAVE_CHAT,
+  LOGIN,
   MARK_CHAT_AS_READ,
+  SEND_MESSAGE,
 } from "./helpers/queries.js";
-import { describe, beforeEach, test } from "node:test";
-import assert from "node:assert";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;

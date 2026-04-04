@@ -1,47 +1,47 @@
+import assert from "node:assert";
+import { beforeEach, describe, test } from "node:test";
 import type {
-  User,
-  Contact,
   Chat,
-  CreateUserInput,
-  LoginInput,
-  EditProfileInput,
+  Contact,
   CreateChatInput,
+  CreateUserInput,
+  EditProfileInput,
+  LoginInput,
+  User,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
+  expectedContact1,
+  expectedContact2,
+  expectedUser2,
+  expectedUser3,
+  privateChatDetails,
   user1Details,
   user2Details,
   user3Details,
-  expectedUser2,
-  expectedUser3,
-  expectedContact1,
-  expectedContact2,
-  privateChatDetails,
 } from "./helpers/data.js";
 import {
-  query,
+  assertContactEquality,
   assertError,
   assertUserEquality,
-  assertContactEquality,
+  query,
 } from "./helpers/funcs.js";
 import {
-  CREATE_USER,
-  LOGIN,
   ADD_CONTACT,
   ADD_CONTACTS,
-  REMOVE_CONTACT,
-  CREATE_CHAT,
-  TOGGLE_BLOCK_CONTACT,
-  EDIT_PROFILE,
-  IS_BLOCKED_BY_USER,
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
+  CREATE_CHAT,
+  CREATE_USER,
+  EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
+  IS_BLOCKED_BY_USER,
+  LOGIN,
   NON_CONTACT_USERS,
+  REMOVE_CONTACT,
+  TOGGLE_BLOCK_CONTACT,
 } from "./helpers/queries.js";
-import { describe, beforeEach, test } from "node:test";
-import assert from "node:assert";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;

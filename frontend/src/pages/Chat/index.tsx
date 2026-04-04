@@ -4,21 +4,21 @@ import {
   useQuery,
   useSubscription,
 } from "@apollo/client/react";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useRef, useState } from "react";
 import { useMatch, useOutletContext } from "react-router";
+import type { User } from "../../__generated__/graphql";
+import NotFound from "../../components/ui/NotFound";
+import Spinner from "../../components/ui/Spinner";
+import { MARK_CHAT_AS_READ } from "../../graphql/mutations";
 import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "../../graphql/queries";
 import {
   MESSAGE_DELETED,
   MESSAGE_EDITED,
   MESSAGE_SENT,
 } from "../../graphql/subscriptions";
-import { MARK_CHAT_AS_READ } from "../../graphql/mutations";
 import { updateChatByIdCache } from "../../helpers";
-import Spinner from "../../components/ui/Spinner";
-import NotFound from "../../components/ui/NotFound";
-import { AnimatePresence } from "framer-motion";
 import type { InputField } from "../../types";
-import type { User } from "../../__generated__/graphql";
 import ChatContent from "./ChatContent";
 import ChatInfoModal from "./ChatInfoModal";
 import EditChatModal from "./EditChatModal";
@@ -87,7 +87,7 @@ const Chat = () => {
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
         messages: chat?.messages.map((message) =>
-          message.id === editedMessage.id ? editedMessage : message
+          message.id === editedMessage.id ? editedMessage : message,
         ),
       }));
     },
@@ -106,7 +106,7 @@ const Chat = () => {
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
         messages: chat?.messages.map((message) =>
-          message.id === deletedMessage.id ? deletedMessage : message
+          message.id === deletedMessage.id ? deletedMessage : message,
         ),
       }));
     },

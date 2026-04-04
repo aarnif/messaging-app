@@ -1,5 +1,5 @@
-import type { User } from "../../__generated__/graphql";
 import { MdCheck } from "react-icons/md";
+import type { User } from "../../__generated__/graphql";
 
 const SelectUserButton = ({
   user,

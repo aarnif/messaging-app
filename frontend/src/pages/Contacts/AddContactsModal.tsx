@@ -1,18 +1,18 @@
 import { useMutation, useQuery } from "@apollo/client/react";
 import { AnimatePresence, motion } from "framer-motion";
+import { useEffect, useState } from "react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
-import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import Notify from "../../components/ui/Notify";
+import SearchBox from "../../components/ui/SearchBox";
+import Spinner from "../../components/ui/Spinner";
+import { DEBOUNCE_DELAY } from "../../constants";
+import { ADD_CONTACTS } from "../../graphql/mutations";
+import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
 import useField from "../../hooks/useField";
 import useNotifyMessage from "../../hooks/useNotifyMessage";
 import useResponsiveWidth from "../../hooks/useResponsiveWidth";
-import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
-import { ADD_CONTACTS } from "../../graphql/mutations";
-import { DEBOUNCE_DELAY } from "../../constants";
-import Spinner from "../../components/ui/Spinner";
-import Notify from "../../components/ui/Notify";
-import SearchBox from "../../components/ui/SearchBox";
 import type { AddContactOption } from "../../types";
 import SelectUserList from "./SelectUserList";
 
@@ -24,7 +24,7 @@ const AddContactsModal = ({
   const searchWord = useField(
     "search-contacts",
     "text",
-    "Search by name or username..."
+    "Search by name or username...",
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
   const { message, showMessage, closeMessage } = useNotifyMessage();
@@ -53,7 +53,7 @@ const AddContactsModal = ({
         data?.nonContactUsers?.map((user) => ({
           ...user,
           isSelected: selectedIds.has(user.id),
-        }))
+        })),
       );
     }
   }, [data, selectedIds]);

@@ -1,9 +1,9 @@
 import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import { MemoryRouter } from "react-router";
 import userEvent from "@testing-library/user-event";
-import ModalProvider from "../components/ModalProvider";
+import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import Menu from "../components/Menu";
+import ModalProvider from "../components/ModalProvider";
 import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
@@ -30,7 +30,7 @@ const renderComponent = () =>
       <ModalProvider>
         <Menu setToken={mockSetToken} />
       </ModalProvider>
-    </MemoryRouter>
+    </MemoryRouter>,
   );
 
 const assertMenuItemsPresent = async () => {
@@ -69,7 +69,7 @@ describe("<Menu />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.getByText("Are you sure you want to logout?")
+        screen.getByText("Are you sure you want to logout?"),
       ).toBeDefined();
     });
 

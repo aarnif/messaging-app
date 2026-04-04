@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { useDebounce } from "use-debounce";
+import type { Chat as ChatType } from "../../__generated__/graphql";
 import FormField from "../../components/ui/FormField";
 import Notify from "../../components/ui/Notify";
 import SearchBox from "../../components/ui/SearchBox";
@@ -11,11 +12,10 @@ import SelectContactsList from "../../components/ui/SelectContactsList";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { EDIT_CHAT } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
-import type { Chat as ChatType } from "../../__generated__/graphql";
-import type { UserContact } from "../../types";
 import useField from "../../hooks/useField";
 import useNotifyMessage from "../../hooks/useNotifyMessage";
 import useResponsiveWidth from "../../hooks/useResponsiveWidth";
+import type { UserContact } from "../../types";
 
 const EditChatModal = ({
   chat,
@@ -30,7 +30,7 @@ const EditChatModal = ({
   const searchWord = useField(
     "search-contacts",
     "text",
-    "Search by name or username..."
+    "Search by name or username...",
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
@@ -39,7 +39,7 @@ const EditChatModal = ({
     "description",
     "text",
     "Enter description here...",
-    chat?.description ?? ""
+    chat?.description ?? "",
   );
 
   const { data } = useQuery(ALL_CONTACTS_BY_USER, {
@@ -49,7 +49,7 @@ const EditChatModal = ({
   });
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
-    new Set([...chat.members.map((member) => member.id)])
+    new Set([...chat.members.map((member) => member.id)]),
   );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const selectedContacts = contacts.filter((contact) => contact.isSelected);
@@ -66,7 +66,7 @@ const EditChatModal = ({
         data?.allContactsByUser?.map((contact) => ({
           ...contact,
           isSelected: selectedIds.has(contact.contactDetails.id),
-        }))
+        })),
       );
     }
   }, [data, selectedIds]);

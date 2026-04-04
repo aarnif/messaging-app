@@ -1,9 +1,9 @@
 import { useQuery } from "@apollo/client/react";
 import { AnimatePresence } from "framer-motion";
-import { Outlet } from "react-router";
 import { useState } from "react";
-import { ME } from "../../graphql/queries";
+import { Outlet } from "react-router";
 import Spinner from "../../components/ui/Spinner";
+import { ME } from "../../graphql/queries";
 import AddContactsModal from "./AddContactsModal";
 import ListMenu from "./ListMenu";
 

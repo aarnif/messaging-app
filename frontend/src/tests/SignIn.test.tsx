@@ -1,21 +1,21 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
-import { MemoryRouter } from "react-router";
-import userEvent from "@testing-library/user-event";
+import { render, screen, waitFor } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
+import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
 import SignIn from "../pages/SignIn";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
-  LOGIN_TOKEN,
-  loginInput,
   invalidLoginPassword,
-  loginMock,
+  LOGIN_TOKEN,
   loginErrorMock,
+  loginInput,
+  loginMock,
   mockClient,
   mockNavigate,
   mockSetToken,
 } from "./helpers/mocks";
-import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -39,15 +39,15 @@ const renderComponent = (mocks = [loginMock]) =>
       <MemoryRouter>
         <SignIn setToken={mockSetToken} />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 
 const assertSignInPageLoaded = async () => {
   expect(screen.getByRole("heading", { name: "Messaging App" })).toBeDefined();
   expect(
     screen.getByText(
-      "Add contacts, create private or group chats, and send text messages. Stay connected with the people that matter most."
-    )
+      "Add contacts, create private or group chats, and send text messages. Stay connected with the people that matter most.",
+    ),
   ).toBeDefined();
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
@@ -58,7 +58,7 @@ const assertSignInPageLoaded = async () => {
 const fillSignInForm = async (
   user: UserEvent,
   username: string,
-  password: string
+  password: string,
 ) => {
   await user.type(screen.getByLabelText("Username"), username);
   await user.type(screen.getByLabelText("Password"), password);
@@ -112,7 +112,7 @@ describe("<SignIn />", () => {
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "messaging-app-token",
-        LOGIN_TOKEN
+        LOGIN_TOKEN,
       );
     });
 

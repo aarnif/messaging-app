@@ -1,32 +1,32 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import userEvent from "@testing-library/user-event";
-import type { UserEvent } from "@testing-library/user-event";
-import { MockedProvider } from "@apollo/client/testing/react";
 import type { MockLink } from "@apollo/client/testing";
+import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import type { UserEvent } from "@testing-library/user-event";
+import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
+import ModalProvider from "../components/ModalProvider";
+import Contact from "../pages/Contact";
 import {
+  CONTACT_DETAILS,
   currentUserChatAdminMock,
   findContactById,
-  findContactByIdNull,
   findContactByIdBlocked,
+  findContactByIdNull,
   findPrivateChatWithContact,
   findPrivateChatWithContactNull,
+  isBlockedByUserFalse,
+  isBlockedByUserNull,
+  isBlockedByUserTrue,
   mockMatch,
   mockNavigate,
   mockUseOutletContext,
-  CONTACT_DETAILS,
-  PRIVATE_CHAT_DETAILS,
   NewPrivateChatDetails,
-  toggleBlockContactTrue,
-  toggleBlockContactFalse,
+  PRIVATE_CHAT_DETAILS,
   removeContact,
-  isBlockedByUserTrue,
-  isBlockedByUserFalse,
-  isBlockedByUserNull,
+  toggleBlockContactFalse,
+  toggleBlockContactTrue,
 } from "./helpers/mocks";
-import ModalProvider from "../components/ModalProvider";
-import Contact from "../pages/Contact";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -41,7 +41,7 @@ vi.mock("react-router", async () => {
 const contactDetails = CONTACT_DETAILS.contactDetails;
 
 const renderComponent = (
-  mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse]
+  mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse],
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser: currentUserChatAdminMock,
@@ -54,7 +54,7 @@ const renderComponent = (
           <Contact />
         </ModalProvider>
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
@@ -62,7 +62,7 @@ const waitForPageRender = async () => {
   await waitFor(() => {
     expect(screen.getByRole("heading", { name: "Contact" })).toBeDefined();
     expect(
-      screen.getByRole("heading", { name: contactDetails.name })
+      screen.getByRole("heading", { name: contactDetails.name }),
     ).toBeDefined();
     expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
     expect(screen.getByText(contactDetails.about)).toBeDefined();
@@ -76,8 +76,8 @@ const toggleBlockContact = async (user: UserEvent, action: string) => {
   await waitFor(async () => {
     expect(
       screen.getByText(
-        `Are you sure you want to ${action.toLowerCase()} the contact?`
-      )
+        `Are you sure you want to ${action.toLowerCase()} the contact?`,
+      ),
     ).toBeDefined();
   });
 
@@ -110,7 +110,7 @@ describe("<Contact />", () => {
     await waitFor(() => {
       expect(screen.getByText("Contact not found.")).toBeDefined();
       expect(
-        screen.getByText("It may have been deleted or the link is incorrect.")
+        screen.getByText("It may have been deleted or the link is incorrect."),
       ).toBeDefined();
     });
   });
@@ -141,7 +141,7 @@ describe("<Contact />", () => {
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith(
-        `/chats/${PRIVATE_CHAT_DETAILS.id}`
+        `/chats/${PRIVATE_CHAT_DETAILS.id}`,
       );
     });
   });
@@ -160,7 +160,7 @@ describe("<Contact />", () => {
     await waitFor(async () => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "new-chat-info",
-        JSON.stringify(NewPrivateChatDetails)
+        JSON.stringify(NewPrivateChatDetails),
       );
       expect(mockNavigate).toHaveBeenCalledWith("/chats/new");
     });
@@ -207,7 +207,7 @@ describe("<Contact />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.getByText("Are you sure you want to remove the contact?")
+        screen.getByText("Are you sure you want to remove the contact?"),
       ).toBeDefined();
     });
 

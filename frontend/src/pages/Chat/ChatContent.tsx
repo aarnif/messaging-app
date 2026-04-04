@@ -1,11 +1,11 @@
 import { useLazyQuery } from "@apollo/client/react";
 import { useNavigate } from "react-router";
+import type { Chat as ChatType, User } from "../../__generated__/graphql";
 import ChatHeader from "../../components/ui/ChatHeader";
 import {
   FIND_CONTACT_BY_USER_ID,
   IS_BLOCKED_BY_USER,
 } from "../../graphql/queries";
-import type { Chat as ChatType, User } from "../../__generated__/graphql";
 import ChatMessages from "./ChatMessages";
 import NewMessageBox from "./NewMessageBox";
 

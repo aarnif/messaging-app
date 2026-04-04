@@ -1,7 +1,7 @@
-import { useNavigate, useOutletContext } from "react-router";
 import { useMutation } from "@apollo/client/react";
-import { IoChevronBack } from "react-icons/io5";
 import { useState } from "react";
+import { IoChevronBack } from "react-icons/io5";
+import { useNavigate, useOutletContext } from "react-router";
 import type { User } from "../../../__generated__/graphql";
 import { EDIT_PROFILE } from "../../../graphql/mutations";
 import SettingsToggle from "./SettingsToggle";
@@ -17,7 +17,7 @@ const Appearance = () => {
       (!("theme" in localStorage) &&
         window.matchMedia("(prefers-color-scheme: dark)").matches)
       ? "dark"
-      : "light"
+      : "light",
   );
   const [is24HourClock, setIs24HourClock] = useState(currentUser.is24HourClock);
 

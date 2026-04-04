@@ -4,10 +4,10 @@ import { useState } from "react";
 import { FaBan } from "react-icons/fa";
 import { IoCheckmark } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
+import type { Message, User } from "../../__generated__/graphql";
 import Avatar from "../../components/ui/Avatar";
 import { DELETE_MESSAGE, EDIT_MESSAGE } from "../../graphql/mutations";
 import { checkIfMessageIsSingleEmoji, formatDisplayDate } from "../../helpers";
-import type { Message, User } from "../../__generated__/graphql";
 import MessageMenu from "./MessageMenu";
 
 const ChatMessage = ({

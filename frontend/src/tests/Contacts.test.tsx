@@ -1,48 +1,48 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
-import userEvent, { type UserEvent } from "@testing-library/user-event";
+import type { MockLink } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { describe, expect, test } from "vitest";
+import type { User } from "../__generated__/graphql";
+import Contacts from "../pages/Contacts";
 import {
-  meMock,
-  allContactsByUserEmpty,
+  assertContactsDisplayed,
+  assertContactsSelected,
+  assertErrorMessageAndDismissal,
+  selectContacts,
+} from "./helpers/funcs";
+import {
+  addContacts,
+  addContactsEmpty,
   allContactsByUser,
-  userContactsMock,
+  allContactsByUserEmpty,
+  meMock,
   nonContactUsers,
   nonContactUsersEmpty,
   nonContactUsersMock,
-  addContacts,
-  addContactsEmpty,
+  userContactsMock,
 } from "./helpers/mocks";
-import {
-  assertContactsDisplayed,
-  selectContacts,
-  assertContactsSelected,
-  assertErrorMessageAndDismissal,
-} from "./helpers/funcs";
-import Contacts from "../pages/Contacts";
-import type { MockLink } from "@apollo/client/testing";
-import type { User } from "../__generated__/graphql";
 
 const contact1username = nonContactUsersMock[0].username;
 const contact2username = nonContactUsersMock[1].username;
 
 const renderComponent = (
-  mocks: MockLink.MockedResponse[] = [meMock, allContactsByUser]
+  mocks: MockLink.MockedResponse[] = [meMock, allContactsByUser],
 ) =>
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
         <Contacts />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 
 const waitForPageRender = async () => {
   await waitFor(() => {
     expect(screen.getByRole("heading", { name: "Contacts" })).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Search by name or username...")
+      screen.getByPlaceholderText("Search by name or username..."),
     ).toBeDefined();
   });
 };

@@ -1,6 +1,6 @@
-import { useNavigate } from "react-router";
-import { IoChevronBack } from "react-icons/io5";
 import { FiEdit } from "react-icons/fi";
+import { IoChevronBack } from "react-icons/io5";
+import { useNavigate } from "react-router";
 import type { User } from "../../../__generated__/graphql";
 import Avatar from "../../../components/ui/Avatar";
 import Button from "../../../components/ui/Button";

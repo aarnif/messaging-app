@@ -1,9 +1,9 @@
-import { render, screen } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
-import { mockNavigate, meMock } from "./helpers/mocks";
+import { describe, expect, test, vi } from "vitest";
 import Settings from "../pages/Settings";
+import { meMock, mockNavigate } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -19,7 +19,7 @@ const renderComponent = () =>
       <MemoryRouter>
         <Settings />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 
 describe("<Settings />", () => {

@@ -1,20 +1,20 @@
-import { render, screen, waitFor } from "@testing-library/react";
-import { describe, test, expect, vi } from "vitest";
-import userEvent, { type UserEvent } from "@testing-library/user-event";
+import type { MockLink } from "@apollo/client/testing";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen, waitFor } from "@testing-library/react";
+import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
+import { describe, expect, test, vi } from "vitest";
+import Profile from "../pages/Settings/Profile";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
+  changePassword,
+  changePasswordError,
   currentUserChatAdminMock,
   editProfile24h,
   editProfileUpdate,
-  changePassword,
-  changePasswordError,
   mockNavigate,
   mockUseOutletContext,
 } from "./helpers/mocks";
-import { assertErrorMessageAndDismissal } from "./helpers/funcs";
-import Profile from "../pages/Settings/Profile";
-import type { MockLink } from "@apollo/client/testing";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -29,7 +29,7 @@ vi.mock("react-router", async () => {
 const { name, username } = currentUserChatAdminMock;
 
 const renderComponent = (
-  mocks: MockLink.MockedResponse[] = [editProfile24h]
+  mocks: MockLink.MockedResponse[] = [editProfile24h],
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser: currentUserChatAdminMock,
@@ -40,7 +40,7 @@ const renderComponent = (
       <MemoryRouter>
         <Profile />
       </MemoryRouter>
-    </MockedProvider>
+    </MockedProvider>,
   );
 };
 
@@ -58,10 +58,10 @@ const openEditProfileModal = async (user: UserEvent) => {
   await waitFor(async () => {
     expect(screen.getByRole("heading", { name: "Edit Profile" })).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Enter your name here...")
+      screen.getByPlaceholderText("Enter your name here..."),
     ).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Tell something about yourself...")
+      screen.getByPlaceholderText("Tell something about yourself..."),
     ).toBeDefined();
   });
 };
@@ -71,19 +71,19 @@ const openChangePasswordModal = async (user: UserEvent) => {
 
   await waitFor(async () => {
     expect(
-      screen.getByRole("heading", { name: "Change Password" })
+      screen.getByRole("heading", { name: "Change Password" }),
     ).toBeDefined();
     expect(
-      screen.getByText("Enter your current and the new password.")
+      screen.getByText("Enter your current and the new password."),
     ).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Enter your current password...")
+      screen.getByPlaceholderText("Enter your current password..."),
     ).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Enter your new password...")
+      screen.getByPlaceholderText("Enter your new password..."),
     ).toBeDefined();
     expect(
-      screen.getByPlaceholderText("Confirm your new password...")
+      screen.getByPlaceholderText("Confirm your new password..."),
     ).toBeDefined();
   });
 };
@@ -92,19 +92,19 @@ const fillChangePasswordForm = async (
   user: UserEvent,
   currentPassword: string,
   newPassword: string,
-  confirmNewPassword: string
+  confirmNewPassword: string,
 ) => {
   await user.type(
     screen.getByPlaceholderText("Enter your current password..."),
-    currentPassword
+    currentPassword,
   );
   await user.type(
     screen.getByPlaceholderText("Enter your new password..."),
-    newPassword
+    newPassword,
   );
   await user.type(
     screen.getByPlaceholderText("Confirm your new password..."),
-    confirmNewPassword
+    confirmNewPassword,
   );
 };
 
@@ -112,10 +112,10 @@ const assertChangePasswordModalClosed = async (timeout: number = 2000) => {
   await waitFor(
     async () => {
       expect(
-        screen.queryByRole("heading", { name: "Change Password" })
+        screen.queryByRole("heading", { name: "Change Password" }),
       ).toBeNull();
     },
-    { timeout }
+    { timeout },
   );
 };
 
@@ -163,7 +163,7 @@ describe("<Profile />", () => {
 
     await waitFor(async () => {
       expect(
-        screen.queryByRole("heading", { name: "Edit Profile" })
+        screen.queryByRole("heading", { name: "Edit Profile" }),
       ).toBeNull();
     });
   });
@@ -181,7 +181,7 @@ describe("<Profile />", () => {
     await user.click(screen.getByTestId("submit-edit-profile-button"));
 
     await assertErrorMessageAndDismissal(
-      "Profile name must be at least three characters long"
+      "Profile name must be at least three characters long",
     );
   });
 
@@ -195,7 +195,7 @@ describe("<Profile />", () => {
 
     const nameInput = screen.getByPlaceholderText("Enter your name here...");
     const aboutInput = screen.getByPlaceholderText(
-      "Tell something about yourself..."
+      "Tell something about yourself...",
     );
 
     const newProfileName = "New Profile Name";
@@ -210,7 +210,7 @@ describe("<Profile />", () => {
 
     await waitFor(() => {
       expect(
-        screen.queryByRole("heading", { name: "Edit Profile" })
+        screen.queryByRole("heading", { name: "Edit Profile" }),
       ).toBeNull();
     });
   });
@@ -289,7 +289,7 @@ describe("<Profile />", () => {
       user,
       "password",
       "newpassword",
-      "newpassword"
+      "newpassword",
     );
 
     await user.click(screen.getByTestId("change-password-button"));

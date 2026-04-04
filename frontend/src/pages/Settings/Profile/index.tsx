@@ -1,10 +1,10 @@
-import { useLocation, useOutletContext } from "react-router";
-import { useState } from "react";
-import type { User } from "../../../__generated__/graphql";
 import { AnimatePresence } from "motion/react";
-import ProfileContent from "./ProfileContent";
-import EditProfileModal from "./EditProfileModal";
+import { useState } from "react";
+import { useLocation, useOutletContext } from "react-router";
+import type { User } from "../../../__generated__/graphql";
 import ChangePasswordModal from "./ChangePasswordModal";
+import EditProfileModal from "./EditProfileModal";
+import ProfileContent from "./ProfileContent";
 
 const Profile = () => {
   const { currentUser } = useOutletContext<{

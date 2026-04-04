@@ -1,6 +1,6 @@
-import { FaComments, FaAddressBook, FaCog, FaSignOutAlt } from "react-icons/fa";
 import { useApolloClient } from "@apollo/client/react";
-import { useNavigate, NavLink } from "react-router";
+import { FaAddressBook, FaCog, FaComments, FaSignOutAlt } from "react-icons/fa";
+import { NavLink, useNavigate } from "react-router";
 import useModal from "../hooks/useModal";
 
 const Menu = ({

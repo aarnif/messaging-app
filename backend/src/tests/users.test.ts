@@ -1,33 +1,33 @@
+import assert from "node:assert";
+import { beforeEach, describe, test } from "node:test";
 import type {
-  User,
-  CreateUserInput,
-  LoginInput,
-  EditProfileInput,
   ChangePasswordInput,
+  CreateUserInput,
+  EditProfileInput,
+  LoginInput,
+  User,
 } from "~/types/graphql";
-import { describeGraphQLSuite } from "./helpers/setup.js";
 import {
-  user1Details,
-  user2Details,
   expectedUser1,
   expectedUser2,
+  user1Details,
+  user2Details,
 } from "./helpers/data.js";
 import {
-  query,
-  assertValidationError,
   assertError,
   assertUserEquality,
+  assertValidationError,
+  query,
 } from "./helpers/funcs.js";
 import {
-  ME,
+  CHANGE_PASSWORD,
   CREATE_USER,
-  LOGIN,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
-  CHANGE_PASSWORD,
+  LOGIN,
+  ME,
 } from "./helpers/queries.js";
-import { describe, beforeEach, test } from "node:test";
-import assert from "node:assert";
+import { describeGraphQLSuite } from "./helpers/setup.js";
 
 const { id: _, name: _name1, ...user1Input } = user1Details;
 const { id: _id, name: _name2, ...user2Input } = user2Details;

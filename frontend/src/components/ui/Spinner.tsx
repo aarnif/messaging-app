@@ -1,5 +1,5 @@
-import { FaRegCircle } from "react-icons/fa6";
 import { AiOutlineLoading } from "react-icons/ai";
+import { FaRegCircle } from "react-icons/fa6";
 
 const Spinner = () => {
   return (

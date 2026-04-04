@@ -1,12 +1,12 @@
 import {
   ApolloClient,
-  InMemoryCache,
-  HttpLink,
   ApolloLink,
+  HttpLink,
+  InMemoryCache,
 } from "@apollo/client";
 import { SetContextLink } from "@apollo/client/link/context";
-import { OperationTypeNode } from "graphql";
 import { GraphQLWsLink } from "@apollo/client/link/subscriptions";
+import { OperationTypeNode } from "graphql";
 import { createClient } from "graphql-ws";
 
 const httpLink = new HttpLink({
@@ -34,7 +34,7 @@ const wsLink = new GraphQLWsLink(
         Authorization: token ? `Bearer ${token}` : "",
       };
     },
-  })
+  }),
 );
 
 const splitLink = ApolloLink.split(
@@ -42,7 +42,7 @@ const splitLink = ApolloLink.split(
     return operationType === OperationTypeNode.SUBSCRIPTION;
   },
   wsLink,
-  authLink.concat(httpLink)
+  authLink.concat(httpLink),
 );
 
 const cache = new InMemoryCache({

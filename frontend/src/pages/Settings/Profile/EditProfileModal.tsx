@@ -1,13 +1,13 @@
 import { useMutation } from "@apollo/client/react";
-import { motion, AnimatePresence } from "motion/react";
+import { AnimatePresence, motion } from "motion/react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import type { User } from "../../../__generated__/graphql";
-import { EDIT_PROFILE } from "../../../graphql/mutations";
-import useNotifyMessage from "../../../hooks/useNotifyMessage";
-import useField from "../../../hooks/useField";
-import Notify from "../../../components/ui/Notify";
 import FormField from "../../../components/ui/FormField";
+import Notify from "../../../components/ui/Notify";
+import { EDIT_PROFILE } from "../../../graphql/mutations";
+import useField from "../../../hooks/useField";
+import useNotifyMessage from "../../../hooks/useNotifyMessage";
 
 const EditProfileModal = ({
   currentUser,
@@ -23,7 +23,7 @@ const EditProfileModal = ({
     "about",
     "text",
     "Tell something about yourself...",
-    about ?? ""
+    about ?? "",
   );
 
   const [mutate] = useMutation(EDIT_PROFILE, {

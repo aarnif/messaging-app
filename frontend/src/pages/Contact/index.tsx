@@ -1,10 +1,10 @@
-import { useMatch, useOutletContext } from "react-router";
-import { useQuery, useLazyQuery } from "@apollo/client/react";
-import { FIND_CONTACT_BY_ID, IS_BLOCKED_BY_USER } from "../../graphql/queries";
-import Spinner from "../../components/ui/Spinner";
-import NotFound from "../../components/ui/NotFound";
-import type { User } from "../../__generated__/graphql";
+import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect } from "react";
+import { useMatch, useOutletContext } from "react-router";
+import type { User } from "../../__generated__/graphql";
+import NotFound from "../../components/ui/NotFound";
+import Spinner from "../../components/ui/Spinner";
+import { FIND_CONTACT_BY_ID, IS_BLOCKED_BY_USER } from "../../graphql/queries";
 import ContactContent from "./ContactContent";
 
 const Contact = () => {
@@ -20,7 +20,7 @@ const Contact = () => {
       variables: {
         id: match?.id ?? "",
       },
-    }
+    },
   );
 
   const [checkIsBlocked, { data: blockedData, loading: blockedLoading }] =

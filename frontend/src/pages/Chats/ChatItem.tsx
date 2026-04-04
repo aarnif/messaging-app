@@ -1,5 +1,5 @@
 import type { User, UserChat } from "../../__generated__/graphql";
-import { getChatName, formatDisplayDate, truncateText } from "../../helpers";
+import { formatDisplayDate, getChatName, truncateText } from "../../helpers";
 
 const ChatItem = ({
   currentUser,
@@ -15,7 +15,7 @@ const ChatItem = ({
 
   const formattedTime = formatDisplayDate(
     createdAt,
-    currentUser?.is24HourClock
+    currentUser?.is24HourClock,
   );
 
   return (

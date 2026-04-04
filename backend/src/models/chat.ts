@@ -3,7 +3,7 @@ import type {
   InferAttributes,
   InferCreationAttributes,
 } from "sequelize";
-import { Model, DataTypes } from "sequelize";
+import { DataTypes, Model } from "sequelize";
 import { sequelize } from "../db.js";
 import { ChatMember } from "./chatMember.js";
 import { Message } from "./message.js";

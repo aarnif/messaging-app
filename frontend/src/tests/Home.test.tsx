@@ -1,7 +1,7 @@
-import { render, screen } from "@testing-library/react";
-import { describe, test, expect } from "vitest";
 import { MockedProvider } from "@apollo/client/testing/react";
+import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
+import { describe, expect, test } from "vitest";
 import ModalProvider from "../components/ModalProvider";
 import Home from "../pages/Home";
 import { mockSetToken } from "./helpers/mocks";
@@ -15,11 +15,11 @@ describe("<Home />", () => {
             <Home setToken={mockSetToken} />
           </ModalProvider>
         </MemoryRouter>
-      </MockedProvider>
+      </MockedProvider>,
     );
 
     expect(
-      screen.getByRole("heading", { name: "Messaging App" })
+      screen.getByRole("heading", { name: "Messaging App" }),
     ).toBeDefined();
   });
 });

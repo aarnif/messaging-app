@@ -1,8 +1,8 @@
 import EmojiPicker from "emoji-picker-react";
+import { AnimatePresence, motion } from "motion/react";
+import { useState } from "react";
 import { FaRegSmile } from "react-icons/fa";
 import { MdSend } from "react-icons/md";
-import { useState } from "react";
-import { AnimatePresence, motion } from "motion/react";
 import type { InputField } from "../../types";
 
 const MessageBox = ({
