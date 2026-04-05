@@ -55,8 +55,7 @@ const ChatMessage = ({
 
   const handleEditMessage = async () => {
     if (!editedContent || editedContent === message.content) {
-      setIsMessageMenuOpen(false);
-      setIsEditing(false);
+      handleCancel();
       return;
     }
 
