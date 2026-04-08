@@ -182,3 +182,10 @@ Ei muutoksia
 ## Viikko 27 (23.3-29.3.2026)
 
 - Npm scriptien uudelleennimeäminen
+
+## Viikko 28 (30.3-5.4.2026)
+
+- Sivuista vastaavien komponenttien siirtäminen pages-kansioon
+- ui-komponenttien siirtäminen components-kansioon
+- Väärän viestin muokkaus-tilan korjaus, kun yrittää lähettääṣtyhjän viestin
+- Importtien uudelleen järjestäminen mooduleissa
