@@ -22,6 +22,7 @@ import {
   editChat,
   editMessage,
   findChatByIdGroup,
+  findChatByIdGroupWithEditedMessage,
   findChatByIdGroupWithNotification,
   findChatByIdNull,
   findChatByIdPrivate,
@@ -704,6 +705,22 @@ describe("<Chat />", () => {
       expect(
         screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
+    });
+  });
+
+  test("displays Edited badge when message is edited and not deleted", async () => {
+    renderComponent([
+      findChatByIdGroupWithEditedMessage,
+      findChatByIdNull,
+      allChatsByUser,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Edited")).toBeDefined();
     });
   });
 });
