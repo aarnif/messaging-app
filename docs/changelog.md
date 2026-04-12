@@ -189,3 +189,7 @@ Ei muutoksia
 - ui-komponenttien siirtäminen components-kansioon
 - Väärän viestin muokkaus-tilan korjaus, kun yrittää lähettääṣtyhjän viestin
 - Importtien uudelleen järjestäminen mooduleissa
+
+## Viikko 29 (6.4-12.4.2026)
+
+- Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
