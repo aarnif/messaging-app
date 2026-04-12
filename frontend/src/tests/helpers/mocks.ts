@@ -696,6 +696,34 @@ export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
   },
 };
 
+export const findChatByIdGroupWithEditedMessage: MockLink.MockedResponse<
+  FindChatByIdQuery,
+  FindChatByIdQueryVariables
+> = {
+  request: {
+    query: FIND_CHAT_BY_ID,
+    variables: {
+      id: "1",
+    },
+  },
+  result: {
+    data: {
+      findChatById: {
+        ...GROUP_CHAT_DETAILS,
+        messages: [
+          {
+            ...GROUP_CHAT_DETAILS.messages[0],
+            createdAt: 1000000,
+            updatedAt: 2000000,
+            isDeleted: false,
+          },
+          ...GROUP_CHAT_DETAILS.messages.slice(1),
+        ],
+      },
+    },
+  },
+};
+
 export const sendMessage: MockLink.MockedResponse<
   SendMessageMutation,
   SendMessageMutationVariables

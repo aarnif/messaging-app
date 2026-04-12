@@ -22,6 +22,7 @@ import {
   editChat,
   editMessage,
   findChatByIdGroup,
+  findChatByIdGroupWithEditedMessage,
   findChatByIdGroupWithNotification,
   findChatByIdNull,
   findChatByIdPrivate,
@@ -53,6 +54,15 @@ vi.mock("react-router", async () => {
 });
 
 Element.prototype.scrollIntoView = vi.fn();
+
+const IntersectionObserverMock = vi.fn(() => ({
+  disconnect: vi.fn(),
+  observe: vi.fn(),
+  takeRecords: vi.fn(),
+  unobserve: vi.fn(),
+}));
+
+vi.stubGlobal("IntersectionObserver", IntersectionObserverMock);
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
@@ -704,6 +714,60 @@ describe("<Chat />", () => {
       expect(
         screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
+    });
+  });
+
+  test("displays Edited badge when message is edited and not deleted", async () => {
+    renderComponent([
+      findChatByIdGroupWithEditedMessage,
+      findChatByIdNull,
+      allChatsByUser,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+    ]);
+
+    await waitFor(() => {
+      expect(screen.getByText("Edited")).toBeDefined();
+    });
+  });
+
+  test("opens emoji picker when emoji button is clicked", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+    });
+
+    const emojiButton = screen.getByTestId("add-emoji-button");
+    await user.click(emojiButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("emoji-picker")).toBeDefined();
+    });
+  });
+
+  test("closes emoji picker when emoji button is clicked again", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    await waitFor(() => {
+      expect(screen.getByPlaceholderText("New Message...")).toBeDefined();
+    });
+
+    const emojiButton = screen.getByTestId("add-emoji-button");
+    await user.click(emojiButton);
+
+    await waitFor(() => {
+      expect(screen.getByTestId("emoji-picker")).toBeDefined();
+    });
+
+    await user.click(emojiButton);
+
+    await waitFor(() => {
+      expect(screen.queryByTestId("emoji-picker")).toBeNull();
     });
   });
 });
