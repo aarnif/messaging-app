@@ -116,4 +116,5 @@
 |  3.4  | 0.5  |                                   |
 |  4.4  | 1    |                                   |
 |  5.4  | 0.5  | bugin korjaus                     |
-|  yht  | 248  |                                   |
+| 11.4  | 1    | testikattavuuden laajennus        |
+|  yht  | 249  |                                   |
