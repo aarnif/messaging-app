@@ -26,7 +26,8 @@ const ChatMessage = ({
   const senderName = isCurrentUser ? "You" : message.sender.name;
   const isLatestMessage = message.id === latestAddedMessageId;
   const isSingleEmoji = checkIfMessageIsSingleEmoji(message.content);
-  const isEdited = message.updatedAt !== message.createdAt;
+  const isEdited =
+    message.updatedAt !== message.createdAt && !message.isDeleted;
 
   const [editMessage] = useMutation(EDIT_MESSAGE, {
     fetchPolicy: "no-cache",
@@ -160,10 +161,8 @@ const ChatMessage = ({
             )}
           </p>
         )}
-        <div
-          className={`flex ${isEdited && !message.isDeleted ? "justify-between" : "justify-end"}`}
-        >
-          {isEdited && !message.isDeleted && (
+        <div className={`flex ${isEdited ? "justify-between" : "justify-end"}`}>
+          {isEdited && (
             <p
               className={`my-1 text-end ${isEditing ? "text-xs" : "text-[10px]"} ${
                 isCurrentUser
