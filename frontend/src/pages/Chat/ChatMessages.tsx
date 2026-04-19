@@ -1,6 +1,7 @@
 import { useEffect, useRef } from "react";
 import type { Message, User } from "../../__generated__/graphql";
-import ChatMessage, { NotificationMessage } from "./ChatMessage";
+import ChatMessage from "./ChatMessage";
+import NotificationMessage from "./NotificationMessage";
 
 const ChatMessages = ({
   currentUser,
@@ -29,7 +30,7 @@ const ChatMessages = ({
             message={message}
             latestAddedMessageId={latestAddedMessageId}
           />
-        )
+        ),
       )}
       <div ref={messagesEndRef} />
     </div>
