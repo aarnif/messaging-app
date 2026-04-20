@@ -28,14 +28,12 @@ const SentMessage = ({
     message.updatedAt !== message.createdAt && !message.isDeleted;
 
   const [editMessage] = useMutation(EDIT_MESSAGE, {
-    fetchPolicy: "no-cache",
     onError: (error) => {
       console.log(error);
     },
   });
 
   const [deleteMessage] = useMutation(DELETE_MESSAGE, {
-    fetchPolicy: "no-cache",
     onError: (error) => {
       console.log(error);
     },

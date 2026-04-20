@@ -30,6 +30,12 @@ const ChatContent = ({
 
   const { id, type, name, members, messages } = chat;
 
+  // Temporary fix for Apollo cache corruption after edit/delete message operations.
+  // Messages are already sorted in the backend - remove once cache handling is improved.
+  const sortedMessages = [...messages].sort(
+    (a, b) => a.createdAt - b.createdAt,
+  );
+
   const otherChatMember =
     type === "private"
       ? members.find((member) => member.id !== currentUser.id)
@@ -65,7 +71,7 @@ const ChatContent = ({
       />
       <ChatMessages
         currentUser={currentUser}
-        messages={messages}
+        messages={sortedMessages}
         latestAddedMessageId={latestAddedMessageId}
       />
       <NewMessageBox
