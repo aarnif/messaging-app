@@ -128,7 +128,7 @@ const SentMessage = ({
         <div className="absolute bottom-0 -right-2 border-l-16 border-l-green-300 border-t-16 border-t-transparent"></div>
       </motion.div>
 
-      {canOpenMessageMenu && (
+      {isMessageMenuOpen && (
         <div className="relative cursor-auto">
           <MessageMenu
             handleOpenEditModal={handleOpenEditModal}
