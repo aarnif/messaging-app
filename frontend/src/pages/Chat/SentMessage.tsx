@@ -82,7 +82,7 @@ const SentMessage = ({
   return (
     <div className="flex flex-col items-end">
       <AnimatePresence>
-        {isEditing && (
+        {(isEditing || isMessageMenuOpen) && (
           <motion.div
             className="fixed inset-0 z-40 bg-black/50"
             animate={{ opacity: 1 }}
@@ -133,7 +133,6 @@ const SentMessage = ({
           <MessageMenu
             handleOpenEditModal={handleOpenEditModal}
             handleDeleteMessage={handleDeleteMessage}
-            isMessageMenuOpen={isMessageMenuOpen}
             setIsMessageMenuOpen={setIsMessageMenuOpen}
           />
         </div>
