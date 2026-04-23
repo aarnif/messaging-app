@@ -13,7 +13,14 @@ const ModalContent = ({
   options: ModalOptions;
   handleCloseModal: () => void;
 }) => {
-  const { type, title, message, close, confirm, onConfirm } = options;
+  const { type, title, message, close, confirm, onCancel, onConfirm } = options;
+
+  const handleCancel = async () => {
+    if (onCancel) {
+      onCancel();
+    }
+    handleCloseModal();
+  };
 
   const handleConfirm = async () => {
     if (onConfirm) {
@@ -93,7 +100,7 @@ const ModalContent = ({
             type="button"
             variant={hasConfirmOption ? "cancel" : type}
             text={close}
-            onClick={handleCloseModal}
+            onClick={handleCancel}
           />
           {hasConfirmOption && (
             <Button
@@ -116,6 +123,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     message: "Message",
     close: "cancel",
     confirm: "confirm",
+    onCancel: () => {},
     onConfirm: () => {},
   });
   const [isOpen, setIsOpen] = useState(false);

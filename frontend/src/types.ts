@@ -36,5 +36,6 @@ export interface ModalOptions {
   message: string;
   close: string;
   confirm?: string;
+  onCancel?: () => void;
   onConfirm?: () => void;
 }
