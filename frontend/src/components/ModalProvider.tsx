@@ -7,21 +7,24 @@ import type { ModalOptions } from "../types";
 import Button from "./ui/Button";
 
 const ModalContent = ({
-  options,
-  handleCloseModal,
+  type,
+  title,
+  message,
+  close,
+  confirm,
+  onConfirm,
+  handleCancel,
+  handleConfirm,
 }: {
-  options: ModalOptions;
-  handleCloseModal: () => void;
+  type: ModalOptions["type"];
+  title: string;
+  message: string;
+  close: string;
+  confirm?: string;
+  onConfirm?: () => void;
+  handleCancel: () => void;
+  handleConfirm: () => void;
 }) => {
-  const { type, title, message, close, confirm, callback } = options;
-
-  const handleConfirm = async () => {
-    if (callback) {
-      callback();
-    }
-    handleCloseModal();
-  };
-
   const getVariantStyles = (type: ModalOptions["type"]) => {
     switch (type) {
       case "alert":
@@ -55,7 +58,7 @@ const ModalContent = ({
     }
   };
 
-  const hasConfirmOption = confirm && callback;
+  const hasConfirmOption = !!(confirm && onConfirm);
 
   const styles = getVariantStyles(type);
   return (
@@ -93,7 +96,7 @@ const ModalContent = ({
             type="button"
             variant={hasConfirmOption ? "cancel" : type}
             text={close}
-            onClick={handleCloseModal}
+            onClick={handleCancel}
           />
           {hasConfirmOption && (
             <Button
@@ -116,16 +119,28 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     message: "Message",
     close: "cancel",
     confirm: "confirm",
-    callback: () => {},
+    onCancel: () => {},
+    onConfirm: () => {},
   });
   const [isOpen, setIsOpen] = useState(false);
+  const { type, title, message, close, confirm, onCancel, onConfirm } = options;
 
   const modal = (options: ModalOptions) => {
     setOptions(options);
     setIsOpen(true);
   };
 
-  const handleCloseModal = () => {
+  const handleCancel = async () => {
+    if (onCancel) {
+      onCancel();
+    }
+    setIsOpen(false);
+  };
+
+  const handleConfirm = async () => {
+    if (onConfirm) {
+      onConfirm();
+    }
     setIsOpen(false);
   };
 
@@ -138,15 +153,21 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
             data-testid="overlay"
             key={"Overlay"}
             className="fixed inset-0 flex items-center justify-center bg-black/50"
-            onClick={handleCloseModal}
+            onClick={handleCancel}
             initial={{ x: "100vw", opacity: 0 }}
             animate={{ x: 0, opacity: 1 }}
             exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
             transition={{ type: "tween" }}
           >
             <ModalContent
-              options={options}
-              handleCloseModal={handleCloseModal}
+              type={type}
+              title={title}
+              message={message}
+              close={close}
+              confirm={confirm}
+              onConfirm={onConfirm}
+              handleCancel={handleCancel}
+              handleConfirm={handleConfirm}
             />
           </motion.div>
         )}

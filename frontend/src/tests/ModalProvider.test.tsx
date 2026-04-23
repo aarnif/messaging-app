@@ -7,7 +7,8 @@ import type { ModalOptions } from "../types";
 
 import ModalProvider from "../components/ModalProvider";
 
-const mockCallback = vi.fn();
+const mockOnCancel = vi.fn();
+const mockOnConfirm = vi.fn();
 
 const alertModalOptions: ModalOptions = {
   type: "alert",
@@ -15,7 +16,8 @@ const alertModalOptions: ModalOptions = {
   message: "Message",
   close: "Cancel",
   confirm: "Confirm",
-  callback: mockCallback,
+  onCancel: mockOnCancel,
+  onConfirm: mockOnConfirm,
 };
 
 const TestComponent = ({ modalOptions }: { modalOptions: ModalOptions }) => {
@@ -61,6 +63,11 @@ const openModal = async (
 };
 
 describe("<ModalProvider />", () => {
+  beforeEach(() => {
+    mockOnCancel.mockClear();
+    mockOnConfirm.mockClear();
+  });
+
   test("renders content", () => {
     renderComponent();
 
@@ -161,7 +168,8 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeNull();
-      expect(mockCallback).not.toHaveBeenCalled();
+      expect(mockOnCancel).toHaveBeenCalled();
+      expect(mockOnConfirm).not.toHaveBeenCalled();
     });
   });
 
@@ -178,7 +186,8 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeNull();
-      expect(mockCallback).toHaveBeenCalled();
+      expect(mockOnCancel).not.toHaveBeenCalled();
+      expect(mockOnConfirm).toHaveBeenCalled();
     });
   });
 });
