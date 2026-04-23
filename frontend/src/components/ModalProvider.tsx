@@ -58,7 +58,7 @@ const ModalContent = ({
     }
   };
 
-  const hasConfirmOption = confirm && onConfirm;
+  const hasConfirmOption = !!(confirm && onConfirm);
 
   const styles = getVariantStyles(type);
   return (
