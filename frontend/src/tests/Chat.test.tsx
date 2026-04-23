@@ -119,9 +119,7 @@ const openMessageEditMode = async (user: UserEvent) => {
       screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
     ).toBeDefined();
   });
-  const [firstMessageMenuButton] = screen.getAllByTestId(
-    "current-user-message",
-  );
+  const [firstMessageMenuButton] = screen.getAllByTestId("sent-message");
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Edit" })).toBeDefined();
@@ -138,9 +136,7 @@ const openMessageDeleteConfirmation = async (user: UserEvent) => {
       screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
     ).toBeDefined();
   });
-  const [firstMessageMenuButton] = screen.getAllByTestId(
-    "current-user-message",
-  );
+  const [firstMessageMenuButton] = screen.getAllByTestId("sent-message");
   await user.click(firstMessageMenuButton);
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
@@ -219,13 +215,11 @@ describe("<Chat />", () => {
   test("applies correct message styles for current user vs contacts", async () => {
     renderComponent();
     await waitFor(() => {
-      const currentUserMessages = screen.queryAllByTestId(
-        "current-user-message",
-      );
+      const currentUserMessages = screen.queryAllByTestId("sent-message");
       currentUserMessages.forEach((message) => {
         expect(message.className).toContain("bg-green-300");
       });
-      const contactMessages = screen.queryAllByTestId("contact-message");
+      const contactMessages = screen.queryAllByTestId("received-message");
       contactMessages.forEach((message) => {
         expect(message.className).toContain("bg-slate-200 dark:bg-slate-700");
       });

@@ -427,11 +427,11 @@ export const assertErrorNotifyAndClose = async (
 };
 
 export const openEditMessageMode = async (page: Page) => {
-  await page.getByTestId("current-user-message").click();
+  await page.getByTestId("sent-message").click();
   await page.getByRole("button", { name: "Edit" }).click();
 };
 
 export const openDeleteMessageConfirm = async (page: Page) => {
-  await page.getByTestId("current-user-message").click();
+  await page.getByTestId("sent-message").click();
   await page.getByRole("button", { name: "Delete" }).click();
 };
