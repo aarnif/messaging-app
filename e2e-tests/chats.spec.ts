@@ -254,7 +254,7 @@ test.describe("Chats", () => {
 
       await expect(editMessageInput).not.toBeVisible();
       await expect(
-        page.getByTestId("current-user-message").getByText("Hello World!"),
+        page.getByTestId("sent-message").getByText("Hello World!"),
       ).toBeVisible();
     });
 
@@ -268,7 +268,7 @@ test.describe("Chats", () => {
 
       await expect(editMessageInput).not.toBeVisible();
       await expect(
-        page.getByTestId("current-user-message").getByText("Edited message"),
+        page.getByTestId("sent-message").getByText("Edited message"),
       ).toBeVisible();
     });
 
@@ -292,7 +292,7 @@ test.describe("Chats", () => {
 
       await expect(page.getByText("Delete Message?")).not.toBeVisible();
       await expect(
-        page.getByTestId("current-user-message").getByText("Hello World!"),
+        page.getByTestId("sent-message").getByText("Hello World!"),
       ).toBeVisible();
     });
 
@@ -308,9 +308,7 @@ test.describe("Chats", () => {
 
       await expect(page.getByText("Delete Message?")).not.toBeVisible();
       await expect(
-        page
-          .getByTestId("current-user-message")
-          .getByText("This message was deleted."),
+        page.getByTestId("sent-message").getByText("This message was deleted."),
       ).toBeVisible();
     });
 
@@ -321,7 +319,7 @@ test.describe("Chats", () => {
         .getByRole("link", { name: new RegExp("New Group Chat") })
         .click();
 
-      await page.getByTestId("contact-message").hover();
+      await page.getByTestId("received-message").hover();
 
       await expect(page.getByTestId("message-menu-button")).not.toBeVisible();
     });
