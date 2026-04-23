@@ -20,6 +20,7 @@ const SentMessage = ({
   const [isMessageMenuOpen, setIsMessageMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(message.content);
+  const [isDeleting, setIsDeleting] = useState(false);
   const senderName = "You";
   const isLatestMessage = message.id === latestAddedMessageId;
   const isSingleEmoji = checkIfMessageIsSingleEmoji(message.content);
@@ -75,6 +76,7 @@ const SentMessage = ({
         id: message.id,
       },
     });
+    setIsDeleting(false);
   };
 
   const canOpenMessageMenu = !isEditing && !message.isDeleted;
@@ -99,7 +101,7 @@ const SentMessage = ({
             : undefined
         }
         data-testid="sent-message"
-        className={`relative flex max-w-62.5 min-w-25 flex-col rounded-lg bg-green-300 px-2 pt-2 sm:max-w-150 ${isLatestMessage && "animate-pop-in"} ${canOpenMessageMenu && !isMessageMenuOpen && "cursor-pointer"} ${isMessageMenuOpen && "z-50 -translate-y-2 scale-105"} ${isEditing ? "invisible" : "z-10"}`}
+        className={`relative flex max-w-62.5 min-w-25 flex-col rounded-lg bg-green-300 px-2 pt-2 sm:max-w-150 ${isLatestMessage && "animate-pop-in"} ${canOpenMessageMenu && !isMessageMenuOpen && "cursor-pointer"} ${(isMessageMenuOpen || isDeleting) && "z-50 -translate-y-2 scale-105"} ${isEditing && "invisible"}`}
       >
         <h3 className="font-semibold text-xs text-slate-900">{senderName}</h3>
 
@@ -134,6 +136,7 @@ const SentMessage = ({
             handleOpenEditModal={handleOpenEditModal}
             handleDeleteMessage={handleDeleteMessage}
             setIsMessageMenuOpen={setIsMessageMenuOpen}
+            setIsDeleting={setIsDeleting}
           />
         </div>
       )}

@@ -4,10 +4,12 @@ const MessageMenu = ({
   handleOpenEditModal,
   handleDeleteMessage,
   setIsMessageMenuOpen,
+  setIsDeleting,
 }: {
   handleOpenEditModal: () => void;
   handleDeleteMessage: () => void;
   setIsMessageMenuOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsDeleting: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const modal = useModal();
 
@@ -24,12 +26,14 @@ const MessageMenu = ({
       </button>
       <button
         onClick={() => {
+          setIsDeleting(true);
           modal({
             type: "danger",
             title: "Delete Message?",
             message: "Are you sure you want to delete the message?",
             close: "Cancel",
             confirm: "Delete",
+            onCancel: () => setIsDeleting(false),
             onConfirm: handleDeleteMessage,
           });
           setIsMessageMenuOpen(false);
