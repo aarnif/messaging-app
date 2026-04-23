@@ -17,7 +17,7 @@ const SelectUserButton = ({
       onClick={callback}
       className="flex w-full cursor-pointer items-center"
     >
-      <div className="flex flex-grow gap-4 p-2">
+      <div className="flex grow gap-4 p-2">
         <img
           className="h-12 w-12 rounded-full"
           src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
