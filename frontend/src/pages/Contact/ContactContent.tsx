@@ -150,7 +150,7 @@ const ContactContent = ({
                 : "Are you sure you want to unblock the contact?",
               close: "Cancel",
               confirm: !isBlocked ? "Block" : "Unblock",
-              callback: handleToggleBlockContact,
+              onConfirm: handleToggleBlockContact,
             })
           }
         />
@@ -165,7 +165,7 @@ const ContactContent = ({
               message: "Are you sure you want to remove the contact?",
               close: "Cancel",
               confirm: "Remove",
-              callback: handleRemoveContact,
+              onConfirm: handleRemoveContact,
             })
           }
         />

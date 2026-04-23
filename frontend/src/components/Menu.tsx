@@ -88,7 +88,7 @@ const Menu = ({
             message: "Are you sure you want to logout?",
             close: "Cancel",
             confirm: "Logout",
-            callback: handleLogout,
+            onConfirm: handleLogout,
           })
         }
       >
