@@ -44,7 +44,7 @@ const MessageMenu = ({
                   message: "Are you sure you want to delete the message?",
                   close: "Cancel",
                   confirm: "Delete",
-                  callback: handleDeleteMessage,
+                  onConfirm: handleDeleteMessage,
                 });
                 setIsMessageMenuOpen(false);
               }}

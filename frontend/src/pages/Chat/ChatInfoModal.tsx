@@ -180,7 +180,7 @@ const ChatInfoModal = ({
               message: "Are you sure you want to leave the chat?",
               close: "Cancel",
               confirm: "Leave",
-              callback: handleLeaveChat,
+              onConfirm: handleLeaveChat,
             })
           }
         />
@@ -197,7 +197,7 @@ const ChatInfoModal = ({
                 "Delete this chat?\nThis will remove the chat and all messages for everyone.",
               close: "Cancel",
               confirm: "Delete",
-              callback: handleDeleteChat,
+              onConfirm: handleDeleteChat,
             })
           }
         />

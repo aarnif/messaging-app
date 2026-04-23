@@ -7,7 +7,7 @@ import type { ModalOptions } from "../types";
 
 import ModalProvider from "../components/ModalProvider";
 
-const mockCallback = vi.fn();
+const mockOnConfirm = vi.fn();
 
 const alertModalOptions: ModalOptions = {
   type: "alert",
@@ -15,7 +15,7 @@ const alertModalOptions: ModalOptions = {
   message: "Message",
   close: "Cancel",
   confirm: "Confirm",
-  callback: mockCallback,
+  onConfirm: mockOnConfirm,
 };
 
 const TestComponent = ({ modalOptions }: { modalOptions: ModalOptions }) => {
@@ -161,7 +161,7 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeNull();
-      expect(mockCallback).not.toHaveBeenCalled();
+      expect(mockOnConfirm).not.toHaveBeenCalled();
     });
   });
 
@@ -178,7 +178,7 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeNull();
-      expect(mockCallback).toHaveBeenCalled();
+      expect(mockOnConfirm).toHaveBeenCalled();
     });
   });
 });

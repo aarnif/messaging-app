@@ -13,11 +13,11 @@ const ModalContent = ({
   options: ModalOptions;
   handleCloseModal: () => void;
 }) => {
-  const { type, title, message, close, confirm, callback } = options;
+  const { type, title, message, close, confirm, onConfirm } = options;
 
   const handleConfirm = async () => {
-    if (callback) {
-      callback();
+    if (onConfirm) {
+      onConfirm();
     }
     handleCloseModal();
   };
@@ -55,7 +55,7 @@ const ModalContent = ({
     }
   };
 
-  const hasConfirmOption = confirm && callback;
+  const hasConfirmOption = confirm && onConfirm;
 
   const styles = getVariantStyles(type);
   return (
@@ -116,7 +116,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
     message: "Message",
     close: "cancel",
     confirm: "confirm",
-    callback: () => {},
+    onConfirm: () => {},
   });
   const [isOpen, setIsOpen] = useState(false);
 
