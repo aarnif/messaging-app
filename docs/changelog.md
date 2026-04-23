@@ -193,3 +193,7 @@ Ei muutoksia
 ## Viikko 29 (6.4-12.4.2026)
 
 - Testien kirjoitus käyttöliittymäkomponenteille (Vitest + React Testing Library)
+
+## Viikko 30 (13.4-19.4.2026)
+
+Ei muutoksia
