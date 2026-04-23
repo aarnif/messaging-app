@@ -63,6 +63,11 @@ const openModal = async (
 };
 
 describe("<ModalProvider />", () => {
+  beforeEach(() => {
+    mockOnCancel.mockClear();
+    mockOnConfirm.mockClear();
+  });
+
   test("renders content", () => {
     renderComponent();
 
@@ -181,6 +186,7 @@ describe("<ModalProvider />", () => {
 
     await waitFor(() => {
       expect(screen.queryByTestId("notification-modal")).toBeNull();
+      expect(mockOnCancel).not.toHaveBeenCalled();
       expect(mockOnConfirm).toHaveBeenCalled();
     });
   });
