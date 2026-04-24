@@ -1,5 +1,6 @@
 import { motion } from "framer-motion";
 import Button from "./ui/Button";
+import Overlay from "./ui/Overlay";
 
 const NewChatDropDownBox = ({
   setIsNewChatDropdownOpen,
@@ -8,15 +9,11 @@ const NewChatDropDownBox = ({
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
   handleOpenNewChatModal: (event: React.SyntheticEvent) => void;
 }) => (
-  <motion.div
-    data-testid="overlay"
+  <Overlay
     key={"Overlay"}
-    className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
     onClick={() => setIsNewChatDropdownOpen(false)}
-    initial={{ x: "100vw", opacity: 0 }}
-    animate={{ x: 0, opacity: 1 }}
-    exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-    transition={{ type: "tween" }}
+    animation="slideRight"
+    additionalClassName="flex items-end justify-center sm:items-center"
   >
     <motion.div
       className="absolute top-17 right-12 flex flex-col items-center justify-center rounded-lg bg-slate-200 p-4 lg:right-auto lg:left-110 dark:bg-slate-900"
@@ -40,7 +37,7 @@ const NewChatDropDownBox = ({
         />
       </div>
     </motion.div>
-  </motion.div>
+  </Overlay>
 );
 
 export default NewChatDropDownBox;

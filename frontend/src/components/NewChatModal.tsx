@@ -6,6 +6,7 @@ import { MdClose } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
 import type { Contact, User } from "../__generated__/graphql";
+import Overlay from "../components/ui/Overlay";
 import { DEBOUNCE_DELAY } from "../constants";
 import {
   ALL_CONTACTS_BY_USER,
@@ -292,13 +293,11 @@ const NewChatModal = ({
   const isMobileScreen = width <= 640;
 
   return (
-    <motion.div
-      data-testid="overlay"
+    <Overlay
       key={"Overlay"}
-      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
       onClick={() => setIsNewChatModalOpen(false)}
-      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-      transition={{ type: "tween" }}
+      animation="slideRight"
+      additionalClassName="flex items-end justify-center sm:items-center"
     >
       <motion.div
         className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
@@ -330,7 +329,7 @@ const NewChatModal = ({
           />
         )}
       </motion.div>
-    </motion.div>
+    </Overlay>
   );
 };
 
