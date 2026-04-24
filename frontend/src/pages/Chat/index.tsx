@@ -122,7 +122,7 @@ const Chat = () => {
   const chat = data?.findChatById;
 
   return (
-    <div className="relative flex grow flex-col">
+    <div className="relative flex grow flex-col overflow-hidden sm:overflow-visible">
       {loading ? (
         <div className="flex grow items-center justify-center">
           <Spinner />
