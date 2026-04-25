@@ -4,6 +4,7 @@ import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import FormField from "../../../components/ui/FormField";
 import Notify from "../../../components/ui/Notify";
+import Overlay from "../../../components/ui/Overlay";
 import { CHANGE_PASSWORD } from "../../../graphql/mutations";
 import useField from "../../../hooks/useField";
 import useNotifyMessage from "../../../hooks/useNotifyMessage";
@@ -80,15 +81,11 @@ const ChangePasswordModal = ({
   };
 
   return (
-    <motion.div
-      data-testid="overlay"
+    <Overlay
       key={"Overlay"}
-      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
       onClick={() => setIsChangePasswordModalOpen(false)}
-      initial={{ x: "100vw", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-      transition={{ type: "tween" }}
+      animation="slideRight"
+      additionalClassName="flex items-end justify-center sm:items-center"
     >
       <motion.div
         className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
@@ -137,7 +134,7 @@ const ChangePasswordModal = ({
           <FormField field={confirmNewPassword} />
         </div>
       </motion.div>
-    </motion.div>
+    </Overlay>
   );
 };
 

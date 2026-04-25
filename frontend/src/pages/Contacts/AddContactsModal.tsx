@@ -5,6 +5,7 @@ import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import { useDebounce } from "use-debounce";
 import Notify from "../../components/ui/Notify";
+import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
 import Spinner from "../../components/ui/Spinner";
 import { DEBOUNCE_DELAY } from "../../constants";
@@ -78,13 +79,11 @@ const AddContactsModal = ({
   const isMobileScreen = width <= 640;
 
   return (
-    <motion.div
-      data-testid="overlay"
+    <Overlay
       key={"Overlay"}
-      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
       onClick={() => setIsAddContactsModalOpen(false)}
-      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-      transition={{ type: "tween" }}
+      animation="slideRight"
+      additionalClassName="flex items-end justify-center sm:items-center"
     >
       <motion.div
         className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
@@ -129,7 +128,7 @@ const AddContactsModal = ({
           <SelectUserList users={users} setSelectedIds={setSelectedIds} />
         )}
       </motion.div>
-    </motion.div>
+    </Overlay>
   );
 };
 

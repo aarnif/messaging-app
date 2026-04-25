@@ -3,6 +3,7 @@ import { AnimatePresence, motion } from "framer-motion";
 import { useState } from "react";
 import { FaBan } from "react-icons/fa";
 import type { Message, User } from "../../__generated__/graphql";
+import Overlay from "../../components/ui/Overlay";
 import { DELETE_MESSAGE, EDIT_MESSAGE } from "../../graphql/mutations";
 import { checkIfMessageIsSingleEmoji, formatDisplayDate } from "../../helpers";
 import EditMessageModal from "./EditMessageModal";
@@ -85,12 +86,7 @@ const SentMessage = ({
     <div className="flex flex-col items-end">
       <AnimatePresence>
         {(isEditing || isMessageMenuOpen) && (
-          <motion.div
-            className="fixed inset-0 z-40 bg-black/50"
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            onClick={handleCancel}
-          />
+          <Overlay onClick={handleCancel} animation="fadeInOut" />
         )}
       </AnimatePresence>
       <motion.div

@@ -7,6 +7,7 @@ import { useDebounce } from "use-debounce";
 import type { Chat as ChatType } from "../../__generated__/graphql";
 import FormField from "../../components/ui/FormField";
 import Notify from "../../components/ui/Notify";
+import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
 import SelectContactsList from "../../components/ui/SelectContactsList";
 import { DEBOUNCE_DELAY } from "../../constants";
@@ -91,15 +92,11 @@ const EditChatModal = ({
   };
 
   return (
-    <motion.div
-      data-testid="overlay"
+    <Overlay
       key={"Overlay"}
-      className="fixed inset-0 flex items-end justify-center bg-black/50 sm:items-center"
       onClick={() => setIsEditChatOpen(false)}
-      initial={{ x: "100vw", opacity: 0 }}
-      animate={{ x: 0, opacity: 1 }}
-      exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-      transition={{ type: "tween" }}
+      animation="slideRight"
+      additionalClassName="flex items-end justify-center sm:items-center"
     >
       <motion.div
         data-testid="edit-chat-modal"
@@ -151,7 +148,7 @@ const EditChatModal = ({
           {selectedContacts.length} contacts selected
         </p>
       </motion.div>
-    </motion.div>
+    </Overlay>
   );
 };
 

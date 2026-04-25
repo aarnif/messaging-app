@@ -5,6 +5,7 @@ import { FaExclamation } from "react-icons/fa6";
 import ModalContext from "../contexts/ModalContext";
 import type { ModalOptions } from "../types";
 import Button from "./ui/Button";
+import Overlay from "./ui/Overlay";
 
 const ModalContent = ({
   type,
@@ -149,15 +150,11 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
       {children}
       <AnimatePresence>
         {isOpen && (
-          <motion.div
-            data-testid="overlay"
+          <Overlay
             key={"Overlay"}
-            className="fixed inset-0 flex items-center justify-center bg-black/50"
             onClick={handleCancel}
-            initial={{ x: "100vw", opacity: 0 }}
-            animate={{ x: 0, opacity: 1 }}
-            exit={{ x: "100vw", opacity: 0, transition: { delay: 0.4 } }}
-            transition={{ type: "tween" }}
+            animation="slideRight"
+            additionalClassName="flex items-center justify-center"
           >
             <ModalContent
               type={type}
@@ -169,7 +166,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
               handleCancel={handleCancel}
               handleConfirm={handleConfirm}
             />
-          </motion.div>
+          </Overlay>
         )}
       </AnimatePresence>
     </ModalContext.Provider>
