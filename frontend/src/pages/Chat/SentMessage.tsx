@@ -86,11 +86,7 @@ const SentMessage = ({
     <div className="flex flex-col items-end">
       <AnimatePresence>
         {(isEditing || isMessageMenuOpen) && (
-          <Overlay
-            onClick={handleCancel}
-            animation="fadeInOut"
-            additionalClassName="z-40"
-          />
+          <Overlay onClick={handleCancel} animation="fadeInOut" />
         )}
       </AnimatePresence>
       <motion.div

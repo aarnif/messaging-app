@@ -48,7 +48,7 @@ type OverlayProps = Omit<HTMLMotionProps<"div">, "children"> & {
   children?: ReactNode;
   animation?: Animation;
   onClick: () => void;
-  additionalClassName: string;
+  additionalClassName?: string;
 };
 
 const Overlay = ({
@@ -60,7 +60,7 @@ const Overlay = ({
   const variant = animationVariants[animation];
 
   const baseClassName =
-    `fixed inset-0 bg-black/50 ${additionalClassName}`.trim();
+    `fixed inset-0 bg-black/50 z-40 ${additionalClassName}`.trim();
 
   return (
     <motion.div
