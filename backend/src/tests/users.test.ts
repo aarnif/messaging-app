@@ -11,7 +11,8 @@ import {
   expectedUser1,
   expectedUser2,
   user1Details,
-  user2Details,
+  user1Input,
+  user2Input,
 } from "./helpers/data.js";
 import {
   assertError,
@@ -28,9 +29,6 @@ import {
   ME,
 } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
-
-const { id: _, name: _name1, ...user1Input } = user1Details;
-const { id: _id, name: _name2, ...user2Input } = user2Details;
 
 describeGraphQLSuite("Users", () => {
   void describe("User creation", () => {

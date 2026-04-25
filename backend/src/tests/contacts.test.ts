@@ -16,8 +16,11 @@ import {
   expectedUser3,
   privateChatDetails,
   user1Details,
+  user1Input,
   user2Details,
+  user2Input,
   user3Details,
+  user3Input,
 } from "./helpers/data.js";
 import {
   assertContactEquality,
@@ -42,10 +45,6 @@ import {
   TOGGLE_BLOCK_CONTACT,
 } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
-
-const { id: _, name: _name1, ...user1Input } = user1Details;
-const { id: _id, name: _name2, ...user2Input } = user2Details;
-const { id: _id2, name: _name3, ...user3Input } = user3Details;
 
 describeGraphQLSuite("Contacts", () => {
   let user1Token: string;
