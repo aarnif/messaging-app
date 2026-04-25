@@ -13,7 +13,6 @@ const NewChatDropDownBox = ({
     key={"Overlay"}
     onClick={() => setIsNewChatDropdownOpen(false)}
     animation="slideRight"
-    additionalClassName="flex items-end justify-center sm:items-center"
   >
     <motion.div
       className="absolute top-17 right-12 flex flex-col items-center justify-center rounded-lg bg-slate-200 p-4 lg:right-auto lg:left-110 dark:bg-slate-900"
