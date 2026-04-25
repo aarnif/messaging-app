@@ -11,10 +11,10 @@ type Animation =
 
 const animationVariants: Record<Animation, Variants> = {
   slideRight: {
-    initial: { x: "100vw", opacity: 0 },
+    initial: { x: "100%", opacity: 0 },
     animate: { x: 0, opacity: 1, transition: { type: "tween" } },
     exit: {
-      x: "100vw",
+      x: "100%",
       opacity: 0,
       transition: { delay: 0.4, type: "tween" },
     },
@@ -29,9 +29,9 @@ const animationVariants: Record<Animation, Variants> = {
     exit: { y: -50, opacity: 0 },
   },
   slideBottom: {
-    initial: { y: "100vh", opacity: 0 },
+    initial: { y: "100%", opacity: 0 },
     animate: { y: 0, opacity: 1, transition: { type: "tween" } },
-    exit: { y: "100vh", opacity: 0 },
+    exit: { y: "100%", opacity: 0 },
   },
   fadeInOut: {
     initial: { opacity: 0 },
