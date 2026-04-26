@@ -22,6 +22,7 @@ import {
 } from "./helpers/data.js";
 import {
   addContact,
+  addContacts,
   assertContactEquality,
   assertError,
   assertUserEquality,
@@ -30,7 +31,6 @@ import {
   query,
 } from "./helpers/funcs.js";
 import {
-  ADD_CONTACTS,
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_CHAT,
@@ -114,10 +114,10 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Add contacts", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { addContacts: Contact[] },
-        { ids: string[] }
-      >(ADD_CONTACTS, { ids: [user2Details.id, user3Details.id] }, "");
+      const responseBody = await addContacts(
+        [user2Details.id, user3Details.id],
+        "",
+      );
 
       const contacts = responseBody.data?.addContacts;
 
@@ -126,10 +126,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid user IDs", async () => {
-      const responseBody = await query<
-        { addContacts: Contact[] },
-        { ids: string[] }
-      >(ADD_CONTACTS, { ids: [user2Details.id, user3Details.id] }, user1Token);
+      const responseBody = await addContacts(
+        [user2Details.id, user3Details.id],
+        user1Token,
+      );
 
       const contacts = responseBody.data?.addContacts;
 

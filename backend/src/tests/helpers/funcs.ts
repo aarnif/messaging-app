@@ -15,6 +15,7 @@ import type { HTTPGraphQLResponse } from "../../types/other.js";
 import { user1Details } from "./data.js";
 import {
   ADD_CONTACT,
+  ADD_CONTACTS,
   CHANGE_PASSWORD,
   CREATE_USER,
   EDIT_PROFILE,
@@ -95,6 +96,13 @@ export const me = (
 
 export const addContact = (id: string, token: string) =>
   query<{ addContact: Contact }, { id: string }>(ADD_CONTACT, { id }, token);
+
+export const addContacts = (ids: string[], token: string) =>
+  query<{ addContacts: Contact[] }, { ids: string[] }>(
+    ADD_CONTACTS,
+    { ids },
+    token,
+  );
 
 export const assertValidationError = (
   responseBody: {
