@@ -2,7 +2,6 @@ import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import type {
   Chat,
-  Contact,
   CreateChatInput,
   EditChatInput,
   SendMessageInput,
@@ -22,6 +21,7 @@ import {
   user3Input,
 } from "./helpers/data.js";
 import {
+  addContact,
   assertChatEquality,
   assertError,
   assertValidationError,
@@ -30,7 +30,6 @@ import {
   query,
 } from "./helpers/funcs.js";
 import {
-  ADD_CONTACT,
   ALL_CHATS_BY_USER,
   CREATE_CHAT,
   DELETE_CHAT,
@@ -1014,10 +1013,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await query<
-        { addContact: Contact },
-        { id: string }
-      >(ADD_CONTACT, { id: user2Details.id }, token);
+      const contactResponseBody = await addContact(user2Details.id, token);
 
       assert.ok(
         contactResponseBody.data?.addContact.id,
@@ -1090,10 +1086,7 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await query<
-        { addContact: Contact },
-        { id: string }
-      >(ADD_CONTACT, { id: user2Details.id }, token);
+      const contactResponseBody = await addContact(user2Details.id, token);
 
       assert.ok(
         contactResponseBody.data?.addContact.id,

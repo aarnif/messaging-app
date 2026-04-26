@@ -14,6 +14,7 @@ import config from "../../../config.js";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
 import { user1Details } from "./data.js";
 import {
+  ADD_CONTACT,
   CHANGE_PASSWORD,
   CREATE_USER,
   EDIT_PROFILE,
@@ -91,6 +92,9 @@ export const me = (
   expectedStatusCode: number = 200,
   skipErrorCheck: boolean = false,
 ) => query<{ me: User }>(ME, {}, token, expectedStatusCode, skipErrorCheck);
+
+export const addContact = (id: string, token: string) =>
+  query<{ addContact: Contact }, { id: string }>(ADD_CONTACT, { id }, token);
 
 export const assertValidationError = (
   responseBody: {
