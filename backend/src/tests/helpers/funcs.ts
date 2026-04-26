@@ -23,6 +23,7 @@ import {
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_CHAT,
   CREATE_USER,
+  DELETE_CHAT,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -189,6 +190,9 @@ export const allChatsByUser = (search: string, token: string) =>
     { search },
     token,
   );
+
+export const deleteChat = (id: string, token: string) =>
+  query<{ deleteChat: Chat }, { id: string }>(DELETE_CHAT, { id }, token);
 
 export const assertValidationError = (
   responseBody: {

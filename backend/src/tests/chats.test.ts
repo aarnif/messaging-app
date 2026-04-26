@@ -22,11 +22,11 @@ import {
   assertValidationError,
   createChat,
   createUser,
+  deleteChat,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  DELETE_CHAT,
   DELETE_MESSAGE,
   EDIT_CHAT,
   EDIT_MESSAGE,
@@ -341,11 +341,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await deleteChat(chatId, "");
 
       const chat = responseBody.data?.deleteChat;
 
@@ -354,11 +350,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await deleteChat("999", token);
 
       const chat = responseBody.data?.deleteChat;
 
@@ -367,11 +359,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds deleting chat with valid ID", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
+      const responseBody = await deleteChat(chatId, token);
 
       const chat = responseBody.data?.deleteChat;
 
@@ -379,16 +367,8 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to delete same chat twice", async () => {
-      await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
+      await deleteChat(chatId, token);
+      const responseBody = await deleteChat(chatId, token);
 
       const chat = responseBody.data?.deleteChat;
 
