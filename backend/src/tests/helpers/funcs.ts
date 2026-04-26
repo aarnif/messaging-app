@@ -17,6 +17,7 @@ import { user1Details } from "./data.js";
 import {
   ADD_CONTACT,
   ADD_CONTACTS,
+  ALL_CHATS_BY_USER,
   ALL_CONTACTS_BY_USER,
   CHANGE_PASSWORD,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
@@ -179,6 +180,13 @@ export const toggleBlockContact = (id: string, token: string) =>
   query<{ toggleBlockContact: Contact }, { id: string }>(
     TOGGLE_BLOCK_CONTACT,
     { id },
+    token,
+  );
+
+export const allChatsByUser = (search: string, token: string) =>
+  query<{ allChatsByUser: UserChat[] }, { search?: string }>(
+    ALL_CHATS_BY_USER,
+    { search },
     token,
   );
 

@@ -1,11 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  Chat,
-  EditChatInput,
-  SendMessageInput,
-  UserChat,
-} from "~/types/graphql";
+import type { Chat, EditChatInput, SendMessageInput } from "~/types/graphql";
 import {
   expectedGroupChat,
   expectedPrivateChat,
@@ -21,6 +16,7 @@ import {
 } from "./helpers/data.js";
 import {
   addContact,
+  allChatsByUser,
   assertChatEquality,
   assertError,
   assertValidationError,
@@ -30,7 +26,6 @@ import {
   query,
 } from "./helpers/funcs.js";
 import {
-  ALL_CHATS_BY_USER,
   DELETE_CHAT,
   DELETE_MESSAGE,
   EDIT_CHAT,
@@ -831,10 +826,7 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("All chats by user", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, "");
+      const responseBody = await allChatsByUser("", "");
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -843,10 +835,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns empty array when no chats exist", async () => {
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, token);
+      const responseBody = await allChatsByUser("", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -863,10 +852,7 @@ describeGraphQLSuite("Chats", () => {
       await createChat(privateChatDetails, token);
       await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, token);
+      const responseBody = await allChatsByUser("", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -878,10 +864,7 @@ describeGraphQLSuite("Chats", () => {
       await createChat(privateChatDetails, token);
       await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: groupChatDetails.name }, token);
+      const responseBody = await allChatsByUser(groupChatDetails.name, token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -897,10 +880,10 @@ describeGraphQLSuite("Chats", () => {
       await createChat(privateChatDetails, token);
       await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: groupChatDetails.description }, token);
+      const responseBody = await allChatsByUser(
+        groupChatDetails.description,
+        token,
+      );
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -915,10 +898,7 @@ describeGraphQLSuite("Chats", () => {
     void test("search is case insensitive", async () => {
       await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: "TEST" }, token);
+      const responseBody = await allChatsByUser("TEST", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -1058,10 +1038,7 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds marking chat as read", async () => {
       const getUnreadCount = async () => {
-        const response = await query<
-          { allChatsByUser: UserChat[] },
-          { search: string }
-        >(ALL_CHATS_BY_USER, { search: "" }, token2);
+        const response = await allChatsByUser("", token2);
 
         const userChats = response.data?.allChatsByUser;
         assert.ok(userChats, "User chats should be defined");
