@@ -28,14 +28,11 @@ import {
   editMessage,
   findChatById,
   findPrivateChatWithContact,
+  leaveChat,
   login,
   query,
 } from "./helpers/funcs.js";
-import {
-  LEAVE_CHAT,
-  MARK_CHAT_AS_READ,
-  SEND_MESSAGE,
-} from "./helpers/queries.js";
+import { MARK_CHAT_AS_READ, SEND_MESSAGE } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Chats", () => {
@@ -664,11 +661,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
-        LEAVE_CHAT,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await leaveChat(chatId, "");
 
       const chat = responseBody.data?.leaveChat;
 
@@ -677,11 +670,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds when member leaves group chat", async () => {
-      const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
-        LEAVE_CHAT,
-        { id: chatId },
-        token2,
-      );
+      const responseBody = await leaveChat(chatId, token2);
 
       const chat = responseBody.data?.leaveChat;
 

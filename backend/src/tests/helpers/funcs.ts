@@ -37,6 +37,7 @@ import {
   FIND_USER_BY_ID,
   IS_BLOCKED_BY_USER,
   LOGIN,
+  LEAVE_CHAT,
   ME,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
@@ -231,6 +232,9 @@ export const findPrivateChatWithContact = (id: string, token: string) =>
     { id },
     token,
   );
+
+export const leaveChat = (id: string, token: string) =>
+  query<{ leaveChat: Chat }, { id: string }>(LEAVE_CHAT, { id }, token);
 
 export const assertValidationError = (
   responseBody: {
