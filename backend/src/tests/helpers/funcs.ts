@@ -26,6 +26,7 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   FIND_USER_BY_ID,
+  IS_BLOCKED_BY_USER,
   LOGIN,
   ME,
 } from "./queries.js";
@@ -149,6 +150,13 @@ export const findContactByUserId = (id: string, token: string) =>
     },
     { id: string }
   >(FIND_CONTACT_BY_USER_ID, { id }, token);
+
+export const isBlockedByUser = (id: string, token: string) =>
+  query<{ isBlockedByUser: boolean }, { id: string }>(
+    IS_BLOCKED_BY_USER,
+    { id },
+    token,
+  );
 
 export const assertValidationError = (
   responseBody: {

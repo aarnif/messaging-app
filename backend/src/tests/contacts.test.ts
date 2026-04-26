@@ -27,11 +27,11 @@ import {
   editProfile,
   findContactById,
   findContactByUserId,
+  isBlockedByUser,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  IS_BLOCKED_BY_USER,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
   TOGGLE_BLOCK_CONTACT,
@@ -280,10 +280,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, "");
+      const responseBody = await isBlockedByUser(user1Details.id, "");
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -292,10 +289,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns false with non-existent contact", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: "999" }, user2Token);
+      const responseBody = await isBlockedByUser("999", user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -308,10 +302,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns false when not blocked", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
+      const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -329,10 +320,7 @@ describeGraphQLSuite("Contacts", () => {
         { id: contactId },
         user1Token,
       );
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
+      const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
