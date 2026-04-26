@@ -31,8 +31,9 @@ import {
   login,
   nonContactUsers,
   query,
+  removeContact,
 } from "./helpers/funcs.js";
-import { REMOVE_CONTACT, TOGGLE_BLOCK_CONTACT } from "./helpers/queries.js";
+import { TOGGLE_BLOCK_CONTACT } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Contacts", () => {
@@ -147,10 +148,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, "");
+      const responseBody = await removeContact(contactId, "");
 
       const contact = responseBody.data?.removeContact;
 
@@ -159,10 +157,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent contact", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: "999" }, user1Token);
+      const responseBody = await removeContact("999", user1Token);
 
       const contact = responseBody.data?.removeContact;
 
@@ -171,10 +166,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid contact ID", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, user1Token);
+      const responseBody = await removeContact(contactId, user1Token);
 
       const contact = responseBody.data?.removeContact;
 
@@ -182,15 +174,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails when trying to remove same contact twice", async () => {
-      await query<{ removeContact: Contact }, { id: string }>(
-        REMOVE_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, user1Token);
+      await removeContact(contactId, user1Token);
+      const responseBody = await removeContact(contactId, user1Token);
 
       const contact = responseBody.data?.removeContact;
 

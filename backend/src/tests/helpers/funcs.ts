@@ -30,6 +30,7 @@ import {
   LOGIN,
   ME,
   NON_CONTACT_USERS,
+  REMOVE_CONTACT,
 } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
@@ -163,6 +164,13 @@ export const nonContactUsers = (search: string, token: string) =>
   query<{ nonContactUsers: User[] }, { search?: string }>(
     NON_CONTACT_USERS,
     { search },
+    token,
+  );
+
+export const removeContact = (id: string, token: string) =>
+  query<{ removeContact: Contact }, { id: string }>(
+    REMOVE_CONTACT,
+    { id },
     token,
   );
 
