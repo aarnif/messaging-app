@@ -26,11 +26,11 @@ import {
   deleteMessage,
   editChat,
   editMessage,
+  findChatById,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  FIND_CHAT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   LEAVE_CHAT,
   MARK_CHAT_AS_READ,
@@ -345,11 +345,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await findChatById(chatId, "");
 
       const chat = responseBody.data?.findChatById;
 
@@ -358,11 +354,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await findChatById("999", token);
 
       const chat = responseBody.data?.findChatById;
 
@@ -371,11 +363,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds finding chat", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: chatId },
-        token,
-      );
+      const responseBody = await findChatById(chatId, token);
 
       const chat = responseBody.data?.findChatById;
 

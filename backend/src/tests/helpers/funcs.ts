@@ -30,6 +30,7 @@ import {
   EDIT_CHAT,
   EDIT_MESSAGE,
   EDIT_PROFILE,
+  FIND_CHAT_BY_ID,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   FIND_USER_BY_ID,
@@ -219,6 +220,9 @@ export const editMessage = (input: EditMessageInput, token: string) =>
     },
     token,
   );
+
+export const findChatById = (id: string, token: string) =>
+  query<{ findChatById: Chat }, { id: string }>(FIND_CHAT_BY_ID, { id }, token);
 
 export const assertValidationError = (
   responseBody: {
