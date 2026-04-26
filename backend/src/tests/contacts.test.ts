@@ -23,6 +23,7 @@ import {
 import {
   addContact,
   addContacts,
+  allContactsByUser,
   assertContactEquality,
   assertError,
   assertUserEquality,
@@ -31,7 +32,6 @@ import {
   query,
 } from "./helpers/funcs.js";
 import {
-  ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_CHAT,
   EDIT_PROFILE,
@@ -353,10 +353,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("All contacts by user", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, "");
+      const responseBody = await allContactsByUser("", "");
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -365,10 +362,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when no contacts exist", async () => {
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, user1Token);
+      const responseBody = await allContactsByUser("", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -385,10 +379,7 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, user1Token);
+      const responseBody = await allContactsByUser("", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -407,10 +398,10 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: user2Details.username }, user1Token);
+      const responseBody = await allContactsByUser(
+        user2Details.username,
+        user1Token,
+      );
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -440,10 +431,7 @@ describeGraphQLSuite("Contacts", () => {
         user2Token,
       );
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: newName }, user1Token);
+      const responseBody = await allContactsByUser(newName, user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -462,10 +450,7 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: "nonexistent" }, user1Token);
+      const responseBody = await allContactsByUser("nonexistent", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -476,10 +461,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("search is case insensitive", async () => {
       await addContact(user2Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: "USER2" }, user1Token);
+      const responseBody = await allContactsByUser("USER2", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 

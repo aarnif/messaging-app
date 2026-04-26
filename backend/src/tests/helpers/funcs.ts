@@ -16,6 +16,7 @@ import { user1Details } from "./data.js";
 import {
   ADD_CONTACT,
   ADD_CONTACTS,
+  ALL_CONTACTS_BY_USER,
   CHANGE_PASSWORD,
   CREATE_USER,
   EDIT_PROFILE,
@@ -101,6 +102,13 @@ export const addContacts = (ids: string[], token: string) =>
   query<{ addContacts: Contact[] }, { ids: string[] }>(
     ADD_CONTACTS,
     { ids },
+    token,
+  );
+
+export const allContactsByUser = (search: string, token: string) =>
+  query<{ allContactsByUser: Contact[] }, { search?: string }>(
+    ALL_CONTACTS_BY_USER,
+    { search },
     token,
   );
 
