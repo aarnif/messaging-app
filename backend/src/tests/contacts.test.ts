@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { Contact, EditProfileInput, User } from "~/types/graphql";
+import type { Contact, User } from "~/types/graphql";
 import {
   expectedContact1,
   expectedContact2,
@@ -24,11 +24,11 @@ import {
   contactsWithoutPrivateChat,
   createChat,
   createUser,
+  editProfile,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   IS_BLOCKED_BY_USER,
@@ -413,14 +413,11 @@ describeGraphQLSuite("Contacts", () => {
 
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
@@ -534,14 +531,11 @@ describeGraphQLSuite("Contacts", () => {
 
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
@@ -775,14 +769,11 @@ describeGraphQLSuite("Contacts", () => {
     void test("filters users by name search", async () => {
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
