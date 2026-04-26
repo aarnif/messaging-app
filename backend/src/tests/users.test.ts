@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { User } from "~/types/graphql";
 import {
   expectedUser1,
   expectedUser2,
@@ -17,9 +16,8 @@ import {
   editProfile,
   findUserById,
   login,
-  query,
+  me,
 } from "./helpers/funcs.js";
-import { ME } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Users", () => {
@@ -145,7 +143,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ me: User }>(ME, {}, "");
+      const responseBody = await me("");
       const user = responseBody.data?.me;
 
       assert.strictEqual(user, null, "User should be null");
@@ -153,20 +151,14 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid token", async () => {
-      const responseBody = await query<{ me: User }>(ME, {}, token);
+      const responseBody = await me(token);
       const user = responseBody.data?.me;
 
       assertUserEquality(user, expectedUser1);
     });
 
     void test("fails with invalid token", async () => {
-      const responseBody = await query<{ me: User }>(
-        ME,
-        {},
-        "invalid-token",
-        500,
-        true,
-      );
+      const responseBody = await me("invalid-token", 500, true);
       const user = responseBody.data?.me;
 
       assert.strictEqual(user, undefined, "User should be undefined");

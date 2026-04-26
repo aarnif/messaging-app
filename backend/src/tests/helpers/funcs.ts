@@ -19,6 +19,7 @@ import {
   EDIT_PROFILE,
   FIND_USER_BY_ID,
   LOGIN,
+  ME,
 } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
@@ -84,6 +85,12 @@ export const findUserById = (id: string, token: string) =>
     },
     token,
   );
+
+export const me = (
+  token: string,
+  expectedStatusCode: number = 200,
+  skipErrorCheck: boolean = false,
+) => query<{ me: User }>(ME, {}, token, expectedStatusCode, skipErrorCheck);
 
 export const assertValidationError = (
   responseBody: {
