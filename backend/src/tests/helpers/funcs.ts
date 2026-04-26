@@ -17,6 +17,7 @@ import {
   CHANGE_PASSWORD,
   CREATE_USER,
   EDIT_PROFILE,
+  FIND_USER_BY_ID,
   LOGIN,
 } from "./queries.js";
 
@@ -71,6 +72,15 @@ export const editProfile = (input: EditProfileInput, token: string) =>
     EDIT_PROFILE,
     {
       input,
+    },
+    token,
+  );
+
+export const findUserById = (id: string, token: string) =>
+  query<{ findUserById: User }, { id: string }>(
+    FIND_USER_BY_ID,
+    {
+      id,
     },
     token,
   );

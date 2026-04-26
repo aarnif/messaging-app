@@ -15,10 +15,11 @@ import {
   changePassword,
   createUser,
   editProfile,
+  findUserById,
   login,
   query,
 } from "./helpers/funcs.js";
-import { FIND_USER_BY_ID, ME } from "./helpers/queries.js";
+import { ME } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Users", () => {
@@ -197,11 +198,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: user2Id },
-        "",
-      );
+      const responseBody = await findUserById(user2Id, "");
 
       const user = responseBody.data?.findUserById;
 
@@ -210,11 +207,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with non-existent user ID", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await findUserById("999", token);
 
       const user = responseBody.data?.findUserById;
 
@@ -223,11 +216,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid user ID", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: user2Id },
-        token,
-      );
+      const responseBody = await findUserById(user2Id, token);
 
       const user = responseBody.data?.findUserById;
 
