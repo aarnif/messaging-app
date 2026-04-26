@@ -1,12 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  Chat,
-  Contact,
-  CreateChatInput,
-  EditProfileInput,
-  User,
-} from "~/types/graphql";
+import type { Contact, EditProfileInput, User } from "~/types/graphql";
 import {
   expectedContact1,
   expectedContact2,
@@ -28,12 +22,12 @@ import {
   assertError,
   assertUserEquality,
   contactsWithoutPrivateChat,
+  createChat,
   createUser,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  CREATE_CHAT,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -501,11 +495,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("returns all contacts without private chat when user has contacts", async () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        user1Token,
-      );
+      await createChat(privateChatDetails, user1Token);
 
       const responseBody = await contactsWithoutPrivateChat("", user1Token);
 

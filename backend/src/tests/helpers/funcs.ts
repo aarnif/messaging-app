@@ -4,6 +4,7 @@ import type {
   ChangePasswordInput,
   Chat,
   Contact,
+  CreateChatInput,
   CreateUserInput,
   EditProfileInput,
   LoginInput,
@@ -19,6 +20,7 @@ import {
   ALL_CONTACTS_BY_USER,
   CHANGE_PASSWORD,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
+  CREATE_CHAT,
   CREATE_USER,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
@@ -117,6 +119,15 @@ export const contactsWithoutPrivateChat = (search: string, token: string) =>
   query<{ contactsWithoutPrivateChat: Contact[] }, { search?: string }>(
     CONTACTS_WITHOUT_PRIVATE_CHAT,
     { search },
+    token,
+  );
+
+export const createChat = (input: CreateChatInput, token: string) =>
+  query<{ createChat: Chat }, { input: CreateChatInput }>(
+    CREATE_CHAT,
+    {
+      input,
+    },
     token,
   );
 

@@ -2,7 +2,6 @@ import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import type {
   Chat,
-  CreateChatInput,
   EditChatInput,
   SendMessageInput,
   UserChat,
@@ -25,13 +24,13 @@ import {
   assertChatEquality,
   assertError,
   assertValidationError,
+  createChat,
   createUser,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
   ALL_CHATS_BY_USER,
-  CREATE_CHAT,
   DELETE_CHAT,
   DELETE_MESSAGE,
   EDIT_CHAT,
@@ -63,10 +62,7 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("Create chat", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, "");
+      const responseBody = await createChat(privateChatDetails, "");
 
       const chat = responseBody.data?.createChat;
 
@@ -75,16 +71,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty initial message", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...privateChatDetails,
-            initialMessage: "",
-          },
+          ...privateChatDetails,
+          initialMessage: "",
         },
         token,
       );
@@ -96,16 +86,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with group chat without name", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...groupChatDetails,
-            name: "",
-          },
+          ...groupChatDetails,
+          name: "",
         },
         token,
       );
@@ -120,16 +104,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with group chat name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...groupChatDetails,
-            name: "te",
-          },
+          ...groupChatDetails,
+          name: "te",
         },
         token,
       );
@@ -144,10 +122,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds creating private chat", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const responseBody = await createChat(privateChatDetails, token);
 
       const chat = responseBody.data?.createChat;
 
@@ -155,10 +130,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds creating group chat", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const responseBody = await createChat(groupChatDetails, token);
 
       const chat = responseBody.data?.createChat;
 
@@ -170,10 +142,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
@@ -371,10 +340,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
@@ -440,10 +406,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const responseBody = await createChat(groupChatDetails, token);
       assert.ok(responseBody.data?.createChat.id, "Chat ID should be defined");
       chatId = responseBody.data.createChat.id;
     });
@@ -491,10 +454,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
@@ -587,10 +547,7 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
@@ -729,10 +686,7 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
@@ -818,10 +772,7 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
 
@@ -909,16 +860,8 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns all chats when user has chats", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
       const responseBody = await query<
         { allChatsByUser: Chat[] },
@@ -932,16 +875,8 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("filters chats by name search", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
       const responseBody = await query<
         { allChatsByUser: Chat[] },
@@ -959,16 +894,8 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("filters chats by description search", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
       const responseBody = await query<
         { allChatsByUser: Chat[] },
@@ -986,11 +913,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("search is case insensitive", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(groupChatDetails, token);
 
       const responseBody = await query<
         { allChatsByUser: Chat[] },
@@ -1021,10 +944,7 @@ describeGraphQLSuite("Chats", () => {
       );
       userId = contactResponseBody.data.addContact.contactDetails.id;
 
-      const chatResponseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatResponseBody = await createChat(privateChatDetails, token);
       assert.ok(
         chatResponseBody.data?.createChat.id,
         "Chat ID should be defined",
@@ -1093,10 +1013,7 @@ describeGraphQLSuite("Chats", () => {
         "Contact ID should be defined",
       );
 
-      const chatResponseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatResponseBody = await createChat(privateChatDetails, token);
       assert.ok(
         chatResponseBody.data?.createChat.id,
         "Chat ID should be defined",
