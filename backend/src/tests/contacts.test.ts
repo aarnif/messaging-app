@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { Contact } from "~/types/graphql";
 import {
   expectedContact1,
   expectedContact2,
@@ -30,10 +29,9 @@ import {
   isBlockedByUser,
   login,
   nonContactUsers,
-  query,
   removeContact,
+  toggleBlockContact,
 } from "./helpers/funcs.js";
-import { TOGGLE_BLOCK_CONTACT } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Contacts", () => {
@@ -196,10 +194,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, "");
+      const responseBody = await toggleBlockContact(contactId, "");
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -208,10 +203,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent contact", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: "999" }, user1Token);
+      const responseBody = await toggleBlockContact("999", user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -220,10 +212,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds blocking contact", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
+      const responseBody = await toggleBlockContact(contactId, user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -234,15 +223,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds unblocking contact", async () => {
-      await query<{ toggleBlockContact: Contact }, { id: string }>(
-        TOGGLE_BLOCK_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
+      await toggleBlockContact(contactId, user1Token);
+      const responseBody = await toggleBlockContact(contactId, user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -297,11 +279,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns true when blocked", async () => {
-      await query<{ toggleBlockContact: Contact }, { id: string }>(
-        TOGGLE_BLOCK_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
+      await toggleBlockContact(contactId, user1Token);
       const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;

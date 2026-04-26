@@ -31,6 +31,7 @@ import {
   ME,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
+  TOGGLE_BLOCK_CONTACT,
 } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
@@ -170,6 +171,13 @@ export const nonContactUsers = (search: string, token: string) =>
 export const removeContact = (id: string, token: string) =>
   query<{ removeContact: Contact }, { id: string }>(
     REMOVE_CONTACT,
+    { id },
+    token,
+  );
+
+export const toggleBlockContact = (id: string, token: string) =>
+  query<{ toggleBlockContact: Contact }, { id: string }>(
+    TOGGLE_BLOCK_CONTACT,
     { id },
     token,
   );
