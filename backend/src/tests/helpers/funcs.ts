@@ -10,6 +10,7 @@ import type {
   EditMessageInput,
   EditProfileInput,
   LoginInput,
+  SendMessageInput,
   User,
   UserChat,
 } from "~/types/graphql";
@@ -42,6 +43,7 @@ import {
   ME,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
+  SEND_MESSAGE,
   TOGGLE_BLOCK_CONTACT,
 } from "./queries.js";
 
@@ -241,6 +243,13 @@ export const markChatAsRead = (id: string, token: string) =>
   query<{ markChatAsRead: boolean }, { id: string }>(
     MARK_CHAT_AS_READ,
     { id },
+    token,
+  );
+
+export const sendMessage = (input: SendMessageInput, token: string) =>
+  query<{ sendMessage: Chat }, { input: SendMessageInput }>(
+    SEND_MESSAGE,
+    { input },
     token,
   );
 

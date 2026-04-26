@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { Chat, SendMessageInput } from "~/types/graphql";
 import {
   expectedGroupChat,
   expectedPrivateChat,
@@ -31,9 +30,8 @@ import {
   leaveChat,
   login,
   markChatAsRead,
-  query,
+  sendMessage,
 } from "./helpers/funcs.js";
-import { SEND_MESSAGE } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Chats", () => {
@@ -379,17 +377,11 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "Hello from unauthenticated user",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "Hello from unauthenticated user",
+          isNotification: false,
         },
         "",
       );
@@ -401,17 +393,11 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty message content", async () => {
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "",
+          isNotification: false,
         },
         token,
       );
@@ -424,17 +410,11 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds sending message to chat", async () => {
       const messageContent = "Hello from chat!";
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: messageContent,
-            isNotification: false,
-          },
+          id: chatId,
+          content: messageContent,
+          isNotification: false,
         },
         token,
       );
@@ -861,14 +841,11 @@ describeGraphQLSuite("Chats", () => {
       );
       chatId = chatResponseBody.data.createChat.id;
 
-      await query<{ sendMessage: Chat }, { input: SendMessageInput }>(
-        SEND_MESSAGE,
+      await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "Test message",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "Test message",
+          isNotification: false,
         },
         token,
       );
