@@ -4,7 +4,6 @@ import type {
   Chat,
   Contact,
   CreateChatInput,
-  CreateUserInput,
   EditProfileInput,
   LoginInput,
   User,
@@ -26,6 +25,7 @@ import {
   assertContactEquality,
   assertError,
   assertUserEquality,
+  createUser,
   query,
 } from "./helpers/funcs.js";
 import {
@@ -34,7 +34,6 @@ import {
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_CHAT,
-  CREATE_USER,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -51,15 +50,9 @@ describeGraphQLSuite("Contacts", () => {
   let user2Token: string;
 
   beforeEach(async () => {
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user1Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user2Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user3Input,
-    });
+    await createUser(user1Input);
+    await createUser(user2Input);
+    await createUser(user3Input);
 
     const user1LoginBody = await query<
       { login: { value: string } },

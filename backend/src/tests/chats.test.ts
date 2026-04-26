@@ -4,11 +4,9 @@ import type {
   Chat,
   Contact,
   CreateChatInput,
-  CreateUserInput,
   EditChatInput,
   LoginInput,
   SendMessageInput,
-  User,
   UserChat,
 } from "~/types/graphql";
 import {
@@ -28,13 +26,13 @@ import {
   assertChatEquality,
   assertError,
   assertValidationError,
+  createUser,
   query,
 } from "./helpers/funcs.js";
 import {
   ADD_CONTACT,
   ALL_CHATS_BY_USER,
   CREATE_CHAT,
-  CREATE_USER,
   DELETE_CHAT,
   DELETE_MESSAGE,
   EDIT_CHAT,
@@ -52,15 +50,9 @@ describeGraphQLSuite("Chats", () => {
   let token: string;
 
   beforeEach(async () => {
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user1Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user2Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user3Input,
-    });
+    await createUser(user1Input);
+    await createUser(user2Input);
+    await createUser(user3Input);
 
     const loginBody = await query<
       { login: { value: string } },

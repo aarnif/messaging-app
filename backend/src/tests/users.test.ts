@@ -2,7 +2,6 @@ import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import type {
   ChangePasswordInput,
-  CreateUserInput,
   EditProfileInput,
   LoginInput,
   User,
@@ -18,11 +17,11 @@ import {
   assertError,
   assertUserEquality,
   assertValidationError,
+  createUser,
   query,
 } from "./helpers/funcs.js";
 import {
   CHANGE_PASSWORD,
-  CREATE_USER,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
   LOGIN,
@@ -33,14 +32,9 @@ import { describeGraphQLSuite } from "./helpers/setup.js";
 describeGraphQLSuite("Users", () => {
   void describe("User creation", () => {
     void test("fails with username shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          username: "us",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        username: "us",
       });
 
       const user = responseBody.data?.createUser;
@@ -53,14 +47,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with password shorter than 6 characters", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          password: "short",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        password: "short",
       });
       const user = responseBody.data?.createUser;
 
@@ -72,14 +61,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails when passwords do not match", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          confirmPassword: "passwor",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        confirmPassword: "passwor",
       });
       const user = responseBody.data?.createUser;
 
@@ -88,14 +72,8 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails if user already exists", async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user1Input });
+      await createUser(user1Input);
+      const responseBody = await createUser(user1Input);
       const user = responseBody.data?.createUser;
 
       assert.strictEqual(user, null, "User should be null");
@@ -103,10 +81,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid input", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user1Input });
+      const responseBody = await createUser(user1Input);
       const user = responseBody.data?.createUser;
 
       assertUserEquality(user, expectedUser1);
@@ -115,10 +90,7 @@ describeGraphQLSuite("Users", () => {
 
   void describe("User login", () => {
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
+      await createUser(user1Input);
     });
 
     void test("fails with non-existent username", async () => {
@@ -184,10 +156,7 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
+      await createUser(user1Input);
       const loginBody = await query<
         { login: { value: string } },
         { input: LoginInput }
@@ -241,14 +210,8 @@ describeGraphQLSuite("Users", () => {
     let user2Id: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const user2Body = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user2Input });
+      await createUser(user1Input);
+      const user2Body = await createUser(user2Input);
       assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
       user2Id = user2Body.data.createUser.id;
 
@@ -309,10 +272,7 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
+      await createUser(user1Input);
       const loginBody = await query<
         { login: { value: string } },
         { input: LoginInput }
@@ -433,10 +393,7 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
+      await createUser(user1Input);
       const loginBody = await query<
         { login: { value: string } },
         { input: LoginInput }
