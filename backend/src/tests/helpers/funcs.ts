@@ -29,6 +29,7 @@ import {
   IS_BLOCKED_BY_USER,
   LOGIN,
   ME,
+  NON_CONTACT_USERS,
 } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
@@ -155,6 +156,13 @@ export const isBlockedByUser = (id: string, token: string) =>
   query<{ isBlockedByUser: boolean }, { id: string }>(
     IS_BLOCKED_BY_USER,
     { id },
+    token,
+  );
+
+export const nonContactUsers = (search: string, token: string) =>
+  query<{ nonContactUsers: User[] }, { search?: string }>(
+    NON_CONTACT_USERS,
+    { search },
     token,
   );
 

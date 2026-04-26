@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { Contact, User } from "~/types/graphql";
+import type { Contact } from "~/types/graphql";
 import {
   expectedContact1,
   expectedContact2,
@@ -29,13 +29,10 @@ import {
   findContactByUserId,
   isBlockedByUser,
   login,
+  nonContactUsers,
   query,
 } from "./helpers/funcs.js";
-import {
-  NON_CONTACT_USERS,
-  REMOVE_CONTACT,
-  TOGGLE_BLOCK_CONTACT,
-} from "./helpers/queries.js";
+import { REMOVE_CONTACT, TOGGLE_BLOCK_CONTACT } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Contacts", () => {
@@ -674,10 +671,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Non-contact users", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, "");
+      const responseBody = await nonContactUsers("", "");
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -686,10 +680,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns all non-contact users", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, user1Token);
+      const responseBody = await nonContactUsers("", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -705,10 +696,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("excludes existing contacts", async () => {
       await addContact(user2Details.id, user1Token);
 
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, user1Token);
+      const responseBody = await nonContactUsers("", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -718,10 +706,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters users by username search", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: user2Details.username }, user1Token);
+      const responseBody = await nonContactUsers(
+        user2Details.username,
+        user1Token,
+      );
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -742,10 +730,7 @@ describeGraphQLSuite("Contacts", () => {
         user2Token,
       );
 
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: newName }, user1Token);
+      const responseBody = await nonContactUsers(newName, user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -755,10 +740,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when search has no matches", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: "nonexistent" }, user1Token);
+      const responseBody = await nonContactUsers("nonexistent", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -767,10 +749,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("search is case insensitive", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: "USER2" }, user1Token);
+      const responseBody = await nonContactUsers("USER2", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
