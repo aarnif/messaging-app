@@ -23,6 +23,7 @@ import {
   CREATE_CHAT,
   CREATE_USER,
   EDIT_PROFILE,
+  FIND_CONTACT_BY_ID,
   FIND_USER_BY_ID,
   LOGIN,
   ME,
@@ -127,6 +128,15 @@ export const createChat = (input: CreateChatInput, token: string) =>
     CREATE_CHAT,
     {
       input,
+    },
+    token,
+  );
+
+export const findContactById = (id: string, token: string) =>
+  query<{ findContactById: Contact }, { id: string }>(
+    FIND_CONTACT_BY_ID,
+    {
+      id,
     },
     token,
   );

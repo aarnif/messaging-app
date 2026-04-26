@@ -25,11 +25,11 @@ import {
   createChat,
   createUser,
   editProfile,
+  findContactById,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   IS_BLOCKED_BY_USER,
   NON_CONTACT_USERS,
@@ -613,10 +613,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: contactId }, "");
+      const responseBody = await findContactById(contactId, "");
 
       const contact = responseBody.data?.findContactById;
 
@@ -625,10 +622,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent user ID", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: "999" }, token);
+      const responseBody = await findContactById("999", token);
 
       const contact = responseBody.data?.findContactById;
 
@@ -637,10 +631,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid contact ID", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: contactId }, token);
+      const responseBody = await findContactById(contactId, token);
 
       const contact = responseBody.data?.findContactById;
 
