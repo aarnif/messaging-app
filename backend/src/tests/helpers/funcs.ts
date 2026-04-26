@@ -4,13 +4,14 @@ import type {
   Chat,
   Contact,
   CreateUserInput,
+  LoginInput,
   User,
   UserChat,
 } from "~/types/graphql";
 import config from "../../../config.js";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
 import { user1Details } from "./data.js";
-import { CREATE_USER } from "./queries.js";
+import { CREATE_USER, LOGIN } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
   query: string,
@@ -41,6 +42,11 @@ export const query = async <Data, Variables = Record<string, never>>(
 
 export const createUser = (input: CreateUserInput) =>
   query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
+    input,
+  });
+
+export const login = (input: LoginInput) =>
+  query<{ login: { value: string } }, { input: LoginInput }>(LOGIN, {
     input,
   });
 

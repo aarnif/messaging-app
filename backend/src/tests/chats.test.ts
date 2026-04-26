@@ -5,7 +5,6 @@ import type {
   Contact,
   CreateChatInput,
   EditChatInput,
-  LoginInput,
   SendMessageInput,
   UserChat,
 } from "~/types/graphql";
@@ -27,6 +26,7 @@ import {
   assertError,
   assertValidationError,
   createUser,
+  login,
   query,
 } from "./helpers/funcs.js";
 import {
@@ -40,7 +40,6 @@ import {
   FIND_CHAT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   LEAVE_CHAT,
-  LOGIN,
   MARK_CHAT_AS_READ,
   SEND_MESSAGE,
 } from "./helpers/queries.js";
@@ -54,14 +53,9 @@ describeGraphQLSuite("Chats", () => {
     await createUser(user2Input);
     await createUser(user3Input);
 
-    const loginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user1Details.username,
-        password: user1Details.password,
-      },
+    const loginBody = await login({
+      username: user1Details.username,
+      password: user1Details.password,
     });
 
     assert.ok(loginBody.data, "Login token value should be defined");
@@ -601,14 +595,9 @@ describeGraphQLSuite("Chats", () => {
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -748,14 +737,9 @@ describeGraphQLSuite("Chats", () => {
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -842,14 +826,9 @@ describeGraphQLSuite("Chats", () => {
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -1143,14 +1122,9 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(

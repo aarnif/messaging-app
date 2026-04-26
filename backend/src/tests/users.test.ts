@@ -3,7 +3,6 @@ import { beforeEach, describe, test } from "node:test";
 import type {
   ChangePasswordInput,
   EditProfileInput,
-  LoginInput,
   User,
 } from "~/types/graphql";
 import {
@@ -18,13 +17,13 @@ import {
   assertUserEquality,
   assertValidationError,
   createUser,
+  login,
   query,
 } from "./helpers/funcs.js";
 import {
   CHANGE_PASSWORD,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
-  LOGIN,
   ME,
 } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
@@ -94,14 +93,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with non-existent username", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: "nonexistent",
-          password: user1Details.password,
-        },
+      const responseBody = await login({
+        username: "nonexistent",
+        password: user1Details.password,
       });
       const token = responseBody.data?.login;
 
@@ -114,14 +108,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with incorrect password", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: "wrongpassword",
-        },
+      const responseBody = await login({
+        username: user1Details.username,
+        password: "wrongpassword",
       });
       const token = responseBody.data?.login;
 
@@ -134,14 +123,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid credentials", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const responseBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
       const token = responseBody.data?.login;
 
@@ -157,14 +141,9 @@ describeGraphQLSuite("Users", () => {
 
     beforeEach(async () => {
       await createUser(user1Input);
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -215,14 +194,9 @@ describeGraphQLSuite("Users", () => {
       assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
       user2Id = user2Body.data.createUser.id;
 
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -273,14 +247,9 @@ describeGraphQLSuite("Users", () => {
 
     beforeEach(async () => {
       await createUser(user1Input);
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -394,14 +363,9 @@ describeGraphQLSuite("Users", () => {
 
     beforeEach(async () => {
       await createUser(user1Input);
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");

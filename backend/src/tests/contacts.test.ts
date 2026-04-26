@@ -5,7 +5,6 @@ import type {
   Contact,
   CreateChatInput,
   EditProfileInput,
-  LoginInput,
   User,
 } from "~/types/graphql";
 import {
@@ -26,6 +25,7 @@ import {
   assertError,
   assertUserEquality,
   createUser,
+  login,
   query,
 } from "./helpers/funcs.js";
 import {
@@ -38,7 +38,6 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   IS_BLOCKED_BY_USER,
-  LOGIN,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
   TOGGLE_BLOCK_CONTACT,
@@ -54,27 +53,17 @@ describeGraphQLSuite("Contacts", () => {
     await createUser(user2Input);
     await createUser(user3Input);
 
-    const user1LoginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user1Details.username,
-        password: user1Details.password,
-      },
+    const user1LoginBody = await login({
+      username: user1Details.username,
+      password: user1Details.password,
     });
 
     assert.ok(user1LoginBody.data, "User1 login token value should be defined");
     user1Token = user1LoginBody.data.login.value;
 
-    const user2LoginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user2Details.username,
-        password: user2Details.password,
-      },
+    const user2LoginBody = await login({
+      username: user2Details.username,
+      password: user2Details.password,
     });
 
     assert.ok(user2LoginBody.data, "User2 login token should be defined");
@@ -763,14 +752,9 @@ describeGraphQLSuite("Contacts", () => {
     let contactId: string;
 
     beforeEach(async () => {
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -827,14 +811,9 @@ describeGraphQLSuite("Contacts", () => {
     let token: string;
 
     beforeEach(async () => {
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
