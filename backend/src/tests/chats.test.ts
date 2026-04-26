@@ -27,11 +27,11 @@ import {
   editChat,
   editMessage,
   findChatById,
+  findPrivateChatWithContact,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  FIND_PRIVATE_CHAT_WITH_CONTACT,
   LEAVE_CHAT,
   MARK_CHAT_AS_READ,
   SEND_MESSAGE,
@@ -813,10 +813,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, "");
+      const responseBody = await findPrivateChatWithContact(userId, "");
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -825,10 +822,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns null with non-existent chat ID", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: "999" }, token);
+      const responseBody = await findPrivateChatWithContact("999", token);
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -836,10 +830,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds finding chat", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, token);
+      const responseBody = await findPrivateChatWithContact(userId, token);
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
