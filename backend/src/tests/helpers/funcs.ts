@@ -18,6 +18,7 @@ import {
   ADD_CONTACTS,
   ALL_CONTACTS_BY_USER,
   CHANGE_PASSWORD,
+  CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_USER,
   EDIT_PROFILE,
   FIND_USER_BY_ID,
@@ -108,6 +109,13 @@ export const addContacts = (ids: string[], token: string) =>
 export const allContactsByUser = (search: string, token: string) =>
   query<{ allContactsByUser: Contact[] }, { search?: string }>(
     ALL_CONTACTS_BY_USER,
+    { search },
+    token,
+  );
+
+export const contactsWithoutPrivateChat = (search: string, token: string) =>
+  query<{ contactsWithoutPrivateChat: Contact[] }, { search?: string }>(
+    CONTACTS_WITHOUT_PRIVATE_CHAT,
     { search },
     token,
   );

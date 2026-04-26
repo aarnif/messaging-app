@@ -27,12 +27,12 @@ import {
   assertContactEquality,
   assertError,
   assertUserEquality,
+  contactsWithoutPrivateChat,
   createUser,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  CONTACTS_WITHOUT_PRIVATE_CHAT,
   CREATE_CHAT,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
@@ -476,10 +476,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Contacts without private chat", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, "");
+      const responseBody = await contactsWithoutPrivateChat("", "");
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -488,10 +485,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when no contacts exist", async () => {
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
+      const responseBody = await contactsWithoutPrivateChat("", user1Token);
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -513,10 +507,7 @@ describeGraphQLSuite("Contacts", () => {
         user1Token,
       );
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
+      const responseBody = await contactsWithoutPrivateChat("", user1Token);
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -532,12 +523,8 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(
-        CONTACTS_WITHOUT_PRIVATE_CHAT,
-        { search: user2Details.username },
+      const responseBody = await contactsWithoutPrivateChat(
+        user2Details.username,
         user1Token,
       );
 
@@ -569,10 +556,10 @@ describeGraphQLSuite("Contacts", () => {
         user2Token,
       );
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: newName }, user1Token);
+      const responseBody = await contactsWithoutPrivateChat(
+        newName,
+        user1Token,
+      );
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -591,10 +578,10 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "nonexistent" }, user1Token);
+      const responseBody = await contactsWithoutPrivateChat(
+        "nonexistent",
+        user1Token,
+      );
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -605,10 +592,10 @@ describeGraphQLSuite("Contacts", () => {
     void test("search is case insensitive", async () => {
       await addContact(user2Details.id, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "USER2" }, user1Token);
+      const responseBody = await contactsWithoutPrivateChat(
+        "USER2",
+        user1Token,
+      );
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
