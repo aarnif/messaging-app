@@ -24,6 +24,7 @@ import {
   CREATE_USER,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
+  FIND_CONTACT_BY_USER_ID,
   FIND_USER_BY_ID,
   LOGIN,
   ME,
@@ -140,6 +141,14 @@ export const findContactById = (id: string, token: string) =>
     },
     token,
   );
+
+export const findContactByUserId = (id: string, token: string) =>
+  query<
+    {
+      findContactByUserId: Contact;
+    },
+    { id: string }
+  >(FIND_CONTACT_BY_USER_ID, { id }, token);
 
 export const assertValidationError = (
   responseBody: {
