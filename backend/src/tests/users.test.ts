@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { EditProfileInput, User } from "~/types/graphql";
+import type { User } from "~/types/graphql";
 import {
   expectedUser1,
   expectedUser2,
@@ -14,10 +14,11 @@ import {
   assertValidationError,
   changePassword,
   createUser,
+  editProfile,
   login,
   query,
 } from "./helpers/funcs.js";
-import { EDIT_PROFILE, FIND_USER_BY_ID, ME } from "./helpers/queries.js";
+import { FIND_USER_BY_ID, ME } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Users", () => {
@@ -249,17 +250,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: "Updated Name",
-            about: "Updated about",
-            is24HourClock: true,
-          },
+          name: "Updated Name",
+          about: "Updated about",
+          is24HourClock: true,
         },
         "",
       );
@@ -271,17 +266,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: "AB",
-            about: "Valid about text",
-            is24HourClock: true,
-          },
+          name: "AB",
+          about: "Valid about text",
+          is24HourClock: true,
         },
         token,
       );
@@ -299,17 +288,11 @@ describeGraphQLSuite("Users", () => {
       const updatedName = "Updated Name";
       const updatedAbout = "This is my updated about section";
 
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: updatedName,
-            about: updatedAbout,
-            is24HourClock: true,
-          },
+          name: updatedName,
+          about: updatedAbout,
+          is24HourClock: true,
         },
         token,
       );
@@ -326,17 +309,11 @@ describeGraphQLSuite("Users", () => {
     void test("succeeds updating name with null about", async () => {
       const updatedName = "Another Updated Name";
 
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: updatedName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: updatedName,
+          about: null,
+          is24HourClock: true,
         },
         token,
       );
