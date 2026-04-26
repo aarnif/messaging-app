@@ -1,10 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  ChangePasswordInput,
-  EditProfileInput,
-  User,
-} from "~/types/graphql";
+import type { EditProfileInput, User } from "~/types/graphql";
 import {
   expectedUser1,
   expectedUser2,
@@ -16,16 +12,12 @@ import {
   assertError,
   assertUserEquality,
   assertValidationError,
+  changePassword,
   createUser,
   login,
   query,
 } from "./helpers/funcs.js";
-import {
-  CHANGE_PASSWORD,
-  EDIT_PROFILE,
-  FIND_USER_BY_ID,
-  ME,
-} from "./helpers/queries.js";
+import { EDIT_PROFILE, FIND_USER_BY_ID, ME } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Users", () => {
@@ -373,17 +365,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         "",
       );
@@ -395,17 +381,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with wrong current password", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: "wrong",
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: "wrong",
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         token,
       );
@@ -421,17 +401,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with new password shorter than 6 characters", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "short",
-            confirmNewPassword: "short",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "short",
+          confirmNewPassword: "short",
         },
         token,
       );
@@ -446,17 +420,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with new passwords not matching", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "password",
-            confirmNewPassword: "different",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "password",
+          confirmNewPassword: "different",
         },
         token,
       );
@@ -468,17 +436,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds changing password", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         token,
       );

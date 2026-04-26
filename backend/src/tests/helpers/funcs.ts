@@ -1,6 +1,7 @@
 import assert from "node:assert";
 import request from "supertest";
 import type {
+  ChangePasswordInput,
   Chat,
   Contact,
   CreateUserInput,
@@ -11,7 +12,7 @@ import type {
 import config from "../../../config.js";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
 import { user1Details } from "./data.js";
-import { CREATE_USER, LOGIN } from "./queries.js";
+import { CHANGE_PASSWORD, CREATE_USER, LOGIN } from "./queries.js";
 
 export const query = async <Data, Variables = Record<string, never>>(
   query: string,
@@ -49,6 +50,15 @@ export const login = (input: LoginInput) =>
   query<{ login: { value: string } }, { input: LoginInput }>(LOGIN, {
     input,
   });
+
+export const changePassword = (input: ChangePasswordInput, token: string) =>
+  query<{ changePassword: User }, { input: ChangePasswordInput }>(
+    CHANGE_PASSWORD,
+    {
+      input,
+    },
+    token,
+  );
 
 export const assertValidationError = (
   responseBody: {
