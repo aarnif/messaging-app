@@ -6,6 +6,7 @@ import type {
   Contact,
   CreateChatInput,
   CreateUserInput,
+  EditChatInput,
   EditProfileInput,
   LoginInput,
   User,
@@ -25,6 +26,7 @@ import {
   CREATE_USER,
   DELETE_CHAT,
   DELETE_MESSAGE,
+  EDIT_CHAT,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -197,6 +199,15 @@ export const deleteChat = (id: string, token: string) =>
 
 export const deleteMessage = (id: string, token: string) =>
   query<{ deleteMessage: Chat }, { id: string }>(DELETE_MESSAGE, { id }, token);
+
+export const editChat = (input: EditChatInput, token: string) =>
+  query<{ editChat: Chat }, { input: EditChatInput }>(
+    EDIT_CHAT,
+    {
+      input,
+    },
+    token,
+  );
 
 export const assertValidationError = (
   responseBody: {

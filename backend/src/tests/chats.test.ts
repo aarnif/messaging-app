@@ -1,6 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type { Chat, EditChatInput, SendMessageInput } from "~/types/graphql";
+import type { Chat, SendMessageInput } from "~/types/graphql";
 import {
   expectedGroupChat,
   expectedPrivateChat,
@@ -24,11 +24,11 @@ import {
   createUser,
   deleteChat,
   deleteMessage,
+  editChat,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  EDIT_CHAT,
   EDIT_MESSAGE,
   FIND_CHAT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
@@ -143,18 +143,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: chatId,
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         "",
       );
@@ -166,18 +160,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty chat name", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "",
+          description: "Updated description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -192,18 +180,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with chat name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "AB",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "AB",
+          description: "Updated description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -218,18 +200,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: "999",
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: "999",
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         token,
       );
@@ -241,18 +217,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds updating chat name and description", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated test description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -267,18 +237,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds removing member from chat", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: chatId,
+          name: "Updated Group Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         token,
       );
@@ -306,18 +270,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds with null description", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Chat with No Description",
-            description: null,
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "Chat with No Description",
+          description: null,
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
