@@ -30,9 +30,10 @@ import {
   findPrivateChatWithContact,
   leaveChat,
   login,
+  markChatAsRead,
   query,
 } from "./helpers/funcs.js";
-import { MARK_CHAT_AS_READ, SEND_MESSAGE } from "./helpers/queries.js";
+import { SEND_MESSAGE } from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
 describeGraphQLSuite("Chats", () => {
@@ -885,10 +886,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { markChatAsRead: boolean },
-        { id: string }
-      >(MARK_CHAT_AS_READ, { id: chatId }, "");
+      const responseBody = await markChatAsRead(chatId, "");
 
       const result = responseBody.data?.markChatAsRead;
 
@@ -909,10 +907,7 @@ describeGraphQLSuite("Chats", () => {
       const unreadCountBefore = await getUnreadCount();
       assert.strictEqual(unreadCountBefore, 2);
 
-      const responseBody = await query<
-        { markChatAsRead: boolean },
-        { id: string }
-      >(MARK_CHAT_AS_READ, { id: chatId }, token2);
+      const responseBody = await markChatAsRead(chatId, token2);
 
       const result = responseBody.data?.markChatAsRead;
       assert.strictEqual(result, true, "Result should be true");

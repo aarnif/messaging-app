@@ -38,6 +38,7 @@ import {
   IS_BLOCKED_BY_USER,
   LOGIN,
   LEAVE_CHAT,
+  MARK_CHAT_AS_READ,
   ME,
   NON_CONTACT_USERS,
   REMOVE_CONTACT,
@@ -235,6 +236,13 @@ export const findPrivateChatWithContact = (id: string, token: string) =>
 
 export const leaveChat = (id: string, token: string) =>
   query<{ leaveChat: Chat }, { id: string }>(LEAVE_CHAT, { id }, token);
+
+export const markChatAsRead = (id: string, token: string) =>
+  query<{ markChatAsRead: boolean }, { id: string }>(
+    MARK_CHAT_AS_READ,
+    { id },
+    token,
+  );
 
 export const assertValidationError = (
   responseBody: {
