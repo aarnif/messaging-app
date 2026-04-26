@@ -7,6 +7,7 @@ import type {
   CreateChatInput,
   CreateUserInput,
   EditChatInput,
+  EditMessageInput,
   EditProfileInput,
   LoginInput,
   User,
@@ -27,6 +28,7 @@ import {
   DELETE_CHAT,
   DELETE_MESSAGE,
   EDIT_CHAT,
+  EDIT_MESSAGE,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -203,6 +205,15 @@ export const deleteMessage = (id: string, token: string) =>
 export const editChat = (input: EditChatInput, token: string) =>
   query<{ editChat: Chat }, { input: EditChatInput }>(
     EDIT_CHAT,
+    {
+      input,
+    },
+    token,
+  );
+
+export const editMessage = (input: EditMessageInput, token: string) =>
+  query<{ editMessage: Chat }, { input: EditMessageInput }>(
+    EDIT_MESSAGE,
     {
       input,
     },

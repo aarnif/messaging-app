@@ -25,11 +25,11 @@ import {
   deleteChat,
   deleteMessage,
   editChat,
+  editMessage,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  EDIT_MESSAGE,
   FIND_CHAT_BY_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   LEAVE_CHAT,
@@ -497,16 +497,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "Updated message",
-          },
+          id: messageId,
+          content: "Updated message",
         },
         "",
       );
@@ -518,16 +512,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty message content", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "",
-          },
+          id: messageId,
+          content: "",
         },
         token,
       );
@@ -539,16 +527,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent message ID", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: "999",
-            content: "Updated message",
-          },
+          id: "999",
+          content: "Updated message",
         },
         token,
       );
@@ -560,16 +542,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to edit another user's message", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "Updated message",
-          },
+          id: messageId,
+          content: "Updated message",
         },
         token2,
       );
@@ -582,16 +558,10 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds editing own message", async () => {
       const updatedContent = "Updated message content";
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: updatedContent,
-          },
+          id: messageId,
+          content: updatedContent,
         },
         token,
       );
