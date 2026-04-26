@@ -24,6 +24,7 @@ import {
   CREATE_CHAT,
   CREATE_USER,
   DELETE_CHAT,
+  DELETE_MESSAGE,
   EDIT_PROFILE,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
@@ -193,6 +194,9 @@ export const allChatsByUser = (search: string, token: string) =>
 
 export const deleteChat = (id: string, token: string) =>
   query<{ deleteChat: Chat }, { id: string }>(DELETE_CHAT, { id }, token);
+
+export const deleteMessage = (id: string, token: string) =>
+  query<{ deleteMessage: Chat }, { id: string }>(DELETE_MESSAGE, { id }, token);
 
 export const assertValidationError = (
   responseBody: {

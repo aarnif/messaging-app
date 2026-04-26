@@ -23,11 +23,11 @@ import {
   createChat,
   createUser,
   deleteChat,
+  deleteMessage,
   login,
   query,
 } from "./helpers/funcs.js";
 import {
-  DELETE_MESSAGE,
   EDIT_CHAT,
   EDIT_MESSAGE,
   FIND_CHAT_BY_ID,
@@ -678,11 +678,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        "",
-      );
+      const responseBody = await deleteMessage(messageId, "");
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -691,11 +687,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent message ID", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await deleteMessage("999", token);
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -704,11 +696,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to delete another user's message", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        token2,
-      );
+      const responseBody = await deleteMessage(messageId, token2);
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -717,11 +705,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds deleting own message", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        token,
-      );
+      const responseBody = await deleteMessage(messageId, token);
 
       const chat = responseBody.data?.deleteMessage;
 
