@@ -117,4 +117,11 @@
 |  4.4  | 1    |                                   |
 |  5.4  | 0.5  | bugin korjaus                     |
 | 11.4  | 1    | testikattavuuden laajennus        |
-|  yht  | 249  |                                   |
+| 19.4  | 1    | koodin refaktorointi              |
+| 20.4  | 0.5  |                                   |
+| 21.4  | 1    |                                   |
+| 22.4  | 0.5  | bugin korjaus                     |
+| 23.4  | 1    | koodin refaktorointi              |
+| 24.4  | 1    |                                   |
+| 25.4  | 1    |                                   |
+|  yht  | 255  |                                   |
