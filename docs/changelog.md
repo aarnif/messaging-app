@@ -197,3 +197,11 @@ Ei muutoksia
 ## Viikko 30 (13.4-19.4.2026)
 
 Ei muutoksia
+
+## Viikko 31 (20.4-26.4.2026)
+
+- Luo erillinen modaali viestin muokkauksella
+- Näytä vain poistettava chat viesti modaalin taustan päällä
+- Korjaa bugi liittyen mobiilimenun laajentumiseen chat infoa klikattaessa
+- Lisää onCancel callback-funktio ModalProvider-komponenttiin
+- Eriytä modaalien tausta omaksi Overlay-komponentiksi
