@@ -1,14 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  Chat,
-  Contact,
-  CreateChatInput,
-  CreateUserInput,
-  EditProfileInput,
-  LoginInput,
-  User,
-} from "~/types/graphql";
 import {
   expectedContact1,
   expectedContact2,
@@ -16,73 +7,53 @@ import {
   expectedUser3,
   privateChatDetails,
   user1Details,
+  user1Input,
   user2Details,
+  user2Input,
   user3Details,
+  user3Input,
 } from "./helpers/data.js";
 import {
+  addContact,
+  addContacts,
+  allContactsByUser,
   assertContactEquality,
   assertError,
   assertUserEquality,
-  query,
+  contactsWithoutPrivateChat,
+  createChat,
+  createUser,
+  editProfile,
+  findContactById,
+  findContactByUserId,
+  isBlockedByUser,
+  login,
+  nonContactUsers,
+  removeContact,
+  toggleBlockContact,
 } from "./helpers/funcs.js";
-import {
-  ADD_CONTACT,
-  ADD_CONTACTS,
-  ALL_CONTACTS_BY_USER,
-  CONTACTS_WITHOUT_PRIVATE_CHAT,
-  CREATE_CHAT,
-  CREATE_USER,
-  EDIT_PROFILE,
-  FIND_CONTACT_BY_ID,
-  FIND_CONTACT_BY_USER_ID,
-  IS_BLOCKED_BY_USER,
-  LOGIN,
-  NON_CONTACT_USERS,
-  REMOVE_CONTACT,
-  TOGGLE_BLOCK_CONTACT,
-} from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
-
-const { id: _, name: _name1, ...user1Input } = user1Details;
-const { id: _id, name: _name2, ...user2Input } = user2Details;
-const { id: _id2, name: _name3, ...user3Input } = user3Details;
 
 describeGraphQLSuite("Contacts", () => {
   let user1Token: string;
   let user2Token: string;
 
   beforeEach(async () => {
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user1Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user2Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user3Input,
-    });
+    await createUser(user1Input);
+    await createUser(user2Input);
+    await createUser(user3Input);
 
-    const user1LoginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user1Details.username,
-        password: user1Details.password,
-      },
+    const user1LoginBody = await login({
+      username: user1Details.username,
+      password: user1Details.password,
     });
 
     assert.ok(user1LoginBody.data, "User1 login token value should be defined");
     user1Token = user1LoginBody.data.login.value;
 
-    const user2LoginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user2Details.username,
-        password: user2Details.password,
-      },
+    const user2LoginBody = await login({
+      username: user2Details.username,
+      password: user2Details.password,
     });
 
     assert.ok(user2LoginBody.data, "User2 login token should be defined");
@@ -91,11 +62,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Add contact", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user1Details.id },
-        "",
-      );
+      const responseBody = await addContact(user1Details.id, "");
 
       const contact = responseBody.data?.addContact;
 
@@ -104,11 +71,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails when trying to add yourself as contact", async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user1Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user1Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
 
@@ -121,11 +84,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid user ID", async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
 
@@ -133,16 +92,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails when trying to add same contact twice", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
 
@@ -153,10 +104,10 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Add contacts", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { addContacts: Contact[] },
-        { ids: string[] }
-      >(ADD_CONTACTS, { ids: [user2Details.id, user3Details.id] }, "");
+      const responseBody = await addContacts(
+        [user2Details.id, user3Details.id],
+        "",
+      );
 
       const contacts = responseBody.data?.addContacts;
 
@@ -165,10 +116,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid user IDs", async () => {
-      const responseBody = await query<
-        { addContacts: Contact[] },
-        { ids: string[] }
-      >(ADD_CONTACTS, { ids: [user2Details.id, user3Details.id] }, user1Token);
+      const responseBody = await addContacts(
+        [user2Details.id, user3Details.id],
+        user1Token,
+      );
 
       const contacts = responseBody.data?.addContacts;
 
@@ -187,11 +138,7 @@ describeGraphQLSuite("Contacts", () => {
   void describe("Remove contact", () => {
     let contactId: string;
     beforeEach(async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
       assert.ok(contact?.id, "Contact ID should be defined");
@@ -199,10 +146,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, "");
+      const responseBody = await removeContact(contactId, "");
 
       const contact = responseBody.data?.removeContact;
 
@@ -211,10 +155,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent contact", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: "999" }, user1Token);
+      const responseBody = await removeContact("999", user1Token);
 
       const contact = responseBody.data?.removeContact;
 
@@ -223,10 +164,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid contact ID", async () => {
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, user1Token);
+      const responseBody = await removeContact(contactId, user1Token);
 
       const contact = responseBody.data?.removeContact;
 
@@ -234,15 +172,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails when trying to remove same contact twice", async () => {
-      await query<{ removeContact: Contact }, { id: string }>(
-        REMOVE_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
-      const responseBody = await query<
-        { removeContact: Contact },
-        { id: string }
-      >(REMOVE_CONTACT, { id: contactId }, user1Token);
+      await removeContact(contactId, user1Token);
+      const responseBody = await removeContact(contactId, user1Token);
 
       const contact = responseBody.data?.removeContact;
 
@@ -255,11 +186,7 @@ describeGraphQLSuite("Contacts", () => {
     let contactId: string;
 
     beforeEach(async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
       assert.ok(contact?.id, "Contact ID should be defined");
@@ -267,10 +194,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, "");
+      const responseBody = await toggleBlockContact(contactId, "");
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -279,10 +203,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent contact", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: "999" }, user1Token);
+      const responseBody = await toggleBlockContact("999", user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -291,10 +212,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds blocking contact", async () => {
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
+      const responseBody = await toggleBlockContact(contactId, user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -305,15 +223,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds unblocking contact", async () => {
-      await query<{ toggleBlockContact: Contact }, { id: string }>(
-        TOGGLE_BLOCK_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
-      const responseBody = await query<
-        { toggleBlockContact: Contact },
-        { id: string }
-      >(TOGGLE_BLOCK_CONTACT, { id: contactId }, user1Token);
+      await toggleBlockContact(contactId, user1Token);
+      const responseBody = await toggleBlockContact(contactId, user1Token);
 
       const contact = responseBody.data?.toggleBlockContact;
 
@@ -324,27 +235,16 @@ describeGraphQLSuite("Contacts", () => {
   void describe("Is blocked by user", () => {
     let contactId: string;
     beforeEach(async () => {
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
       assert.ok(contact?.id, "Contact ID should be defined");
       contactId = contact.id;
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user1Details.id },
-        user2Token,
-      );
+      await addContact(user1Details.id, user2Token);
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, "");
+      const responseBody = await isBlockedByUser(user1Details.id, "");
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -353,10 +253,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns false with non-existent contact", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: "999" }, user2Token);
+      const responseBody = await isBlockedByUser("999", user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -369,10 +266,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns false when not blocked", async () => {
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
+      const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -385,15 +279,8 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns true when blocked", async () => {
-      await query<{ toggleBlockContact: Contact }, { id: string }>(
-        TOGGLE_BLOCK_CONTACT,
-        { id: contactId },
-        user1Token,
-      );
-      const responseBody = await query<
-        { isBlockedByUser: boolean },
-        { id: string }
-      >(IS_BLOCKED_BY_USER, { id: user1Details.id }, user2Token);
+      await toggleBlockContact(contactId, user1Token);
+      const responseBody = await isBlockedByUser(user1Details.id, user2Token);
 
       const isBlocked = responseBody.data?.isBlockedByUser;
 
@@ -408,10 +295,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("All contacts by user", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, "");
+      const responseBody = await allContactsByUser("", "");
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -420,10 +304,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when no contacts exist", async () => {
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, user1Token);
+      const responseBody = await allContactsByUser("", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -437,21 +318,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns all contacts when user has contacts", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, {}, user1Token);
+      const responseBody = await allContactsByUser("", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -467,21 +337,13 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters contacts by username search", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: user2Details.username }, user1Token);
+      const responseBody = await allContactsByUser(
+        user2Details.username,
+        user1Token,
+      );
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -494,35 +356,21 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters contacts by name search", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: newName }, user1Token);
+      const responseBody = await allContactsByUser(newName, user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -538,21 +386,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when search has no matches", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: "nonexistent" }, user1Token);
+      const responseBody = await allContactsByUser("nonexistent", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -561,16 +398,9 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("search is case insensitive", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
 
-      const responseBody = await query<
-        { allContactsByUser: Contact[] },
-        { search?: string }
-      >(ALL_CONTACTS_BY_USER, { search: "USER2" }, user1Token);
+      const responseBody = await allContactsByUser("USER2", user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -585,10 +415,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Contacts without private chat", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, "");
+      const responseBody = await contactsWithoutPrivateChat("", "");
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -597,10 +424,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when no contacts exist", async () => {
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
+      const responseBody = await contactsWithoutPrivateChat("", user1Token);
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -614,26 +438,11 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns all contacts without private chat when user has contacts", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
+      await createChat(privateChatDetails, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, {}, user1Token);
+      const responseBody = await contactsWithoutPrivateChat("", user1Token);
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -646,23 +455,11 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters contacts by username search", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(
-        CONTACTS_WITHOUT_PRIVATE_CHAT,
-        { search: user2Details.username },
+      const responseBody = await contactsWithoutPrivateChat(
+        user2Details.username,
         user1Token,
       );
 
@@ -677,35 +474,24 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters contacts by name search", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: newName }, user1Token);
+      const responseBody = await contactsWithoutPrivateChat(
+        newName,
+        user1Token,
+      );
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -721,21 +507,13 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when search has no matches", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user3Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
+      await addContact(user3Details.id, user1Token);
 
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "nonexistent" }, user1Token);
+      const responseBody = await contactsWithoutPrivateChat(
+        "nonexistent",
+        user1Token,
+      );
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -744,16 +522,12 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("search is case insensitive", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
+      await addContact(user2Details.id, user1Token);
+
+      const responseBody = await contactsWithoutPrivateChat(
+        "USER2",
         user1Token,
       );
-
-      const responseBody = await query<
-        { contactsWithoutPrivateChat: Contact[] },
-        { search?: string }
-      >(CONTACTS_WITHOUT_PRIVATE_CHAT, { search: "USER2" }, user1Token);
 
       const contacts = responseBody.data?.contactsWithoutPrivateChat;
 
@@ -771,24 +545,15 @@ describeGraphQLSuite("Contacts", () => {
     let contactId: string;
 
     beforeEach(async () => {
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
       token = loginBody.data.login.value;
 
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
       assert.ok(contact?.id, "Contact ID should be defined");
@@ -796,10 +561,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: contactId }, "");
+      const responseBody = await findContactById(contactId, "");
 
       const contact = responseBody.data?.findContactById;
 
@@ -808,10 +570,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent user ID", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: "999" }, token);
+      const responseBody = await findContactById("999", token);
 
       const contact = responseBody.data?.findContactById;
 
@@ -820,10 +579,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid contact ID", async () => {
-      const responseBody = await query<
-        { findContactById: Contact },
-        { id: string }
-      >(FIND_CONTACT_BY_ID, { id: contactId }, token);
+      const responseBody = await findContactById(contactId, token);
 
       const contact = responseBody.data?.findContactById;
 
@@ -835,36 +591,22 @@ describeGraphQLSuite("Contacts", () => {
     let token: string;
 
     beforeEach(async () => {
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
       token = loginBody.data.login.value;
 
-      const responseBody = await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      const responseBody = await addContact(user2Details.id, user1Token);
 
       const contact = responseBody.data?.addContact;
       assert.ok(contact, "Contact should be defined");
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        {
-          findContactByUserId: Contact;
-        },
-        { id: string }
-      >(FIND_CONTACT_BY_USER_ID, { id: user2Details.id }, "");
+      const responseBody = await findContactByUserId(user2Details.id, "");
 
       const contact = responseBody.data?.findContactByUserId;
 
@@ -873,12 +615,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("fails with non-existent user ID", async () => {
-      const responseBody = await query<
-        {
-          findContactByUserId: Contact;
-        },
-        { id: string }
-      >(FIND_CONTACT_BY_USER_ID, { id: "999" }, token);
+      const responseBody = await findContactByUserId("999", token);
 
       const contact = responseBody.data?.findContactByUserId;
 
@@ -887,12 +624,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("succeeds with valid user ID", async () => {
-      const responseBody = await query<
-        {
-          findContactByUserId: Contact;
-        },
-        { id: string }
-      >(FIND_CONTACT_BY_USER_ID, { id: user2Details.id }, token);
+      const responseBody = await findContactByUserId(user2Details.id, token);
 
       const contact = responseBody.data?.findContactByUserId;
 
@@ -902,10 +634,7 @@ describeGraphQLSuite("Contacts", () => {
 
   void describe("Non-contact users", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, "");
+      const responseBody = await nonContactUsers("", "");
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -914,10 +643,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns all non-contact users", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, user1Token);
+      const responseBody = await nonContactUsers("", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -931,16 +657,9 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("excludes existing contacts", async () => {
-      await query<{ addContact: Contact }, { id: string }>(
-        ADD_CONTACT,
-        { id: user2Details.id },
-        user1Token,
-      );
+      await addContact(user2Details.id, user1Token);
 
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, {}, user1Token);
+      const responseBody = await nonContactUsers("", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -950,10 +669,10 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters users by username search", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: user2Details.username }, user1Token);
+      const responseBody = await nonContactUsers(
+        user2Details.username,
+        user1Token,
+      );
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -965,22 +684,16 @@ describeGraphQLSuite("Contacts", () => {
     void test("filters users by name search", async () => {
       const newName = "New Name";
 
-      await query<{ editProfile: User }, { input: EditProfileInput }>(
-        EDIT_PROFILE,
+      await editProfile(
         {
-          input: {
-            name: newName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: newName,
+          about: null,
+          is24HourClock: true,
         },
         user2Token,
       );
 
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: newName }, user1Token);
+      const responseBody = await nonContactUsers(newName, user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -990,10 +703,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("returns empty array when search has no matches", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: "nonexistent" }, user1Token);
+      const responseBody = await nonContactUsers("nonexistent", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
@@ -1002,10 +712,7 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("search is case insensitive", async () => {
-      const responseBody = await query<
-        { nonContactUsers: User[] },
-        { search?: string }
-      >(NON_CONTACT_USERS, { search: "USER2" }, user1Token);
+      const responseBody = await nonContactUsers("USER2", user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 

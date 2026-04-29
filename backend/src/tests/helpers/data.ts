@@ -20,6 +20,24 @@ export const user3Details = {
   username: "user3",
 };
 
+export const user1Input = {
+  username: user1Details.username,
+  password: user1Details.password,
+  confirmPassword: user1Details.confirmPassword,
+};
+
+export const user2Input = {
+  username: user2Details.username,
+  password: user2Details.password,
+  confirmPassword: user2Details.confirmPassword,
+};
+
+export const user3Input = {
+  username: user3Details.username,
+  password: user3Details.password,
+  confirmPassword: user3Details.confirmPassword,
+};
+
 export const expectedUser1 = {
   id: user1Details.id,
   username: user1Details.username,

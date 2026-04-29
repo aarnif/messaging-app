@@ -1,48 +1,31 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  ChangePasswordInput,
-  CreateUserInput,
-  EditProfileInput,
-  LoginInput,
-  User,
-} from "~/types/graphql";
 import {
   expectedUser1,
   expectedUser2,
   user1Details,
-  user2Details,
+  user1Input,
+  user2Input,
 } from "./helpers/data.js";
 import {
   assertError,
   assertUserEquality,
   assertValidationError,
-  query,
+  changePassword,
+  createUser,
+  editProfile,
+  findUserById,
+  login,
+  me,
 } from "./helpers/funcs.js";
-import {
-  CHANGE_PASSWORD,
-  CREATE_USER,
-  EDIT_PROFILE,
-  FIND_USER_BY_ID,
-  LOGIN,
-  ME,
-} from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
-
-const { id: _, name: _name1, ...user1Input } = user1Details;
-const { id: _id, name: _name2, ...user2Input } = user2Details;
 
 describeGraphQLSuite("Users", () => {
   void describe("User creation", () => {
     void test("fails with username shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          username: "us",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        username: "us",
       });
 
       const user = responseBody.data?.createUser;
@@ -55,14 +38,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with password shorter than 6 characters", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          password: "short",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        password: "short",
       });
       const user = responseBody.data?.createUser;
 
@@ -74,14 +52,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails when passwords do not match", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, {
-        input: {
-          ...user1Input,
-          confirmPassword: "passwor",
-        },
+      const responseBody = await createUser({
+        ...user1Input,
+        confirmPassword: "passwor",
       });
       const user = responseBody.data?.createUser;
 
@@ -90,14 +63,8 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails if user already exists", async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user1Input });
+      await createUser(user1Input);
+      const responseBody = await createUser(user1Input);
       const user = responseBody.data?.createUser;
 
       assert.strictEqual(user, null, "User should be null");
@@ -105,10 +72,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid input", async () => {
-      const responseBody = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user1Input });
+      const responseBody = await createUser(user1Input);
       const user = responseBody.data?.createUser;
 
       assertUserEquality(user, expectedUser1);
@@ -117,21 +81,13 @@ describeGraphQLSuite("Users", () => {
 
   void describe("User login", () => {
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
+      await createUser(user1Input);
     });
 
     void test("fails with non-existent username", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: "nonexistent",
-          password: user1Details.password,
-        },
+      const responseBody = await login({
+        username: "nonexistent",
+        password: user1Details.password,
       });
       const token = responseBody.data?.login;
 
@@ -144,14 +100,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with incorrect password", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: "wrongpassword",
-        },
+      const responseBody = await login({
+        username: user1Details.username,
+        password: "wrongpassword",
       });
       const token = responseBody.data?.login;
 
@@ -164,14 +115,9 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid credentials", async () => {
-      const responseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const responseBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
       const token = responseBody.data?.login;
 
@@ -186,18 +132,10 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      await createUser(user1Input);
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -205,7 +143,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ me: User }>(ME, {}, "");
+      const responseBody = await me("");
       const user = responseBody.data?.me;
 
       assert.strictEqual(user, null, "User should be null");
@@ -213,20 +151,14 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid token", async () => {
-      const responseBody = await query<{ me: User }>(ME, {}, token);
+      const responseBody = await me(token);
       const user = responseBody.data?.me;
 
       assertUserEquality(user, expectedUser1);
     });
 
     void test("fails with invalid token", async () => {
-      const responseBody = await query<{ me: User }>(
-        ME,
-        {},
-        "invalid-token",
-        500,
-        true,
-      );
+      const responseBody = await me("invalid-token", 500, true);
       const user = responseBody.data?.me;
 
       assert.strictEqual(user, undefined, "User should be undefined");
@@ -243,25 +175,14 @@ describeGraphQLSuite("Users", () => {
     let user2Id: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const user2Body = await query<
-        { createUser: User },
-        { input: CreateUserInput }
-      >(CREATE_USER, { input: user2Input });
+      await createUser(user1Input);
+      const user2Body = await createUser(user2Input);
       assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
       user2Id = user2Body.data.createUser.id;
 
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -269,11 +190,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: user2Id },
-        "",
-      );
+      const responseBody = await findUserById(user2Id, "");
 
       const user = responseBody.data?.findUserById;
 
@@ -282,11 +199,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with non-existent user ID", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await findUserById("999", token);
 
       const user = responseBody.data?.findUserById;
 
@@ -295,11 +208,7 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds with valid user ID", async () => {
-      const responseBody = await query<{ findUserById: User }, { id: string }>(
-        FIND_USER_BY_ID,
-        { id: user2Id },
-        token,
-      );
+      const responseBody = await findUserById(user2Id, token);
 
       const user = responseBody.data?.findUserById;
 
@@ -311,18 +220,10 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      await createUser(user1Input);
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -330,17 +231,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: "Updated Name",
-            about: "Updated about",
-            is24HourClock: true,
-          },
+          name: "Updated Name",
+          about: "Updated about",
+          is24HourClock: true,
         },
         "",
       );
@@ -352,17 +247,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: "AB",
-            about: "Valid about text",
-            is24HourClock: true,
-          },
+          name: "AB",
+          about: "Valid about text",
+          is24HourClock: true,
         },
         token,
       );
@@ -380,17 +269,11 @@ describeGraphQLSuite("Users", () => {
       const updatedName = "Updated Name";
       const updatedAbout = "This is my updated about section";
 
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: updatedName,
-            about: updatedAbout,
-            is24HourClock: true,
-          },
+          name: updatedName,
+          about: updatedAbout,
+          is24HourClock: true,
         },
         token,
       );
@@ -407,17 +290,11 @@ describeGraphQLSuite("Users", () => {
     void test("succeeds updating name with null about", async () => {
       const updatedName = "Another Updated Name";
 
-      const responseBody = await query<
-        { editProfile: User },
-        { input: EditProfileInput }
-      >(
-        EDIT_PROFILE,
+      const responseBody = await editProfile(
         {
-          input: {
-            name: updatedName,
-            about: null,
-            is24HourClock: true,
-          },
+          name: updatedName,
+          about: null,
+          is24HourClock: true,
         },
         token,
       );
@@ -435,18 +312,10 @@ describeGraphQLSuite("Users", () => {
     let token: string;
 
     beforeEach(async () => {
-      await query<{ createUser: User }, { input: CreateUserInput }>(
-        CREATE_USER,
-        { input: user1Input },
-      );
-      const loginBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user1Details.username,
-          password: user1Details.password,
-        },
+      await createUser(user1Input);
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
       });
 
       assert.ok(loginBody.data, "Login token value should be defined");
@@ -454,17 +323,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         "",
       );
@@ -476,17 +339,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with wrong current password", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: "wrong",
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: "wrong",
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         token,
       );
@@ -502,17 +359,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with new password shorter than 6 characters", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "short",
-            confirmNewPassword: "short",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "short",
+          confirmNewPassword: "short",
         },
         token,
       );
@@ -527,17 +378,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("fails with new passwords not matching", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "password",
-            confirmNewPassword: "different",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "password",
+          confirmNewPassword: "different",
         },
         token,
       );
@@ -549,17 +394,11 @@ describeGraphQLSuite("Users", () => {
     });
 
     void test("succeeds changing password", async () => {
-      const responseBody = await query<
-        { changePassword: User },
-        { input: ChangePasswordInput }
-      >(
-        CHANGE_PASSWORD,
+      const responseBody = await changePassword(
         {
-          input: {
-            currentPassword: user1Details.password,
-            newPassword: "newpassword",
-            confirmNewPassword: "newpassword",
-          },
+          currentPassword: user1Details.password,
+          newPassword: "newpassword",
+          confirmNewPassword: "newpassword",
         },
         token,
       );

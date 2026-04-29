@@ -1,16 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import type {
-  Chat,
-  Contact,
-  CreateChatInput,
-  CreateUserInput,
-  EditChatInput,
-  LoginInput,
-  SendMessageInput,
-  User,
-  UserChat,
-} from "~/types/graphql";
 import {
   expectedGroupChat,
   expectedPrivateChat,
@@ -18,59 +7,44 @@ import {
   groupChatDetails,
   privateChatDetails,
   user1Details,
+  user1Input,
   user2Details,
+  user2Input,
   user3Details,
+  user3Input,
 } from "./helpers/data.js";
 import {
+  addContact,
+  allChatsByUser,
   assertChatEquality,
   assertError,
   assertValidationError,
-  query,
+  createChat,
+  createUser,
+  deleteChat,
+  deleteMessage,
+  editChat,
+  editMessage,
+  findChatById,
+  findPrivateChatWithContact,
+  leaveChat,
+  login,
+  markChatAsRead,
+  sendMessage,
 } from "./helpers/funcs.js";
-import {
-  ADD_CONTACT,
-  ALL_CHATS_BY_USER,
-  CREATE_CHAT,
-  CREATE_USER,
-  DELETE_CHAT,
-  DELETE_MESSAGE,
-  EDIT_CHAT,
-  EDIT_MESSAGE,
-  FIND_CHAT_BY_ID,
-  FIND_PRIVATE_CHAT_WITH_CONTACT,
-  LEAVE_CHAT,
-  LOGIN,
-  MARK_CHAT_AS_READ,
-  SEND_MESSAGE,
-} from "./helpers/queries.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
-
-const { id: _, name: _name1, ...user1Input } = user1Details;
-const { id: _id, name: _name2, ...user2Input } = user2Details;
-const { id: _id2, name: _name3, ...user3Input } = user3Details;
 
 describeGraphQLSuite("Chats", () => {
   let token: string;
 
   beforeEach(async () => {
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user1Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user2Input,
-    });
-    await query<{ createUser: User }, { input: CreateUserInput }>(CREATE_USER, {
-      input: user3Input,
-    });
+    await createUser(user1Input);
+    await createUser(user2Input);
+    await createUser(user3Input);
 
-    const loginBody = await query<
-      { login: { value: string } },
-      { input: LoginInput }
-    >(LOGIN, {
-      input: {
-        username: user1Details.username,
-        password: user1Details.password,
-      },
+    const loginBody = await login({
+      username: user1Details.username,
+      password: user1Details.password,
     });
 
     assert.ok(loginBody.data, "Login token value should be defined");
@@ -79,10 +53,7 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("Create chat", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, "");
+      const responseBody = await createChat(privateChatDetails, "");
 
       const chat = responseBody.data?.createChat;
 
@@ -91,16 +62,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty initial message", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...privateChatDetails,
-            initialMessage: "",
-          },
+          ...privateChatDetails,
+          initialMessage: "",
         },
         token,
       );
@@ -112,16 +77,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with group chat without name", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...groupChatDetails,
-            name: "",
-          },
+          ...groupChatDetails,
+          name: "",
         },
         token,
       );
@@ -136,16 +95,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with group chat name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(
-        CREATE_CHAT,
+      const responseBody = await createChat(
         {
-          input: {
-            ...groupChatDetails,
-            name: "te",
-          },
+          ...groupChatDetails,
+          name: "te",
         },
         token,
       );
@@ -160,10 +113,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds creating private chat", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const responseBody = await createChat(privateChatDetails, token);
 
       const chat = responseBody.data?.createChat;
 
@@ -171,10 +121,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds creating group chat", async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const responseBody = await createChat(groupChatDetails, token);
 
       const chat = responseBody.data?.createChat;
 
@@ -186,27 +133,18 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: chatId,
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         "",
       );
@@ -218,18 +156,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty chat name", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "",
+          description: "Updated description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -244,18 +176,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with chat name shorter than 3 characters", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "AB",
-            description: "Updated description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "AB",
+          description: "Updated description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -270,18 +196,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: "999",
-            name: "Updated Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: "999",
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         token,
       );
@@ -293,18 +213,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds updating chat name and description", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated test description",
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "Updated Group Chat",
+          description: "Updated test description",
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -319,18 +233,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds removing member from chat", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Updated Group Chat",
-            description: "Updated description",
-            members: [user2Details.id],
-          },
+          id: chatId,
+          name: "Updated Group Chat",
+          description: "Updated description",
+          members: [user2Details.id],
         },
         token,
       );
@@ -358,18 +266,12 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds with null description", async () => {
-      const responseBody = await query<
-        { editChat: Chat },
-        { input: EditChatInput }
-      >(
-        EDIT_CHAT,
+      const responseBody = await editChat(
         {
-          input: {
-            id: chatId,
-            name: "Chat with No Description",
-            description: null,
-            members: [user2Details.id, user3Details.id],
-          },
+          id: chatId,
+          name: "Chat with No Description",
+          description: null,
+          members: [user2Details.id, user3Details.id],
         },
         token,
       );
@@ -387,20 +289,13 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await deleteChat(chatId, "");
 
       const chat = responseBody.data?.deleteChat;
 
@@ -409,11 +304,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await deleteChat("999", token);
 
       const chat = responseBody.data?.deleteChat;
 
@@ -422,11 +313,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds deleting chat with valid ID", async () => {
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
+      const responseBody = await deleteChat(chatId, token);
 
       const chat = responseBody.data?.deleteChat;
 
@@ -434,16 +321,8 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to delete same chat twice", async () => {
-      await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
-      const responseBody = await query<{ deleteChat: Chat }, { id: string }>(
-        DELETE_CHAT,
-        { id: chatId },
-        token,
-      );
+      await deleteChat(chatId, token);
+      const responseBody = await deleteChat(chatId, token);
 
       const chat = responseBody.data?.deleteChat;
 
@@ -456,20 +335,13 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const responseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const responseBody = await createChat(groupChatDetails, token);
       assert.ok(responseBody.data?.createChat.id, "Chat ID should be defined");
       chatId = responseBody.data.createChat.id;
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await findChatById(chatId, "");
 
       const chat = responseBody.data?.findChatById;
 
@@ -478,11 +350,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent chat ID", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await findChatById("999", token);
 
       const chat = responseBody.data?.findChatById;
 
@@ -491,11 +359,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds finding chat", async () => {
-      const responseBody = await query<{ findChatById: Chat }, { id: string }>(
-        FIND_CHAT_BY_ID,
-        { id: chatId },
-        token,
-      );
+      const responseBody = await findChatById(chatId, token);
 
       const chat = responseBody.data?.findChatById;
 
@@ -507,26 +371,17 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "Hello from unauthenticated user",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "Hello from unauthenticated user",
+          isNotification: false,
         },
         "",
       );
@@ -538,17 +393,11 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty message content", async () => {
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "",
+          isNotification: false,
         },
         token,
       );
@@ -561,17 +410,11 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds sending message to chat", async () => {
       const messageContent = "Hello from chat!";
-      const responseBody = await query<
-        { sendMessage: Chat },
-        { input: SendMessageInput }
-      >(
-        SEND_MESSAGE,
+      const responseBody = await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: messageContent,
-            isNotification: false,
-          },
+          id: chatId,
+          content: messageContent,
+          isNotification: false,
         },
         token,
       );
@@ -603,21 +446,13 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -628,16 +463,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "Updated message",
-          },
+          id: messageId,
+          content: "Updated message",
         },
         "",
       );
@@ -649,16 +478,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with empty message content", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "",
-          },
+          id: messageId,
+          content: "",
         },
         token,
       );
@@ -670,16 +493,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent message ID", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: "999",
-            content: "Updated message",
-          },
+          id: "999",
+          content: "Updated message",
         },
         token,
       );
@@ -691,16 +508,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to edit another user's message", async () => {
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: "Updated message",
-          },
+          id: messageId,
+          content: "Updated message",
         },
         token2,
       );
@@ -713,16 +524,10 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds editing own message", async () => {
       const updatedContent = "Updated message content";
-      const responseBody = await query<
-        { editMessage: Chat },
-        { input: { id: string; content: string } }
-      >(
-        EDIT_MESSAGE,
+      const responseBody = await editMessage(
         {
-          input: {
-            id: messageId,
-            content: updatedContent,
-          },
+          id: messageId,
+          content: updatedContent,
         },
         token,
       );
@@ -750,21 +555,13 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       messageId = chatBody.data.createChat.messages[0].id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -775,11 +572,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        "",
-      );
+      const responseBody = await deleteMessage(messageId, "");
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -788,11 +581,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails with non-existent message ID", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: "999" },
-        token,
-      );
+      const responseBody = await deleteMessage("999", token);
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -801,11 +590,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails when trying to delete another user's message", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        token2,
-      );
+      const responseBody = await deleteMessage(messageId, token2);
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -814,11 +599,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds deleting own message", async () => {
-      const responseBody = await query<{ deleteMessage: Chat }, { id: string }>(
-        DELETE_MESSAGE,
-        { id: messageId },
-        token,
-      );
+      const responseBody = await deleteMessage(messageId, token);
 
       const chat = responseBody.data?.deleteMessage;
 
@@ -844,21 +625,13 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const chatBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: groupChatDetails }, token);
+      const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -869,11 +642,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
-        LEAVE_CHAT,
-        { id: chatId },
-        "",
-      );
+      const responseBody = await leaveChat(chatId, "");
 
       const chat = responseBody.data?.leaveChat;
 
@@ -882,11 +651,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds when member leaves group chat", async () => {
-      const responseBody = await query<{ leaveChat: Chat }, { id: string }>(
-        LEAVE_CHAT,
-        { id: chatId },
-        token2,
-      );
+      const responseBody = await leaveChat(chatId, token2);
 
       const chat = responseBody.data?.leaveChat;
 
@@ -911,10 +676,7 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("All chats by user", () => {
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, "");
+      const responseBody = await allChatsByUser("", "");
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -923,10 +685,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns empty array when no chats exist", async () => {
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, token);
+      const responseBody = await allChatsByUser("", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -940,21 +699,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns all chats when user has chats", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, {}, token);
+      const responseBody = await allChatsByUser("", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -963,21 +711,10 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("filters chats by name search", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: groupChatDetails.name }, token);
+      const responseBody = await allChatsByUser(groupChatDetails.name, token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -990,21 +727,13 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("filters chats by description search", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: privateChatDetails },
-        token,
-      );
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(privateChatDetails, token);
+      await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: groupChatDetails.description }, token);
+      const responseBody = await allChatsByUser(
+        groupChatDetails.description,
+        token,
+      );
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -1017,16 +746,9 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("search is case insensitive", async () => {
-      await query<{ createChat: Chat }, { input: CreateChatInput }>(
-        CREATE_CHAT,
-        { input: groupChatDetails },
-        token,
-      );
+      await createChat(groupChatDetails, token);
 
-      const responseBody = await query<
-        { allChatsByUser: Chat[] },
-        { search?: string }
-      >(ALL_CHATS_BY_USER, { search: "TEST" }, token);
+      const responseBody = await allChatsByUser("TEST", token);
 
       const chats = responseBody.data?.allChatsByUser;
 
@@ -1044,10 +766,7 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await query<
-        { addContact: Contact },
-        { id: string }
-      >(ADD_CONTACT, { id: user2Details.id }, token);
+      const contactResponseBody = await addContact(user2Details.id, token);
 
       assert.ok(
         contactResponseBody.data?.addContact.id,
@@ -1055,10 +774,7 @@ describeGraphQLSuite("Chats", () => {
       );
       userId = contactResponseBody.data.addContact.contactDetails.id;
 
-      const chatResponseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatResponseBody = await createChat(privateChatDetails, token);
       assert.ok(
         chatResponseBody.data?.createChat.id,
         "Chat ID should be defined",
@@ -1067,10 +783,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, "");
+      const responseBody = await findPrivateChatWithContact(userId, "");
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -1079,10 +792,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("returns null with non-existent chat ID", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: "999" }, token);
+      const responseBody = await findPrivateChatWithContact("999", token);
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -1090,10 +800,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("succeeds finding chat", async () => {
-      const responseBody = await query<
-        { findPrivateChatWithContact: Chat },
-        { id: string }
-      >(FIND_PRIVATE_CHAT_WITH_CONTACT, { id: userId }, token);
+      const responseBody = await findPrivateChatWithContact(userId, token);
 
       const chat = responseBody.data?.findPrivateChatWithContact;
 
@@ -1120,46 +827,32 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await query<
-        { addContact: Contact },
-        { id: string }
-      >(ADD_CONTACT, { id: user2Details.id }, token);
+      const contactResponseBody = await addContact(user2Details.id, token);
 
       assert.ok(
         contactResponseBody.data?.addContact.id,
         "Contact ID should be defined",
       );
 
-      const chatResponseBody = await query<
-        { createChat: Chat },
-        { input: CreateChatInput }
-      >(CREATE_CHAT, { input: privateChatDetails }, token);
+      const chatResponseBody = await createChat(privateChatDetails, token);
       assert.ok(
         chatResponseBody.data?.createChat.id,
         "Chat ID should be defined",
       );
       chatId = chatResponseBody.data.createChat.id;
 
-      await query<{ sendMessage: Chat }, { input: SendMessageInput }>(
-        SEND_MESSAGE,
+      await sendMessage(
         {
-          input: {
-            id: chatId,
-            content: "Test message",
-            isNotification: false,
-          },
+          id: chatId,
+          content: "Test message",
+          isNotification: false,
         },
         token,
       );
 
-      const loginResponseBody = await query<
-        { login: { value: string } },
-        { input: LoginInput }
-      >(LOGIN, {
-        input: {
-          username: user2Details.username,
-          password: user2Details.password,
-        },
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
       });
 
       assert.ok(
@@ -1170,10 +863,7 @@ describeGraphQLSuite("Chats", () => {
     });
 
     void test("fails without authentication", async () => {
-      const responseBody = await query<
-        { markChatAsRead: boolean },
-        { id: string }
-      >(MARK_CHAT_AS_READ, { id: chatId }, "");
+      const responseBody = await markChatAsRead(chatId, "");
 
       const result = responseBody.data?.markChatAsRead;
 
@@ -1183,10 +873,7 @@ describeGraphQLSuite("Chats", () => {
 
     void test("succeeds marking chat as read", async () => {
       const getUnreadCount = async () => {
-        const response = await query<
-          { allChatsByUser: UserChat[] },
-          { search: string }
-        >(ALL_CHATS_BY_USER, { search: "" }, token2);
+        const response = await allChatsByUser("", token2);
 
         const userChats = response.data?.allChatsByUser;
         assert.ok(userChats, "User chats should be defined");
@@ -1197,10 +884,7 @@ describeGraphQLSuite("Chats", () => {
       const unreadCountBefore = await getUnreadCount();
       assert.strictEqual(unreadCountBefore, 2);
 
-      const responseBody = await query<
-        { markChatAsRead: boolean },
-        { id: string }
-      >(MARK_CHAT_AS_READ, { id: chatId }, token2);
+      const responseBody = await markChatAsRead(chatId, token2);
 
       const result = responseBody.data?.markChatAsRead;
       assert.strictEqual(result, true, "Result should be true");
