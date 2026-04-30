@@ -92,7 +92,7 @@ const AddContactsModal = ({
           y: isMobileScreen ? "100vh" : -50,
           opacity: isMobileScreen ? 1 : 0,
         }}
-        animate={{ y: 0, opacity: 1 }}
+        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
         exit={{
           y: isMobileScreen ? "100vh" : -50,
           opacity: isMobileScreen ? 1 : 0,
