@@ -2,7 +2,7 @@ import { MockedProvider } from "@apollo/client/testing/react";
 import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test } from "vitest";
-import ModalProvider from "../components/ModalProvider";
+import NotificationProvider from "../components/NotificationProvider";
 import Home from "../pages/Home";
 import { mockSetToken } from "./helpers/mocks";
 
@@ -11,9 +11,9 @@ describe("<Home />", () => {
     render(
       <MockedProvider>
         <MemoryRouter>
-          <ModalProvider>
+          <NotificationProvider>
             <Home setToken={mockSetToken} />
-          </ModalProvider>
+          </NotificationProvider>
         </MemoryRouter>
       </MockedProvider>,
     );

@@ -7,7 +7,7 @@ import type { ModalOptions } from "../types";
 import Button from "./ui/Button";
 import Overlay from "./ui/Overlay";
 
-const ModalContent = ({
+const NotificationContent = ({
   type,
   title,
   message,
@@ -113,7 +113,7 @@ const ModalContent = ({
   );
 };
 
-const ModalProvider = ({ children }: { children: ReactNode }) => {
+const NotificationProvider = ({ children }: { children: ReactNode }) => {
   const [options, setOptions] = useState<ModalOptions>({
     type: "alert",
     title: "Alert",
@@ -156,7 +156,7 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
             animation="slideRight"
             additionalClassName="flex items-center justify-center"
           >
-            <ModalContent
+            <NotificationContent
               type={type}
               title={title}
               message={message}
@@ -173,4 +173,4 @@ const ModalProvider = ({ children }: { children: ReactNode }) => {
   );
 };
 
-export default ModalProvider;
+export default NotificationProvider;

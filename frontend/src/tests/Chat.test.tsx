@@ -5,7 +5,7 @@ import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
-import ModalProvider from "../components/ModalProvider";
+import NotificationProvider from "../components/NotificationProvider";
 import { formatDisplayDate } from "../helpers";
 import Chat from "../pages/Chat";
 import {
@@ -85,9 +85,9 @@ const renderComponent = (
   return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter initialEntries={["/chats/1"]}>
-        <ModalProvider>
+        <NotificationProvider>
           <Chat />
-        </ModalProvider>
+        </NotificationProvider>
       </MemoryRouter>
     </MockedProvider>,
   );
