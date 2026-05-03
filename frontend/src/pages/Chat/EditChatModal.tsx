@@ -1,11 +1,10 @@
 import { useMutation, useQuery } from "@apollo/client/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { IoChevronForward } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
 import { useDebounce } from "use-debounce";
 import type { Chat as ChatType } from "../../__generated__/graphql";
 import FormField from "../../components/ui/FormField";
+import ModalLayout from "../../components/ui/ModalLayout";
 import Notify from "../../components/ui/Notify";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
@@ -15,7 +14,6 @@ import { EDIT_CHAT } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
 import useField from "../../hooks/useField";
 import useNotifyMessage from "../../hooks/useNotifyMessage";
-import useResponsiveWidth from "../../hooks/useResponsiveWidth";
 import type { UserContact } from "../../types";
 
 const EditChatModal = ({
@@ -25,8 +23,6 @@ const EditChatModal = ({
   chat: ChatType;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const width = useResponsiveWidth();
-  const isMobileScreen = width <= 640;
   const { message, showMessage, closeMessage } = useNotifyMessage();
   const searchWord = useField(
     "search-contacts",
@@ -98,40 +94,11 @@ const EditChatModal = ({
       animation="slideRight"
       additionalClassName="flex items-end justify-center sm:items-center"
     >
-      <motion.div
-        data-testid="edit-chat-modal"
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
-        exit={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        transition={{ type: "tween" }}
+      <ModalLayout
+        title="Edit Chat"
+        onCancel={() => setIsEditChatOpen(false)}
+        onConfirm={handleEditChat}
       >
-        <div className="flex w-full justify-between">
-          <button
-            data-testid="close-button"
-            className="cursor-pointer"
-            onClick={() => setIsEditChatOpen(false)}
-          >
-            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-            Edit Chat
-          </h2>
-          <button
-            data-testid="submit-button"
-            className="cursor-pointer"
-            onClick={handleEditChat}
-          >
-            <IoChevronForward className="h-6 w-6 text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-        </div>
         <AnimatePresence>
           {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
@@ -147,7 +114,7 @@ const EditChatModal = ({
         <p className="-my-1.5 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
           {selectedContacts.length} contacts selected
         </p>
-      </motion.div>
+      </ModalLayout>
     </Overlay>
   );
 };

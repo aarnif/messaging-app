@@ -232,7 +232,7 @@ describe("<Profile />", () => {
 
     await openChangePasswordModal(user);
 
-    await user.click(screen.getByTestId("close-modal-button"));
+    await user.click(screen.getByTestId("close-button"));
 
     await assertChangePasswordModalClosed();
   });
@@ -245,7 +245,7 @@ describe("<Profile />", () => {
 
     await openChangePasswordModal(user);
 
-    await user.click(screen.getByTestId("change-password-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal("Please fill all fields.");
   });
@@ -259,7 +259,7 @@ describe("<Profile />", () => {
     await openChangePasswordModal(user);
     await fillChangePasswordForm(user, "password", "newpassword", "newpasswor");
 
-    await user.click(screen.getByTestId("change-password-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal("Passwords do not match");
   });
@@ -273,7 +273,7 @@ describe("<Profile />", () => {
     await openChangePasswordModal(user);
     await fillChangePasswordForm(user, "wrong", "newpassword", "newpassword");
 
-    await user.click(screen.getByTestId("change-password-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal("Current password do not match");
   });
@@ -292,7 +292,7 @@ describe("<Profile />", () => {
       "newpassword",
     );
 
-    await user.click(screen.getByTestId("change-password-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await assertChangePasswordModalClosed();
   });

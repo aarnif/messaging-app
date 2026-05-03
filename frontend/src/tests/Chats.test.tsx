@@ -212,7 +212,7 @@ describe("<Chats />", () => {
 
       await openNewChatModal(user, "New Private Chat");
 
-      await user.click(screen.getByTestId("close-modal-button"));
+      await user.click(screen.getByTestId("close-button"));
 
       await waitFor(async () => {
         expect(screen.queryByText("New Private Chat")).toBeNull();
@@ -256,7 +256,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed(userContactsMock);
       });
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
         "Please select a contact to create a chat with",
@@ -289,7 +289,7 @@ describe("<Chats />", () => {
         assertContactsSelected([contact1username]);
       });
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal("Contact has blocked you.");
     });
@@ -346,7 +346,7 @@ describe("<Chats />", () => {
         assertContactsSelected([contact1username]);
       });
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await waitFor(async () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(
@@ -399,7 +399,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed(userContactsMock);
       });
 
-      await user.click(screen.getByTestId("close-modal-button"));
+      await user.click(screen.getByTestId("close-button"));
 
       await waitFor(async () => {
         expect(screen.queryByText("New Group Chat")).toBeNull();
@@ -470,7 +470,7 @@ describe("<Chats />", () => {
         assertContactsDisplayed(userContactsMock);
       });
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
         "Chat name must be at least three characters long",
@@ -498,7 +498,7 @@ describe("<Chats />", () => {
 
       await user.type(screen.getByLabelText("Name"), "Group Chat");
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
         "Chat must have at least two members",
@@ -532,7 +532,7 @@ describe("<Chats />", () => {
 
       await user.type(screen.getByLabelText("Name"), NewGroupChatDetails.name);
 
-      await user.click(screen.getByTestId("create-chat-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await waitFor(async () => {
         expect(localStorage.setItem).toHaveBeenCalledWith(

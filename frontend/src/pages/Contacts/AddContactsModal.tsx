@@ -1,9 +1,8 @@
 import { useMutation, useQuery } from "@apollo/client/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { IoChevronForward } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
 import { useDebounce } from "use-debounce";
+import ModalLayout from "../../components/ui/ModalLayout";
 import Notify from "../../components/ui/Notify";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
@@ -13,7 +12,6 @@ import { ADD_CONTACTS } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
 import useField from "../../hooks/useField";
 import useNotifyMessage from "../../hooks/useNotifyMessage";
-import useResponsiveWidth from "../../hooks/useResponsiveWidth";
 import type { AddContactOption } from "../../types";
 import SelectUserList from "./SelectUserList";
 
@@ -29,7 +27,6 @@ const AddContactsModal = ({
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
   const { message, showMessage, closeMessage } = useNotifyMessage();
-  const width = useResponsiveWidth();
 
   const [users, setUsers] = useState<AddContactOption[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
@@ -76,8 +73,6 @@ const AddContactsModal = ({
     }
   };
 
-  const isMobileScreen = width <= 640;
-
   return (
     <Overlay
       key={"Overlay"}
@@ -85,39 +80,11 @@ const AddContactsModal = ({
       animation="slideRight"
       additionalClassName="flex items-end justify-center sm:items-center"
     >
-      <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
-        exit={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        transition={{ type: "tween" }}
+      <ModalLayout
+        title="Add Contacts"
+        onCancel={() => setIsAddContactsModalOpen(false)}
+        onConfirm={handleAddContacts}
       >
-        <div className="flex w-full justify-between">
-          <button
-            data-testid="close-modal-button"
-            className="cursor-pointer"
-            onClick={() => setIsAddContactsModalOpen(false)}
-          >
-            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-            Add Contacts
-          </h2>
-          <button
-            data-testid="add-contacts-button"
-            className="cursor-pointer"
-            onClick={handleAddContacts}
-          >
-            <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-        </div>
         <AnimatePresence>
           {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
@@ -127,7 +94,7 @@ const AddContactsModal = ({
         ) : (
           <SelectUserList users={users} setSelectedIds={setSelectedIds} />
         )}
-      </motion.div>
+      </ModalLayout>
     </Overlay>
   );
 };

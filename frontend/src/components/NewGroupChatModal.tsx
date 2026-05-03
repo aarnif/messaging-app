@@ -1,8 +1,6 @@
 import { useQuery } from "@apollo/client/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
-import { IoChevronForward } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
 import type { User } from "../__generated__/graphql";
@@ -10,9 +8,9 @@ import { DEBOUNCE_DELAY } from "../constants";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
 import type { UserContact } from "../types";
 import FormField from "./ui/FormField";
+import ModalLayout from "./ui/ModalLayout";
 import Notify from "./ui/Notify";
 import Overlay from "./ui/Overlay";
 import SearchBox from "./ui/SearchBox";
@@ -31,7 +29,6 @@ const NewGroupChatModal = ({
     "text",
     "Search by name or username...",
   );
-  const width = useResponsiveWidth();
   const navigate = useNavigate();
   const name = useField("name", "text", "Enter name here...");
   const description = useField(
@@ -43,8 +40,6 @@ const NewGroupChatModal = ({
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { message, showMessage, closeMessage } = useNotifyMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
-
-  const isMobileScreen = width <= 640;
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
@@ -97,39 +92,11 @@ const NewGroupChatModal = ({
       animation="slideRight"
       additionalClassName="flex items-end justify-center sm:items-center"
     >
-      <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
-        exit={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        transition={{ type: "tween" }}
+      <ModalLayout
+        title="New Group Chat"
+        onCancel={() => setIsNewGroupChatModalOpen(false)}
+        onConfirm={handleCreateGroupChat}
       >
-        <div className="flex w-full justify-between">
-          <button
-            data-testid="close-modal-button"
-            className="cursor-pointer"
-            onClick={() => setIsNewGroupChatModalOpen(false)}
-          >
-            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-            New Group Chat
-          </h2>
-          <button
-            data-testid="create-chat-button"
-            className="cursor-pointer"
-            onClick={handleCreateGroupChat}
-          >
-            <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-        </div>
         <AnimatePresence>
           {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
@@ -147,7 +114,7 @@ const NewGroupChatModal = ({
         <p className="-my-1.5 w-full text-center text-sm font-semibold text-slate-700 dark:text-slate-200">
           {selectedIds.size} contacts selected
         </p>
-      </motion.div>
+      </ModalLayout>
     </Overlay>
   );
 };

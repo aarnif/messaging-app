@@ -206,7 +206,7 @@ export const addContacts = async (
   for (const user of users) {
     await page.getByRole("button", { name: user.username }).click();
   }
-  await page.getByTestId("add-contacts-button").click();
+  await page.getByTestId("confirm-button").click();
 
   await expect(
     page.getByRole("heading", { name: "Add Contacts" }),
@@ -273,7 +273,7 @@ export const createPrivateChat = async (
     await page.getByRole("button", { name: user.username }).click();
   }
 
-  await page.getByTestId("create-chat-button").click();
+  await page.getByTestId("confirm-button").click();
 
   await page.waitForTimeout(1000);
 
@@ -303,7 +303,7 @@ export const createGroupChat = async (
 
   await addMembersToChat(page, users);
 
-  await page.getByTestId("create-chat-button").click();
+  await page.getByTestId("confirm-button").click();
 
   await page.waitForTimeout(1000);
 
@@ -345,7 +345,7 @@ export const editGroupChat = async (
     .getByRole("textbox", { name: "Description", exact: true })
     .fill(chatDescription);
 
-  const modal = page.getByTestId("edit-chat-modal");
+  const modal = page.getByTestId("modal-layout");
 
   const selectedMembers = modal.getByTestId("selected");
 
@@ -359,7 +359,7 @@ export const editGroupChat = async (
     await modal.getByRole("button", { name: user.username }).click();
   }
 
-  await page.getByTestId("submit-button").click();
+  await page.getByTestId("confirm-button").click();
 };
 
 export const editProfile = async (page: Page, name: string, about?: string) => {
@@ -394,7 +394,7 @@ export const changePassword = async (
     .getByRole("textbox", { name: "Confirm New Password", exact: true })
     .fill(confirmNewPassword);
 
-  await page.getByTestId("change-password-button").click();
+  await page.getByTestId("confirm-button").click();
 };
 
 export const openAppearanceSettings = async (page: Page) => {

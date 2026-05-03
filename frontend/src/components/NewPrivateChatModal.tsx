@@ -1,8 +1,6 @@
 import { useLazyQuery, useQuery } from "@apollo/client/react";
-import { AnimatePresence, motion } from "framer-motion";
+import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
-import { IoChevronForward } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
 import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
 import type { Contact, User } from "../__generated__/graphql";
@@ -14,7 +12,7 @@ import {
 } from "../graphql/queries";
 import useField from "../hooks/useField";
 import useNotifyMessage from "../hooks/useNotifyMessage";
-import useResponsiveWidth from "../hooks/useResponsiveWidth";
+import ModalLayout from "./ui/ModalLayout";
 import Notify from "./ui/Notify";
 import SearchBox from "./ui/SearchBox";
 import SelectUserButton from "./ui/SelectUserButton";
@@ -65,13 +63,10 @@ const NewPrivateChatModal = ({
     "text",
     "Search by name or username...",
   );
-  const width = useResponsiveWidth();
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
   const { message, showMessage, closeMessage } = useNotifyMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
-
-  const isMobileScreen = width <= 640;
 
   const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {
     variables: {
@@ -124,39 +119,11 @@ const NewPrivateChatModal = ({
       animation="slideRight"
       additionalClassName="flex items-end justify-center sm:items-center"
     >
-      <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-full sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
-        exit={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        transition={{ type: "tween" }}
+      <ModalLayout
+        title="New Private Chat"
+        onCancel={() => setIsNewPrivateChatModalOpen(false)}
+        onConfirm={handleCreatePrivateChat}
       >
-        <div className="flex w-full justify-between">
-          <button
-            data-testid="close-modal-button"
-            className="cursor-pointer"
-            onClick={() => setIsNewPrivateChatModalOpen(false)}
-          >
-            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-            New Private Chat
-          </h2>
-          <button
-            data-testid="create-chat-button"
-            className="cursor-pointer"
-            onClick={handleCreatePrivateChat}
-          >
-            <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-        </div>
         <AnimatePresence>
           {message && <Notify message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
@@ -170,7 +137,7 @@ const NewPrivateChatModal = ({
             setSelectedContact={setSelectedContact}
           />
         )}
-      </motion.div>
+      </ModalLayout>
     </Overlay>
   );
 };
