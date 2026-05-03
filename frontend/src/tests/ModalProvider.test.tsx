@@ -5,7 +5,7 @@ import { describe, expect, test, vi } from "vitest";
 import useModal from "../hooks/useModal";
 import type { ModalOptions } from "../types";
 
-import ModalProvider from "../components/ModalProvider";
+import NotificationProvider from "../components/NotificationProvider";
 
 const mockOnCancel = vi.fn();
 const mockOnConfirm = vi.fn();
@@ -33,9 +33,9 @@ const TestComponent = ({ modalOptions }: { modalOptions: ModalOptions }) => {
 
 const renderComponent = (modalOptions: ModalOptions = alertModalOptions) => {
   return render(
-    <ModalProvider>
+    <NotificationProvider>
       <TestComponent modalOptions={modalOptions} />
-    </ModalProvider>,
+    </NotificationProvider>,
   );
 };
 

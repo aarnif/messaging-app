@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router";
-import ModalProvider from "./components/ModalProvider";
+import NotificationProvider from "./components/NotificationProvider";
 import SelectionPrompt from "./components/ui/SelectionPrompt";
 import useField from "./hooks/useField";
 import Chat from "./pages/Chat";
@@ -26,7 +26,7 @@ const App = () => {
   );
 
   return (
-    <ModalProvider>
+    <NotificationProvider>
       <Routes>
         <Route
           path="/"
@@ -97,7 +97,7 @@ const App = () => {
 
         <Route path="/*" element={<p>Page Not Found</p>} />
       </Routes>
-    </ModalProvider>
+    </NotificationProvider>
   );
 };
 

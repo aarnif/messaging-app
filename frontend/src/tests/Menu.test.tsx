@@ -3,7 +3,7 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Menu from "../components/Menu";
-import ModalProvider from "../components/ModalProvider";
+import NotificationProvider from "../components/NotificationProvider";
 import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
@@ -27,9 +27,9 @@ Object.defineProperty(global, "localStorage", { value: localStorage });
 const renderComponent = () =>
   render(
     <MemoryRouter>
-      <ModalProvider>
+      <NotificationProvider>
         <Menu setToken={mockSetToken} />
-      </ModalProvider>
+      </NotificationProvider>
     </MemoryRouter>,
   );
 
