@@ -403,7 +403,7 @@ describe("<Chat />", () => {
 
     await user.clear(screen.getByPlaceholderText("Enter name here..."));
 
-    await user.click(screen.getByTestId("submit-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal(
       "Chat name must be at least three characters long",
@@ -425,7 +425,7 @@ describe("<Chat />", () => {
     await openChatInfoModal(user);
     await openEditChatModal(user);
 
-    const modal = screen.getByTestId("edit-chat-modal");
+    const modal = screen.getByTestId("modal-layout");
 
     const chatMember1 = GROUP_CHAT_DETAILS.members[1].username;
     const chatMember2 = GROUP_CHAT_DETAILS.members[2].username;
@@ -477,7 +477,7 @@ describe("<Chat />", () => {
     await user.type(nameInput, "New Name");
     await user.type(descriptionInput, "New Description");
 
-    await user.click(screen.getByTestId("submit-button"));
+    await user.click(screen.getByTestId("confirm-button"));
 
     await waitFor(
       async () => {

@@ -3,7 +3,8 @@ import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { Outlet } from "react-router";
 import NewChatDropDownBox from "../../components/NewChatDropDown";
-import NewChatModal from "../../components/NewChatModal";
+import NewGroupChatModal from "../../components/NewGroupChatModal";
+import NewPrivateChatModal from "../../components/NewPrivateChatModal";
 import Spinner from "../../components/ui/Spinner";
 import { ME } from "../../graphql/queries";
 import type { InputField } from "../../types";
@@ -14,21 +15,9 @@ const Chats = ({ searchWord }: { searchWord: InputField }) => {
   const currentUser = data?.me;
 
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
-  const [isNewChatModalOpen, setIsNewChatModalOpen] = useState(false);
-  const [newChatModalType, setNewChatModalType] = useState<
-    "private" | "group" | null
-  >(null);
-
-  const handleOpenNewChatModal = (event: React.BaseSyntheticEvent) => {
-    const clickedButtonText = event.target.textContent;
-
-    if (clickedButtonText === "New Private Chat") {
-      setNewChatModalType("private");
-    } else {
-      setNewChatModalType("group");
-    }
-    setIsNewChatModalOpen(true);
-  };
+  const [isNewPrivateChatModalOpen, setIsNewPrivateChatModalOpen] =
+    useState(false);
+  const [isNewGroupChatModalOpen, setIsNewGroupChatModalOpen] = useState(false);
 
   return (
     <div className="flex grow">
@@ -49,15 +38,20 @@ const Chats = ({ searchWord }: { searchWord: InputField }) => {
         {isNewChatDropdownOpen && (
           <NewChatDropDownBox
             setIsNewChatDropdownOpen={setIsNewChatDropdownOpen}
-            handleOpenNewChatModal={handleOpenNewChatModal}
+            setIsNewPrivateChatModalOpen={setIsNewPrivateChatModalOpen}
+            setIsNewGroupChatModalOpen={setIsNewGroupChatModalOpen}
           />
         )}
-        {isNewChatModalOpen && currentUser && (
-          <NewChatModal
+        {isNewPrivateChatModalOpen && currentUser && (
+          <NewPrivateChatModal
             currentUser={currentUser}
-            newChatModalType={newChatModalType}
-            setIsNewChatModalOpen={setIsNewChatModalOpen}
-            setNewChatModalType={setNewChatModalType}
+            setIsNewPrivateChatModalOpen={setIsNewPrivateChatModalOpen}
+          />
+        )}
+        {isNewGroupChatModalOpen && currentUser && (
+          <NewGroupChatModal
+            currentUser={currentUser}
+            setIsNewGroupChatModalOpen={setIsNewGroupChatModalOpen}
           />
         )}
       </AnimatePresence>

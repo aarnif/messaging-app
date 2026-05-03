@@ -109,7 +109,7 @@ describe("<Contacts />", () => {
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
 
-      await user.click(screen.getByTestId("close-modal-button"));
+      await user.click(screen.getByTestId("close-button"));
 
       await waitFor(async () => {
         expect(screen.queryByText("Add Contacts")).toBeNull();
@@ -136,7 +136,7 @@ describe("<Contacts />", () => {
       await waitForPageRender();
       await openAddContactsModal(user, nonContactUsersMock);
 
-      await user.click(screen.getByTestId("add-contacts-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal("Select at least one contact.");
     });
@@ -171,7 +171,7 @@ describe("<Contacts />", () => {
         assertContactsSelected([contact1username, contact2username]);
       });
 
-      await user.click(screen.getByTestId("add-contacts-button"));
+      await user.click(screen.getByTestId("confirm-button"));
 
       await waitFor(async () => {
         expect(screen.queryByText("Add Contacts")).toBeNull();

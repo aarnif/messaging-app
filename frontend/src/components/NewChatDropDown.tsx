@@ -4,10 +4,12 @@ import Overlay from "./ui/Overlay";
 
 const NewChatDropDownBox = ({
   setIsNewChatDropdownOpen,
-  handleOpenNewChatModal,
+  setIsNewPrivateChatModalOpen,
+  setIsNewGroupChatModalOpen,
 }: {
   setIsNewChatDropdownOpen: React.Dispatch<React.SetStateAction<boolean>>;
-  handleOpenNewChatModal: (event: React.SyntheticEvent) => void;
+  setIsNewPrivateChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
+  setIsNewGroupChatModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => (
   <Overlay
     key={"Overlay"}
@@ -26,13 +28,13 @@ const NewChatDropDownBox = ({
           type="button"
           variant="tertiary"
           text="New Private Chat"
-          onClick={(event) => handleOpenNewChatModal(event)}
+          onClick={() => setIsNewPrivateChatModalOpen(true)}
         />
         <Button
           type="button"
           variant="tertiary"
           text="New Group Chat"
-          onClick={(event) => handleOpenNewChatModal(event)}
+          onClick={() => setIsNewGroupChatModalOpen(true)}
         />
       </div>
     </motion.div>

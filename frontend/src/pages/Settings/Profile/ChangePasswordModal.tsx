@@ -1,14 +1,12 @@
 import { useMutation } from "@apollo/client/react";
-import { AnimatePresence, motion } from "motion/react";
-import { IoChevronForward } from "react-icons/io5";
-import { MdClose } from "react-icons/md";
+import { AnimatePresence } from "motion/react";
 import FormField from "../../../components/ui/FormField";
+import ModalLayout from "../../../components/ui/ModalLayout";
 import Notify from "../../../components/ui/Notify";
 import Overlay from "../../../components/ui/Overlay";
 import { CHANGE_PASSWORD } from "../../../graphql/mutations";
 import useField from "../../../hooks/useField";
 import useNotifyMessage from "../../../hooks/useNotifyMessage";
-import useResponsiveWidth from "../../../hooks/useResponsiveWidth";
 
 const ChangePasswordModal = ({
   setIsChangePasswordModalOpen,
@@ -42,10 +40,6 @@ const ChangePasswordModal = ({
       showMessage(cleanErrorMessage);
     },
   });
-
-  const width = useResponsiveWidth();
-
-  const isMobileScreen = width <= 640;
 
   const handleChangePassword = async () => {
     if (
@@ -87,39 +81,12 @@ const ChangePasswordModal = ({
       animation="slideRight"
       additionalClassName="flex items-end justify-center sm:items-center"
     >
-      <motion.div
-        className="flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 sm:h-auto sm:max-w-125 sm:rounded-lg dark:bg-slate-800"
-        onClick={(e) => e.stopPropagation()}
-        initial={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        animate={{ y: 0, opacity: 1, transition: { delay: 0.4 } }}
-        exit={{
-          y: isMobileScreen ? "100vh" : -50,
-          opacity: isMobileScreen ? 1 : 0,
-        }}
-        transition={{ type: "tween" }}
+      <ModalLayout
+        title="Change Password"
+        onCancel={() => setIsChangePasswordModalOpen(false)}
+        onConfirm={handleChangePassword}
+        autoHeight={true}
       >
-        <div className="flex w-full justify-between">
-          <button
-            data-testid="close-modal-button"
-            className="cursor-pointer"
-            onClick={() => setIsChangePasswordModalOpen(false)}
-          >
-            <MdClose className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-          <h2 className="font-oswald text-2xl font-medium text-slate-900 dark:text-slate-50">
-            Change Password
-          </h2>
-          <button
-            data-testid="change-password-button"
-            className="cursor-pointer"
-            onClick={handleChangePassword}
-          >
-            <IoChevronForward className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
-          </button>
-        </div>
         <h3 className="mb-2 text-center text-base font-medium text-slate-900 dark:text-slate-50">
           Enter your current and the new password.
         </h3>
@@ -133,7 +100,7 @@ const ChangePasswordModal = ({
           <FormField field={newPassword} />
           <FormField field={confirmNewPassword} />
         </div>
-      </motion.div>
+      </ModalLayout>
     </Overlay>
   );
 };
