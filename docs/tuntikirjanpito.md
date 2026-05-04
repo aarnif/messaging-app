@@ -124,4 +124,7 @@
 | 23.4  | 1    | koodin refaktorointi              |
 | 24.4  | 1    |                                   |
 | 25.4  | 1    |                                   |
-|  yht  | 255  |                                   |
+| 26.4  | 1    |                                   |
+| 30.4  | 0.5  | bugin korjaus                     |
+|  3.5  | 1.5  | koodin refaktorointi              |
+|  yht  | 258  |                                   |
