@@ -6,12 +6,12 @@ import { useDebounce } from "use-debounce";
 import type { User } from "../__generated__/graphql";
 import { DEBOUNCE_DELAY } from "../constants";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
+import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
-import useNotifyMessage from "../hooks/useNotifyMessage";
 import type { UserContact } from "../types";
+import Error from "./ui/Error";
 import FormField from "./ui/FormField";
 import ModalLayout from "./ui/ModalLayout";
-import Notify from "./ui/Notify";
 import Overlay from "./ui/Overlay";
 import SearchBox from "./ui/SearchBox";
 import SelectContactsList from "./ui/SelectContactsList";
@@ -38,7 +38,7 @@ const NewGroupChatModal = ({
   );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
@@ -98,7 +98,7 @@ const NewGroupChatModal = ({
         onConfirm={handleCreateGroupChat}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         {loading ? (

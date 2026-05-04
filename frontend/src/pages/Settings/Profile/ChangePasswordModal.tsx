@@ -1,19 +1,19 @@
 import { useMutation } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
+import Error from "../../../components/ui/Error";
 import FormField from "../../../components/ui/FormField";
 import ModalLayout from "../../../components/ui/ModalLayout";
-import Notify from "../../../components/ui/Notify";
 import Overlay from "../../../components/ui/Overlay";
 import { CHANGE_PASSWORD } from "../../../graphql/mutations";
+import useErrorMessage from "../../../hooks/useErrorMessage";
 import useField from "../../../hooks/useField";
-import useNotifyMessage from "../../../hooks/useNotifyMessage";
 
 const ChangePasswordModal = ({
   setIsChangePasswordModalOpen,
 }: {
   setIsChangePasswordModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const currentPassword = useField(
     "Current Password",
     "password",
@@ -92,9 +92,7 @@ const ChangePasswordModal = ({
         </h3>
         <div className="flex w-full flex-col gap-6">
           <AnimatePresence>
-            {message && (
-              <Notify message={message} closeMessage={closeMessage} />
-            )}
+            {message && <Error message={message} closeMessage={closeMessage} />}
           </AnimatePresence>
           <FormField field={currentPassword} />
           <FormField field={newPassword} />

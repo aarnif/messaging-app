@@ -3,11 +3,11 @@ import { AnimatePresence } from "motion/react";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import Button from "../../components/ui/Button";
+import Error from "../../components/ui/Error";
 import FormField from "../../components/ui/FormField";
-import Notify from "../../components/ui/Notify";
 import { CREATE_USER, LOGIN } from "../../graphql/mutations";
+import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
 
 const SignUp = ({
   setToken,
@@ -16,7 +16,7 @@ const SignUp = ({
 }) => {
   const client = useApolloClient();
   const navigate = useNavigate();
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(
@@ -136,7 +136,7 @@ const SignUp = ({
           <div className="flex w-full flex-col gap-4">
             <AnimatePresence>
               {message && (
-                <Notify message={message} closeMessage={closeMessage} />
+                <Error message={message} closeMessage={closeMessage} />
               )}
             </AnimatePresence>
             <FormField

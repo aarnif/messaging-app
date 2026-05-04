@@ -3,17 +3,17 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import type { Chat as ChatType } from "../../__generated__/graphql";
+import Error from "../../components/ui/Error";
 import FormField from "../../components/ui/FormField";
 import ModalLayout from "../../components/ui/ModalLayout";
-import Notify from "../../components/ui/Notify";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
 import SelectContactsList from "../../components/ui/SelectContactsList";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { EDIT_CHAT } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
+import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
 import type { UserContact } from "../../types";
 
 const EditChatModal = ({
@@ -23,7 +23,7 @@ const EditChatModal = ({
   chat: ChatType;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const searchWord = useField(
     "search-contacts",
     "text",
@@ -100,7 +100,7 @@ const EditChatModal = ({
         onConfirm={handleEditChat}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         <SelectContactsList
