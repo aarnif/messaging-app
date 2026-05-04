@@ -3,9 +3,9 @@ import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import type { Chat as ChatType } from "../../__generated__/graphql";
+import Error from "../../components/ui/Error";
 import FormField from "../../components/ui/FormField";
 import ModalLayout from "../../components/ui/ModalLayout";
-import Notify from "../../components/ui/Notify";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
 import SelectContactsList from "../../components/ui/SelectContactsList";
@@ -100,7 +100,7 @@ const EditChatModal = ({
         onConfirm={handleEditChat}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         <SelectContactsList

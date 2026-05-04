@@ -3,8 +3,8 @@ import { AnimatePresence, motion } from "motion/react";
 import { IoChevronForward } from "react-icons/io5";
 import { MdClose } from "react-icons/md";
 import type { User } from "../../../__generated__/graphql";
+import Error from "../../../components/ui/Error";
 import FormField from "../../../components/ui/FormField";
-import Notify from "../../../components/ui/Notify";
 import { EDIT_PROFILE } from "../../../graphql/mutations";
 import useErrorMessage from "../../../hooks/useErrorMessage";
 import useField from "../../../hooks/useField";
@@ -81,7 +81,7 @@ const EditProfileModal = ({
       </div>
       <div className="flex w-full flex-col gap-4">
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <FormField field={nameInput} />
         <FormField field={aboutInput} />

@@ -9,9 +9,9 @@ import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
 import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
 import type { UserContact } from "../types";
+import Error from "./ui/Error";
 import FormField from "./ui/FormField";
 import ModalLayout from "./ui/ModalLayout";
-import Notify from "./ui/Notify";
 import Overlay from "./ui/Overlay";
 import SearchBox from "./ui/SearchBox";
 import SelectContactsList from "./ui/SelectContactsList";
@@ -98,7 +98,7 @@ const NewGroupChatModal = ({
         onConfirm={handleCreateGroupChat}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         {loading ? (

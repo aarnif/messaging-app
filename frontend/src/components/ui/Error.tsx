@@ -1,7 +1,7 @@
 import { motion } from "motion/react";
 import { MdClose } from "react-icons/md";
 
-const Notify = ({
+const Error = ({
   message,
   closeMessage,
 }: {
@@ -27,4 +27,4 @@ const Notify = ({
   </motion.div>
 );
 
-export default Notify;
+export default Error;

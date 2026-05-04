@@ -12,8 +12,8 @@ import {
 } from "../graphql/queries";
 import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
+import Error from "./ui/Error";
 import ModalLayout from "./ui/ModalLayout";
-import Notify from "./ui/Notify";
 import SearchBox from "./ui/SearchBox";
 import SelectUserButton from "./ui/SelectUserButton";
 import Spinner from "./ui/Spinner";
@@ -125,7 +125,7 @@ const NewPrivateChatModal = ({
         onConfirm={handleCreatePrivateChat}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         {loading ? (

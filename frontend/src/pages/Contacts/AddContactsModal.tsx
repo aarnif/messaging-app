@@ -2,8 +2,8 @@ import { useMutation, useQuery } from "@apollo/client/react";
 import { AnimatePresence } from "framer-motion";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
+import Error from "../../components/ui/Error";
 import ModalLayout from "../../components/ui/ModalLayout";
-import Notify from "../../components/ui/Notify";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
 import Spinner from "../../components/ui/Spinner";
@@ -86,7 +86,7 @@ const AddContactsModal = ({
         onConfirm={handleAddContacts}
       >
         <AnimatePresence>
-          {message && <Notify message={message} closeMessage={closeMessage} />}
+          {message && <Error message={message} closeMessage={closeMessage} />}
         </AnimatePresence>
         <SearchBox searchWord={searchWord} />
         {loading ? (
