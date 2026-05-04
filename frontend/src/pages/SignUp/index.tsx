@@ -6,8 +6,8 @@ import Button from "../../components/ui/Button";
 import FormField from "../../components/ui/FormField";
 import Notify from "../../components/ui/Notify";
 import { CREATE_USER, LOGIN } from "../../graphql/mutations";
+import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
 
 const SignUp = ({
   setToken,
@@ -16,7 +16,7 @@ const SignUp = ({
 }) => {
   const client = useApolloClient();
   const navigate = useNavigate();
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const username = useField("username", "text", "Enter your username here...");
   const password = useField(

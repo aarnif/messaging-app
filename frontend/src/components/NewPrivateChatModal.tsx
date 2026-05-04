@@ -10,8 +10,8 @@ import {
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   IS_BLOCKED_BY_USER,
 } from "../graphql/queries";
+import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
-import useNotifyMessage from "../hooks/useNotifyMessage";
 import ModalLayout from "./ui/ModalLayout";
 import Notify from "./ui/Notify";
 import SearchBox from "./ui/SearchBox";
@@ -65,7 +65,7 @@ const NewPrivateChatModal = ({
   );
   const navigate = useNavigate();
   const [selectedContact, setSelectedContact] = useState<string | null>(null);
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(CONTACTS_WITHOUT_PRIVATE_CHAT, {

@@ -5,15 +5,15 @@ import ModalLayout from "../../../components/ui/ModalLayout";
 import Notify from "../../../components/ui/Notify";
 import Overlay from "../../../components/ui/Overlay";
 import { CHANGE_PASSWORD } from "../../../graphql/mutations";
+import useErrorMessage from "../../../hooks/useErrorMessage";
 import useField from "../../../hooks/useField";
-import useNotifyMessage from "../../../hooks/useNotifyMessage";
 
 const ChangePasswordModal = ({
   setIsChangePasswordModalOpen,
 }: {
   setIsChangePasswordModalOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const currentPassword = useField(
     "Current Password",
     "password",

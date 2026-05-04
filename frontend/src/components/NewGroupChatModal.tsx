@@ -6,8 +6,8 @@ import { useDebounce } from "use-debounce";
 import type { User } from "../__generated__/graphql";
 import { DEBOUNCE_DELAY } from "../constants";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
+import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
-import useNotifyMessage from "../hooks/useNotifyMessage";
 import type { UserContact } from "../types";
 import FormField from "./ui/FormField";
 import ModalLayout from "./ui/ModalLayout";
@@ -38,7 +38,7 @@ const NewGroupChatModal = ({
   );
   const [contacts, setContacts] = useState<UserContact[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
   const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {

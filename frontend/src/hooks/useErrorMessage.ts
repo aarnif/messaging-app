@@ -1,6 +1,6 @@
 import { useState } from "react";
 
-const useNotifyMessage = () => {
+const useErrorMessage = () => {
   const [message, setMessage] = useState<string | null>(null);
 
   const showMessage = (text: string) => {
@@ -14,4 +14,4 @@ const useNotifyMessage = () => {
   return { message, showMessage, closeMessage };
 };
 
-export default useNotifyMessage;
+export default useErrorMessage;

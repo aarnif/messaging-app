@@ -12,8 +12,8 @@ import SelectContactsList from "../../components/ui/SelectContactsList";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { EDIT_CHAT } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
+import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
 import type { UserContact } from "../../types";
 
 const EditChatModal = ({
@@ -23,7 +23,7 @@ const EditChatModal = ({
   chat: ChatType;
   setIsEditChatOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const searchWord = useField(
     "search-contacts",
     "text",

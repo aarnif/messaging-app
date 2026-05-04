@@ -6,8 +6,8 @@ import type { User } from "../../../__generated__/graphql";
 import FormField from "../../../components/ui/FormField";
 import Notify from "../../../components/ui/Notify";
 import { EDIT_PROFILE } from "../../../graphql/mutations";
+import useErrorMessage from "../../../hooks/useErrorMessage";
 import useField from "../../../hooks/useField";
-import useNotifyMessage from "../../../hooks/useNotifyMessage";
 
 const EditProfileModal = ({
   currentUser,
@@ -17,7 +17,7 @@ const EditProfileModal = ({
   setIsEditProfileOpen: React.Dispatch<React.SetStateAction<boolean>>;
 }) => {
   const { name, about } = currentUser;
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
   const nameInput = useField("name", "text", "Enter your name here...", name);
   const aboutInput = useField(
     "about",

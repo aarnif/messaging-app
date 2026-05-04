@@ -10,8 +10,8 @@ import Spinner from "../../components/ui/Spinner";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { ADD_CONTACTS } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
+import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import useNotifyMessage from "../../hooks/useNotifyMessage";
 import type { AddContactOption } from "../../types";
 import SelectUserList from "./SelectUserList";
 
@@ -26,7 +26,7 @@ const AddContactsModal = ({
     "Search by name or username...",
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
-  const { message, showMessage, closeMessage } = useNotifyMessage();
+  const { message, showMessage, closeMessage } = useErrorMessage();
 
   const [users, setUsers] = useState<AddContactOption[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
