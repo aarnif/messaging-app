@@ -52,7 +52,7 @@ const ChatMemberItem = ({
   );
 };
 
-const ChatInfoModal = ({
+const ChatInfoDrawer = ({
   currentUser,
   chat,
   setIsChatInfoOpen,
@@ -206,4 +206,4 @@ const ChatInfoModal = ({
   );
 };
 
-export default ChatInfoModal;
+export default ChatInfoDrawer;
