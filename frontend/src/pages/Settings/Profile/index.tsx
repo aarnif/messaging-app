@@ -3,7 +3,7 @@ import { useState } from "react";
 import { useLocation, useOutletContext } from "react-router";
 import type { User } from "../../../__generated__/graphql";
 import ChangePasswordModal from "./ChangePasswordModal";
-import EditProfileModal from "./EditProfileModal";
+import EditProfileDrawer from "./EditProfileDrawer";
 import ProfileContent from "./ProfileContent";
 
 const Profile = () => {
@@ -30,7 +30,7 @@ const Profile = () => {
       />
       <AnimatePresence>
         {isEditProfileOpen && (
-          <EditProfileModal
+          <EditProfileDrawer
             key={"edit-profile"}
             currentUser={currentUser}
             setIsEditProfileOpen={setIsEditProfileOpen}
