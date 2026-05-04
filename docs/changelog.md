@@ -205,3 +205,9 @@ Ei muutoksia
 - Korjaa bugi liittyen mobiilimenun laajentumiseen chat infoa klikattaessa
 - Lisää onCancel callback-funktio ModalProvider-komponenttiin
 - Eriytä modaalien tausta omaksi Overlay-komponentiksi
+
+## Viikko 32 (27.4-3.5.2026)
+
+- Korjaa bugi littyen uuden chat modaalin esiintulo animaatioon
+- Luo uusi ModalLayout-komponentti modaaleihin liittyvälle toisteiselle koodille
+- Nimeä uudelleen komponentti: ModalProvider -> NotifyProvider
