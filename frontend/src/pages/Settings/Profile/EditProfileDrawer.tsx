@@ -9,7 +9,7 @@ import { EDIT_PROFILE } from "../../../graphql/mutations";
 import useErrorMessage from "../../../hooks/useErrorMessage";
 import useField from "../../../hooks/useField";
 
-const EditProfileModal = ({
+const EditProfileDrawer = ({
   currentUser,
   setIsEditProfileOpen,
 }: {
@@ -90,4 +90,4 @@ const EditProfileModal = ({
   );
 };
 
-export default EditProfileModal;
+export default EditProfileDrawer;

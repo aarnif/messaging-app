@@ -20,7 +20,7 @@ import {
 import { updateChatByIdCache } from "../../helpers";
 import type { InputField } from "../../types";
 import ChatContent from "./ChatContent";
-import ChatInfoModal from "./ChatInfoModal";
+import ChatInfoDrawer from "./ChatInfoDrawer";
 import EditChatModal from "./EditChatModal";
 
 const Chat = () => {
@@ -139,7 +139,7 @@ const Chat = () => {
           />
           <AnimatePresence>
             {isChatInfoOpen && (
-              <ChatInfoModal
+              <ChatInfoDrawer
                 key={"chat-info"}
                 currentUser={currentUser}
                 chat={chat}
