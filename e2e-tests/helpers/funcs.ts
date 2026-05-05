@@ -275,9 +275,8 @@ export const createPrivateChat = async (
 
   await page.getByTestId("confirm-button").click();
 
-  await page.waitForTimeout(1000);
-
   if (initialMessage) {
+    await expect(page.getByTestId("modal-layout")).not.toBeVisible();
     await sendMessage(page, initialMessage);
   }
 };
@@ -305,9 +304,8 @@ export const createGroupChat = async (
 
   await page.getByTestId("confirm-button").click();
 
-  await page.waitForTimeout(1000);
-
   if (initialMessage) {
+    await expect(page.getByTestId("modal-layout")).not.toBeVisible();
     await sendMessage(page, initialMessage);
   }
 };
