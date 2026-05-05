@@ -27,12 +27,12 @@ const ModalLayout = ({
       className={`flex h-[90vh] grow flex-col items-center gap-4 rounded-t-lg rounded-b-none bg-white px-2 py-4 ${heightClass} sm:max-h-125 sm:max-w-125 sm:rounded-lg dark:bg-slate-800`}
       onClick={(e) => e.stopPropagation()}
       initial={{
-        y: isMobileScreen ? "100vh" : -50,
+        y: isMobileScreen ? "100%" : -50,
         opacity: isMobileScreen ? 1 : 0,
       }}
       animate={{ y: 0, opacity: 1, transition: { type: "tween", delay: 0.4 } }}
       exit={{
-        y: isMobileScreen ? "100vh" : -50,
+        y: isMobileScreen ? "100%" : -50,
         opacity: isMobileScreen ? 1 : 0,
       }}
       transition={{ type: "tween" }}

@@ -53,9 +53,9 @@ const EditProfileDrawer = ({
 
   return (
     <motion.div
-      initial={{ x: "100vw" }}
+      initial={{ x: "100%" }}
       animate={{ x: 0 }}
-      exit={{ x: "100vw" }}
+      exit={{ x: "100%" }}
       transition={{ type: "tween", duration: 0.3 }}
       className="absolute inset-0 flex grow flex-col items-center gap-4 overflow-y-auto bg-white px-2 py-4 sm:gap-8 dark:bg-slate-800"
     >
