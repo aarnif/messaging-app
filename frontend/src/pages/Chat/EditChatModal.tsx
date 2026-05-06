@@ -31,12 +31,12 @@ const EditChatModal = ({
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
-  const name = useField("name", "text", "Enter name here...", chat?.name ?? "");
+  const name = useField("name", "text", "Enter name here...", chat.name ?? "");
   const description = useField(
     "description",
     "text",
     "Enter description here...",
-    chat?.description ?? "",
+    chat.description ?? "",
   );
 
   const { data } = useQuery(ALL_CONTACTS_BY_USER, {

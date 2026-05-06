@@ -69,7 +69,7 @@ const Chat = () => {
 
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
-        messages: chat?.messages.concat(latestMessage),
+        messages: chat.messages.concat(latestMessage),
       }));
     },
   });
@@ -86,7 +86,7 @@ const Chat = () => {
 
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
-        messages: chat?.messages.map((message) =>
+        messages: chat.messages.map((message) =>
           message.id === editedMessage.id ? editedMessage : message,
         ),
       }));
@@ -105,7 +105,7 @@ const Chat = () => {
 
       updateChatByIdCache(client.cache, match.id, (chat) => ({
         ...chat,
-        messages: chat?.messages.map((message) =>
+        messages: chat.messages.map((message) =>
           message.id === deletedMessage.id ? deletedMessage : message,
         ),
       }));
