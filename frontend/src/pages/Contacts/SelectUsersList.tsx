@@ -1,12 +1,12 @@
 import SelectUserButton from "../../components/ui/SelectUserButton";
-import type { AddContactOption } from "../../types";
+import type { SelectableUser } from "../../types";
 
 const SelectUsersList = ({
   users,
   setSelectedIds,
   notFoundMessage,
 }: {
-  users: AddContactOption[];
+  users: SelectableUser[];
   setSelectedIds: React.Dispatch<React.SetStateAction<Set<string>>>;
   notFoundMessage: string;
 }) => {

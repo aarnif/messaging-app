@@ -12,7 +12,7 @@ import { ADD_CONTACTS } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
 import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
-import type { AddContactOption } from "../../types";
+import type { SelectableUser } from "../../types";
 import SelectUsersList from "./SelectUsersList";
 
 const AddContactsModal = ({
@@ -28,7 +28,7 @@ const AddContactsModal = ({
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
   const { message, showMessage, closeMessage } = useErrorMessage();
 
-  const [users, setUsers] = useState<AddContactOption[]>([]);
+  const [users, setUsers] = useState<SelectableUser[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
 
   const { data, loading } = useQuery(NON_CONTACT_USERS, {

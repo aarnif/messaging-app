@@ -26,7 +26,7 @@ export interface UserContact extends Contact {
   isSelected: boolean;
 }
 
-export interface AddContactOption extends User {
+export interface SelectableUser extends User {
   isSelected: boolean;
 }
 
