@@ -3,7 +3,7 @@ import { AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import { useNavigate } from "react-router";
 import { useDebounce } from "use-debounce";
-import type { Contact, User } from "../__generated__/graphql";
+import type { User } from "../__generated__/graphql";
 import Overlay from "../components/ui/Overlay";
 import { DEBOUNCE_DELAY } from "../constants";
 import {
@@ -18,16 +18,16 @@ import SearchBox from "./ui/SearchBox";
 import SelectUserButton from "./ui/SelectUserButton";
 import Spinner from "./ui/Spinner";
 
-export const SelectContactList = ({
-  contacts,
-  selectedContact,
-  setSelectedContact,
+export const SelectUserList = ({
+  users,
+  selectedUser,
+  setSelectedUser,
 }: {
-  contacts: Contact[];
-  selectedContact: string | null;
-  setSelectedContact: React.Dispatch<React.SetStateAction<string | null>>;
+  users: User[];
+  selectedUser: string | null;
+  setSelectedUser: React.Dispatch<React.SetStateAction<string | null>>;
 }) => {
-  if (contacts.length === 0) {
+  if (users.length === 0) {
     return (
       <p className="mt-8 w-full text-center text-xl font-semibold text-slate-600 dark:text-slate-300">
         No contacts found
@@ -37,13 +37,13 @@ export const SelectContactList = ({
 
   return (
     <div className="flex h-0 w-full grow flex-col overflow-y-scroll bg-white pr-4 dark:bg-slate-800">
-      {contacts.map((contact) => (
+      {users.map((user) => (
         <SelectUserButton
-          key={contact.id}
-          user={contact.contactDetails}
-          isSelected={contact.id === selectedContact}
+          key={user.id}
+          user={user}
+          isSelected={user.id === selectedUser}
           callback={() => {
-            setSelectedContact(contact.id);
+            setSelectedUser(user.id);
           }}
         />
       ))}
@@ -64,7 +64,7 @@ const NewPrivateChatModal = ({
     "Search by name or username...",
   );
   const navigate = useNavigate();
-  const [selectedContact, setSelectedContact] = useState<string | null>(null);
+  const [selectedUser, setSelectedUser] = useState<string | null>(null);
   const { message, showMessage, closeMessage } = useErrorMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
@@ -80,13 +80,13 @@ const NewPrivateChatModal = ({
   const contacts = data?.contactsWithoutPrivateChat;
 
   const handleCreatePrivateChat = async () => {
-    if (!selectedContact) {
+    if (!selectedUser) {
       showMessage("Please select a contact to create a chat with");
       return;
     }
 
     const chosenContact = contacts?.find(
-      (contact) => contact.id === selectedContact,
+      (contact) => contact.contactDetails.id === selectedUser,
     );
 
     const isBlockedByContact = await isBlockedByUser({
@@ -112,6 +112,8 @@ const NewPrivateChatModal = ({
     setIsNewPrivateChatModalOpen(false);
   };
 
+  const users = contacts?.map((contact) => contact.contactDetails);
+
   return (
     <Overlay
       key={"Overlay"}
@@ -131,10 +133,10 @@ const NewPrivateChatModal = ({
         {loading ? (
           <Spinner />
         ) : (
-          <SelectContactList
-            contacts={contacts ?? []}
-            selectedContact={selectedContact}
-            setSelectedContact={setSelectedContact}
+          <SelectUserList
+            users={users ?? []}
+            selectedUser={selectedUser}
+            setSelectedUser={setSelectedUser}
           />
         )}
       </ModalLayout>
