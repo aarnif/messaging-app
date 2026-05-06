@@ -8,13 +8,13 @@ import { DEBOUNCE_DELAY } from "../constants";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
 import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
-import SelectUsersList from "../pages/Contacts/SelectUsersList";
 import type { SelectableUser } from "../types";
 import Error from "./ui/Error";
 import FormField from "./ui/FormField";
 import ModalLayout from "./ui/ModalLayout";
 import Overlay from "./ui/Overlay";
 import SearchBox from "./ui/SearchBox";
+import SelectUsersList from "./ui/SelectUsersList";
 import Spinner from "./ui/Spinner";
 
 const NewGroupChatModal = ({

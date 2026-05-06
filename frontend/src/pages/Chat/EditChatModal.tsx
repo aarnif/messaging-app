@@ -8,13 +8,13 @@ import FormField from "../../components/ui/FormField";
 import ModalLayout from "../../components/ui/ModalLayout";
 import Overlay from "../../components/ui/Overlay";
 import SearchBox from "../../components/ui/SearchBox";
+import SelectUsersList from "../../components/ui/SelectUsersList";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { EDIT_CHAT } from "../../graphql/mutations";
 import { ALL_CONTACTS_BY_USER } from "../../graphql/queries";
 import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
 import type { SelectableUser } from "../../types";
-import SelectUsersList from "../Contacts/SelectUsersList";
 
 const EditChatModal = ({
   chat,

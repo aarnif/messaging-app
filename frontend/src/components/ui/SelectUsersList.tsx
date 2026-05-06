@@ -1,5 +1,5 @@
-import SelectUserButton from "../../components/ui/SelectUserButton";
 import type { SelectableUser } from "../../types";
+import SelectUserButton from "./SelectUserButton";
 
 const SelectUsersList = ({
   users,
