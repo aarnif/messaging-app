@@ -92,7 +92,11 @@ const AddContactsModal = ({
         {loading ? (
           <Spinner />
         ) : (
-          <SelectUserList users={users} setSelectedIds={setSelectedIds} />
+          <SelectUserList
+            users={users}
+            setSelectedIds={setSelectedIds}
+            notFoundMessage="No users found"
+          />
         )}
       </ModalLayout>
     </Overlay>
