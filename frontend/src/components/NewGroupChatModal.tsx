@@ -8,13 +8,13 @@ import { DEBOUNCE_DELAY } from "../constants";
 import { ALL_CONTACTS_BY_USER } from "../graphql/queries";
 import useErrorMessage from "../hooks/useErrorMessage";
 import useField from "../hooks/useField";
-import type { UserContact } from "../types";
+import SelectUsersList from "../pages/Contacts/SelectUsersList";
+import type { SelectableUser } from "../types";
 import Error from "./ui/Error";
 import FormField from "./ui/FormField";
 import ModalLayout from "./ui/ModalLayout";
 import Overlay from "./ui/Overlay";
 import SearchBox from "./ui/SearchBox";
-import SelectContactsList from "./ui/SelectContactsList";
 import Spinner from "./ui/Spinner";
 
 const NewGroupChatModal = ({
@@ -36,7 +36,7 @@ const NewGroupChatModal = ({
     "text",
     "Enter description here...",
   );
-  const [contacts, setContacts] = useState<UserContact[]>([]);
+  const [users, setUsers] = useState<SelectableUser[]>([]);
   const [selectedIds, setSelectedIds] = useState<Set<string>>(new Set());
   const { message, showMessage, closeMessage } = useErrorMessage();
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
@@ -49,9 +49,9 @@ const NewGroupChatModal = ({
 
   useEffect(() => {
     if (data) {
-      setContacts(
+      setUsers(
         data?.allContactsByUser?.map((contact) => ({
-          ...contact,
+          ...contact.contactDetails,
           isSelected: selectedIds.has(contact.contactDetails.id),
         })),
       );
@@ -69,9 +69,18 @@ const NewGroupChatModal = ({
       return;
     }
 
-    const selectedChatMembers = contacts
-      .filter((contact) => contact.isSelected)
-      .map((contact) => contact.contactDetails);
+    const selectedChatMembers = users
+      .filter((user) => user.isSelected)
+      .map((user) => {
+        return {
+          id: user.id,
+          username: user.username,
+          name: user.name,
+          about: user.about,
+          avatar: user.avatar,
+          is24HourClock: user.is24HourClock,
+        };
+      });
 
     const newGroupChatInfo = {
       name: name.value || null,
@@ -104,9 +113,10 @@ const NewGroupChatModal = ({
         {loading ? (
           <Spinner />
         ) : (
-          <SelectContactsList
-            contacts={contacts}
+          <SelectUsersList
+            users={users}
             setSelectedIds={setSelectedIds}
+            notFoundMessage="No contacts found"
           />
         )}
         <FormField field={name} />
