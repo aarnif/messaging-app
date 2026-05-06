@@ -1,7 +1,7 @@
 import SelectUserButton from "../../components/ui/SelectUserButton";
 import type { AddContactOption } from "../../types";
 
-const SelectUserList = ({
+const SelectUsersList = ({
   users,
   setSelectedIds,
   notFoundMessage,
@@ -46,4 +46,4 @@ const SelectUserList = ({
   );
 };
 
-export default SelectUserList;
+export default SelectUsersList;

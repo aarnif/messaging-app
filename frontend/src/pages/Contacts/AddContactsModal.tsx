@@ -13,7 +13,7 @@ import { ALL_CONTACTS_BY_USER, NON_CONTACT_USERS } from "../../graphql/queries";
 import useErrorMessage from "../../hooks/useErrorMessage";
 import useField from "../../hooks/useField";
 import type { AddContactOption } from "../../types";
-import SelectUserList from "./SelectUserList";
+import SelectUsersList from "./SelectUsersList";
 
 const AddContactsModal = ({
   setIsAddContactsModalOpen,
@@ -92,7 +92,7 @@ const AddContactsModal = ({
         {loading ? (
           <Spinner />
         ) : (
-          <SelectUserList
+          <SelectUsersList
             users={users}
             setSelectedIds={setSelectedIds}
             notFoundMessage="No users found"
