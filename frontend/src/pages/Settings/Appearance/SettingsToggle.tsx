@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { FaCheck } from "react-icons/fa6";
 import { MdClose } from "react-icons/md";
 
@@ -26,10 +27,16 @@ const SettingsToggle = ({
         className="cursor-pointer"
       >
         <div
-          className={`flex h-8 w-16 rounded-full ${isActive ? "bg-green-500" : "bg-slate-400"}`}
+          className={`flex h-8 w-16 rounded-full ${isActive ? "justify-start bg-green-500" : "justify-end bg-slate-400"}`}
         >
-          <div
-            className={`m-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 transition-all ${isActive ? "translate-x-8" : "translate-x-0"}`}
+          <motion.div
+            layout
+            transition={{
+              type: "spring",
+              visualDuration: 0.2,
+              bounce: 0.2,
+            }}
+            className="m-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100"
           >
             {isActive ? (
               <FaCheck
@@ -42,7 +49,7 @@ const SettingsToggle = ({
                 data-testid="close-mark"
               />
             )}
-          </div>
+          </motion.div>
         </div>
       </button>
     </div>
