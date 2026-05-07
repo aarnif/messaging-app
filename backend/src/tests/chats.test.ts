@@ -817,8 +817,8 @@ describeGraphQLSuite("Chats", () => {
 
       assert.ok(creator, "Creator should be in members");
       assert.ok(member1, "Member 1 should be in members");
-      assert.strictEqual(creator.role, "admin");
-      assert.strictEqual(member1.role, "member");
+      assert.strictEqual(creator.isAdmin, true);
+      assert.strictEqual(member1.isAdmin, false);
     });
   });
 

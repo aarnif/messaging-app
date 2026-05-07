@@ -102,7 +102,7 @@ export const CREATE_CHAT = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -133,7 +133,7 @@ export const EDIT_CHAT = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -164,7 +164,7 @@ export const DELETE_CHAT = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -212,7 +212,7 @@ export const SEND_MESSAGE = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -243,7 +243,7 @@ export const EDIT_MESSAGE = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -274,7 +274,7 @@ export const DELETE_MESSAGE = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -306,7 +306,7 @@ export const LEAVE_CHAT = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -363,7 +363,7 @@ export const FIND_CHAT_BY_ID = `
         username
         name
         avatar
-        role
+        isAdmin
         unreadCount
       }
       messages {
@@ -474,7 +474,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
         name
         avatar
         about
-        role
+        isAdmin
       }
     }
   }

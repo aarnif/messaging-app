@@ -33,12 +33,12 @@ import {
   EDIT_PROFILE,
   FIND_CHAT_BY_ID,
   FIND_CONTACT_BY_ID,
-  FIND_PRIVATE_CHAT_WITH_CONTACT,
   FIND_CONTACT_BY_USER_ID,
+  FIND_PRIVATE_CHAT_WITH_CONTACT,
   FIND_USER_BY_ID,
   IS_BLOCKED_BY_USER,
-  LOGIN,
   LEAVE_CHAT,
+  LOGIN,
   MARK_CHAT_AS_READ,
   ME,
   NON_CONTACT_USERS,
@@ -374,10 +374,10 @@ export const assertChatEquality = (
 
     if (i === 0) {
       assert.ok(member, "Creator should be in members");
-      assert.strictEqual(member?.role, "admin");
+      assert.strictEqual(member?.isAdmin, true);
     } else {
       assert.ok(member, `Member ${i} should be in members`);
-      assert.strictEqual(member?.role, "member");
+      assert.strictEqual(member?.isAdmin, false);
     }
     assert.strictEqual(member.unreadCount, expected.members[i].unreadCount);
   }

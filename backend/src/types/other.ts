@@ -15,7 +15,7 @@ export interface Chat {
 export interface ChatMember {
   userId: number;
   chatId: number;
-  role: "member" | "admin";
+  isAdmin: boolean;
   unreadCount: number;
 }
 

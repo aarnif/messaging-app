@@ -34,7 +34,7 @@ export const SEND_MESSAGE =
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -64,7 +64,7 @@ export const EDIT_MESSAGE =
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -94,7 +94,7 @@ export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -124,7 +124,7 @@ export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -153,7 +153,7 @@ export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -182,7 +182,7 @@ export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id
@@ -211,7 +211,7 @@ export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
       username
       name
       avatar
-      role
+      isAdmin
     }
     messages {
       id

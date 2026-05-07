@@ -13,11 +13,11 @@ class ChatMember extends Model<
   declare id: CreationOptional<number>;
   declare userId: number;
   declare chatId: number;
-  declare role: "member" | "admin";
+  declare isAdmin: boolean;
   declare name?: string;
   declare unreadCount: number;
   declare chat_member?: {
-    role: string;
+    isAdmin: boolean;
     unreadCount: number;
   };
 }
@@ -44,10 +44,10 @@ ChatMember.init(
         key: "id",
       },
     },
-    role: {
-      type: DataTypes.ENUM("member", "admin"),
-      defaultValue: "member",
+    isAdmin: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
     unreadCount: {
       type: DataTypes.INTEGER,

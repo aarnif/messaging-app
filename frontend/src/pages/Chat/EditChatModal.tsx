@@ -65,7 +65,7 @@ const EditChatModal = ({
       );
 
       const chatMembers = chat.members
-        .filter((member) => member.role === "member")
+        .filter((member) => !member.isAdmin)
         .map(({ id, username, name, about, avatar, is24HourClock }) => ({
           id,
           username,
