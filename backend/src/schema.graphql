@@ -50,7 +50,7 @@ type ChatMember {
   about: String
   avatar: String
   is24HourClock: Boolean!
-  role: String
+  isAdmin: Boolean!
   unreadCount: Int!
 }
 

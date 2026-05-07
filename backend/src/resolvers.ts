@@ -110,7 +110,7 @@ export const resolvers: Resolvers = {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: ["role", "unreadCount"],
+                  attributes: ["isAdmin", "unreadCount"],
                 },
               },
               {
@@ -188,7 +188,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["role"],
+              attributes: ["isAdmin"],
             },
           },
         ],
@@ -442,7 +442,7 @@ export const resolvers: Resolvers = {
               },
             },
             through: {
-              attributes: ["role"],
+              attributes: ["isAdmin"],
             },
           },
         ],
@@ -490,8 +490,8 @@ export const resolvers: Resolvers = {
       getChatName(parent, context.currentUser),
   },
   ChatMember: {
-    role: (parent: ChatMember & { chat_member?: { role: string } }) =>
-      parent.chat_member?.role || null,
+    isAdmin: (parent: ChatMember & { chat_member?: { isAdmin: boolean } }) =>
+      parent.chat_member?.isAdmin ?? false,
     unreadCount: (
       parent: ChatMember & { chat_member?: { unreadCount: number } },
     ) => parent.chat_member?.unreadCount ?? 0,
@@ -886,10 +886,7 @@ export const resolvers: Resolvers = {
             return {
               userId: Number(member),
               chatId: Number(newChat.id),
-              role:
-                Number(member) === Number(context.currentUser?.id)
-                  ? "admin"
-                  : "member",
+              isAdmin: Number(member) === Number(context.currentUser?.id),
               unreadCount:
                 Number(member) === Number(context.currentUser?.id) ? 0 : 1,
             };
@@ -915,7 +912,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role"],
+                attributes: ["isAdmin"],
               },
             },
           ],
@@ -977,7 +974,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["role"],
+              attributes: ["isAdmin"],
             },
           },
         ],
@@ -1056,7 +1053,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["role"],
+              attributes: ["isAdmin"],
             },
           },
           {
@@ -1097,7 +1094,7 @@ export const resolvers: Resolvers = {
             membersToAdd.map((memberId) => ({
               userId: memberId,
               chatId: Number(chatToBeUpdated.id),
-              role: "member",
+              isAdmin: false,
               unreadCount: 0,
             })),
           );
@@ -1203,7 +1200,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role"],
+                attributes: ["isAdmin"],
               },
             },
           ],
@@ -1264,7 +1261,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role"],
+                attributes: ["isAdmin"],
               },
             },
           ],
@@ -1360,7 +1357,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role", "unreadCount"],
+                attributes: ["isAdmin", "unreadCount"],
               },
             },
           ],
@@ -1473,7 +1470,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role", "unreadCount"],
+                attributes: ["isAdmin", "unreadCount"],
               },
             },
           ],
@@ -1546,7 +1543,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["role", "unreadCount"],
+                attributes: ["isAdmin", "unreadCount"],
               },
             },
           ],

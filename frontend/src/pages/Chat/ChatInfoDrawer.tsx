@@ -41,7 +41,7 @@ const ChatMemberItem = ({
           <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
             {about}
           </p>
-          {member.role === "admin" && (
+          {member.isAdmin && (
             <p className="text-xs font-medium text-slate-900 dark:text-slate-50">
               Admin
             </p>
@@ -102,7 +102,7 @@ const ChatInfoDrawer = ({
   };
 
   const isAdmin =
-    currentUser.id === members?.find((member) => member.role === "admin")?.id;
+    currentUser.id === members?.find((member) => member.isAdmin)?.id;
 
   return (
     <motion.div
