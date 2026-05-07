@@ -57,16 +57,36 @@ const EditChatModal = ({
     },
   });
 
+  // Merge and deduplicate chat members and user contacts to mark selected users
   useEffect(() => {
     if (data) {
+      const contactUsers = data.allContactsByUser?.map(
+        (contact) => contact.contactDetails,
+      );
+
+      const chatMembers = chat.members
+        .filter((member) => member.role === "member")
+        .map(({ id, username, name, about, avatar, is24HourClock }) => ({
+          id,
+          username,
+          name,
+          about,
+          avatar,
+          is24HourClock,
+        }));
+
+      const userMap = new Map(
+        [...chatMembers, ...contactUsers].map((user) => [user.id, user]),
+      );
+
       setUsers(
-        data?.allContactsByUser?.map((contact) => ({
-          ...contact.contactDetails,
-          isSelected: selectedIds.has(contact.contactDetails.id),
+        Array.from(userMap.values()).map((user) => ({
+          ...user,
+          isSelected: selectedIds.has(user.id),
         })),
       );
     }
-  }, [data, selectedIds]);
+  }, [data, selectedIds, chat.members]);
 
   const handleEditChat = async () => {
     if (name.value.length < 3) {
