@@ -1,3 +1,4 @@
+import { motion } from "motion/react";
 import { FaCheck } from "react-icons/fa6";
 import { MdClose } from "react-icons/md";
 
@@ -23,27 +24,29 @@ const SettingsToggle = ({
       <button
         onClick={onClick}
         data-testid={buttonTestId}
-        className="cursor-pointer"
+        className={`flex h-8 w-16 rounded-full cursor-pointer ${isActive ? "justify-start bg-green-500" : "justify-end bg-slate-400"}`}
       >
-        <div
-          className={`flex h-8 w-16 rounded-full ${isActive ? "bg-green-500" : "bg-slate-400"}`}
+        <motion.div
+          layout
+          transition={{
+            type: "spring",
+            visualDuration: 0.2,
+            bounce: 0.2,
+          }}
+          className="m-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100"
         >
-          <div
-            className={`m-1 flex h-6 w-6 items-center justify-center rounded-full bg-slate-100 transition-all ${isActive ? "translate-x-8" : "translate-x-0"}`}
-          >
-            {isActive ? (
-              <FaCheck
-                className="h-3.5 w-3.5 fill-current text-slate-700"
-                data-testid="check-mark"
-              />
-            ) : (
-              <MdClose
-                className="h-3.5 w-3.5 fill-current text-slate-700"
-                data-testid="close-mark"
-              />
-            )}
-          </div>
-        </div>
+          {isActive ? (
+            <FaCheck
+              className="h-3.5 w-3.5 fill-current text-slate-700"
+              data-testid="check-mark"
+            />
+          ) : (
+            <MdClose
+              className="h-3.5 w-3.5 fill-current text-slate-700"
+              data-testid="close-mark"
+            />
+          )}
+        </motion.div>
       </button>
     </div>
   );
