@@ -38,7 +38,9 @@ COPY --from=backend-build /usr/src/app/backend/src/schema.graphql ./build/src/sc
 COPY --from=frontend-build /usr/src/app/frontend/dist ./build/dist
 
 RUN npm ci --omit=dev && \
-    npm cache clean --force
+    npm cache clean --force && \
+    addgroup -g 1001 -S appuser && \
+    adduser -S -u 1001 -G appuser appuser
 
 EXPOSE 4000
 CMD ["node", "build/src/index.js"]
