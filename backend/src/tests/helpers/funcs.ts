@@ -367,6 +367,7 @@ export const assertChatEquality = (
 ) => {
   const chat = assertChatBasics<Chat>(actual, expected, "Chat");
 
+  assert.strictEqual(chat.description, expected.description);
   assert.strictEqual(chat.messages.length, expected.messages.length);
 
   for (let i = 0; i < chat.members.length; ++i) {

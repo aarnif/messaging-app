@@ -237,7 +237,7 @@ describeGraphQLSuite("Chats", () => {
         {
           id: chatId,
           name: "Updated Group Chat",
-          description: "Updated description",
+          description: "Updated test description",
           members: [user2Details.id],
         },
         token,
@@ -281,6 +281,7 @@ describeGraphQLSuite("Chats", () => {
       assertChatEquality(chat, {
         ...expectedGroupChat,
         name: "Chat with No Description",
+        description: null,
       });
     });
   });
