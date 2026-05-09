@@ -13,6 +13,7 @@ export const CREATE_USER = `
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `;
@@ -34,6 +35,7 @@ export const ME = `
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `;
@@ -50,6 +52,7 @@ export const ADD_CONTACT = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -67,6 +70,7 @@ export const ADD_CONTACTS = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -84,6 +88,7 @@ export const REMOVE_CONTACT = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -194,6 +199,7 @@ export const TOGGLE_BLOCK_CONTACT = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -333,6 +339,7 @@ export const EDIT_PROFILE = `
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `;
@@ -346,6 +353,7 @@ export const FIND_USER_BY_ID = `
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `;
@@ -399,6 +407,7 @@ export const ALL_CONTACTS_BY_USER = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -416,6 +425,7 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -437,6 +447,7 @@ export const ALL_CHATS_BY_USER = `
         avatar
         isAdmin
         is24HourClock
+        isDarkMode
         unreadCount
       }
       latestMessage {
@@ -466,6 +477,7 @@ export const FIND_CONTACT_BY_ID = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -499,6 +511,7 @@ export const CHANGE_PASSWORD = `mutation ChangePassword($input: ChangePasswordIn
     about
     avatar
     is24HourClock
+    isDarkMode
   }
 }`;
 
@@ -514,6 +527,7 @@ export const FIND_CONTACT_BY_USER_ID = `
         about
         avatar
         is24HourClock
+        isDarkMode
       }
     }
   }
@@ -534,6 +548,7 @@ export const NON_CONTACT_USERS = `
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `;

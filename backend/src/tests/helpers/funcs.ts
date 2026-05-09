@@ -317,6 +317,7 @@ export const assertUserEquality = (
   assert.strictEqual(actual.about, expected.about);
   assert.strictEqual(actual.avatar, expected.avatar);
   assert.strictEqual(actual.is24HourClock, expected.is24HourClock);
+  assert.strictEqual(actual.isDarkMode, expected.isDarkMode);
 };
 
 export const assertContactEquality = (

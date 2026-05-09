@@ -236,6 +236,7 @@ describeGraphQLSuite("Users", () => {
           name: "Updated Name",
           about: "Updated about",
           is24HourClock: true,
+          isDarkMode: false,
         },
         "",
       );
@@ -252,6 +253,7 @@ describeGraphQLSuite("Users", () => {
           name: "AB",
           about: "Valid about text",
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );
@@ -274,6 +276,7 @@ describeGraphQLSuite("Users", () => {
           name: updatedName,
           about: updatedAbout,
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );
@@ -295,6 +298,7 @@ describeGraphQLSuite("Users", () => {
           name: updatedName,
           about: null,
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );

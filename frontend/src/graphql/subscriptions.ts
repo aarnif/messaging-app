@@ -14,6 +14,7 @@ export const MESSAGE_SENT = gql(`
         about
         avatar
         is24HourClock
+        isDarkMode
       }
       content
       createdAt
@@ -36,6 +37,7 @@ export const MESSAGE_EDITED = gql(`
         about
         avatar
         is24HourClock
+        isDarkMode
       }
       content
       createdAt
@@ -58,6 +60,7 @@ export const MESSAGE_DELETED = gql(`
         about
         avatar
         is24HourClock
+        isDarkMode
       }
       content
       createdAt
@@ -82,6 +85,7 @@ export const USER_CHAT_UPDATED = gql(`
         about
         avatar
         is24HourClock
+        isDarkMode
         isAdmin
         unreadCount
       }
@@ -97,6 +101,7 @@ export const USER_CHAT_UPDATED = gql(`
           about
           avatar
           is24HourClock
+          isDarkMode
         }
         content
         createdAt
@@ -121,6 +126,7 @@ export const USER_CHAT_CREATED = gql(`
         about
         avatar
         is24HourClock
+        isDarkMode
         isAdmin
         unreadCount
       }
@@ -136,6 +142,7 @@ export const USER_CHAT_CREATED = gql(`
           about
           avatar
           is24HourClock
+          isDarkMode
         }
         content
         createdAt

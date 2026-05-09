@@ -79,6 +79,7 @@ const NewGroupChatModal = ({
           about: user.about,
           avatar: user.avatar,
           is24HourClock: user.is24HourClock,
+          isDarkMode: user.isDarkMode,
         };
       });
 

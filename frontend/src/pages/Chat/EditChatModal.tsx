@@ -66,14 +66,25 @@ const EditChatModal = ({
 
       const chatMembers = chat.members
         .filter((member) => !member.isAdmin)
-        .map(({ id, username, name, about, avatar, is24HourClock }) => ({
-          id,
-          username,
-          name,
-          about,
-          avatar,
-          is24HourClock,
-        }));
+        .map(
+          ({
+            id,
+            username,
+            name,
+            about,
+            avatar,
+            is24HourClock,
+            isDarkMode,
+          }) => ({
+            id,
+            username,
+            name,
+            about,
+            avatar,
+            is24HourClock,
+            isDarkMode,
+          }),
+        );
 
       const userMap = new Map(
         [...chatMembers, ...contactUsers].map((user) => [user.id, user]),

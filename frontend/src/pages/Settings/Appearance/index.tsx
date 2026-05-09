@@ -39,6 +39,7 @@ const Appearance = () => {
           name: currentUser.name,
           about: currentUser.about,
           is24HourClock: updatedClock,
+          isDarkMode: currentUser.isDarkMode,
         },
       },
     });
