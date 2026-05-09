@@ -18,6 +18,7 @@ import {
   allChatsByUser,
   assertChatEquality,
   assertError,
+  assertUserChatEquality,
   assertValidationError,
   createChat,
   createUser,
@@ -237,7 +238,7 @@ describeGraphQLSuite("Chats", () => {
         {
           id: chatId,
           name: "Updated Group Chat",
-          description: "Updated description",
+          description: "Updated test description",
           members: [user2Details.id],
         },
         token,
@@ -281,6 +282,7 @@ describeGraphQLSuite("Chats", () => {
       assertChatEquality(chat, {
         ...expectedGroupChat,
         name: "Chat with No Description",
+        description: null,
       });
     });
   });
@@ -708,6 +710,13 @@ describeGraphQLSuite("Chats", () => {
 
       assert.ok(Array.isArray(chats), "Chats should be an array");
       assert.strictEqual(chats.length, 2, "Should have 2 chats");
+
+      const chat = chats[0];
+      assertUserChatEquality(chat, {
+        ...expectedGroupChat,
+        id: "2",
+        latestMessage: expectedGroupChat.messages[0],
+      });
     });
 
     void test("filters chats by name search", async () => {
@@ -722,8 +731,11 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assert.ok(chat, "Chat should exist");
-      assert.strictEqual(chat.name, groupChatDetails.name);
+      assertUserChatEquality(chat, {
+        ...expectedGroupChat,
+        id: "2",
+        latestMessage: expectedGroupChat.messages[0],
+      });
     });
 
     void test("filters chats by description search", async () => {
@@ -741,8 +753,11 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assert.ok(chat, "Chat should exist");
-      assert.strictEqual(chat.name, groupChatDetails.name);
+      assertUserChatEquality(chat, {
+        ...expectedGroupChat,
+        id: "2",
+        latestMessage: expectedGroupChat.messages[0],
+      });
     });
 
     void test("search is case insensitive", async () => {
@@ -756,8 +771,10 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assert.ok(chat, "Chat should exist");
-      assert.strictEqual(chat.name, groupChatDetails.name);
+      assertUserChatEquality(chat, {
+        ...expectedGroupChat,
+        latestMessage: expectedGroupChat.messages[0],
+      });
     });
   });
 

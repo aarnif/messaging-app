@@ -23,7 +23,6 @@ import {
   contactsWithoutPrivateChat,
   createChat,
   createUser,
-  editProfile,
   findContactById,
   findContactByUserId,
   isBlockedByUser,
@@ -359,18 +358,10 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const newName = "New Name";
-
-      await editProfile(
-        {
-          name: newName,
-          about: null,
-          is24HourClock: true,
-        },
-        user2Token,
+      const responseBody = await allContactsByUser(
+        user2Details.name,
+        user1Token,
       );
-
-      const responseBody = await allContactsByUser(newName, user1Token);
 
       const contacts = responseBody.data?.allContactsByUser;
 
@@ -381,7 +372,10 @@ describeGraphQLSuite("Contacts", () => {
 
       assertContactEquality(contact, {
         ...expectedContact1,
-        contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        contactDetails: {
+          ...expectedContact1.contactDetails,
+          name: user2Details.name,
+        },
       });
     });
 
@@ -477,19 +471,8 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       await addContact(user3Details.id, user1Token);
 
-      const newName = "New Name";
-
-      await editProfile(
-        {
-          name: newName,
-          about: null,
-          is24HourClock: true,
-        },
-        user2Token,
-      );
-
       const responseBody = await contactsWithoutPrivateChat(
-        newName,
+        user2Details.name,
         user1Token,
       );
 
@@ -502,7 +485,10 @@ describeGraphQLSuite("Contacts", () => {
 
       assertContactEquality(contact, {
         ...expectedContact1,
-        contactDetails: { ...expectedContact1.contactDetails, name: newName },
+        contactDetails: {
+          ...expectedContact1.contactDetails,
+          name: user2Details.name,
+        },
       });
     });
 
@@ -682,24 +668,16 @@ describeGraphQLSuite("Contacts", () => {
     });
 
     void test("filters users by name search", async () => {
-      const newName = "New Name";
-
-      await editProfile(
-        {
-          name: newName,
-          about: null,
-          is24HourClock: true,
-        },
-        user2Token,
-      );
-
-      const responseBody = await nonContactUsers(newName, user1Token);
+      const responseBody = await nonContactUsers(user2Details.name, user1Token);
 
       const users = responseBody.data?.nonContactUsers;
 
       assert.ok(Array.isArray(users), "Users should be an array");
       assert.strictEqual(users.length, 1, "Should have 1 user");
-      assertUserEquality(users[0], { ...expectedUser2, name: newName });
+      assertUserEquality(users[0], {
+        ...expectedUser2,
+        name: user2Details.name,
+      });
     });
 
     void test("returns empty array when search has no matches", async () => {

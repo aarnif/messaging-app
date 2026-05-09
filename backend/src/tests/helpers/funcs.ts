@@ -269,7 +269,7 @@ export const assertValidationError = (
   expectedCode: string = "BAD_USER_INPUT",
 ) => {
   assert.ok(responseBody.errors, "Response should have errors");
-  assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
+  assert.ok(responseBody.errors.length > 0, "Should have at least one error");
 
   const error = responseBody.errors[0];
   assert.strictEqual(error.message, "Input validation failed");
@@ -277,7 +277,7 @@ export const assertValidationError = (
     error.extensions?.validationErrors?.[0].message,
     expectedValidationMessage,
   );
-  assert.strictEqual(error.extensions?.code, expectedCode);
+  assert.strictEqual(error.extensions.code, expectedCode);
 };
 
 export const assertError = (
@@ -296,7 +296,7 @@ export const assertError = (
   expectedCode?: string,
 ) => {
   assert.ok(responseBody.errors, "Response should have errors");
-  assert.ok(responseBody.errors?.length > 0, "Should have at least one error");
+  assert.ok(responseBody.errors.length > 0, "Should have at least one error");
 
   const error = responseBody.errors[0];
   assert.strictEqual(error.message, expectedMessage);
@@ -367,6 +367,7 @@ export const assertChatEquality = (
 ) => {
   const chat = assertChatBasics<Chat>(actual, expected, "Chat");
 
+  assert.strictEqual(chat.description, expected.description);
   assert.strictEqual(chat.messages.length, expected.messages.length);
 
   for (let i = 0; i < chat.members.length; ++i) {
@@ -374,10 +375,10 @@ export const assertChatEquality = (
 
     if (i === 0) {
       assert.ok(member, "Creator should be in members");
-      assert.strictEqual(member?.isAdmin, true);
+      assert.strictEqual(member.isAdmin, true);
     } else {
       assert.ok(member, `Member ${i} should be in members`);
-      assert.strictEqual(member?.isAdmin, false);
+      assert.strictEqual(member.isAdmin, false);
     }
     assert.strictEqual(member.unreadCount, expected.members[i].unreadCount);
   }

@@ -426,8 +426,19 @@ export const ALL_CHATS_BY_USER = `
     allChatsByUser(search: $search) {
       id
       name
+      type
       avatar
       unreadCount
+      members {
+        id
+        username
+        name
+        about
+        avatar
+        isAdmin
+        is24HourClock
+        unreadCount
+      }
       latestMessage {
         id
         isNotification
