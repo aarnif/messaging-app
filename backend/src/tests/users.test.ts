@@ -311,6 +311,25 @@ describeGraphQLSuite("Users", () => {
       });
     });
 
+    void test("succeeds updating clock preference", async () => {
+      const responseBody = await editProfile(
+        {
+          name: expectedUser1.name,
+          about: expectedUser1.about,
+          is24HourClock: false,
+          isDarkMode: false,
+        },
+        token,
+      );
+
+      const user = responseBody.data?.editProfile;
+
+      assertUserEquality(user, {
+        ...expectedUser1,
+        is24HourClock: false,
+      });
+    });
+
     void test("succeeds updating dark mode preference", async () => {
       const responseBody = await editProfile(
         {
