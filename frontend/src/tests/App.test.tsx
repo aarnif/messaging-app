@@ -16,6 +16,8 @@ import {
   markChatAsRead,
   meMock,
   meNullMock,
+  messageDeletedSubscription,
+  messageEditedSubscription,
   messageSentSubscription,
   userChatCreatedSubscription,
   userChatDeletedSubscription,
@@ -144,6 +146,8 @@ describe("<App />", () => {
         userChatDeletedSubscription,
         userChatLeftSubscription,
         messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
       ],
     );
 
