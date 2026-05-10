@@ -556,6 +556,7 @@ export const allChatsByUser: MockLink.MockedResponse<
       allChatsByUser: userChatsMock,
     },
   },
+  maxUsageCount: 2,
 };
 
 export const allContactsByUserEmpty: MockLink.MockedResponse<
