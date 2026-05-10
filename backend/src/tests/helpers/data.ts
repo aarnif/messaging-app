@@ -45,6 +45,7 @@ export const expectedUser1 = {
   about: null,
   avatar: null,
   is24HourClock: true,
+  isDarkMode: false,
 };
 
 export const expectedUser2 = {
@@ -54,6 +55,7 @@ export const expectedUser2 = {
   about: null,
   avatar: null,
   is24HourClock: true,
+  isDarkMode: false,
 };
 
 export const expectedUser3 = {
@@ -63,6 +65,7 @@ export const expectedUser3 = {
   about: null,
   avatar: null,
   is24HourClock: true,
+  isDarkMode: false,
 };
 
 export const expectedContact1 = {

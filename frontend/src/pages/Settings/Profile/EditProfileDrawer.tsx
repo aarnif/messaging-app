@@ -44,6 +44,7 @@ const EditProfileDrawer = ({
           name: nameInput.value,
           about: aboutInput.value,
           is24HourClock: currentUser.is24HourClock,
+          isDarkMode: currentUser.isDarkMode,
         },
       },
     });

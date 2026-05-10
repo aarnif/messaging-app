@@ -17,6 +17,7 @@ export const CREATE_USER = gql(`
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `);
@@ -279,6 +280,7 @@ export const EDIT_PROFILE =
     about
     avatar
     is24HourClock
+    isDarkMode
   }
 }
 `);
@@ -292,6 +294,7 @@ export const CHANGE_PASSWORD =
     about
     avatar
     is24HourClock
+    isDarkMode
   }
 }`);
 

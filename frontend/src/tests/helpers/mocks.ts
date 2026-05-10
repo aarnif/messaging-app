@@ -160,6 +160,7 @@ export const GROUP_CHAT_DETAILS = {
       about: null,
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
       isAdmin: true,
       unreadCount: 0,
     },
@@ -170,6 +171,7 @@ export const GROUP_CHAT_DETAILS = {
       about: null,
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
       isAdmin: false,
       unreadCount: 0,
     },
@@ -180,6 +182,7 @@ export const GROUP_CHAT_DETAILS = {
       about: null,
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
       isAdmin: false,
       unreadCount: 0,
     },
@@ -197,6 +200,7 @@ export const GROUP_CHAT_DETAILS = {
         about: null,
         avatar: null,
         is24HourClock: true,
+        isDarkMode: false,
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
@@ -214,6 +218,7 @@ export const GROUP_CHAT_DETAILS = {
         about: null,
         avatar: null,
         is24HourClock: true,
+        isDarkMode: false,
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
@@ -231,6 +236,7 @@ export const GROUP_CHAT_DETAILS = {
         about: null,
         avatar: null,
         is24HourClock: true,
+        isDarkMode: false,
       },
       content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
       createdAt: 1759094100000 + 2 * 86400000,
@@ -255,6 +261,7 @@ export const PRIVATE_CHAT_DETAILS = {
       about: null,
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
       isAdmin: true,
       unreadCount: 0,
     },
@@ -265,6 +272,7 @@ export const PRIVATE_CHAT_DETAILS = {
       about: null,
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
       isAdmin: false,
       unreadCount: 0,
     },
@@ -282,6 +290,7 @@ export const PRIVATE_CHAT_DETAILS = {
         about: null,
         avatar: null,
         is24HourClock: true,
+        isDarkMode: false,
       },
       content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
       createdAt: 1759094100000,
@@ -299,6 +308,7 @@ export const PRIVATE_CHAT_DETAILS = {
         about: null,
         avatar: null,
         is24HourClock: true,
+        isDarkMode: false,
       },
       content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
       createdAt: 1759094100000 + 86400000,
@@ -319,6 +329,7 @@ export const MESSAGE_DETAILS = {
     about: null,
     avatar: null,
     is24HourClock: true,
+    isDarkMode: false,
   },
   content: "This is a new message.",
   createdAt: 1759094100000 + 3 * 86400000,
@@ -335,6 +346,7 @@ export const CONTACT_DETAILS = {
     about: "Hi! My name is User 2!",
     avatar: null,
     is24HourClock: true,
+    isDarkMode: false,
   },
 };
 
@@ -361,6 +373,7 @@ export const currentUserChatAdminMock = {
   about: null,
   avatar: null,
   is24HourClock: true,
+  isDarkMode: false,
 };
 
 export const currentUserChatMemberMock = {
@@ -370,6 +383,7 @@ export const currentUserChatMemberMock = {
   about: null,
   avatar: null,
   is24HourClock: true,
+  isDarkMode: false,
 };
 
 export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
@@ -572,6 +586,7 @@ export const userContactsMock = [
       about: "Hi! My name is User 2!",
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
     },
   },
   {
@@ -584,6 +599,7 @@ export const userContactsMock = [
       about: "Hi! My name is User 3!",
       avatar: null,
       is24HourClock: true,
+      isDarkMode: false,
     },
   },
 ];
@@ -685,6 +701,7 @@ export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
               about: null,
               avatar: null,
               is24HourClock: true,
+              isDarkMode: false,
             },
             content: `${USER_ONE_DETAILS.name} created the group`,
             createdAt: 1759094100000 + 3 * 86400000,
@@ -1022,6 +1039,7 @@ export const nonContactUsersMock = [
     about: "Hi! My name is User 4!",
     avatar: null,
     is24HourClock: true,
+    isDarkMode: false,
   },
   {
     id: USER_FIVE_DETAILS.id,
@@ -1030,6 +1048,7 @@ export const nonContactUsersMock = [
     about: "Hi! My name is User 5!",
     avatar: null,
     is24HourClock: true,
+    isDarkMode: false,
   },
 ];
 
@@ -1126,6 +1145,53 @@ export const addContactsEmpty: MockLink.MockedResponse<
   },
 };
 
+export const editProfileDarkModeOn: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
+        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        isDarkMode: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: {
+        ...currentUserChatAdminMock,
+        isDarkMode: true,
+      },
+    },
+  },
+};
+
+export const editProfileDarkModeOff: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
+        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        isDarkMode: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: currentUserChatAdminMock,
+    },
+  },
+};
+
 export const editProfile24h: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables
@@ -1137,6 +1203,7 @@ export const editProfile24h: MockLink.MockedResponse<
         name: currentUserChatAdminMock.name,
         about: currentUserChatAdminMock.about,
         is24HourClock: true,
+        isDarkMode: false,
       },
     },
   },
@@ -1158,6 +1225,7 @@ export const editProfile12h: MockLink.MockedResponse<
         name: currentUserChatAdminMock.name,
         about: currentUserChatAdminMock.about,
         is24HourClock: false,
+        isDarkMode: false,
       },
     },
   },
@@ -1166,6 +1234,7 @@ export const editProfile12h: MockLink.MockedResponse<
       editProfile: {
         ...currentUserChatAdminMock,
         is24HourClock: false,
+        isDarkMode: false,
       },
     },
   },
@@ -1182,6 +1251,7 @@ export const editProfileUpdate: MockLink.MockedResponse<
         name: "New Profile Name",
         about: "New About Text",
         is24HourClock: true,
+        isDarkMode: false,
       },
     },
   },

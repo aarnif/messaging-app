@@ -236,6 +236,7 @@ describeGraphQLSuite("Users", () => {
           name: "Updated Name",
           about: "Updated about",
           is24HourClock: true,
+          isDarkMode: false,
         },
         "",
       );
@@ -252,6 +253,7 @@ describeGraphQLSuite("Users", () => {
           name: "AB",
           about: "Valid about text",
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );
@@ -274,6 +276,7 @@ describeGraphQLSuite("Users", () => {
           name: updatedName,
           about: updatedAbout,
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );
@@ -295,6 +298,7 @@ describeGraphQLSuite("Users", () => {
           name: updatedName,
           about: null,
           is24HourClock: true,
+          isDarkMode: false,
         },
         token,
       );
@@ -304,6 +308,25 @@ describeGraphQLSuite("Users", () => {
       assertUserEquality(user, {
         ...expectedUser1,
         name: updatedName,
+      });
+    });
+
+    void test("succeeds updating dark mode preference", async () => {
+      const responseBody = await editProfile(
+        {
+          name: expectedUser1.name,
+          about: expectedUser1.about,
+          is24HourClock: true,
+          isDarkMode: true,
+        },
+        token,
+      );
+
+      const user = responseBody.data?.editProfile;
+
+      assertUserEquality(user, {
+        ...expectedUser1,
+        isDarkMode: true,
       });
     });
   });

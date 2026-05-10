@@ -1,6 +1,6 @@
 import { useQuery } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Outlet } from "react-router";
 import NewChatDropDownBox from "../../components/NewChatDropDown";
 import NewGroupChatModal from "../../components/NewGroupChatModal";
@@ -18,6 +18,16 @@ const Chats = ({ searchWord }: { searchWord: InputField }) => {
   const [isNewPrivateChatModalOpen, setIsNewPrivateChatModalOpen] =
     useState(false);
   const [isNewGroupChatModalOpen, setIsNewGroupChatModalOpen] = useState(false);
+
+  useEffect(() => {
+    if (currentUser) {
+      localStorage.setItem(
+        "messaging-app-theme",
+        currentUser.isDarkMode ? "dark" : "light",
+      );
+      document.documentElement.classList.toggle("dark", currentUser.isDarkMode);
+    }
+  }, [currentUser]);
 
   return (
     <div className="flex grow">

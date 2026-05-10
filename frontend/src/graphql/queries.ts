@@ -9,6 +9,7 @@ export const ME = gql(`
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 `);
@@ -28,6 +29,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
       avatar
       isAdmin
       is24HourClock
+      isDarkMode
       unreadCount
     }
     latestMessage {
@@ -42,6 +44,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
         about
         avatar
         is24HourClock
+        isDarkMode
       }
       content
       createdAt
@@ -62,6 +65,7 @@ export const ALL_CONTACTS_BY_USER =
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 }`);
@@ -81,6 +85,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
       avatar
       isAdmin
       is24HourClock
+      isDarkMode
       unreadCount
     }
     messages {
@@ -95,6 +100,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
         about
         avatar
         is24HourClock
+        isDarkMode
       }
       content
       createdAt
@@ -115,6 +121,7 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT =
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 }`);
@@ -130,6 +137,7 @@ export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 }`);
@@ -150,6 +158,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
       avatar
       isAdmin
       is24HourClock
+      isDarkMode
     }
   }
 }`);
@@ -166,6 +175,7 @@ export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
     about
     avatar
     is24HourClock
+    isDarkMode
   }
 }`);
 
@@ -181,6 +191,7 @@ export const FIND_CONTACT_BY_USER_ID =
       about
       avatar
       is24HourClock
+      isDarkMode
     }
   }
 }`);
