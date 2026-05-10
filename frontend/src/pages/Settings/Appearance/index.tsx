@@ -12,21 +12,28 @@ const Appearance = () => {
   }>();
 
   const navigate = useNavigate();
-  const [theme, setTheme] = useState(
-    localStorage.theme === "dark" ||
-      (!("theme" in localStorage) &&
-        window.matchMedia("(prefers-color-scheme: dark)").matches)
-      ? "dark"
-      : "light",
-  );
+  const [theme, setTheme] = useState(currentUser.isDarkMode ? "dark" : "light");
   const [is24HourClock, setIs24HourClock] = useState(currentUser.is24HourClock);
 
   const [mutate] = useMutation(EDIT_PROFILE);
 
-  const handleToggleDarkMode = () => {
+  const handleToggleDarkMode = async () => {
     const newTheme = theme === "dark" ? "light" : "dark";
+    const nextIsDarkMode = newTheme === "dark";
     setTheme(newTheme);
-    document.documentElement.classList.toggle("dark");
+    document.documentElement.classList.toggle("dark", nextIsDarkMode);
+    localStorage.setItem("theme", newTheme);
+
+    await mutate({
+      variables: {
+        input: {
+          name: currentUser.name,
+          about: currentUser.about,
+          is24HourClock: currentUser.is24HourClock,
+          isDarkMode: nextIsDarkMode,
+        },
+      },
+    });
   };
 
   const handleToggleClock = async () => {
