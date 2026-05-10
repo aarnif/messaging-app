@@ -1145,6 +1145,53 @@ export const addContactsEmpty: MockLink.MockedResponse<
   },
 };
 
+export const editProfileDarkModeOn: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
+        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        isDarkMode: true,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: {
+        ...currentUserChatAdminMock,
+        isDarkMode: true,
+      },
+    },
+  },
+};
+
+export const editProfileDarkModeOff: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentUserChatAdminMock.name,
+        about: currentUserChatAdminMock.about,
+        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        isDarkMode: false,
+      },
+    },
+  },
+  result: {
+    data: {
+      editProfile: currentUserChatAdminMock,
+    },
+  },
+};
+
 export const editProfile24h: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables

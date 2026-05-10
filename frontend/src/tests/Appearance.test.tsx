@@ -9,6 +9,8 @@ import {
   currentUserChatAdminMock,
   editProfile12h,
   editProfile24h,
+  editProfileDarkModeOff,
+  editProfileDarkModeOn,
   mockNavigate,
   mockUseOutletContext,
   windowMockContent,
@@ -56,6 +58,10 @@ const toggleAndVerify = async (
   await user.click(toggle);
 
   await waitFor(() => {
+    expect(localStorage.setItem).toHaveBeenCalledWith(
+      "messaging-app-theme",
+      expectedMark === "check-mark" ? "dark" : "light",
+    );
     expect(within(toggle).getByTestId(expectedMark)).toBeDefined();
   });
 };
@@ -80,12 +86,12 @@ describe("<Appearance />", () => {
 
   test("toggles dark mode successfully", async () => {
     const user = userEvent.setup();
-    renderComponent();
+    renderComponent([editProfileDarkModeOn, editProfileDarkModeOff]);
 
     await waitForAppearancePageRender();
 
-    await toggleAndVerify(user, "toggle-dark-mode", "close-mark");
     await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
+    await toggleAndVerify(user, "toggle-dark-mode", "close-mark");
   });
 
   test("toggles clock mode successfully", async () => {
