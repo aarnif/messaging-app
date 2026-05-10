@@ -8,8 +8,8 @@
     <script>
       document.documentElement.classList.toggle(
         "dark",
-        localStorage.theme === "dark" ||
-          (!("theme" in localStorage) &&
+        localStorage.getItem("messaging-app-theme") === "dark" ||
+          (!("messaging-app-theme" in localStorage) &&
             window.matchMedia("(prefers-color-scheme: dark)").matches),
       );
     </script>

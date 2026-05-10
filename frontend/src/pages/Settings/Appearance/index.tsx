@@ -22,7 +22,7 @@ const Appearance = () => {
     const nextIsDarkMode = newTheme === "dark";
     setTheme(newTheme);
     document.documentElement.classList.toggle("dark", nextIsDarkMode);
-    localStorage.setItem("theme", newTheme);
+    localStorage.setItem("messaging-app-theme", newTheme);
 
     await mutate({
       variables: {

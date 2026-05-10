@@ -21,7 +21,10 @@ const Chats = ({ searchWord }: { searchWord: InputField }) => {
 
   useEffect(() => {
     if (currentUser) {
-      localStorage.setItem("theme", currentUser.isDarkMode ? "dark" : "light");
+      localStorage.setItem(
+        "messaging-app-theme",
+        currentUser.isDarkMode ? "dark" : "light",
+      );
       document.documentElement.classList.toggle("dark", currentUser.isDarkMode);
     }
   }, [currentUser]);
