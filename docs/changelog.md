@@ -211,3 +211,14 @@ Ei muutoksia
 - Korjaa bugi littyen uuden chat modaalin esiintulo animaatioon
 - Luo uusi ModalLayout-komponentti modaaleihin liittyvälle toisteiselle koodille
 - Nimeä uudelleen komponentti: ModalProvider -> NotifyProvider
+
+## Viikko 33 (4.5-10.5.2026)
+
+- Nimeä uudelleen komponentti: Notify -> Error
+- Nimeä uudelleen komponentti: ChatInfoModal -> ChatInfoDrawer
+- Nimeä uudelleen komponentti: EditProfileModal -> EditProfileDrawer
+- Nimeä uudelleen komponentti: SelectUserList -> SelectUsersList
+- Käytä SelectUsersList-komponenttia aina valitessa käyttäjiä ja poista SelectContactsList komponentti
+- Korjaa bugi littyen käyttäjien poistoon chatista sen jäseniä muokattaessa, jos ne eivät ole chat adminin kontakteja
+- Lisää non-root käyttäjä Docker-konttiin
+- Tallenna dark mode valinta käyttäjäasetuksiin
