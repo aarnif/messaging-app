@@ -75,6 +75,7 @@ const EditChatModal = ({
             avatar,
             is24HourClock,
             isDarkMode,
+            isAdmin,
           }) => ({
             id,
             username,
@@ -83,6 +84,7 @@ const EditChatModal = ({
             avatar,
             is24HourClock,
             isDarkMode,
+            isAdmin,
           }),
         );
 
