@@ -161,5 +161,44 @@ export const USER_CHAT_LEFT = gql(`
     userChatLeft {
       chatId
       memberId
+    }}`);
+
+export const CHAT_EDITED = gql(`
+  subscription ChatEdited {
+    chatEdited {
+      id
+      type
+      name
+      description
+      avatar
+      members {
+        id
+        username
+        name
+        about
+        avatar
+        is24HourClock
+        isDarkMode
+        isAdmin
+        unreadCount
+      }
+      messages {
+        id
+        chatId
+        isNotification
+        isDeleted
+        sender {
+          id
+          username
+          name
+          about
+          avatar
+          is24HourClock
+          isDarkMode
+        }
+        content
+        createdAt
+        updatedAt
+      }
     }
 }`);

@@ -1752,6 +1752,9 @@ export const resolvers: Resolvers = {
     messageDeleted: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_DELETED"]),
     },
+    chatEdited: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_EDITED"]),
+    },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
     },
