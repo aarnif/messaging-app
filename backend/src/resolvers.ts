@@ -1104,6 +1104,32 @@ export const resolvers: Resolvers = {
           });
         }
 
+        const hasDescriptionChanged =
+          chatToBeUpdated.description !== description;
+
+        if (hasDescriptionChanged) {
+          const notificationMessage = await Message.create({
+            senderId: Number(context.currentUser?.id),
+            chatId: Number(chatToBeUpdated.id),
+            content:
+              description === ""
+                ? "Chat description was removed"
+                : `Chat description changed to "${description}"`,
+            isNotification: true,
+            isDeleted: false,
+          });
+
+          const messageWithSender = await Message.findByPk(
+            notificationMessage.id,
+            {
+              include: [{ model: User, as: "sender" }],
+            },
+          );
+          await pubsub.publish("MESSAGE_SENT", {
+            messageSent: messageWithSender,
+          });
+        }
+
         const currentMemberIds =
           chatToBeUpdated.members?.map((member) => member.id) || [];
 
