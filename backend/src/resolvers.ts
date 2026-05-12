@@ -1082,6 +1082,28 @@ export const resolvers: Resolvers = {
       }
 
       try {
+        const hasNameChanged = chatToBeUpdated.name !== name;
+
+        if (hasNameChanged) {
+          const notificationMessage = await Message.create({
+            senderId: Number(context.currentUser?.id),
+            chatId: Number(chatToBeUpdated.id),
+            content: `Chat name changed to "${name}"`,
+            isNotification: true,
+            isDeleted: false,
+          });
+
+          const messageWithSender = await Message.findByPk(
+            notificationMessage.id,
+            {
+              include: [{ model: User, as: "sender" }],
+            },
+          );
+          await pubsub.publish("MESSAGE_SENT", {
+            messageSent: messageWithSender,
+          });
+        }
+
         const currentMemberIds =
           chatToBeUpdated.members?.map((member) => member.id) || [];
 
