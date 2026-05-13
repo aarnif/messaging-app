@@ -9,6 +9,8 @@ import type {
   AllContactsByUserQueryVariables,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
+  ChatEditedSubscription,
+  ChatEditedSubscriptionVariables,
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables,
   CreateChatMutation,
@@ -96,6 +98,7 @@ import {
   NON_CONTACT_USERS,
 } from "../../graphql/queries";
 import {
+  CHAT_EDITED,
   MESSAGE_DELETED,
   MESSAGE_EDITED,
   MESSAGE_SENT,
@@ -1554,6 +1557,34 @@ export const userChatLeftSubscription: MockLink.MockedResponse<
         chatId: GROUP_CHAT_DETAILS.id,
         memberId: USER_TWO_DETAILS.id,
       },
+    },
+  },
+};
+
+export const privateChatEditedSubscription: MockLink.MockedResponse<
+  ChatEditedSubscription,
+  ChatEditedSubscriptionVariables
+> = {
+  request: {
+    query: CHAT_EDITED,
+  },
+  result: {
+    data: {
+      chatEdited: PRIVATE_CHAT_DETAILS,
+    },
+  },
+};
+
+export const groupChatEditedSubscription: MockLink.MockedResponse<
+  ChatEditedSubscription,
+  ChatEditedSubscriptionVariables
+> = {
+  request: {
+    query: CHAT_EDITED,
+  },
+  result: {
+    data: {
+      chatEdited: GROUP_CHAT_DETAILS,
     },
   },
 };

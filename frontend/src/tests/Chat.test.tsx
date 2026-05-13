@@ -28,6 +28,7 @@ import {
   findChatByIdPrivate,
   findContactByUserId,
   GROUP_CHAT_DETAILS,
+  groupChatEditedSubscription,
   isBlockedByUserTrue,
   leaveChat,
   markChatAsRead,
@@ -39,6 +40,7 @@ import {
   mockMatch,
   mockNavigate,
   mockUseOutletContext,
+  privateChatEditedSubscription,
   sendMessage,
   USER_ONE_DETAILS,
 } from "./helpers/mocks";
@@ -74,6 +76,7 @@ const renderComponent = (
     messageSentSubscription,
     messageEditedSubscription,
     messageDeletedSubscription,
+    groupChatEditedSubscription,
   ],
   currentUser = currentUserChatAdminMock,
 ) => {
@@ -170,6 +173,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await waitFor(() => {
@@ -236,6 +240,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await waitFor(() => {
@@ -266,6 +271,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      privateChatEditedSubscription,
     ]);
 
     await waitFor(async () => {
@@ -320,6 +326,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      privateChatEditedSubscription,
     ]);
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
@@ -353,6 +360,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -369,6 +377,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -396,6 +405,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -420,6 +430,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -461,6 +472,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -497,6 +509,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -516,6 +529,7 @@ describe("<Chat />", () => {
         messageSentSubscription,
         messageEditedSubscription,
         messageDeletedSubscription,
+        groupChatEditedSubscription,
       ],
       currentUserChatMemberMock,
     );
@@ -548,6 +562,7 @@ describe("<Chat />", () => {
         messageSentSubscription,
         messageEditedSubscription,
         messageDeletedSubscription,
+        groupChatEditedSubscription,
       ],
       currentUserChatMemberMock,
     );
@@ -568,6 +583,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await openChatInfoModal(user);
@@ -636,6 +652,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
       editMessage,
     ]);
 
@@ -692,6 +709,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
       deleteMessage,
     ]);
 
@@ -720,6 +738,7 @@ describe("<Chat />", () => {
       messageSentSubscription,
       messageEditedSubscription,
       messageDeletedSubscription,
+      groupChatEditedSubscription,
     ]);
 
     await waitFor(() => {
