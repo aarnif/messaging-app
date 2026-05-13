@@ -13,6 +13,7 @@ import Spinner from "../../components/ui/Spinner";
 import { MARK_CHAT_AS_READ } from "../../graphql/mutations";
 import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "../../graphql/queries";
 import {
+  CHAT_EDITED,
   MESSAGE_DELETED,
   MESSAGE_EDITED,
   MESSAGE_SENT,
@@ -109,6 +110,20 @@ const Chat = () => {
           message.id === deletedMessage.id ? deletedMessage : message,
         ),
       }));
+    },
+  });
+
+  useSubscription(CHAT_EDITED, {
+    onData: ({ data }) => {
+      console.log("Use CHAT_EDITED-subscription:");
+      const updatedChat = data.data?.chatEdited;
+
+      if (!updatedChat || updatedChat.id !== match?.id) {
+        console.log("Chat update is not for this chat, skipping cache update");
+        return;
+      }
+
+      updateChatByIdCache(client.cache, match.id, () => updatedChat);
     },
   });
 

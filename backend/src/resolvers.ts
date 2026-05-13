@@ -1245,7 +1245,7 @@ export const resolvers: Resolvers = {
           });
         }
 
-        return await Chat.findByPk(Number(id), {
+        const updatedChat = await Chat.findByPk(Number(id), {
           include: [
             {
               model: Message,
@@ -1261,6 +1261,12 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        await pubsub.publish("CHAT_EDITED", {
+          chatEdited: updatedChat,
+        });
+
+        return updatedChat;
       } catch (error) {
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
