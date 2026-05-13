@@ -11,6 +11,7 @@ import {
   findChatByIdGroup,
   findContactById,
   GROUP_CHAT_DETAILS,
+  groupChatEditedSubscription,
   isBlockedByUserFalse,
   LOGIN_TOKEN,
   markChatAsRead,
@@ -148,6 +149,7 @@ describe("<App />", () => {
         messageSentSubscription,
         messageEditedSubscription,
         messageDeletedSubscription,
+        groupChatEditedSubscription,
       ],
     );
 

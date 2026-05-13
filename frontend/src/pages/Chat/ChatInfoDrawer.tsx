@@ -147,7 +147,10 @@ const ChatInfoDrawer = ({
           >
             {name}
           </h4>
-          <p className="text-center text-xs font-normal text-slate-700 dark:text-slate-200">
+          <p
+            data-testid="chat-info-description"
+            className="text-center text-xs font-normal text-slate-700 dark:text-slate-200"
+          >
             {description}
           </p>
         </div>

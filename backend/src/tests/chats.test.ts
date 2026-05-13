@@ -230,6 +230,28 @@ describeGraphQLSuite("Chats", () => {
         ...expectedGroupChat,
         name: "Updated Group Chat",
         description: "Updated test description",
+        messages: expectedGroupChat.messages.concat([
+          {
+            id: "2",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat name changed to Updated Group Chat",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+          {
+            id: "3",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat description changed",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+        ]),
       });
     });
 
@@ -253,16 +275,38 @@ describeGraphQLSuite("Chats", () => {
         members: expectedGroupChat.members.filter(
           (member) => member.id !== user3Details.id,
         ),
-        messages: expectedGroupChat.messages.concat({
-          id: "2",
-          chatId: "1",
-          isNotification: true,
-          isDeleted: false,
-          sender: expectedUser2,
-          content: "User2 was removed from the chat",
-          createdAt: 1759094100000,
-          updatedAt: 1759094100000,
-        }),
+        messages: expectedGroupChat.messages.concat([
+          {
+            id: "2",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat name changed to Updated Group Chat",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+          {
+            id: "3",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat description changed",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+          {
+            id: "4",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "User3 was removed from the chat",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+        ]),
       });
     });
 
@@ -283,6 +327,28 @@ describeGraphQLSuite("Chats", () => {
         ...expectedGroupChat,
         name: "Chat with No Description",
         description: null,
+        messages: expectedGroupChat.messages.concat([
+          {
+            id: "2",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat name changed to Chat with No Description",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+          {
+            id: "3",
+            chatId: "1",
+            isNotification: true,
+            isDeleted: false,
+            sender: expectedUser2,
+            content: "Chat description removed",
+            createdAt: 1759094100000,
+            updatedAt: 1759094100000,
+          },
+        ]),
       });
     });
   });

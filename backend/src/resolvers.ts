@@ -1082,6 +1082,54 @@ export const resolvers: Resolvers = {
       }
 
       try {
+        const hasNameChanged = chatToBeUpdated.name !== name;
+
+        if (hasNameChanged) {
+          const notificationMessage = await Message.create({
+            senderId: Number(context.currentUser?.id),
+            chatId: Number(chatToBeUpdated.id),
+            content: `Chat name changed to "${name}"`,
+            isNotification: true,
+            isDeleted: false,
+          });
+
+          const messageWithSender = await Message.findByPk(
+            notificationMessage.id,
+            {
+              include: [{ model: User, as: "sender" }],
+            },
+          );
+          await pubsub.publish("MESSAGE_SENT", {
+            messageSent: messageWithSender,
+          });
+        }
+
+        const hasDescriptionChanged =
+          chatToBeUpdated.description !== description;
+
+        if (hasDescriptionChanged) {
+          const notificationMessage = await Message.create({
+            senderId: Number(context.currentUser?.id),
+            chatId: Number(chatToBeUpdated.id),
+            content:
+              description === ""
+                ? "Chat description was removed"
+                : `Chat description changed to "${description}"`,
+            isNotification: true,
+            isDeleted: false,
+          });
+
+          const messageWithSender = await Message.findByPk(
+            notificationMessage.id,
+            {
+              include: [{ model: User, as: "sender" }],
+            },
+          );
+          await pubsub.publish("MESSAGE_SENT", {
+            messageSent: messageWithSender,
+          });
+        }
+
         const currentMemberIds =
           chatToBeUpdated.members?.map((member) => member.id) || [];
 
@@ -1197,7 +1245,7 @@ export const resolvers: Resolvers = {
           });
         }
 
-        return await Chat.findByPk(Number(id), {
+        const updatedChat = await Chat.findByPk(Number(id), {
           include: [
             {
               model: Message,
@@ -1213,6 +1261,12 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        await pubsub.publish("CHAT_EDITED", {
+          chatEdited: updatedChat,
+        });
+
+        return updatedChat;
       } catch (error) {
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
@@ -1703,6 +1757,9 @@ export const resolvers: Resolvers = {
     },
     messageDeleted: {
       subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_DELETED"]),
+    },
+    chatEdited: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_EDITED"]),
     },
     userChatUpdated: {
       subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
