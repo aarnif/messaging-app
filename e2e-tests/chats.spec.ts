@@ -363,9 +363,9 @@ test.describe("Chats", () => {
         "Edited Group Chat Name",
       );
 
-      await expect(
-        page.getByText("Edited Group Chat Description"),
-      ).toBeVisible();
+      await expect(page.getByTestId("chat-info-description")).toHaveText(
+        "Edited Group Chat Description",
+      );
 
       await expect(page.getByText("3 members")).toBeVisible();
     });
