@@ -39,22 +39,32 @@ const Chat = () => {
     },
   });
 
-  const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ);
+  const [markChatAsRead] = useMutation(MARK_CHAT_AS_READ, {
+    update: (cache) => {
+      cache.updateQuery(
+        { query: ALL_CHATS_BY_USER, variables: { search: searchWord.value } },
+        (data) => {
+          if (!data) {
+            return data;
+          }
+          return {
+            allChatsByUser: data.allChatsByUser.map((chat) =>
+              chat.id === match?.id ? { ...chat, unreadCount: 0 } : chat,
+            ),
+          };
+        },
+      );
+    },
+  });
 
   useEffect(() => {
     if (match?.id) {
       console.log(`Marking chat ${match.id} as read`);
       markChatAsRead({
         variables: { id: match.id },
-        refetchQueries: [
-          {
-            query: ALL_CHATS_BY_USER,
-            variables: { search: searchWord.value },
-          },
-        ],
       });
     }
-  }, [match?.id, markChatAsRead, searchWord]);
+  }, [match?.id, markChatAsRead]);
 
   useSubscription(MESSAGE_SENT, {
     onData: ({ data }) => {
