@@ -1423,6 +1423,11 @@ export const resolvers: Resolvers = {
               },
             },
           ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+          ],
         });
 
         if (!chat) {
@@ -1536,6 +1541,11 @@ export const resolvers: Resolvers = {
               },
             },
           ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+          ],
         });
 
         if (!chat) {
@@ -1608,6 +1618,11 @@ export const resolvers: Resolvers = {
                 attributes: ["isAdmin", "unreadCount"],
               },
             },
+          ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
           ],
         });
 
