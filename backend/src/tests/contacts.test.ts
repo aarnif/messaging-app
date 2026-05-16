@@ -147,7 +147,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await removeContact(contactId, "");
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -156,7 +156,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent contact", async () => {
       const responseBody = await removeContact("999", user1Token);
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
@@ -174,7 +174,7 @@ describeGraphQLSuite("Contacts", () => {
       await removeContact(contactId, user1Token);
       const responseBody = await removeContact(contactId, user1Token);
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
