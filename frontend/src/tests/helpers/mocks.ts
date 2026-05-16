@@ -853,9 +853,7 @@ export const findContactByIdNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      findContactById: null,
-    },
+    data: null,
   },
 };
 

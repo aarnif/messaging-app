@@ -549,7 +549,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findContactById(contactId, "");
 
-      const contact = responseBody.data?.findContactById;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -558,7 +558,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent user ID", async () => {
       const responseBody = await findContactById("999", token);
 
-      const contact = responseBody.data?.findContactById;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
