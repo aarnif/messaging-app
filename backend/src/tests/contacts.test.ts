@@ -63,7 +63,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await addContact(user1Details.id, "");
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -72,7 +72,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails when trying to add yourself as contact", async () => {
       const responseBody = await addContact(user1Details.id, user1Token);
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(
@@ -94,7 +94,7 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       const responseBody = await addContact(user2Details.id, user1Token);
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact already exists", "BAD_USER_INPUT");
