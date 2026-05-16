@@ -1,7 +1,7 @@
 type Query {
   countDocuments: Int!
   me: User
-  findUserById(id: ID!): User
+  findUserById(id: ID!): User!
   allChatsByUser(search: String): [UserChat!]!
   allContactsByUser(search: String): [Contact!]!
   nonContactUsers(search: String): [User!]!

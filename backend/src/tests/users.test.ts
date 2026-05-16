@@ -192,7 +192,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findUserById(user2Id, "");
 
-      const user = responseBody.data?.findUserById;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -201,7 +201,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails with non-existent user ID", async () => {
       const responseBody = await findUserById("999", token);
 
-      const user = responseBody.data?.findUserById;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "User not found", "NOT_FOUND");
