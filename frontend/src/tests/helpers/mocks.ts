@@ -450,9 +450,7 @@ export const createUserErrorMock: MockLink.MockedResponse<
         message: "Username already exists",
       },
     ],
-    data: {
-      createUser: null,
-    },
+    data: null,
   },
 };
 

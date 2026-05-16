@@ -28,7 +28,7 @@ describeGraphQLSuite("Users", () => {
         username: "us",
       });
 
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -42,7 +42,7 @@ describeGraphQLSuite("Users", () => {
         ...user1Input,
         password: "short",
       });
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -56,7 +56,7 @@ describeGraphQLSuite("Users", () => {
         ...user1Input,
         confirmPassword: "passwor",
       });
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(responseBody, "Passwords do not match");
@@ -65,7 +65,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails if user already exists", async () => {
       await createUser(user1Input);
       const responseBody = await createUser(user1Input);
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Username already exists", "BAD_USER_INPUT");
