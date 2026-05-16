@@ -102,7 +102,7 @@ const ChatInfoDrawer = ({
   };
 
   const isAdmin =
-    currentUser.id === members?.find((member) => member.isAdmin)?.id;
+    currentUser.id === members.find((member) => member.isAdmin)?.id;
 
   return (
     <motion.div
@@ -158,10 +158,10 @@ const ChatInfoDrawer = ({
 
       <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-90">
         <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
-          {members?.length} members
+          {members.length} members
         </h4>
         <div className="flex flex-col gap-4">
-          {members?.map((member) => (
+          {members.map((member) => (
             <ChatMemberItem
               key={member.id}
               member={member}

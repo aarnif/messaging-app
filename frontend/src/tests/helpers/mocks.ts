@@ -671,9 +671,7 @@ export const findChatByIdNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      findChatById: null,
-    },
+    data: null,
   },
 };
 

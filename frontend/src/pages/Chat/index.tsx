@@ -144,21 +144,19 @@ const Chat = () => {
     setIsChatInfoOpen(false);
   }, [match?.id]);
 
-  const chat = data?.findChatById;
-
   return (
     <div className="relative flex grow flex-col overflow-hidden sm:overflow-visible">
       {loading ? (
         <div className="flex grow items-center justify-center">
           <Spinner />
         </div>
-      ) : !chat ? (
+      ) : !data ? (
         <NotFound entity="Chat" />
       ) : (
         <>
           <ChatContent
             currentUser={currentUser}
-            chat={chat}
+            chat={data.findChatById}
             setIsChatInfoOpen={setIsChatInfoOpen}
             latestAddedMessageId={latestAddedMessageIdRef.current}
           />
@@ -167,7 +165,7 @@ const Chat = () => {
               <ChatInfoDrawer
                 key={"chat-info"}
                 currentUser={currentUser}
-                chat={chat}
+                chat={data.findChatById}
                 setIsChatInfoOpen={setIsChatInfoOpen}
                 setIsEditChatOpen={setIsEditChatOpen}
               />
@@ -176,7 +174,7 @@ const Chat = () => {
             {isEditChatOpen && (
               <EditChatModal
                 key={"edit-chat"}
-                chat={chat}
+                chat={data.findChatById}
                 setIsEditChatOpen={setIsEditChatOpen}
               />
             )}
