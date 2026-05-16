@@ -245,7 +245,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await isBlockedByUser(user1Details.id, "");
 
-      const isBlocked = responseBody.data?.isBlockedByUser;
+      const isBlocked = responseBody.data;
 
       assert.strictEqual(isBlocked, null, "IsBlocked should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");

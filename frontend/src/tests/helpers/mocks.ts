@@ -1029,9 +1029,7 @@ export const isBlockedByUserNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      isBlockedByUser: null,
-    },
+    data: null,
   },
 };
 
