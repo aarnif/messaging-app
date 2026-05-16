@@ -195,7 +195,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await toggleBlockContact(contactId, "");
 
-      const contact = responseBody.data?.toggleBlockContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -204,7 +204,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent contact", async () => {
       const responseBody = await toggleBlockContact("999", user1Token);
 
-      const contact = responseBody.data?.toggleBlockContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
