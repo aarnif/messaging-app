@@ -496,9 +496,7 @@ export const loginErrorMock: MockLink.MockedResponse<
         message: "Invalid username or password",
       },
     ],
-    data: {
-      login: null,
-    },
+    data: null,
   },
 };
 

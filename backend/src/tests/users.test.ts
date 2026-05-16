@@ -89,7 +89,7 @@ describeGraphQLSuite("Users", () => {
         username: "nonexistent",
         password: user1Details.password,
       });
-      const token = responseBody.data?.login;
+      const token = responseBody.data;
 
       assert.strictEqual(token, null, "Token should be null");
       assertError(
@@ -104,7 +104,7 @@ describeGraphQLSuite("Users", () => {
         username: user1Details.username,
         password: "wrongpassword",
       });
-      const token = responseBody.data?.login;
+      const token = responseBody.data;
 
       assert.strictEqual(token, null, "Token should be null");
       assertError(
