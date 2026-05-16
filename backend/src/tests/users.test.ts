@@ -241,7 +241,7 @@ describeGraphQLSuite("Users", () => {
         "",
       );
 
-      const user = responseBody.data?.editProfile;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -258,7 +258,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.editProfile;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
