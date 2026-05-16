@@ -150,7 +150,7 @@ describeGraphQLSuite("Chats", () => {
         "",
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -167,7 +167,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -187,7 +187,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -207,7 +207,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");

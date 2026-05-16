@@ -1272,6 +1272,14 @@ export const resolvers: Resolvers = {
           ],
         });
 
+        if (!updatedChat) {
+          throw new GraphQLError("Failed to fetch edited chat", {
+            extensions: {
+              code: "INTERNAL_SERVER_ERROR",
+            },
+          });
+        }
+
         await pubsub.publish("CHAT_EDITED", {
           chatEdited: updatedChat,
         });
