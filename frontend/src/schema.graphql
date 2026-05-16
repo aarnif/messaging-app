@@ -84,7 +84,7 @@ type Mutation {
   toggleBlockContact(id: ID!): Contact!
   editProfile(input: EditProfileInput!): User!
   createChat(input: CreateChatInput!): Chat!
-  deleteChat(id: ID!): Chat
+  deleteChat(id: ID!): Chat!
   editChat(input: EditChatInput!): Chat
   leaveChat(id: ID!): Chat
   sendMessage(input: SendMessageInput!): Chat
