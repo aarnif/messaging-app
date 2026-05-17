@@ -41,7 +41,7 @@ const NewMessageBox = ({
 
     if (newChat.data?.createChat) {
       message.onReset();
-      navigate(`/chats/${newChat?.data?.createChat?.id}`);
+      navigate(`/chats/${newChat.data.createChat.id}`);
     }
   };
 
