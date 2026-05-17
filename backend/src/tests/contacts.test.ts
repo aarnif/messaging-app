@@ -63,7 +63,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await addContact(user1Details.id, "");
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -72,7 +72,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails when trying to add yourself as contact", async () => {
       const responseBody = await addContact(user1Details.id, user1Token);
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(
@@ -94,7 +94,7 @@ describeGraphQLSuite("Contacts", () => {
       await addContact(user2Details.id, user1Token);
       const responseBody = await addContact(user2Details.id, user1Token);
 
-      const contact = responseBody.data?.addContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact already exists", "BAD_USER_INPUT");
@@ -147,7 +147,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await removeContact(contactId, "");
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -156,7 +156,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent contact", async () => {
       const responseBody = await removeContact("999", user1Token);
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
@@ -174,7 +174,7 @@ describeGraphQLSuite("Contacts", () => {
       await removeContact(contactId, user1Token);
       const responseBody = await removeContact(contactId, user1Token);
 
-      const contact = responseBody.data?.removeContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
@@ -195,7 +195,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await toggleBlockContact(contactId, "");
 
-      const contact = responseBody.data?.toggleBlockContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -204,7 +204,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent contact", async () => {
       const responseBody = await toggleBlockContact("999", user1Token);
 
-      const contact = responseBody.data?.toggleBlockContact;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
@@ -245,7 +245,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await isBlockedByUser(user1Details.id, "");
 
-      const isBlocked = responseBody.data?.isBlockedByUser;
+      const isBlocked = responseBody.data;
 
       assert.strictEqual(isBlocked, null, "IsBlocked should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -549,7 +549,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findContactById(contactId, "");
 
-      const contact = responseBody.data?.findContactById;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -558,7 +558,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent user ID", async () => {
       const responseBody = await findContactById("999", token);
 
-      const contact = responseBody.data?.findContactById;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");
@@ -594,7 +594,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findContactByUserId(user2Details.id, "");
 
-      const contact = responseBody.data?.findContactByUserId;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -603,7 +603,7 @@ describeGraphQLSuite("Contacts", () => {
     void test("fails with non-existent user ID", async () => {
       const responseBody = await findContactByUserId("999", token);
 
-      const contact = responseBody.data?.findContactByUserId;
+      const contact = responseBody.data;
 
       assert.strictEqual(contact, null, "Contact should be null");
       assertError(responseBody, "Contact not found", "NOT_FOUND");

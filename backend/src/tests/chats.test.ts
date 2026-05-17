@@ -56,7 +56,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await createChat(privateChatDetails, "");
 
-      const chat = responseBody.data?.createChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -71,7 +71,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.createChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(responseBody, "Message content cannot be empty");
@@ -86,7 +86,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.createChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -104,7 +104,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.createChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -150,7 +150,7 @@ describeGraphQLSuite("Chats", () => {
         "",
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -167,7 +167,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -187,7 +187,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(
@@ -207,7 +207,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
@@ -365,7 +365,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await deleteChat(chatId, "");
 
-      const chat = responseBody.data?.deleteChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -374,7 +374,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails with non-existent chat ID", async () => {
       const responseBody = await deleteChat("999", token);
 
-      const chat = responseBody.data?.deleteChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
@@ -392,7 +392,7 @@ describeGraphQLSuite("Chats", () => {
       await deleteChat(chatId, token);
       const responseBody = await deleteChat(chatId, token);
 
-      const chat = responseBody.data?.deleteChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
@@ -411,7 +411,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findChatById(chatId, "");
 
-      const chat = responseBody.data?.findChatById;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -420,7 +420,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails with non-existent chat ID", async () => {
       const responseBody = await findChatById("999", token);
 
-      const chat = responseBody.data?.findChatById;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
@@ -454,7 +454,7 @@ describeGraphQLSuite("Chats", () => {
         "",
       );
 
-      const chat = responseBody.data?.sendMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -470,7 +470,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.sendMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(responseBody, "Message content cannot be empty");
@@ -539,7 +539,7 @@ describeGraphQLSuite("Chats", () => {
         "",
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -554,7 +554,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(responseBody, "Message content cannot be empty");
@@ -569,7 +569,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -584,7 +584,7 @@ describeGraphQLSuite("Chats", () => {
         token2,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -642,7 +642,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await deleteMessage(messageId, "");
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -651,7 +651,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails with non-existent message ID", async () => {
       const responseBody = await deleteMessage("999", token);
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -660,7 +660,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails when trying to delete another user's message", async () => {
       const responseBody = await deleteMessage(messageId, token2);
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -712,7 +712,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await leaveChat(chatId, "");
 
-      const chat = responseBody.data?.leaveChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -948,7 +948,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await markChatAsRead(chatId, "");
 
-      const result = responseBody.data?.markChatAsRead;
+      const result = responseBody.data;
 
       assert.strictEqual(result, null, "Result should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");

@@ -634,7 +634,7 @@ export const resolvers: Resolvers = {
           isBlocked: false,
         });
 
-        return await Contact.findByPk(newContact.id, {
+        const contact = await Contact.findByPk(newContact.id, {
           include: [
             {
               model: User,
@@ -642,6 +642,16 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        if (!contact) {
+          throw new GraphQLError("Failed to fetch created contact", {
+            extensions: {
+              code: "INTERNAL_SERVER_ERROR",
+            },
+          });
+        }
+
+        return contact;
       } catch (error) {
         throw new GraphQLError("Failed to create contact", {
           extensions: {
@@ -1261,6 +1271,14 @@ export const resolvers: Resolvers = {
             },
           ],
         });
+
+        if (!updatedChat) {
+          throw new GraphQLError("Failed to fetch edited chat", {
+            extensions: {
+              code: "INTERNAL_SERVER_ERROR",
+            },
+          });
+        }
 
         await pubsub.publish("CHAT_EDITED", {
           chatEdited: updatedChat,

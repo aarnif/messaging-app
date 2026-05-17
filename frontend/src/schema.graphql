@@ -1,16 +1,16 @@
 type Query {
   countDocuments: Int!
   me: User
-  findUserById(id: ID!): User
+  findUserById(id: ID!): User!
   allChatsByUser(search: String): [UserChat!]!
   allContactsByUser(search: String): [Contact!]!
   nonContactUsers(search: String): [User!]!
-  findChatById(id: ID!): Chat
+  findChatById(id: ID!): Chat!
   contactsWithoutPrivateChat(search: String): [Contact!]!
-  isBlockedByUser(id: ID!): Boolean
-  findContactById(id: ID!): Contact
+  isBlockedByUser(id: ID!): Boolean!
+  findContactById(id: ID!): Contact!
   findPrivateChatWithContact(id: ID!): Chat
-  findContactByUserId(id: ID!): Contact
+  findContactByUserId(id: ID!): Contact!
 }
 
 type User {
@@ -76,23 +76,23 @@ type Contact {
 }
 
 type Mutation {
-  createUser(input: CreateUserInput!): User
-  login(input: LoginInput!): Token
-  addContact(id: ID!): Contact
+  createUser(input: CreateUserInput!): User!
+  login(input: LoginInput!): Token!
+  addContact(id: ID!): Contact!
   addContacts(ids: [ID!]!): [Contact!]!
-  removeContact(id: ID!): Contact
-  toggleBlockContact(id: ID!): Contact
-  editProfile(input: EditProfileInput!): User
-  createChat(input: CreateChatInput!): Chat
-  deleteChat(id: ID!): Chat
-  editChat(input: EditChatInput!): Chat
-  leaveChat(id: ID!): Chat
-  sendMessage(input: SendMessageInput!): Chat
-  editMessage(input: EditMessageInput!): Chat
-  deleteMessage(id: ID!): Chat
-  changePassword(input: ChangePasswordInput!): User
-  markChatAsRead(id: ID!): Boolean
-  resetDatabase: Boolean
+  removeContact(id: ID!): Contact!
+  toggleBlockContact(id: ID!): Contact!
+  editProfile(input: EditProfileInput!): User!
+  createChat(input: CreateChatInput!): Chat!
+  deleteChat(id: ID!): Chat!
+  editChat(input: EditChatInput!): Chat!
+  leaveChat(id: ID!): Chat!
+  sendMessage(input: SendMessageInput!): Chat!
+  editMessage(input: EditMessageInput!): Chat!
+  deleteMessage(id: ID!): Chat!
+  changePassword(input: ChangePasswordInput!): User!
+  markChatAsRead(id: ID!): Boolean!
+  resetDatabase: Boolean!
 }
 
 input CreateUserInput {
@@ -157,7 +157,7 @@ type Subscription {
   messageSent: Message!
   messageEdited: Message!
   messageDeleted: Message!
-  chatEdited: Chat
+  chatEdited: Chat!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
   userChatDeleted: ID!

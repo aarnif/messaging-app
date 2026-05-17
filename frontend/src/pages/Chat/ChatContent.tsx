@@ -59,7 +59,7 @@ const ChatContent = ({
       <ChatHeader
         type={type}
         name={name ?? ""}
-        members={members ?? []}
+        members={members}
         currentUser={currentUser}
         callBack={handleCallBack}
       />

@@ -450,9 +450,7 @@ export const createUserErrorMock: MockLink.MockedResponse<
         message: "Username already exists",
       },
     ],
-    data: {
-      createUser: null,
-    },
+    data: null,
   },
 };
 
@@ -498,9 +496,7 @@ export const loginErrorMock: MockLink.MockedResponse<
         message: "Invalid username or password",
       },
     ],
-    data: {
-      login: null,
-    },
+    data: null,
   },
 };
 
@@ -671,9 +667,7 @@ export const findChatByIdNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      findChatById: null,
-    },
+    data: null,
   },
 };
 
@@ -855,9 +849,7 @@ export const findContactByIdNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      findContactById: null,
-    },
+    data: null,
   },
 };
 
@@ -1029,9 +1021,7 @@ export const isBlockedByUserNull: MockLink.MockedResponse<
     },
   },
   result: {
-    data: {
-      isBlockedByUser: null,
-    },
+    data: null,
   },
 };
 
@@ -1317,9 +1307,7 @@ export const changePasswordError: MockLink.MockedResponse<
         },
       },
     ],
-    data: {
-      changePassword: null,
-    },
+    data: null,
   },
 };
 

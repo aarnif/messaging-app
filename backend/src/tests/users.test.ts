@@ -28,7 +28,7 @@ describeGraphQLSuite("Users", () => {
         username: "us",
       });
 
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -42,7 +42,7 @@ describeGraphQLSuite("Users", () => {
         ...user1Input,
         password: "short",
       });
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -56,7 +56,7 @@ describeGraphQLSuite("Users", () => {
         ...user1Input,
         confirmPassword: "passwor",
       });
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(responseBody, "Passwords do not match");
@@ -65,7 +65,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails if user already exists", async () => {
       await createUser(user1Input);
       const responseBody = await createUser(user1Input);
-      const user = responseBody.data?.createUser;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Username already exists", "BAD_USER_INPUT");
@@ -89,7 +89,7 @@ describeGraphQLSuite("Users", () => {
         username: "nonexistent",
         password: user1Details.password,
       });
-      const token = responseBody.data?.login;
+      const token = responseBody.data;
 
       assert.strictEqual(token, null, "Token should be null");
       assertError(
@@ -104,7 +104,7 @@ describeGraphQLSuite("Users", () => {
         username: user1Details.username,
         password: "wrongpassword",
       });
-      const token = responseBody.data?.login;
+      const token = responseBody.data;
 
       assert.strictEqual(token, null, "Token should be null");
       assertError(
@@ -192,7 +192,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails without authentication", async () => {
       const responseBody = await findUserById(user2Id, "");
 
-      const user = responseBody.data?.findUserById;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -201,7 +201,7 @@ describeGraphQLSuite("Users", () => {
     void test("fails with non-existent user ID", async () => {
       const responseBody = await findUserById("999", token);
 
-      const user = responseBody.data?.findUserById;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "User not found", "NOT_FOUND");
@@ -241,7 +241,7 @@ describeGraphQLSuite("Users", () => {
         "",
       );
 
-      const user = responseBody.data?.editProfile;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -258,7 +258,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.editProfile;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -374,7 +374,7 @@ describeGraphQLSuite("Users", () => {
         "",
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -390,7 +390,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(
@@ -410,7 +410,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -429,7 +429,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(responseBody, "Passwords do not match");
