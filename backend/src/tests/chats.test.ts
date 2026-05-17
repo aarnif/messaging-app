@@ -539,7 +539,7 @@ describeGraphQLSuite("Chats", () => {
         "",
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -554,7 +554,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertValidationError(responseBody, "Message content cannot be empty");
@@ -569,7 +569,7 @@ describeGraphQLSuite("Chats", () => {
         token,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -584,7 +584,7 @@ describeGraphQLSuite("Chats", () => {
         token2,
       );
 
-      const chat = responseBody.data?.editMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");

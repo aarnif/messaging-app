@@ -88,7 +88,7 @@ type Mutation {
   editChat(input: EditChatInput!): Chat!
   leaveChat(id: ID!): Chat!
   sendMessage(input: SendMessageInput!): Chat!
-  editMessage(input: EditMessageInput!): Chat
+  editMessage(input: EditMessageInput!): Chat!
   deleteMessage(id: ID!): Chat
   changePassword(input: ChangePasswordInput!): User
   markChatAsRead(id: ID!): Boolean
