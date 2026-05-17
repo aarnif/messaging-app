@@ -948,7 +948,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await markChatAsRead(chatId, "");
 
-      const result = responseBody.data?.markChatAsRead;
+      const result = responseBody.data;
 
       assert.strictEqual(result, null, "Result should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
