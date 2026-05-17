@@ -712,7 +712,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await leaveChat(chatId, "");
 
-      const chat = responseBody.data?.leaveChat;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
