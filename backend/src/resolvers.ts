@@ -451,6 +451,11 @@ export const resolvers: Resolvers = {
             },
           },
         ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
       });
       const chat = chats.find((c) => c.members && c.members.length === 2);
 
@@ -939,6 +944,11 @@ export const resolvers: Resolvers = {
               },
             },
           ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+          ],
         });
 
         if (!chat) {
@@ -962,7 +972,7 @@ export const resolvers: Resolvers = {
               name: chat.name || null,
               avatar: chat.avatar,
               members: chat.members,
-              latestMessage: chat.messages![0],
+              latestMessage: chat.messages?.at(-1),
               unreadCount: member.unreadCount,
               userId: String(member.userId),
             },
@@ -1000,6 +1010,11 @@ export const resolvers: Resolvers = {
               attributes: ["isAdmin"],
             },
           },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
         ],
       });
 
@@ -1275,6 +1290,11 @@ export const resolvers: Resolvers = {
               },
             },
           ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+          ],
         });
 
         if (!updatedChat) {
@@ -1349,6 +1369,11 @@ export const resolvers: Resolvers = {
                 attributes: ["isAdmin"],
               },
             },
+          ],
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
           ],
         });
 
