@@ -32,7 +32,7 @@ const Contact = () => {
   const isBlockedByUser = blockedData?.isBlockedByUser;
 
   useEffect(() => {
-    if (contact?.contactDetails?.id) {
+    if (contact?.contactDetails.id) {
       checkIsBlocked({
         variables: {
           id: contact.contactDetails.id,
