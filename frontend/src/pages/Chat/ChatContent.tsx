@@ -47,7 +47,7 @@ const ChatContent = ({
       },
     });
 
-    const contact = data?.data?.findContactByUserId;
+    const contact = data.data?.findContactByUserId;
 
     if (contact) {
       navigate(`/contacts/${contact.id}`);
