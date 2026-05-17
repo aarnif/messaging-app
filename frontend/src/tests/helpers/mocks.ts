@@ -1307,9 +1307,7 @@ export const changePasswordError: MockLink.MockedResponse<
         },
       },
     ],
-    data: {
-      changePassword: null,
-    },
+    data: null,
   },
 };
 

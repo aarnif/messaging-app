@@ -374,7 +374,7 @@ describeGraphQLSuite("Users", () => {
         "",
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -390,7 +390,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertError(
@@ -410,7 +410,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(
@@ -429,7 +429,7 @@ describeGraphQLSuite("Users", () => {
         token,
       );
 
-      const user = responseBody.data?.changePassword;
+      const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
       assertValidationError(responseBody, "Passwords do not match");

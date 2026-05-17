@@ -90,7 +90,7 @@ type Mutation {
   sendMessage(input: SendMessageInput!): Chat!
   editMessage(input: EditMessageInput!): Chat!
   deleteMessage(id: ID!): Chat!
-  changePassword(input: ChangePasswordInput!): User
+  changePassword(input: ChangePasswordInput!): User!
   markChatAsRead(id: ID!): Boolean
   resetDatabase: Boolean
 }
