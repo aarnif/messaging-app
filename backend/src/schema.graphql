@@ -157,7 +157,7 @@ type Subscription {
   messageSent: Message!
   messageEdited: Message!
   messageDeleted: Message!
-  chatEdited: Chat
+  chatEdited: Chat!
   userChatUpdated: UserChat!
   userChatCreated: UserChat!
   userChatDeleted: ID!
