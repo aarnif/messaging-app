@@ -642,7 +642,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails without authentication", async () => {
       const responseBody = await deleteMessage(messageId, "");
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
@@ -651,7 +651,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails with non-existent message ID", async () => {
       const responseBody = await deleteMessage("999", token);
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
@@ -660,7 +660,7 @@ describeGraphQLSuite("Chats", () => {
     void test("fails when trying to delete another user's message", async () => {
       const responseBody = await deleteMessage(messageId, token2);
 
-      const chat = responseBody.data?.deleteMessage;
+      const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Message not found", "NOT_FOUND");
