@@ -434,6 +434,11 @@ export const resolvers: Resolvers = {
         },
         include: [
           {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
             model: User,
             as: "members",
             where: {
