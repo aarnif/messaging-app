@@ -11,12 +11,10 @@ const ChatItem = ({
   const { id, latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
-  const messagePreview = content
-    ? truncateText(
-        content,
-        !latestMessage.isNotification ? 40 - `${sender.name}: `.length : 40,
-      )
-    : "";
+  const messagePreview = truncateText(
+    content,
+    !latestMessage.isNotification ? 40 - `${sender.name}: `.length : 40,
+  );
 
   const formattedTime = formatDisplayDate(
     createdAt,
