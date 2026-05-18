@@ -133,20 +133,28 @@ describe("<Chats />", () => {
           }
 
           expect(within(chatItem).getByText(name)).toBeDefined();
-          expect(
-            within(chatItem).getByText(
-              new RegExp(`${latestMessage?.sender.name}:`),
-            ),
-          ).toBeDefined();
-          const formattedDate = formatDisplayDate(
-            latestMessage?.createdAt ?? 0,
-          );
+
+          if (!latestMessage.isNotification) {
+            expect(
+              within(chatItem).getByText(
+                new RegExp(`${latestMessage.sender.name}:`),
+              ),
+            ).toBeDefined();
+          }
+
+          const formattedDate = formatDisplayDate(latestMessage.createdAt);
           if (formattedDate) {
             expect(within(chatItem).getByText(formattedDate)).toBeDefined();
           }
+
           expect(
             within(chatItem).getByText(
-              truncateText(latestMessage?.content ?? ""),
+              truncateText(
+                latestMessage.content,
+                latestMessage.isNotification
+                  ? 40
+                  : 40 - `${latestMessage.sender.name}: `.length,
+              ),
             ),
           ).toBeDefined();
         });
