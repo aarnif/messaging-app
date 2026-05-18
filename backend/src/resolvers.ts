@@ -1253,38 +1253,9 @@ export const resolvers: Resolvers = {
         chatToBeUpdated.description = description || null;
 
         await chatToBeUpdated.save();
+        await chatToBeUpdated.reload();
 
-        const updatedChat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!updatedChat) {
-          throw new GraphQLError("Failed to fetch edited chat", {
-            extensions: {
-              code: "INTERNAL_SERVER_ERROR",
-            },
-          });
-        }
-
-        const latestMessage = updatedChat.toJSON().messages?.at(-1);
+        const latestMessage = chatToBeUpdated.toJSON().messages?.at(-1);
 
         const chatMembers = await ChatMember.findAll({
           where: { chatId: Number(id) },
@@ -1293,11 +1264,11 @@ export const resolvers: Resolvers = {
         for (const member of chatMembers) {
           await pubsub.publish("USER_CHAT_UPDATED", {
             userChatUpdated: {
-              id: String(updatedChat.id),
-              type: updatedChat.type,
-              name: updatedChat.name || null,
-              avatar: updatedChat.avatar,
-              members: updatedChat.members,
+              id: String(chatToBeUpdated.id),
+              type: chatToBeUpdated.type,
+              name: chatToBeUpdated.name || null,
+              avatar: chatToBeUpdated.avatar,
+              members: chatToBeUpdated.members,
               latestMessage: latestMessage,
               unreadCount: member.unreadCount,
               userId: String(member.userId),
@@ -1306,10 +1277,10 @@ export const resolvers: Resolvers = {
         }
 
         await pubsub.publish("CHAT_EDITED", {
-          chatEdited: updatedChat,
+          chatEdited: chatToBeUpdated,
         });
 
-        return updatedChat;
+        return chatToBeUpdated;
       } catch (error) {
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
