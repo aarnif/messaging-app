@@ -1085,7 +1085,7 @@ export const resolvers: Resolvers = {
         }
       }
 
-      const chatToBeUpdated = await Chat.findByPk(Number(id), {
+      const chatToBeEdited = await Chat.findByPk(Number(id), {
         include: [
           {
             model: User,
@@ -1102,7 +1102,7 @@ export const resolvers: Resolvers = {
         ],
       });
 
-      if (!chatToBeUpdated) {
+      if (!chatToBeEdited) {
         throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
@@ -1112,12 +1112,12 @@ export const resolvers: Resolvers = {
       }
 
       try {
-        const hasNameChanged = chatToBeUpdated.name !== name;
+        const hasNameChanged = chatToBeEdited.name !== name;
 
         if (hasNameChanged) {
           const notificationMessage = await Message.create({
             senderId: Number(context.currentUser?.id),
-            chatId: Number(chatToBeUpdated.id),
+            chatId: Number(chatToBeEdited.id),
             content: `Chat name changed to "${name}"`,
             isNotification: true,
             isDeleted: false,
@@ -1135,12 +1135,12 @@ export const resolvers: Resolvers = {
         }
 
         const hasDescriptionChanged =
-          chatToBeUpdated.description !== description;
+          chatToBeEdited.description !== description;
 
         if (hasDescriptionChanged) {
           const notificationMessage = await Message.create({
             senderId: Number(context.currentUser?.id),
-            chatId: Number(chatToBeUpdated.id),
+            chatId: Number(chatToBeEdited.id),
             content:
               description === ""
                 ? "Chat description was removed"
@@ -1161,7 +1161,7 @@ export const resolvers: Resolvers = {
         }
 
         const currentMemberIds =
-          chatToBeUpdated.members?.map((member) => member.id) || [];
+          chatToBeEdited.members?.map((member) => member.id) || [];
 
         const newMemberIds = members.map((member) => Number(member));
 
@@ -1179,7 +1179,7 @@ export const resolvers: Resolvers = {
           await ChatMember.bulkCreate(
             membersToAdd.map((memberId) => ({
               userId: memberId,
-              chatId: Number(chatToBeUpdated.id),
+              chatId: Number(chatToBeEdited.id),
               isAdmin: false,
               unreadCount: 0,
             })),
@@ -1192,7 +1192,7 @@ export const resolvers: Resolvers = {
           const notificationMessages = await Message.bulkCreate(
             addedMembers.map((member) => ({
               senderId: Number(context.currentUser?.id),
-              chatId: Number(chatToBeUpdated.id),
+              chatId: Number(chatToBeEdited.id),
               content: `${member.name} was added to the chat`,
               isNotification: true,
               isDeleted: false,
@@ -1223,7 +1223,7 @@ export const resolvers: Resolvers = {
           const notificationMessages = await Message.bulkCreate(
             removedMembers.map((member) => ({
               senderId: Number(context.currentUser?.id),
-              chatId: Number(chatToBeUpdated.id),
+              chatId: Number(chatToBeEdited.id),
               content: `${member.name} was removed from the chat`,
               isNotification: true,
               isDeleted: false,
@@ -1244,17 +1244,18 @@ export const resolvers: Resolvers = {
               userId: {
                 [Op.in]: membersToRemove.map((member) => Number(member)),
               },
-              chatId: Number(chatToBeUpdated.id),
+              chatId: Number(chatToBeEdited.id),
             },
           });
         }
 
-        chatToBeUpdated.name = name;
-        chatToBeUpdated.description = description || null;
+        chatToBeEdited.name = name;
+        chatToBeEdited.description = description || null;
 
-        await chatToBeUpdated.save();
+        await chatToBeEdited.save();
+        await chatToBeEdited.reload();
 
-        const latestMessage = chatToBeUpdated.toJSON().messages?.at(-1);
+        const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
 
         const chatMembers = await ChatMember.findAll({
           where: { chatId: Number(id) },
@@ -1263,11 +1264,11 @@ export const resolvers: Resolvers = {
         for (const member of chatMembers) {
           await pubsub.publish("USER_CHAT_UPDATED", {
             userChatUpdated: {
-              id: String(chatToBeUpdated.id),
-              type: chatToBeUpdated.type,
-              name: chatToBeUpdated.name || null,
-              avatar: chatToBeUpdated.avatar,
-              members: chatToBeUpdated.members,
+              id: String(chatToBeEdited.id),
+              type: chatToBeEdited.type,
+              name: chatToBeEdited.name || null,
+              avatar: chatToBeEdited.avatar,
+              members: chatToBeEdited.members,
               latestMessage: latestMessage,
               unreadCount: member.unreadCount,
               userId: String(member.userId),
@@ -1275,41 +1276,11 @@ export const resolvers: Resolvers = {
           });
         }
 
-        const updatedChat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!updatedChat) {
-          throw new GraphQLError("Failed to fetch edited chat", {
-            extensions: {
-              code: "INTERNAL_SERVER_ERROR",
-            },
-          });
-        }
-
         await pubsub.publish("CHAT_EDITED", {
-          chatEdited: updatedChat,
+          chatEdited: chatToBeEdited,
         });
 
-        return updatedChat;
+        return chatToBeEdited;
       } catch (error) {
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
