@@ -135,4 +135,11 @@
 |  8.5  | 1    |                                         |
 |  9.5  | 1    | dark moden tallennus käyttäjäasetuksiin |
 | 10.5  | 1    |                                         |
-|  yht  | 265  |                                         |
+| 11.5  | 1    | bugin korjaus                           |
+| 12.5  | 1    | chatin tietojen reaaliaikainen päivitys |
+| 13.5  | 1    | bugin korjaus                           |
+| 14.5  | 1    |                                         |
+| 15.5  | 1    |                                         |
+| 16.5  | 2    | koodin refaktorointi                    |
+| 17.5  | 1    |                                         |
+|  yht  | 273  |                                         |

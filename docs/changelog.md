@@ -222,3 +222,10 @@ Ei muutoksia
 - Korjaa bugi littyen käyttäjien poistoon chatista sen jäseniä muokattaessa, jos ne eivät ole chat adminin kontakteja
 - Lisää non-root käyttäjä Docker-konttiin
 - Tallenna dark mode valinta käyttäjäasetuksiin
+
+## Viikko 34 (11.5-17.5.2026)
+
+- Reaaliaikainen chatin nimen ja kuvauksen päivitys kaikille jäsenille
+- Korjaa admin-statuksen puuttuminen ja sen siirtyminen väärälle chat-jäsenelle
+- Muuta useimmat GraphQL-kyselyt palauttamaan non-nullable tyyppejä
+- Yhdenmukaista backendin palauttamien Chat-olioiden rakenne
