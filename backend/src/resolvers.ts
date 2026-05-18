@@ -1254,27 +1254,6 @@ export const resolvers: Resolvers = {
 
         await chatToBeUpdated.save();
 
-        const latestMessage = chatToBeUpdated.toJSON().messages?.at(-1);
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: Number(id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("USER_CHAT_UPDATED", {
-            userChatUpdated: {
-              id: String(chatToBeUpdated.id),
-              type: chatToBeUpdated.type,
-              name: chatToBeUpdated.name || null,
-              avatar: chatToBeUpdated.avatar,
-              members: chatToBeUpdated.members,
-              latestMessage: latestMessage,
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
         const updatedChat = await Chat.findByPk(Number(id), {
           include: [
             {
@@ -1301,6 +1280,27 @@ export const resolvers: Resolvers = {
           throw new GraphQLError("Failed to fetch edited chat", {
             extensions: {
               code: "INTERNAL_SERVER_ERROR",
+            },
+          });
+        }
+
+        const latestMessage = updatedChat.toJSON().messages?.at(-1);
+
+        const chatMembers = await ChatMember.findAll({
+          where: { chatId: Number(id) },
+        });
+
+        for (const member of chatMembers) {
+          await pubsub.publish("USER_CHAT_UPDATED", {
+            userChatUpdated: {
+              id: String(updatedChat.id),
+              type: updatedChat.type,
+              name: updatedChat.name || null,
+              avatar: updatedChat.avatar,
+              members: updatedChat.members,
+              latestMessage: latestMessage,
+              unreadCount: member.unreadCount,
+              userId: String(member.userId),
             },
           });
         }
