@@ -1253,7 +1253,13 @@ export const resolvers: Resolvers = {
         chatToBeEdited.description = description || null;
 
         await chatToBeEdited.save();
-        await chatToBeEdited.reload();
+        await chatToBeEdited.reload({
+          order: [
+            [{ model: User, as: "members" }, "name", "ASC"],
+            [{ model: User, as: "members" }, "username", "ASC"],
+            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+          ],
+        });
 
         const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
 
