@@ -104,6 +104,7 @@ export const CREATE_CHAT = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -135,6 +136,7 @@ export const EDIT_CHAT = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -166,6 +168,7 @@ export const DELETE_CHAT = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -215,6 +218,7 @@ export const SEND_MESSAGE = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -246,6 +250,7 @@ export const EDIT_MESSAGE = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -277,6 +282,7 @@ export const DELETE_MESSAGE = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -309,6 +315,7 @@ export const LEAVE_CHAT = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -368,6 +375,7 @@ export const FIND_CHAT_BY_ID = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar
@@ -441,6 +449,7 @@ export const ALL_CHATS_BY_USER = `
       unreadCount
       members {
         id
+        userId
         username
         name
         about
@@ -493,6 +502,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
       avatar
       members {
         id
+        userId
         username
         name
         avatar

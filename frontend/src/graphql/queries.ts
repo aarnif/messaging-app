@@ -23,6 +23,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
     unreadCount
     members {
       id
+      userId
       username
       name
       about
@@ -79,6 +80,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
     avatar
     members {
       id
+      userId
       username
       name
       about
@@ -152,6 +154,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
     avatar
     members {
       id
+      userId
       username
       name
       about

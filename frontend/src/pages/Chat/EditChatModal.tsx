@@ -68,7 +68,7 @@ const EditChatModal = ({
         .filter((member) => !member.isAdmin)
         .map(
           ({
-            id,
+            userId,
             username,
             name,
             about,
@@ -76,7 +76,7 @@ const EditChatModal = ({
             is24HourClock,
             isDarkMode,
           }) => ({
-            id,
+            id: userId,
             username,
             name,
             about,

@@ -158,6 +158,7 @@ export const GROUP_CHAT_DETAILS = {
   members: [
     {
       id: USER_ONE_DETAILS.id,
+      userId: USER_ONE_DETAILS.id,
       username: USER_ONE_DETAILS.username,
       name: USER_ONE_DETAILS.name,
       about: null,
@@ -169,6 +170,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: USER_TWO_DETAILS.id,
+      userId: USER_TWO_DETAILS.id,
       username: USER_TWO_DETAILS.username,
       name: USER_TWO_DETAILS.name,
       about: null,
@@ -180,6 +182,7 @@ export const GROUP_CHAT_DETAILS = {
     },
     {
       id: USER_THREE_DETAILS.id,
+      userId: USER_THREE_DETAILS.id,
       username: USER_THREE_DETAILS.username,
       name: USER_THREE_DETAILS.name,
       about: null,
@@ -259,6 +262,7 @@ export const PRIVATE_CHAT_DETAILS = {
   members: [
     {
       id: USER_ONE_DETAILS.id,
+      userId: USER_ONE_DETAILS.id,
       username: USER_ONE_DETAILS.username,
       name: USER_ONE_DETAILS.name,
       about: null,
@@ -270,6 +274,7 @@ export const PRIVATE_CHAT_DETAILS = {
     },
     {
       id: USER_TWO_DETAILS.id,
+      userId: USER_TWO_DETAILS.id,
       username: USER_TWO_DETAILS.username,
       name: USER_TWO_DETAILS.name,
       about: null,

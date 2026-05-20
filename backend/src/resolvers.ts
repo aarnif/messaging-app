@@ -110,7 +110,7 @@ export const resolvers: Resolvers = {
                 model: User,
                 as: "members",
                 through: {
-                  attributes: ["isAdmin", "unreadCount"],
+                  attributes: ["id", "userId", "isAdmin", "unreadCount"],
                 },
               },
               {
@@ -156,8 +156,10 @@ export const resolvers: Resolvers = {
         const unreadMessagesCount =
           chat
             .toJSON()
-            .members?.find((member) => member.id === context.currentUser?.id)
-            ?.chat_member?.unreadCount ?? 0;
+            .members?.find(
+              (member) =>
+                member.chat_member?.userId === context.currentUser?.id,
+            )?.chat_member?.unreadCount ?? 0;
 
         return {
           id: String(chat.id),
@@ -188,7 +190,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["isAdmin"],
+              attributes: ["id", "userId", "isAdmin"],
             },
           },
         ],
@@ -252,7 +254,7 @@ export const resolvers: Resolvers = {
                 },
                 attributes: ["id", "name"],
                 through: {
-                  attributes: [],
+                  attributes: ["id", "userId"],
                 },
               },
             ],
@@ -447,7 +449,7 @@ export const resolvers: Resolvers = {
               },
             },
             through: {
-              attributes: ["isAdmin"],
+              attributes: ["id", "userId", "isAdmin"],
             },
           },
         ],
@@ -500,6 +502,10 @@ export const resolvers: Resolvers = {
       getChatName(parent, context.currentUser),
   },
   ChatMember: {
+    id: (parent: ChatMember & { chat_member?: { id: number } }) =>
+      String(parent.chat_member?.id),
+    userId: (parent: ChatMember & { chat_member?: { userId: number } }) =>
+      String(parent.chat_member?.userId),
     isAdmin: (parent: ChatMember & { chat_member?: { isAdmin: boolean } }) =>
       parent.chat_member?.isAdmin ?? false,
     unreadCount: (
@@ -940,7 +946,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["isAdmin"],
+                attributes: ["id", "userId", "isAdmin"],
               },
             },
           ],
@@ -1007,7 +1013,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["isAdmin"],
+              attributes: ["id", "userId", "isAdmin"],
             },
           },
         ],
@@ -1091,7 +1097,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["isAdmin"],
+              attributes: ["id", "userId", "isAdmin"],
             },
           },
           {
@@ -1343,7 +1349,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["isAdmin"],
+                attributes: ["id", "userId", "isAdmin"],
               },
             },
           ],
@@ -1444,7 +1450,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["isAdmin", "unreadCount"],
+                attributes: ["id", "userId", "isAdmin", "unreadCount"],
               },
             },
           ],
@@ -1562,7 +1568,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["isAdmin", "unreadCount"],
+                attributes: ["id", "userId", "isAdmin", "unreadCount"],
               },
             },
           ],
@@ -1640,7 +1646,7 @@ export const resolvers: Resolvers = {
               model: User,
               as: "members",
               through: {
-                attributes: ["isAdmin", "unreadCount"],
+                attributes: ["id", "userId", "isAdmin", "unreadCount"],
               },
             },
           ],
