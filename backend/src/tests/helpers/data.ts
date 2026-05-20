@@ -95,8 +95,20 @@ export const expectedPrivateChat = {
   description: null,
   unreadCount: 0,
   members: [
-    { ...expectedUser1, isAdmin: true, unreadCount: 0 },
-    { ...expectedUser2, isAdmin: false, unreadCount: 0 },
+    {
+      ...expectedUser1,
+      id: "1",
+      userId: expectedUser1.id,
+      isAdmin: true,
+      unreadCount: 0,
+    },
+    {
+      ...expectedUser2,
+      id: "2",
+      userId: expectedUser2.id,
+      isAdmin: false,
+      unreadCount: 0,
+    },
   ],
   messages: [
     {
@@ -120,9 +132,27 @@ export const expectedGroupChat = {
   description: "Test description",
   unreadCount: 0,
   members: [
-    { ...expectedUser1, isAdmin: true, unreadCount: 0 },
-    { ...expectedUser2, isAdmin: false, unreadCount: 0 },
-    { ...expectedUser3, isAdmin: false, unreadCount: 0 },
+    {
+      ...expectedUser1,
+      id: "1",
+      userId: expectedUser1.id,
+      isAdmin: true,
+      unreadCount: 0,
+    },
+    {
+      ...expectedUser2,
+      id: "2",
+      userId: user2Details.id,
+      isAdmin: false,
+      unreadCount: 0,
+    },
+    {
+      ...expectedUser3,
+      id: "3",
+      userId: expectedUser3.id,
+      isAdmin: false,
+      unreadCount: 0,
+    },
   ],
   messages: [
     {

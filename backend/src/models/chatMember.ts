@@ -17,6 +17,8 @@ class ChatMember extends Model<
   declare name?: string;
   declare unreadCount: number;
   declare chat_member?: {
+    id: number;
+    userId: number;
     isAdmin: boolean;
     unreadCount: number;
   };

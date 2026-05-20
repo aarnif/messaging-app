@@ -32,6 +32,7 @@ export const SEND_MESSAGE =
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -62,6 +63,7 @@ export const EDIT_MESSAGE =
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -92,6 +94,7 @@ export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -122,6 +125,7 @@ export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -151,6 +155,7 @@ export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -180,6 +185,7 @@ export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
     avatar
     members {
       id
+      userId
       username
       name
       avatar
@@ -209,6 +215,7 @@ export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
     avatar
     members {
       id
+      userId
       username
       name
       avatar

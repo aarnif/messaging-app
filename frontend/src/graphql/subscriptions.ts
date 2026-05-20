@@ -80,6 +80,7 @@ export const USER_CHAT_UPDATED = gql(`
       userId
       members {
         id
+        userId
         username
         name
         about
@@ -121,6 +122,7 @@ export const USER_CHAT_CREATED = gql(`
       userId
       members {
         id
+        userId
         username
         name
         about
@@ -173,6 +175,7 @@ export const CHAT_EDITED = gql(`
       avatar
       members {
         id
+        userId
         username
         name
         about

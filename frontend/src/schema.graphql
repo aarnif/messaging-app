@@ -46,6 +46,7 @@ type Chat {
 
 type ChatMember {
   id: ID!
+  userId: ID!
   username: String!
   name: String!
   about: String
