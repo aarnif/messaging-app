@@ -46,7 +46,7 @@ const EditChatModal = ({
   });
 
   const [selectedIds, setSelectedIds] = useState<Set<string>>(
-    new Set([...chat.members.map((member) => member.id)]),
+    new Set([...chat.members.map((member) => member.userId)]),
   );
   const [users, setUsers] = useState<SelectableUser[]>([]);
   const selectedUsers = users.filter((user) => user.isSelected);
