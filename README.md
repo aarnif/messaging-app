@@ -2,13 +2,37 @@
 
 [![codecov](https://codecov.io/gh/aarnif/messaging-app/graph/badge.svg?token=2WL0756H74)](https://codecov.io/gh/aarnif/messaging-app)
 
-Full Stack Open -kurssin projekti: Messaging App
+Full Stack Open -kurssin harjoitustyö: Messaging App
 
 ## Vaatimukset
 
-- Node.js (v24 tai uudempi)
+- Node.js
 - Docker ja Docker Compose (paikallista tietokantaa varten)
 - npm
+
+## Sovelluksen kuvaus
+
+Sovelluksen avulla käyttäjä voi luoda chatteja tai hänet voidaan lisätä niihin. Chatit voivat olla kahdenkeskisiä tai ryhmächatteja.
+Käyttäjä voi lähettää viestejä muille käyttäjille sekä lisätä heitä kontakteiksi. Lisää tietoa sovelluksesta löytyy sen [vaatimusmäärittelystä](./docs/vaatimusmaarittely.md).
+
+## Sovelluksen linkki
+
+Sovellus on tuotannossa osoitteessa:
+
+[https://messaging-app-2frl.onrender.com](https://messaging-app-2frl.onrender.com/)
+
+## Dokumentaatio
+
+- [Changelog](./docs/changelog.md)
+- [Käyttöohje](./docs/kayttoohje.md)
+- [Testausdokumentti](./docs/testaus.md)
+- [Tuntikirjanpito](./docs/tuntikirjanpito.md)
+- [Vaatimusmäärittely](./docs/vaatimusmaarittely.md)
+
+## Generatiivisten kielimallien käyttö
+
+Sovelluksen kehityksessä on käytetty generatiivisia kielimalleja koodiin ja käytettyihin teknologioihin liittyviin kysymyksiin.
+Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä ja pull request -tekstejä.
 
 ## Kehitys
 
@@ -111,6 +135,21 @@ Full Stack Open -kurssin projekti: Messaging App
    ```bash
    npm run frontend:dev
    ```
+
+## Sovelluksen käynnistäminen Docker-kontissa
+
+1. Luo tuotantoympäristössä käytettävän sovelluksen Docker-image
+
+   ```bash
+   docker build -t messaging-app .
+   ```
+
+2. Käynnistä sovellus Docker-kontissa
+
+   ```bash
+   docker run --env-file backend/.env -p 4000:4000 messaging-app
+   ```
+
 
 ## npm-komennot
 

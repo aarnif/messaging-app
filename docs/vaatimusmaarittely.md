@@ -2,8 +2,8 @@
 
 ## Sovelluksen tarkoitus
 
-Sovelluksen avulla käyttäjä voi luoda tai liittyä chatteihin. Chatit voivat olla joko ryhmä- tai kahdenkeskisiä.
-Käyttäjä voi lähettää chatissa viestejä toisille käyttäjille. Lisäksi käyttäjä voi lisätä toisia käyttäjiä kontakteiksi.
+Sovelluksen avulla käyttäjä voi luoda chatteja tai hänet voidaan lisätä niihin. Chatit voivat olla kahdenkeskisiä tai ryhmächatteja.
+Käyttäjä voi lähettää viestejä muille käyttäjille sekä lisätä heitä kontakteiksi.
 
 ## Käyttäjät
 
