@@ -14,7 +14,7 @@ import {
   user3Input,
 } from "./helpers/data.js";
 import {
-  addContact,
+  addContacts,
   allChatsByUser,
   assertChatEquality,
   assertError,
@@ -849,13 +849,13 @@ describeGraphQLSuite("Chats", () => {
     let chatId: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await addContact(user2Details.id, token);
+      const contactResponseBody = await addContacts([user2Details.id], token);
 
       assert.ok(
-        contactResponseBody.data?.addContact.id,
+        contactResponseBody.data?.addContacts[0].id,
         "Contact ID should be defined",
       );
-      userId = contactResponseBody.data.addContact.contactDetails.id;
+      userId = contactResponseBody.data.addContacts[0].contactDetails.id;
 
       const chatResponseBody = await createChat(privateChatDetails, token);
       assert.ok(
@@ -910,10 +910,10 @@ describeGraphQLSuite("Chats", () => {
     let token2: string;
 
     beforeEach(async () => {
-      const contactResponseBody = await addContact(user2Details.id, token);
+      const contactResponseBody = await addContacts([user2Details.id], token);
 
       assert.ok(
-        contactResponseBody.data?.addContact.id,
+        contactResponseBody.data?.addContacts[0].id,
         "Contact ID should be defined",
       );
 
