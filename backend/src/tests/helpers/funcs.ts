@@ -35,7 +35,6 @@ import {
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
-  FIND_USER_BY_ID,
   IS_BLOCKED_BY_USER,
   LEAVE_CHAT,
   LOGIN,
@@ -98,15 +97,6 @@ export const editProfile = (input: EditProfileInput, token: string) =>
     EDIT_PROFILE,
     {
       input,
-    },
-    token,
-  );
-
-export const findUserById = (id: string, token: string) =>
-  query<{ findUserById: User }, { id: string }>(
-    FIND_USER_BY_ID,
-    {
-      id,
     },
     token,
   );
