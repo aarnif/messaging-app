@@ -127,7 +127,7 @@ export const createChatViaApi = async (
         mutation CreateChat($input: CreateChatInput!) {
           createChat(input: $input) {
             id
-            type
+            isGroupChat
           }
         }
       `,

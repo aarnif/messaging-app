@@ -17,7 +17,7 @@ export const ME = gql(`
 export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
   allChatsByUser(search: $search) {
     id
-    type
+    isGroupChat
     name
     avatar
     unreadCount
@@ -74,7 +74,7 @@ export const ALL_CONTACTS_BY_USER =
 export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
   findChatById(id: $id) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -148,7 +148,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
   gql(`query FindPrivateChatWithContact($id: ID!) {
   findPrivateChatWithContact(id: $id) {
     id
-    type
+    isGroupChat
     name
     description
     avatar

@@ -35,7 +35,7 @@ const dateScalar = new GraphQLScalarType({
 });
 
 const getChatName = (parent: Chat, currentUser: User | null): string | null => {
-  if (parent.type === "group") {
+  if (parent.isGroupChat) {
     return parent.name;
   }
 
@@ -139,7 +139,7 @@ export const resolvers: Resolvers = {
 
       const filteredChats = search
         ? user.chats.filter((chat) => {
-            if (chat.type === "group") {
+            if (chat.isGroupChat) {
               return (
                 chat.name?.toLowerCase().includes(searchLower) ||
                 chat.description?.toLowerCase().includes(searchLower)
@@ -163,7 +163,7 @@ export const resolvers: Resolvers = {
 
         return {
           id: String(chat.id),
-          type: chat.type,
+          isGroupChat: chat.isGroupChat,
           name: chat.name || null,
           avatar: chat.avatar,
           members: chat.members ?? [],
@@ -237,7 +237,7 @@ export const resolvers: Resolvers = {
             model: Chat,
             as: "chats",
             where: {
-              type: "private",
+              isGroupChat: false,
             },
             attributes: ["id"],
             through: {
@@ -432,7 +432,7 @@ export const resolvers: Resolvers = {
 
       const chats = await Chat.findAll({
         where: {
-          type: "private",
+          isGroupChat: false,
         },
         include: [
           {
@@ -911,7 +911,7 @@ export const resolvers: Resolvers = {
         const newChat = await Chat.create({
           name: name || null,
           description: description || null,
-          type: members.length > 1 ? "group" : "private",
+          isGroupChat: members.length > 1,
           createdBy: Number(context.currentUser.id),
         });
 
@@ -974,7 +974,7 @@ export const resolvers: Resolvers = {
           await pubsub.publish("USER_CHAT_CREATED", {
             userChatCreated: {
               id: String(chat.id),
-              type: chat.type,
+              isGroupChat: chat.isGroupChat,
               name: chat.name || null,
               avatar: chat.avatar,
               members: chat.members,
@@ -1277,7 +1277,7 @@ export const resolvers: Resolvers = {
           await pubsub.publish("USER_CHAT_UPDATED", {
             userChatUpdated: {
               id: String(chatToBeEdited.id),
-              type: chatToBeEdited.type,
+              isGroupChat: chatToBeEdited.isGroupChat,
               name: chatToBeEdited.name || null,
               avatar: chatToBeEdited.avatar,
               members: chatToBeEdited.members,
@@ -1484,7 +1484,7 @@ export const resolvers: Resolvers = {
           await pubsub.publish("USER_CHAT_UPDATED", {
             userChatUpdated: {
               id: String(chat.id),
-              type: chat.type,
+              isGroupChat: chat.isGroupChat,
               name: chat.name || null,
               avatar: chat.avatar,
               members: chat.members,

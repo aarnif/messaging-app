@@ -73,7 +73,7 @@ export const USER_CHAT_UPDATED = gql(`
   subscription UserChatUpdated {
     userChatUpdated {
       id
-      type
+      isGroupChat
       name
       avatar
       unreadCount
@@ -115,7 +115,7 @@ export const USER_CHAT_CREATED = gql(`
   subscription UserChatCreated {
     userChatCreated {
       id
-      type
+      isGroupChat
       name
       avatar
       unreadCount
@@ -169,7 +169,7 @@ export const CHAT_EDITED = gql(`
   subscription ChatEdited {
     chatEdited {
       id
-      type
+      isGroupChat
       name
       description
       avatar

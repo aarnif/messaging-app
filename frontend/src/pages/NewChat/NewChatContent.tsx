@@ -16,12 +16,12 @@ const NewChatContent = ({
   }
 
   const { name, description, members } = chat;
-  const type = members.length == 2 ? null : "group";
+  const isGroupChat = members.length !== 2;
 
   return (
     <>
       <ChatHeader
-        type={type}
+        isGroupChat={isGroupChat}
         name={name}
         members={members}
         currentUser={currentUser}

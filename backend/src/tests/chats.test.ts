@@ -889,7 +889,7 @@ describeGraphQLSuite("Chats", () => {
 
       assert.ok(chat, "Chat should be defined");
       assert.strictEqual(chat.id, chatId);
-      assert.strictEqual(chat.type, "private");
+      assert.strictEqual(chat.isGroupChat, false);
       assert.strictEqual(chat.name, user2Details.name);
       assert.strictEqual(chat.description, null);
       assert.strictEqual(chat.avatar, null);
