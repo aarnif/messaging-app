@@ -25,7 +25,7 @@ type User {
 
 type UserChat {
   id: ID!
-  type: String!
+  isGroupChat: Boolean!
   name: String
   avatar: String
   members: [ChatMember!]!
@@ -36,7 +36,7 @@ type UserChat {
 
 type Chat {
   id: ID!
-  type: String!
+  isGroupChat: Boolean!
   name: String
   description: String
   avatar: String

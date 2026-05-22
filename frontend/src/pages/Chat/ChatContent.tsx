@@ -28,15 +28,14 @@ const ChatContent = ({
     fetchPolicy: "network-only",
   });
 
-  const { id, type, name, members, messages } = chat;
+  const { id, isGroupChat, name, members, messages } = chat;
 
-  const otherChatMember =
-    type === "private"
-      ? members.find((member) => member.id !== currentUser.id)
-      : null;
+  const otherChatMember = !isGroupChat
+    ? members.find((member) => member.id !== currentUser.id)
+    : null;
 
   const handleCallBack = async () => {
-    if (type === "group") {
+    if (isGroupChat) {
       setIsChatInfoOpen(true);
       return;
     }
@@ -57,7 +56,7 @@ const ChatContent = ({
   return (
     <>
       <ChatHeader
-        type={type}
+        isGroupChat={isGroupChat}
         name={name ?? ""}
         members={members}
         currentUser={currentUser}

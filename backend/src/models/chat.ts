@@ -10,7 +10,7 @@ import { Message } from "./message.js";
 
 class Chat extends Model<InferAttributes<Chat>, InferCreationAttributes<Chat>> {
   declare id: CreationOptional<number>;
-  declare type: "private" | "group";
+  declare isGroupChat: boolean;
   declare name: string | null;
   declare description: string | null;
   declare avatar: string | null;
@@ -25,9 +25,10 @@ Chat.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    type: {
-      type: DataTypes.ENUM("private", "group"),
+    isGroupChat: {
+      type: DataTypes.BOOLEAN,
       allowNull: false,
+      defaultValue: false,
     },
     name: {
       type: DataTypes.STRING,

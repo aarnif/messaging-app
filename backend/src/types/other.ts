@@ -5,7 +5,7 @@ export interface Contact {
 }
 
 export interface Chat {
-  type: "private" | "group";
+  isGroupChat: boolean;
   name: string | null;
   description: string | null;
   avatar: string | null;

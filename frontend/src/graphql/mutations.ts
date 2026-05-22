@@ -26,7 +26,7 @@ export const SEND_MESSAGE =
   gql(`mutation SendMessage($input: SendMessageInput!) {
   sendMessage(input: $input) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -57,7 +57,7 @@ export const EDIT_MESSAGE =
   gql(`mutation EditMessage($input: EditMessageInput!) {
   editMessage(input: $input) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -88,7 +88,7 @@ export const EDIT_MESSAGE =
 export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
   deleteMessage(id: $id) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -119,7 +119,7 @@ export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
 export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
   createChat(input: $input) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -149,7 +149,7 @@ export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
 export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
   editChat(input: $input) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -179,7 +179,7 @@ export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
 export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
   leaveChat(id: $id) {
     id
-    type
+    isGroupChat
     name
     description
     avatar
@@ -209,7 +209,7 @@ export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
 export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
   deleteChat(id: $id) {
     id
-    type
+    isGroupChat
     name
     description
     avatar

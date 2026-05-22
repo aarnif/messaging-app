@@ -29,7 +29,7 @@ export const truncateText = (text: string, maxLength: number = 20): string =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
 export const getChatName = (chat: UserChat, currentUserId: string): string => {
-  if (chat.type === "group") {
+  if (chat.isGroupChat) {
     return chat.name || "Group Chat";
   }
 

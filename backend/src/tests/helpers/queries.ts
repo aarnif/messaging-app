@@ -98,7 +98,7 @@ export const CREATE_CHAT = `
   mutation CreateChat($input: CreateChatInput!) {
     createChat(input: $input) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -130,7 +130,7 @@ export const EDIT_CHAT = `
   mutation EditChat($input: EditChatInput!) {
     editChat(input: $input) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -162,7 +162,7 @@ export const DELETE_CHAT = `
   mutation DeleteChat($id: ID!) {
     deleteChat(id: $id) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -212,7 +212,7 @@ export const SEND_MESSAGE = `
   mutation SendMessage($input: SendMessageInput!) {
     sendMessage(input: $input) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -244,7 +244,7 @@ export const EDIT_MESSAGE = `
   mutation EditMessage($input: EditMessageInput!) {
     editMessage(input: $input) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -276,7 +276,7 @@ export const DELETE_MESSAGE = `
   mutation DeleteMessage($id: ID!) {
     deleteMessage(id: $id) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -309,7 +309,7 @@ export const LEAVE_CHAT = `
   mutation LeaveChat($id: ID!) {
     leaveChat(id: $id) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -369,7 +369,7 @@ export const FIND_CHAT_BY_ID = `
   query FindChatById($id: ID!) {
     findChatById(id: $id) {
       id
-      type
+      isGroupChat
       name
       description
       avatar
@@ -399,7 +399,7 @@ export const FIND_CHAT_BY_ID = `
 
 export const IS_BLOCKED_BY_USER = `
   query IsBlockedByUser($id: ID!) {
-    isBlockedByUser(id: $id) 
+    isBlockedByUser(id: $id)
   }
 `;
 
@@ -444,7 +444,7 @@ export const ALL_CHATS_BY_USER = `
     allChatsByUser(search: $search) {
       id
       name
-      type
+      isGroupChat
       avatar
       unreadCount
       members {
@@ -496,7 +496,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
   query FindPrivateChatWithContact($id: ID!) {
     findPrivateChatWithContact(id: $id) {
       id
-      type
+      isGroupChat
       name
       description
       avatar

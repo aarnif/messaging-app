@@ -2,7 +2,7 @@ import type { Chat } from "../types/other.js";
 
 const chats: Chat[] = [
   {
-    type: "group",
+    isGroupChat: true,
     name: "Weekend Hikers",
     description:
       "A group of enthusiasts who love to explore trails and mountains every weekend.",
@@ -10,7 +10,7 @@ const chats: Chat[] = [
     createdBy: 1,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Book Club",
     description:
       "A club for avid readers to discuss and share their thoughts on various books.",
@@ -18,7 +18,7 @@ const chats: Chat[] = [
     createdBy: 1,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Gaming Night",
     description:
       "A group dedicated to organizing and enjoying weekly gaming sessions.",
@@ -26,7 +26,7 @@ const chats: Chat[] = [
     createdBy: 1,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Yoga Enthusiasts",
     description:
       "A community of yoga lovers who share tips, routines, and support each other.",
@@ -34,7 +34,7 @@ const chats: Chat[] = [
     createdBy: 2,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Music Band",
     description:
       "A band of musicians collaborating on new music and sharing their passion.",
@@ -42,7 +42,7 @@ const chats: Chat[] = [
     createdBy: 5,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Cooking Lovers",
     description:
       "A group for those who enjoy cooking and sharing recipes and culinary tips.",
@@ -50,7 +50,7 @@ const chats: Chat[] = [
     createdBy: 11,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Photography Crew",
     description:
       "A collective of photographers who share their work and discuss techniques.",
@@ -58,7 +58,7 @@ const chats: Chat[] = [
     createdBy: 10,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Movie Buffs",
     description:
       "A group for movie enthusiasts to discuss films, actors, and upcoming releases.",
@@ -66,7 +66,7 @@ const chats: Chat[] = [
     createdBy: 6,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Tech Geeks",
     description:
       "A community for tech enthusiasts to discuss the latest in technology and gadgets.",
@@ -74,7 +74,7 @@ const chats: Chat[] = [
     createdBy: 4,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Fitness Freaks",
     description:
       "A group of fitness enthusiasts sharing workouts, nutrition tips, and motivation.",
@@ -82,7 +82,7 @@ const chats: Chat[] = [
     createdBy: 7,
   },
   {
-    type: "group",
+    isGroupChat: true,
     name: "Travel Buddies",
     description:
       "A group for travelers to share experiences, tips, and plan new adventures.",

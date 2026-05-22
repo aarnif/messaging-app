@@ -5,13 +5,13 @@ import { truncateText } from "../../helpers";
 import type { NewChatMember } from "../../types";
 
 const ChatHeader = ({
-  type,
+  isGroupChat,
   name,
   members,
   currentUser,
   callBack,
 }: {
-  type: string | null;
+  isGroupChat: boolean;
   name: string;
   members: ChatMember[] | NewChatMember[];
   currentUser: User;
@@ -19,16 +19,13 @@ const ChatHeader = ({
 }) => {
   const navigate = useNavigate();
 
-  const membersDisplayString =
-    type === "group"
-      ? members
-          ?.map((member) =>
-            member?.username === currentUser.username ? "You" : member?.name,
-          )
-          .join(", ")
-      : type === "private"
-        ? "Click here for contact details."
-        : "";
+  const membersDisplayString = isGroupChat
+    ? members
+        ?.map((member) =>
+          member?.username === currentUser.username ? "You" : member?.name,
+        )
+        .join(", ")
+    : "Click here for contact details.";
 
   const hasCallBack = !!callBack;
 

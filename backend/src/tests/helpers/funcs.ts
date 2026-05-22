@@ -339,7 +339,7 @@ const assertChatBasics = <T extends UserChat | Chat>(
 ): T => {
   assert.ok(actual, `${entityName} should be defined`);
   assert.strictEqual(actual.id, expected.id);
-  assert.strictEqual(actual.type, expected.type);
+  assert.strictEqual(actual.isGroupChat, expected.isGroupChat);
   assert.strictEqual(actual.name, expected.name);
   assert.strictEqual(actual.avatar, expected.avatar);
   assert.strictEqual(actual.members.length, expected.members.length);

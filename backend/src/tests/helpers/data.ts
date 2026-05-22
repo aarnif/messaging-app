@@ -89,7 +89,7 @@ export const privateChatDetails = {
 
 export const expectedPrivateChat = {
   id: "1",
-  type: "private",
+  isGroupChat: false,
   name: user2Details.name,
   avatar: null,
   description: null,
@@ -126,7 +126,7 @@ export const expectedPrivateChat = {
 
 export const expectedGroupChat = {
   id: "1",
-  type: "group",
+  isGroupChat: true,
   name: "Group Chat",
   avatar: null,
   description: "Test description",

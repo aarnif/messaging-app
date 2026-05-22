@@ -149,7 +149,7 @@ export const USER_FIVE_DETAILS = {
 
 export const GROUP_CHAT_DETAILS = {
   id: "1",
-  type: "group",
+  isGroupChat: true,
   name: "Test Chat 1",
   description: "This is a group chat.",
   avatar: null,
@@ -253,7 +253,7 @@ export const GROUP_CHAT_DETAILS = {
 
 export const PRIVATE_CHAT_DETAILS = {
   id: "1",
-  type: "private",
+  isGroupChat: false,
   name: "User2",
   description: null,
   avatar: null,
@@ -525,7 +525,7 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
 export const userChatsMock = [
   {
     id: GROUP_CHAT_DETAILS.id,
-    type: GROUP_CHAT_DETAILS.type,
+    isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
     unreadCount: GROUP_CHAT_DETAILS.unreadCount,
@@ -535,7 +535,7 @@ export const userChatsMock = [
   },
   {
     id: "2",
-    type: GROUP_CHAT_DETAILS.type,
+    isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: "Test Chat 2",
     avatar: null,
     unreadCount: 1,
@@ -1491,7 +1491,7 @@ export const userChatUpdatedSubscription: MockLink.MockedResponse<
     data: {
       userChatUpdated: {
         id: GROUP_CHAT_DETAILS.id,
-        type: GROUP_CHAT_DETAILS.type,
+        isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
         unreadCount: GROUP_CHAT_DETAILS.unreadCount,
@@ -1514,7 +1514,7 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
       userChatCreated: {
         id: "2",
         userId: USER_TWO_DETAILS.id,
-        type: GROUP_CHAT_DETAILS.type,
+        isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
         unreadCount: GROUP_CHAT_DETAILS.unreadCount,
