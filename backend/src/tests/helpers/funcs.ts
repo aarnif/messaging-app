@@ -18,7 +18,6 @@ import config from "../../../config.js";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
 import { user1Details } from "./data.js";
 import {
-  ADD_CONTACT,
   ADD_CONTACTS,
   ALL_CHATS_BY_USER,
   ALL_CONTACTS_BY_USER,
@@ -106,9 +105,6 @@ export const me = (
   expectedStatusCode: number = 200,
   skipErrorCheck: boolean = false,
 ) => query<{ me: User }>(ME, {}, token, expectedStatusCode, skipErrorCheck);
-
-export const addContact = (id: string, token: string) =>
-  query<{ addContact: Contact }, { id: string }>(ADD_CONTACT, { id }, token);
 
 export const addContacts = (ids: string[], token: string) =>
   query<{ addContacts: Contact[] }, { ids: string[] }>(
