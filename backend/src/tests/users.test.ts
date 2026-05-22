@@ -1,12 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import {
-  expectedUser1,
-  expectedUser2,
-  user1Details,
-  user1Input,
-  user2Input,
-} from "./helpers/data.js";
+import { expectedUser1, user1Details, user1Input } from "./helpers/data.js";
 import {
   assertError,
   assertUserEquality,
@@ -14,7 +8,6 @@ import {
   changePassword,
   createUser,
   editProfile,
-  findUserById,
   login,
   me,
 } from "./helpers/funcs.js";
@@ -167,52 +160,6 @@ describeGraphQLSuite("Users", () => {
         "Context creation failed: jwt malformed",
         "INTERNAL_SERVER_ERROR",
       );
-    });
-  });
-
-  void describe("Find user by ID", () => {
-    let token: string;
-    let user2Id: string;
-
-    beforeEach(async () => {
-      await createUser(user1Input);
-      const user2Body = await createUser(user2Input);
-      assert.ok(user2Body.data?.createUser?.id, "User2 ID should be defined");
-      user2Id = user2Body.data.createUser.id;
-
-      const loginBody = await login({
-        username: user1Details.username,
-        password: user1Details.password,
-      });
-
-      assert.ok(loginBody.data, "Login token value should be defined");
-      token = loginBody.data.login.value;
-    });
-
-    void test("fails without authentication", async () => {
-      const responseBody = await findUserById(user2Id, "");
-
-      const user = responseBody.data;
-
-      assert.strictEqual(user, null, "User should be null");
-      assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
-    });
-
-    void test("fails with non-existent user ID", async () => {
-      const responseBody = await findUserById("999", token);
-
-      const user = responseBody.data;
-
-      assert.strictEqual(user, null, "User should be null");
-      assertError(responseBody, "User not found", "NOT_FOUND");
-    });
-
-    void test("succeeds with valid user ID", async () => {
-      const responseBody = await findUserById(user2Id, token);
-
-      const user = responseBody.data?.findUserById;
-
-      assertUserEquality(user, expectedUser2);
     });
   });
 

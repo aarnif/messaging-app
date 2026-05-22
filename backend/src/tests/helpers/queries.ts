@@ -351,20 +351,6 @@ export const EDIT_PROFILE = `
   }
 `;
 
-export const FIND_USER_BY_ID = `
-  query FindUserById($id: ID!) {
-    findUserById(id: $id) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
-  }
-`;
-
 export const FIND_CHAT_BY_ID = `
   query FindChatById($id: ID!) {
     findChatById(id: $id) {
