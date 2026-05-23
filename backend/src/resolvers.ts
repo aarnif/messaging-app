@@ -1031,6 +1031,8 @@ export const resolvers: Resolvers = {
         });
       }
 
+      let unreadCount = 0;
+
       try {
         const hasNameChanged = chatToBeEdited.name !== name;
 
@@ -1042,6 +1044,8 @@ export const resolvers: Resolvers = {
             isNotification: true,
             isDeleted: false,
           });
+
+          unreadCount += 1;
 
           const messageWithSender = await Message.findByPk(
             notificationMessage.id,
@@ -1068,6 +1072,8 @@ export const resolvers: Resolvers = {
             isNotification: true,
             isDeleted: false,
           });
+
+          unreadCount += 1;
 
           const messageWithSender = await Message.findByPk(
             notificationMessage.id,
@@ -1119,6 +1125,8 @@ export const resolvers: Resolvers = {
             })),
           );
 
+          unreadCount += notificationMessages.length;
+
           for (const message of notificationMessages) {
             const messageWithSender = await Message.findByPk(message.id, {
               include: [{ model: User, as: "sender" }],
@@ -1150,6 +1158,8 @@ export const resolvers: Resolvers = {
             })),
           );
 
+          unreadCount += notificationMessages.length;
+
           for (const message of notificationMessages) {
             const messageWithSender = await Message.findByPk(message.id, {
               include: [{ model: User, as: "sender" }],
@@ -1180,6 +1190,20 @@ export const resolvers: Resolvers = {
             [{ model: Message, as: "messages" }, "createdAt", "ASC"],
           ],
         });
+
+        if (unreadCount > 0) {
+          await ChatMember.increment(
+            { unreadCount },
+            {
+              where: {
+                chatId: Number(id),
+                userId: {
+                  [Op.ne]: context.currentUser.id,
+                },
+              },
+            },
+          );
+        }
 
         const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
 
@@ -1240,6 +1264,18 @@ export const resolvers: Resolvers = {
           isNotification: true,
           isDeleted: false,
         });
+
+        await ChatMember.increment(
+          { unreadCount: 1 },
+          {
+            where: {
+              chatId: Number(id),
+              userId: {
+                [Op.ne]: context.currentUser.id,
+              },
+            },
+          },
+        );
 
         const messageWithSender = await Message.findByPk(
           notificationMessage.id,
