@@ -48,7 +48,7 @@ const ReceivedMessage = ({
           )}
 
           <p className="my-1 text-[10px] text-end text-slate-700 dark:text-slate-200">
-            {formatDisplayDate(message?.createdAt, currentUser.is24HourClock)}
+            {formatDisplayDate(message.createdAt, currentUser.is24HourClock)}
           </p>
         </div>
         <div className="absolute bottom-0 -left-2 border-r-16 border-r-slate-200 border-t-16 border-t-transparent dark:border-r-slate-700"></div>

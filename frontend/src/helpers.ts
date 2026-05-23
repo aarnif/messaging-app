@@ -33,7 +33,7 @@ export const getChatName = (chat: UserChat, currentUserId: string): string => {
     return chat.name || "Group Chat";
   }
 
-  const otherMember = chat.members?.find(
+  const otherMember = chat.members.find(
     (member) => member.id !== currentUserId,
   );
   return otherMember?.name || "Private Chat";

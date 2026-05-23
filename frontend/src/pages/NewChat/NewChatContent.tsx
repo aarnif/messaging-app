@@ -31,7 +31,7 @@ const NewChatContent = ({
         chatName={name ?? null}
         chatDescription={description ?? null}
         chatMembers={
-          members?.filter((member) => member?.id !== currentUser.id) ?? []
+          members.filter((member) => member.id !== currentUser.id) ?? []
         }
       />
     </>
