@@ -102,7 +102,7 @@ const ChatInfoDrawer = ({
   };
 
   const isAdmin =
-    currentUser.id === members.find((member) => member.isAdmin)?.id;
+    currentUser.id === members.find((member) => member.isAdmin)?.userId;
 
   return (
     <motion.div
