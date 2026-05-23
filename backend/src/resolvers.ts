@@ -39,8 +39,8 @@ const getChatName = (parent: Chat, currentUser: User | null): string | null => {
     return parent.name;
   }
 
-  const otherMember = parent?.members?.find(
-    (member) => member?.id?.toString() !== currentUser?.id?.toString(),
+  const otherMember = parent.members?.find(
+    (member) => member.id.toString() !== currentUser?.id.toString(),
   );
 
   return otherMember?.name || null;
@@ -597,7 +597,7 @@ export const resolvers: Resolvers = {
           extensions: { code: "UNAUTHENTICATED" },
         });
       }
-      const currentUserId = Number(context?.currentUser?.id);
+      const currentUserId = Number(context.currentUser.id);
       const userIds = ids.map((id) => Number(id));
 
       try {
@@ -1036,7 +1036,7 @@ export const resolvers: Resolvers = {
 
         if (hasNameChanged) {
           const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser?.id),
+            senderId: Number(context.currentUser.id),
             chatId: Number(chatToBeEdited.id),
             content: `Chat name changed to "${name}"`,
             isNotification: true,
@@ -1059,7 +1059,7 @@ export const resolvers: Resolvers = {
 
         if (hasDescriptionChanged) {
           const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser?.id),
+            senderId: Number(context.currentUser.id),
             chatId: Number(chatToBeEdited.id),
             content:
               description === ""
@@ -1092,7 +1092,7 @@ export const resolvers: Resolvers = {
         const membersToRemove = currentMemberIds.filter(
           (memberId) =>
             !newMemberIds.includes(Number(memberId)) &&
-            Number(memberId) !== Number(context?.currentUser?.id),
+            Number(memberId) !== Number(context.currentUser?.id),
         );
 
         if (membersToAdd.length > 0) {
@@ -1228,7 +1228,7 @@ export const resolvers: Resolvers = {
 
         await ChatMember.destroy({
           where: {
-            userId: context?.currentUser?.id,
+            userId: context.currentUser.id,
             chatId: Number(id),
           },
         });
@@ -1642,7 +1642,7 @@ export const resolvers: Resolvers = {
       }
 
       const userExists = await User.findOne({
-        where: { username: context.currentUser?.username },
+        where: { username: context.currentUser.username },
       });
 
       if (

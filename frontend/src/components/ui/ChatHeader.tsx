@@ -21,8 +21,8 @@ const ChatHeader = ({
 
   const membersDisplayString = isGroupChat
     ? members
-        ?.map((member) =>
-          member?.username === currentUser.username ? "You" : member?.name,
+        .map((member) =>
+          member.username === currentUser.username ? "You" : member.name,
         )
         .join(", ")
     : "Click here for contact details.";

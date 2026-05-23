@@ -32,7 +32,7 @@ const NewMessageBox = ({
       variables: {
         input: {
           name: chatName,
-          members: chatMembers?.map((member) => member?.id) ?? [],
+          members: chatMembers.map((member) => member.id) ?? [],
           description: chatDescription,
           initialMessage: message.value,
         },
