@@ -705,7 +705,7 @@ export const resolvers: Resolvers = {
 
         return targetContact;
       } catch (error) {
-        throw new GraphQLError("Failed to remove contact", {
+        throw new GraphQLError("Failed to toggle block contact", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
             error,
