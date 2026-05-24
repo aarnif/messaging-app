@@ -395,7 +395,11 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const contact = await Contact.findByPk(Number(id), {
+      const contact = await Contact.findOne({
+        where: {
+          id: Number(id),
+          userId: Number(context.currentUser.id),
+        },
         include: [
           {
             model: User,
