@@ -4,6 +4,7 @@ import { render, screen, waitFor } from "@testing-library/react";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
+import NotificationProvider from "../components/NotificationProvider";
 import NewChat from "../pages/NewChat";
 import { sendNewMessage } from "./helpers/funcs";
 import {
@@ -44,7 +45,9 @@ const renderComponent = (
   return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <NewChat />
+        <NotificationProvider>
+          <NewChat />
+        </NotificationProvider>
       </MemoryRouter>
     </MockedProvider>,
   );
@@ -110,8 +113,6 @@ describe("<NewChat />", () => {
   });
 
   test("does not create new chat when message input is empty", async () => {
-    const consoleLogSpy = vi.spyOn(console, "log");
-
     const user = userEvent.setup();
     renderComponent();
 
@@ -122,7 +123,9 @@ describe("<NewChat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalledWith("Do not send empty message!");
+      expect(
+        screen.getByText("Please enter a message before sending."),
+      ).toBeDefined();
     });
   });
 

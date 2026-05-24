@@ -3,6 +3,7 @@ import { useNavigate } from "react-router";
 import MessageBox from "../../components/ui/MessageBox";
 import { CREATE_CHAT } from "../../graphql/mutations";
 import useField from "../../hooks/useField";
+import useModal from "../../hooks/useModal";
 import type { NewChatMember } from "../../types";
 
 const NewMessageBox = ({
@@ -14,6 +15,7 @@ const NewMessageBox = ({
   chatDescription: string | null;
   chatMembers: NewChatMember[];
 }) => {
+  const modal = useModal();
   const navigate = useNavigate();
   const message = useField("New Message", "text", "New Message...");
   const [createChat] = useMutation(CREATE_CHAT, {
@@ -24,7 +26,12 @@ const NewMessageBox = ({
 
   const handleCreateChat = async () => {
     if (!message.value) {
-      console.log("Do not send empty message!");
+      modal({
+        type: "alert",
+        title: "Empty Message",
+        message: "Please enter a message before sending.",
+        close: "Close",
+      });
       return;
     }
 
