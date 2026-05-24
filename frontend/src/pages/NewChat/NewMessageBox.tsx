@@ -29,7 +29,7 @@ const NewMessageBox = ({
       modal({
         type: "alert",
         title: "Empty Message",
-        message: "Do not send empty message!",
+        message: "Please enter a message before sending.",
         close: "Close",
       });
       return;

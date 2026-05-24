@@ -123,7 +123,9 @@ describe("<NewChat />", () => {
     await user.click(screen.getByTestId("send-message-button"));
 
     await waitFor(() => {
-      expect(screen.getByText("Do not send empty message!")).toBeDefined();
+      expect(
+        screen.getByText("Please enter a message before sending."),
+      ).toBeDefined();
     });
   });
 
