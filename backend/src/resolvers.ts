@@ -161,6 +161,19 @@ export const resolvers: Resolvers = {
         });
       }
 
+      const isMember = await ChatMember.findOne({
+        where: { chatId: Number(id), userId: Number(context.currentUser.id) },
+      });
+
+      if (!isMember) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
       const chat = await Chat.findByPk(Number(id), {
         include: [
           {
