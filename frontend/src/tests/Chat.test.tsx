@@ -302,15 +302,13 @@ describe("<Chat />", () => {
   });
 
   test("does not send message when input is empty", async () => {
-    const consoleLogSpy = vi.spyOn(console, "log");
-
     const user = userEvent.setup();
     renderComponent();
 
     await sendNewMessage(user, "");
 
     await waitFor(() => {
-      expect(consoleLogSpy).toHaveBeenCalledWith("Do not send empty message!");
+      expect(screen.getByText("Do not send empty message!")).toBeDefined();
     });
   });
 
