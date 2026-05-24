@@ -33,23 +33,33 @@ VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
 
 1. Asenna sovelluksen vaatimat riippuvuudet:
 
+   ```bash
    npm run install
+   ```
 
 2. Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa:
 
+   ```bash
    npm run backend:db:start
+   ```
 
 3. Lisää seed data tietokantaan:
 
+   ```bash
    npm run backend:db:populate
+   ```
 
 4. Käynnistä backend kehitystilassa uudessa terminaalissa:
 
+   ```bash
    npm run backend:dev
+   ```
 
 5. Käynnistä frontend kehitystilassa uudessa terminaalissa:
 
+   ```bash
    npm run frontend:dev
+   ```
 
 ## Kirjautuminen
 
@@ -57,7 +67,7 @@ Sovellus käynnistyy kirjautumisnäkymään:
 
 ![Kirjautuminen](images/kirjautuminen.png)
 
-Kirjautumisnäkymässä voit syöttää käyttäjätunnuksesi ja salasanasi ja painamalla `Sign In` painiketta, kirjaudut sisään sovellukseen.
+Kirjautumisnäkymässä voit syöttää käyttäjätunnuksesi ja salasanasi ja painamalla `Sign In` painiketta, kirjaudut sisään sovellukseen. Seed data sisältää useita valmiiksi luotuja käyttäjiä (ks. `backend/src/seedData/users.ts`), joilla voi kirjautua sovellukseen. Kaikkien näiden käyttäjien salasana on `password`.
 
 ## Uuden käyttäjän luominen
 
