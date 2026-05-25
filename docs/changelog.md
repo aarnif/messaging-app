@@ -229,3 +229,14 @@ Ei muutoksia
 - Korjaa admin-statuksen puuttuminen ja sen siirtyminen väärälle chat-jäsenelle
 - Muuta useimmat GraphQL-kyselyt palauttamaan non-nullable tyyppejä
 - Yhdenmukaista backendin palauttamien Chat-olioiden rakenne
+
+## Viikko 35 (18.5-24.5.2026)
+
+- Näytä ilmoitusviestit ilman lähettäjää viimeisimmän viestin näkymässä chat-listassa
+- Bugin korjaus liittyen chatin adminin siirtymiseen/katoamiseen chatin tietoja päivitettäessä
+- Päivitä sovelluksen tarkoitus vastamaan sen todellista toiminnallisuutta vaatimusmäärittelyssä
+- Lisää tuotantolinkki, sovelluksen kuvaus, linkit dokumentaatioon sekä kuvaus tekoälyn käytöstä README:iin
+- Korjaa npm-komentokäskyjen ulkoasu ja lisää tieto valmiista käyttäjistä sovelluksen käyttöohjeeseen
+- findUserById kyselyn ja addContact mutaation poisto
+- Estä käyttäjän pääsy muiden käyttäjien chatteihin tai kontakteihin url-osoitetta muuttamalla
+- Näytä alert-modaali jos käyttäjä yrittää lähettää tyhjää viestiä chatissa

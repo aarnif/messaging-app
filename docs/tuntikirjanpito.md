@@ -142,4 +142,15 @@
 | 15.5  | 1    |                                         |
 | 16.5  | 2    | koodin refaktorointi                    |
 | 17.5  | 1    |                                         |
-|  yht  | 273  |                                         |
+| 18.5  | 1    | koodin refaktorointi                    |
+| 18.5  | 1    | viimeisimmän viestin päivitys           |
+| 19.5  | 2    | bugin korjaus                           |
+| 20.5  | 1    |                                         |
+| 20.5  | 0.5  | bugin korjaus                           |
+| 21.5  | 0.5  | dokumentaation päivitys                 |
+| 22.5  | 1    | koodin refaktorointi                    |
+| 23.5  | 1.5  |                                         |
+| 24.5  | 1    | tietoturvahaavoittuvuuden korjaus       |
+| 24.5  | 0.5  | dokumentaation päivitys                 |
+| 24.5  | 1    | koodin refaktorointi                    |
+|  yht  | 284  |                                         |
