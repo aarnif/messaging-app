@@ -142,6 +142,7 @@ const Chat = () => {
 
   useEffect(() => {
     setIsChatInfoOpen(false);
+    latestAddedMessageIdRef.current = null;
   }, [match?.id]);
 
   return (
