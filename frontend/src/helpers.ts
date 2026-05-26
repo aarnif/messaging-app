@@ -1,7 +1,7 @@
 import type { ApolloCache } from "@apollo/client";
 import { format, isThisWeek, isToday } from "date-fns";
 import emojiRegex from "emoji-regex";
-import type { Chat, User, UserChat } from "./__generated__/graphql";
+import type { Chat, ChatItem, User } from "./__generated__/graphql";
 import { ALL_CHATS_BY_USER, FIND_CHAT_BY_ID } from "./graphql/queries";
 
 export const formatDisplayDate = (
@@ -28,7 +28,7 @@ export const formatDisplayDate = (
 export const truncateText = (text: string, maxLength: number = 20): string =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
-export const getChatName = (chat: UserChat, currentUserId: string): string => {
+export const getChatName = (chat: ChatItem, currentUserId: string): string => {
   if (chat.isGroupChat) {
     return chat.name || "Group Chat";
   }
@@ -40,22 +40,22 @@ export const getChatName = (chat: UserChat, currentUserId: string): string => {
 };
 
 export const isValidChatForUser = (
-  chat: UserChat | undefined | null,
+  chat: ChatItem | undefined | null,
   currentUser: User | undefined | null,
-): chat is UserChat => {
+): chat is ChatItem => {
   if (!chat || !currentUser || chat.userId !== currentUser.id) {
     return false;
   }
   return true;
 };
 
-const sortChatsByLatestMessage = (chats: UserChat[]) =>
+const sortChatsByLatestMessage = (chats: ChatItem[]) =>
   chats.sort((a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt);
 
 export const updateUserChatsCache = (
   cache: ApolloCache,
   searchValue: string,
-  updateFn: (chats: UserChat[]) => UserChat[],
+  updateFn: (chats: ChatItem[]) => ChatItem[],
 ) => {
   cache.updateQuery(
     {

@@ -17,8 +17,8 @@ import {
   addContacts,
   allChatsByUser,
   assertChatEquality,
+  assertChatItemEquality,
   assertError,
-  assertUserChatEquality,
   assertValidationError,
   createChat,
   createUser,
@@ -778,7 +778,7 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 2, "Should have 2 chats");
 
       const chat = chats[0];
-      assertUserChatEquality(chat, {
+      assertChatItemEquality(chat, {
         ...expectedGroupChat,
         id: "2",
         latestMessage: expectedGroupChat.messages[0],
@@ -797,7 +797,7 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assertUserChatEquality(chat, {
+      assertChatItemEquality(chat, {
         ...expectedGroupChat,
         id: "2",
         latestMessage: expectedGroupChat.messages[0],
@@ -819,7 +819,7 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assertUserChatEquality(chat, {
+      assertChatItemEquality(chat, {
         ...expectedGroupChat,
         id: "2",
         latestMessage: expectedGroupChat.messages[0],
@@ -837,7 +837,7 @@ describeGraphQLSuite("Chats", () => {
       assert.strictEqual(chats.length, 1, "Should have 1 chat");
 
       const chat = chats[0];
-      assertUserChatEquality(chat, {
+      assertChatItemEquality(chat, {
         ...expectedGroupChat,
         latestMessage: expectedGroupChat.messages[0],
       });

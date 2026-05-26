@@ -7,6 +7,10 @@ import App from "../App";
 import {
   allChatsByUser,
   allContactsByUser,
+  chatItemCreatedSubscription,
+  chatItemDeletedSubscription,
+  chatItemLeftSubscription,
+  chatItemUpdatedSubscription,
   CONTACT_DETAILS,
   findChatByIdGroup,
   findContactById,
@@ -20,10 +24,6 @@ import {
   messageDeletedSubscription,
   messageEditedSubscription,
   messageSentSubscription,
-  userChatCreatedSubscription,
-  userChatDeletedSubscription,
-  userChatLeftSubscription,
-  userChatUpdatedSubscription,
   windowMockContent,
 } from "./helpers/mocks";
 
@@ -86,10 +86,10 @@ describe("<App />", () => {
       [
         meMock,
         allChatsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ],
     );
 
@@ -104,10 +104,10 @@ describe("<App />", () => {
       [
         meMock,
         allChatsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ],
     );
 
@@ -122,10 +122,10 @@ describe("<App />", () => {
       [
         meMock,
         allChatsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ],
     );
 
@@ -142,10 +142,10 @@ describe("<App />", () => {
         allChatsByUser,
         findChatByIdGroup,
         markChatAsRead,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
         messageSentSubscription,
         messageEditedSubscription,
         messageDeletedSubscription,
@@ -167,10 +167,10 @@ describe("<App />", () => {
         meMock,
         allChatsByUser,
         findChatByIdGroup,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ],
     );
 

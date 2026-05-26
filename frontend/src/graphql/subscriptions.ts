@@ -69,9 +69,9 @@ export const MESSAGE_DELETED = gql(`
   }
 `);
 
-export const USER_CHAT_UPDATED = gql(`
-  subscription UserChatUpdated {
-    userChatUpdated {
+export const CHAT_ITEM_UPDATED = gql(`
+  subscription ChatItemUpdated {
+    chatItemUpdated {
       id
       isGroupChat
       name
@@ -111,9 +111,9 @@ export const USER_CHAT_UPDATED = gql(`
     }
 }`);
 
-export const USER_CHAT_CREATED = gql(`
-  subscription UserChatCreated {
-    userChatCreated {
+export const CHAT_ITEM_CREATED = gql(`
+  subscription ChatItemCreated {
+    chatItemCreated {
       id
       isGroupChat
       name
@@ -153,14 +153,14 @@ export const USER_CHAT_CREATED = gql(`
     }
 }`);
 
-export const USER_CHAT_DELETED = gql(`
-  subscription UserChatDeleted {
-    userChatDeleted
+export const CHAT_ITEM_DELETED = gql(`
+  subscription ChatItemDeleted {
+    chatItemDeleted
 }`);
 
-export const USER_CHAT_LEFT = gql(`
-  subscription UserChatLeft  {
-    userChatLeft {
+export const CHAT_ITEM_LEFT = gql(`
+  subscription ChatItemLeft  {
+    chatItemLeft {
       chatId
       memberId
     }}`);

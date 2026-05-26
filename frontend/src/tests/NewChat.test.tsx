@@ -9,7 +9,7 @@ import NewChat from "../pages/NewChat";
 import { sendNewMessage } from "./helpers/funcs";
 import {
   createChat,
-  currentUserChatAdminMock,
+  currentChatItemAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
   MESSAGE_DETAILS,
@@ -39,7 +39,7 @@ const renderComponent = (
   ],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentUserChatAdminMock,
+    currentUser: currentChatItemAdminMock,
   });
 
   return render(

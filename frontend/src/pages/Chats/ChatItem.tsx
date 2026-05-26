@@ -1,4 +1,7 @@
-import type { User, UserChat } from "../../__generated__/graphql";
+import type {
+  ChatItem as ChatItemType,
+  User,
+} from "../../__generated__/graphql";
 import { formatDisplayDate, getChatName, truncateText } from "../../helpers";
 
 const ChatItem = ({
@@ -6,7 +9,7 @@ const ChatItem = ({
   chat,
 }: {
   currentUser: User | undefined | null;
-  chat: UserChat;
+  chat: ChatItemType;
 }) => {
   const { id, latestMessage, unreadCount } = chat;
 

@@ -11,6 +11,14 @@ import type {
   ChangePasswordMutationVariables,
   ChatEditedSubscription,
   ChatEditedSubscriptionVariables,
+  ChatItemCreatedSubscription,
+  ChatItemCreatedSubscriptionVariables,
+  ChatItemDeletedSubscription,
+  ChatItemDeletedSubscriptionVariables,
+  ChatItemLeftSubscription,
+  ChatItemLeftSubscriptionVariables,
+  ChatItemUpdatedSubscription,
+  ChatItemUpdatedSubscriptionVariables,
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables,
   CreateChatMutation,
@@ -59,14 +67,6 @@ import type {
   SendMessageMutationVariables,
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables,
-  UserChatCreatedSubscription,
-  UserChatCreatedSubscriptionVariables,
-  UserChatDeletedSubscription,
-  UserChatDeletedSubscriptionVariables,
-  UserChatLeftSubscription,
-  UserChatLeftSubscriptionVariables,
-  UserChatUpdatedSubscription,
-  UserChatUpdatedSubscriptionVariables,
 } from "../../__generated__/graphql";
 import {
   ADD_CONTACTS,
@@ -99,13 +99,13 @@ import {
 } from "../../graphql/queries";
 import {
   CHAT_EDITED,
+  CHAT_ITEM_CREATED,
+  CHAT_ITEM_DELETED,
+  CHAT_ITEM_LEFT,
+  CHAT_ITEM_UPDATED,
   MESSAGE_DELETED,
   MESSAGE_EDITED,
   MESSAGE_SENT,
-  USER_CHAT_CREATED,
-  USER_CHAT_DELETED,
-  USER_CHAT_LEFT,
-  USER_CHAT_UPDATED,
 } from "../../graphql/subscriptions";
 import type { InputField } from "../../types";
 
@@ -374,7 +374,7 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-export const currentUserChatAdminMock = {
+export const currentChatItemAdminMock = {
   id: USER_ONE_DETAILS.id,
   username: USER_ONE_DETAILS.username,
   name: USER_ONE_DETAILS.name,
@@ -384,7 +384,7 @@ export const currentUserChatAdminMock = {
   isDarkMode: false,
 };
 
-export const currentUserChatMemberMock = {
+export const currentChatItemMemberMock = {
   id: USER_TWO_DETAILS.id,
   username: USER_TWO_DETAILS.username,
   name: USER_TWO_DETAILS.name,
@@ -400,7 +400,7 @@ export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
   },
   result: {
     data: {
-      me: currentUserChatAdminMock,
+      me: currentChatItemAdminMock,
     },
   },
 };
@@ -434,7 +434,7 @@ export const createUserMock: MockLink.MockedResponse<
   },
   result: {
     data: {
-      createUser: currentUserChatAdminMock,
+      createUser: currentChatItemAdminMock,
     },
   },
 };
@@ -522,7 +522,7 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
   },
 };
 
-export const userChatsMock = [
+export const chatItemsMock = [
   {
     id: GROUP_CHAT_DETAILS.id,
     isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
@@ -557,7 +557,7 @@ export const allChatsByUser: MockLink.MockedResponse<
   },
   result: {
     data: {
-      allChatsByUser: userChatsMock,
+      allChatsByUser: chatItemsMock,
     },
   },
   maxUsageCount: 2,
@@ -777,7 +777,7 @@ export const sendMessage: MockLink.MockedResponse<
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,
-  members: [currentUserChatAdminMock, userContactsMock[0].contactDetails],
+  members: [currentChatItemAdminMock, userContactsMock[0].contactDetails],
   avatar: null,
 };
 
@@ -785,7 +785,7 @@ export const NewGroupChatDetails = {
   name: "Group Chat",
   description: null,
   members: [
-    currentUserChatAdminMock,
+    currentChatItemAdminMock,
     userContactsMock[0].contactDetails,
     userContactsMock[1].contactDetails,
   ],
@@ -1152,9 +1152,9 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserChatAdminMock.name,
-        about: currentUserChatAdminMock.about,
-        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: currentChatItemAdminMock.is24HourClock,
         isDarkMode: true,
       },
     },
@@ -1162,7 +1162,7 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: {
-        ...currentUserChatAdminMock,
+        ...currentChatItemAdminMock,
         isDarkMode: true,
       },
     },
@@ -1177,16 +1177,16 @@ export const editProfileDarkModeOff: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserChatAdminMock.name,
-        about: currentUserChatAdminMock.about,
-        is24HourClock: currentUserChatAdminMock.is24HourClock,
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: currentChatItemAdminMock.is24HourClock,
         isDarkMode: false,
       },
     },
   },
   result: {
     data: {
-      editProfile: currentUserChatAdminMock,
+      editProfile: currentChatItemAdminMock,
     },
   },
 };
@@ -1199,8 +1199,8 @@ export const editProfile24h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserChatAdminMock.name,
-        about: currentUserChatAdminMock.about,
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
         is24HourClock: true,
         isDarkMode: false,
       },
@@ -1208,7 +1208,7 @@ export const editProfile24h: MockLink.MockedResponse<
   },
   result: {
     data: {
-      editProfile: currentUserChatAdminMock,
+      editProfile: currentChatItemAdminMock,
     },
   },
 };
@@ -1221,8 +1221,8 @@ export const editProfile12h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentUserChatAdminMock.name,
-        about: currentUserChatAdminMock.about,
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
         is24HourClock: false,
         isDarkMode: false,
       },
@@ -1231,7 +1231,7 @@ export const editProfile12h: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: {
-        ...currentUserChatAdminMock,
+        ...currentChatItemAdminMock,
         is24HourClock: false,
         isDarkMode: false,
       },
@@ -1256,7 +1256,7 @@ export const editProfileUpdate: MockLink.MockedResponse<
   },
   result: {
     data: {
-      editProfile: currentUserChatAdminMock,
+      editProfile: currentChatItemAdminMock,
     },
   },
 };
@@ -1277,7 +1277,7 @@ export const changePassword: MockLink.MockedResponse<
   },
   result: {
     data: {
-      changePassword: currentUserChatAdminMock,
+      changePassword: currentChatItemAdminMock,
     },
   },
 };
@@ -1480,16 +1480,16 @@ export const messageDeletedSubscription: MockLink.MockedResponse<
   },
 };
 
-export const userChatUpdatedSubscription: MockLink.MockedResponse<
-  UserChatUpdatedSubscription,
-  UserChatUpdatedSubscriptionVariables
+export const chatItemUpdatedSubscription: MockLink.MockedResponse<
+  ChatItemUpdatedSubscription,
+  ChatItemUpdatedSubscriptionVariables
 > = {
   request: {
-    query: USER_CHAT_UPDATED,
+    query: CHAT_ITEM_UPDATED,
   },
   result: {
     data: {
-      userChatUpdated: {
+      chatItemUpdated: {
         id: GROUP_CHAT_DETAILS.id,
         isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
         name: GROUP_CHAT_DETAILS.name,
@@ -1502,16 +1502,16 @@ export const userChatUpdatedSubscription: MockLink.MockedResponse<
   },
 };
 
-export const userChatCreatedSubscription: MockLink.MockedResponse<
-  UserChatCreatedSubscription,
-  UserChatCreatedSubscriptionVariables
+export const chatItemCreatedSubscription: MockLink.MockedResponse<
+  ChatItemCreatedSubscription,
+  ChatItemCreatedSubscriptionVariables
 > = {
   request: {
-    query: USER_CHAT_CREATED,
+    query: CHAT_ITEM_CREATED,
   },
   result: {
     data: {
-      userChatCreated: {
+      chatItemCreated: {
         id: "2",
         userId: USER_TWO_DETAILS.id,
         isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
@@ -1525,28 +1525,28 @@ export const userChatCreatedSubscription: MockLink.MockedResponse<
   },
 };
 
-export const userChatDeletedSubscription: MockLink.MockedResponse<
-  UserChatDeletedSubscription,
-  UserChatDeletedSubscriptionVariables
+export const chatItemDeletedSubscription: MockLink.MockedResponse<
+  ChatItemDeletedSubscription,
+  ChatItemDeletedSubscriptionVariables
 > = {
   request: {
-    query: USER_CHAT_DELETED,
+    query: CHAT_ITEM_DELETED,
   },
   result: {
-    data: { userChatDeleted: GROUP_CHAT_DETAILS.id },
+    data: { chatItemDeleted: GROUP_CHAT_DETAILS.id },
   },
 };
 
-export const userChatLeftSubscription: MockLink.MockedResponse<
-  UserChatLeftSubscription,
-  UserChatLeftSubscriptionVariables
+export const chatItemLeftSubscription: MockLink.MockedResponse<
+  ChatItemLeftSubscription,
+  ChatItemLeftSubscriptionVariables
 > = {
   request: {
-    query: USER_CHAT_LEFT,
+    query: CHAT_ITEM_LEFT,
   },
   result: {
     data: {
-      userChatLeft: {
+      chatItemLeft: {
         chatId: GROUP_CHAT_DETAILS.id,
         memberId: USER_TWO_DETAILS.id,
       },

@@ -9,7 +9,7 @@ import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   changePassword,
   changePasswordError,
-  currentUserChatAdminMock,
+  currentChatItemAdminMock,
   editProfile24h,
   editProfileUpdate,
   mockNavigate,
@@ -26,13 +26,13 @@ vi.mock("react-router", async () => {
   };
 });
 
-const { name, username } = currentUserChatAdminMock;
+const { name, username } = currentChatItemAdminMock;
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [editProfile24h],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentUserChatAdminMock,
+    currentUser: currentChatItemAdminMock,
   });
 
   return render(

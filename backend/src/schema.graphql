@@ -1,7 +1,7 @@
 type Query {
   countDocuments: Int!
   me: User
-  allChatsByUser(search: String): [UserChat!]!
+  allChatsByUser(search: String): [ChatItem!]!
   allContactsByUser(search: String): [Contact!]!
   nonContactUsers(search: String): [User!]!
   findChatById(id: ID!): Chat!
@@ -22,7 +22,7 @@ type User {
   isDarkMode: Boolean!
 }
 
-type UserChat {
+type ChatItem {
   id: ID!
   isGroupChat: Boolean!
   name: String
@@ -157,8 +157,8 @@ type Subscription {
   messageEdited: Message!
   messageDeleted: Message!
   chatEdited: Chat!
-  userChatUpdated: UserChat!
-  userChatCreated: UserChat!
-  userChatDeleted: ID!
-  userChatLeft: leftGroupChatDetails!
+  chatItemUpdated: ChatItem!
+  chatItemCreated: ChatItem!
+  chatItemDeleted: ID!
+  chatItemLeft: leftGroupChatDetails!
 }

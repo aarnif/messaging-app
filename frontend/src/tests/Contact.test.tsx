@@ -9,7 +9,7 @@ import NotificationProvider from "../components/NotificationProvider";
 import Contact from "../pages/Contact";
 import {
   CONTACT_DETAILS,
-  currentUserChatAdminMock,
+  currentChatItemAdminMock,
   findContactById,
   findContactByIdBlocked,
   findContactByIdNull,
@@ -44,7 +44,7 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentUserChatAdminMock,
+    currentUser: currentChatItemAdminMock,
   });
 
   return render(

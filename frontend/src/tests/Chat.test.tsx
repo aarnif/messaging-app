@@ -15,8 +15,8 @@ import {
 import {
   allChatsByUser,
   allContactsByUser,
-  currentUserChatAdminMock,
-  currentUserChatMemberMock,
+  currentChatItemAdminMock,
+  currentChatItemMemberMock,
   deleteChat,
   deleteMessage,
   editChat,
@@ -78,7 +78,7 @@ const renderComponent = (
     messageDeletedSubscription,
     groupChatEditedSubscription,
   ],
-  currentUser = currentUserChatAdminMock,
+  currentUser = currentChatItemAdminMock,
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser,
@@ -531,7 +531,7 @@ describe("<Chat />", () => {
         messageDeletedSubscription,
         groupChatEditedSubscription,
       ],
-      currentUserChatMemberMock,
+      currentChatItemMemberMock,
     );
 
     await openChatInfoModal(user);
@@ -564,7 +564,7 @@ describe("<Chat />", () => {
         messageDeletedSubscription,
         groupChatEditedSubscription,
       ],
-      currentUserChatMemberMock,
+      currentChatItemMemberMock,
     );
 
     await openChatInfoModal(user);

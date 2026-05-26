@@ -3,6 +3,7 @@ import request from "supertest";
 import type {
   ChangePasswordInput,
   Chat,
+  ChatItem,
   Contact,
   CreateChatInput,
   CreateUserInput,
@@ -12,7 +13,6 @@ import type {
   LoginInput,
   SendMessageInput,
   User,
-  UserChat,
 } from "~/types/graphql";
 import config from "../../../config.js";
 import type { HTTPGraphQLResponse } from "../../types/other.js";
@@ -182,7 +182,7 @@ export const toggleBlockContact = (id: string, token: string) =>
   );
 
 export const allChatsByUser = (search: string, token: string) =>
-  query<{ allChatsByUser: UserChat[] }, { search?: string }>(
+  query<{ allChatsByUser: ChatItem[] }, { search?: string }>(
     ALL_CHATS_BY_USER,
     { search },
     token,
@@ -318,7 +318,7 @@ export const assertContactEquality = (
   assertUserEquality(actual.contactDetails, expected.contactDetails);
 };
 
-const assertChatBasics = <T extends UserChat | Chat>(
+const assertChatBasics = <T extends ChatItem | Chat>(
   actual: T | undefined,
   expected: T,
   entityName: string,
@@ -333,11 +333,11 @@ const assertChatBasics = <T extends UserChat | Chat>(
   return actual;
 };
 
-export const assertUserChatEquality = (
-  actual: UserChat | undefined,
-  expected: UserChat,
+export const assertChatItemEquality = (
+  actual: ChatItem | undefined,
+  expected: ChatItem,
 ) => {
-  const userChat = assertChatBasics<UserChat>(actual, expected, "User Chat");
+  const userChat = assertChatBasics<ChatItem>(actual, expected, "User Chat");
 
   assert.strictEqual(userChat.unreadCount, expected.unreadCount);
   assert.ok(userChat.latestMessage, "Latest message should be defined");

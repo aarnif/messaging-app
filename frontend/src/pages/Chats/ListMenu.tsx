@@ -13,10 +13,10 @@ import Skeleton from "../../components/ui/Skeleton";
 import { DEBOUNCE_DELAY } from "../../constants";
 import { ALL_CHATS_BY_USER } from "../../graphql/queries";
 import {
-  USER_CHAT_CREATED,
-  USER_CHAT_DELETED,
-  USER_CHAT_LEFT,
-  USER_CHAT_UPDATED,
+  CHAT_ITEM_CREATED,
+  CHAT_ITEM_DELETED,
+  CHAT_ITEM_LEFT,
+  CHAT_ITEM_UPDATED,
 } from "../../graphql/subscriptions";
 import {
   getChatName,
@@ -52,11 +52,11 @@ const ListMenu = ({
     skip: !currentUser,
   });
 
-  useSubscription(USER_CHAT_UPDATED, {
+  useSubscription(CHAT_ITEM_UPDATED, {
     fetchPolicy: "no-cache",
     skip: !currentUser,
     onData: ({ data }) => {
-      const updatedChat = data.data?.userChatUpdated;
+      const updatedChat = data.data?.chatItemUpdated;
 
       if (!isValidChatForUser(updatedChat, currentUser)) {
         return;
@@ -79,11 +79,11 @@ const ListMenu = ({
     },
   });
 
-  useSubscription(USER_CHAT_CREATED, {
+  useSubscription(CHAT_ITEM_CREATED, {
     fetchPolicy: "no-cache",
     skip: !currentUser,
     onData: ({ data }) => {
-      const createdChat = data.data?.userChatCreated;
+      const createdChat = data.data?.chatItemCreated;
 
       if (!isValidChatForUser(createdChat, currentUser)) {
         return;
@@ -98,10 +98,10 @@ const ListMenu = ({
     },
   });
 
-  useSubscription(USER_CHAT_DELETED, {
+  useSubscription(CHAT_ITEM_DELETED, {
     skip: !currentUser,
     onData: ({ data }) => {
-      const deletedChatId = data.data?.userChatDeleted;
+      const deletedChatId = data.data?.chatItemDeleted;
 
       if (deletedChatId) {
         client.cache.evict({
@@ -115,10 +115,10 @@ const ListMenu = ({
     },
   });
 
-  useSubscription(USER_CHAT_LEFT, {
+  useSubscription(CHAT_ITEM_LEFT, {
     skip: !currentUser,
     onData: ({ data }) => {
-      const leftGroupChatDetails = data.data?.userChatLeft;
+      const leftGroupChatDetails = data.data?.chatItemLeft;
 
       if (leftGroupChatDetails && currentUser) {
         const { chatId, memberId } = leftGroupChatDetails;
