@@ -902,8 +902,8 @@ export const resolvers: Resolvers = {
         });
 
         for (const member of chatMembers) {
-          await pubsub.publish("USER_CHAT_CREATED", {
-            userChatCreated: {
+          await pubsub.publish("CHAT_ITEM_CREATED", {
+            chatItemCreated: {
               id: String(chat.id),
               isGroupChat: chat.isGroupChat,
               name: chat.name || null,
@@ -977,8 +977,8 @@ export const resolvers: Resolvers = {
           },
         });
 
-        await pubsub.publish("USER_CHAT_DELETED", {
-          userChatDeleted: String(chatToBeDeleted.id),
+        await pubsub.publish("CHAT_ITEM_DELETED", {
+          chatItemDeleted: String(chatToBeDeleted.id),
         });
 
         return chatToBeDeleted;
@@ -1229,8 +1229,8 @@ export const resolvers: Resolvers = {
         });
 
         for (const member of chatMembers) {
-          await pubsub.publish("USER_CHAT_UPDATED", {
-            userChatUpdated: {
+          await pubsub.publish("CHAT_ITEM_UPDATED", {
+            chatItemUpdated: {
               id: String(chatToBeEdited.id),
               isGroupChat: chatToBeEdited.isGroupChat,
               name: chatToBeEdited.name || null,
@@ -1336,8 +1336,8 @@ export const resolvers: Resolvers = {
           });
         }
 
-        await pubsub.publish("USER_CHAT_LEFT", {
-          userChatLeft: {
+        await pubsub.publish("CHAT_ITEM_LEFT", {
+          chatItemLeft: {
             chatId: String(chat.id),
             memberId: String(context.currentUser.id),
           },
@@ -1448,8 +1448,8 @@ export const resolvers: Resolvers = {
         });
 
         for (const member of chatMembers) {
-          await pubsub.publish("USER_CHAT_UPDATED", {
-            userChatUpdated: {
+          await pubsub.publish("CHAT_ITEM_UPDATED", {
+            chatItemUpdated: {
               id: String(chat.id),
               isGroupChat: chat.isGroupChat,
               name: chat.name || null,
@@ -1774,17 +1774,17 @@ export const resolvers: Resolvers = {
     chatEdited: {
       subscribe: () => pubsub.asyncIterableIterator(["CHAT_EDITED"]),
     },
-    userChatUpdated: {
-      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_UPDATED"]),
+    chatItemUpdated: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_UPDATED"]),
     },
-    userChatCreated: {
-      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_CREATED"]),
+    chatItemCreated: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_CREATED"]),
     },
-    userChatDeleted: {
-      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_DELETED"]),
+    chatItemDeleted: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_DELETED"]),
     },
-    userChatLeft: {
-      subscribe: () => pubsub.asyncIterableIterator(["USER_CHAT_LEFT"]),
+    chatItemLeft: {
+      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_LEFT"]),
     },
   },
 };

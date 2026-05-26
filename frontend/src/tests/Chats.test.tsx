@@ -20,6 +20,11 @@ import {
   allChatsByUserEmpty,
   allContactsByUser,
   allContactsByUserEmpty,
+  chatItemCreatedSubscription,
+  chatItemDeletedSubscription,
+  chatItemLeftSubscription,
+  chatItemUpdatedSubscription,
+  chatItemsMock,
   contactsWithoutPrivateChats,
   contactsWithoutPrivateChatsEmpty,
   isBlockedByUserFalse,
@@ -27,11 +32,6 @@ import {
   meMock,
   mockChatsSearchWord,
   mockNavigate,
-  userChatCreatedSubscription,
-  userChatDeletedSubscription,
-  userChatLeftSubscription,
-  userChatUpdatedSubscription,
-  userChatsMock,
   userContactsMock,
 } from "./helpers/mocks";
 
@@ -50,10 +50,10 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [
     meMock,
     allChatsByUser,
-    userChatCreatedSubscription,
-    userChatUpdatedSubscription,
-    userChatDeletedSubscription,
-    userChatLeftSubscription,
+    chatItemCreatedSubscription,
+    chatItemUpdatedSubscription,
+    chatItemDeletedSubscription,
+    chatItemLeftSubscription,
   ],
 ) =>
   render(
@@ -105,10 +105,10 @@ describe("<Chats />", () => {
       renderComponent([
         meMock,
         allChatsByUserEmpty,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await waitFor(() => {
@@ -120,7 +120,7 @@ describe("<Chats />", () => {
       renderComponent();
 
       await waitFor(() => {
-        userChatsMock.forEach((chat) => {
+        chatItemsMock.forEach((chat) => {
           const { id, unreadCount, name, latestMessage } = chat;
 
           const chatItem = screen.getByTestId(`chat-item-${id}`);
@@ -192,10 +192,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -212,10 +212,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -233,10 +233,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         contactsWithoutPrivateChatsEmpty,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -252,10 +252,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -278,10 +278,10 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserTrue,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -308,10 +308,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         contactsWithoutPrivateChats,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -335,10 +335,10 @@ describe("<Chats />", () => {
         allChatsByUser,
         contactsWithoutPrivateChats,
         isBlockedByUserFalse,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Private Chat");
@@ -374,10 +374,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -394,10 +394,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -420,10 +420,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUserEmpty,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -439,10 +439,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -465,10 +465,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -491,10 +491,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");
@@ -519,10 +519,10 @@ describe("<Chats />", () => {
         meMock,
         allChatsByUser,
         allContactsByUser,
-        userChatCreatedSubscription,
-        userChatUpdatedSubscription,
-        userChatDeletedSubscription,
-        userChatLeftSubscription,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
       ]);
 
       await openNewChatModal(user, "New Group Chat");

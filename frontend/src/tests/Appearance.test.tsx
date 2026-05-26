@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Appearance from "../pages/Settings/Appearance";
 import {
-  currentUserChatAdminMock,
+  currentChatItemAdminMock,
   editProfile12h,
   editProfile24h,
   editProfileDarkModeOff,
@@ -29,7 +29,7 @@ Object.defineProperty(window, "matchMedia", windowMockContent);
 
 const renderComponent = (mocks = [editProfile24h]) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentUserChatAdminMock,
+    currentUser: currentChatItemAdminMock,
   });
 
   return render(
