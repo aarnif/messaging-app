@@ -59,7 +59,6 @@ const Chat = () => {
 
   useEffect(() => {
     if (match?.id) {
-      console.log(`Marking chat ${match.id} as read`);
       markChatAsRead({
         variables: { id: match.id },
       });
@@ -68,11 +67,9 @@ const Chat = () => {
 
   useSubscription(MESSAGE_SENT, {
     onData: ({ data }) => {
-      console.log("Use MESSAGE_SENT-subscription:");
       const latestMessage = data.data?.messageSent;
 
       if (!latestMessage || latestMessage.chatId !== match?.id) {
-        console.log("Message is not for this chat, skipping cache update");
         return;
       }
 
@@ -87,11 +84,9 @@ const Chat = () => {
 
   useSubscription(MESSAGE_EDITED, {
     onData: ({ data }) => {
-      console.log("Use MESSAGE_EDITED-subscription:");
       const editedMessage = data.data?.messageEdited;
 
       if (!editedMessage || editedMessage.chatId !== match?.id) {
-        console.log("Message is not for this chat, skipping cache update");
         return;
       }
 
@@ -106,11 +101,9 @@ const Chat = () => {
 
   useSubscription(MESSAGE_DELETED, {
     onData: ({ data }) => {
-      console.log("Use MESSAGE_DELETED-subscription:");
       const deletedMessage = data.data?.messageDeleted;
 
       if (!deletedMessage || deletedMessage.chatId !== match?.id) {
-        console.log("Message is not for this chat, skipping cache update");
         return;
       }
 
@@ -125,11 +118,9 @@ const Chat = () => {
 
   useSubscription(CHAT_EDITED, {
     onData: ({ data }) => {
-      console.log("Use CHAT_EDITED-subscription:");
       const updatedChat = data.data?.chatEdited;
 
       if (!updatedChat || updatedChat.id !== match?.id) {
-        console.log("Chat update is not for this chat, skipping cache update");
         return;
       }
 

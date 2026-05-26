@@ -8,13 +8,11 @@ import messages from "./seedData/messages.js";
 import users from "./seedData/users.js";
 
 export const emptyDatabase = async () => {
-  console.log("Dropping tables...");
   await User.drop({ cascade: true });
   await Contact.drop({ cascade: true });
   await Chat.drop({ cascade: true });
   await ChatMember.drop({ cascade: true });
   await Message.drop({ cascade: true });
-  console.log("Tables dropped!");
 };
 
 export const createDatabase = async () => {

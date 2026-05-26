@@ -42,7 +42,6 @@ const SentMessage = ({
   });
 
   const handleOpenEditModal = () => {
-    console.log("Open edit modal for message:", message.id);
     setIsEditing(true);
   };
 
