@@ -44,7 +44,6 @@ export const isValidChatForUser = (
   currentUser: User | undefined | null,
 ): chat is UserChat => {
   if (!chat || !currentUser || chat.userId !== currentUser.id) {
-    console.log("Skipping cache update");
     return false;
   }
   return true;
@@ -65,7 +64,6 @@ export const updateUserChatsCache = (
     },
     (existingData) => {
       if (!existingData?.allChatsByUser) {
-        console.log("No existing chat data found in cache");
         return existingData;
       }
       return {
@@ -89,7 +87,6 @@ export const updateChatByIdCache = (
     },
     (existingData) => {
       if (!existingData?.findChatById) {
-        console.log("No existing chat data found in cache");
         return existingData;
       }
       return {

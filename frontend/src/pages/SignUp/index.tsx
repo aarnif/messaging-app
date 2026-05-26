@@ -84,7 +84,6 @@ const SignUp = ({
       return;
     }
 
-    console.log("Submitting form...");
     setIsSubmitting(true);
 
     const { data } = await createUser({
@@ -112,7 +111,6 @@ const SignUp = ({
         client.resetStore();
         setIsSubmitting(false);
         navigate("/");
-        console.log("Form submitted succesfully!");
       }
     }
   };

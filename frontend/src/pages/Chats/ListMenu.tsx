@@ -56,7 +56,6 @@ const ListMenu = ({
     fetchPolicy: "no-cache",
     skip: !currentUser,
     onData: ({ data }) => {
-      console.log("Use CHAT_UPDATED-subscription:");
       const updatedChat = data.data?.userChatUpdated;
 
       if (!isValidChatForUser(updatedChat, currentUser)) {
@@ -84,7 +83,6 @@ const ListMenu = ({
     fetchPolicy: "no-cache",
     skip: !currentUser,
     onData: ({ data }) => {
-      console.log("Use USER_CHAT_CREATED-subscription:");
       const createdChat = data.data?.userChatCreated;
 
       if (!isValidChatForUser(createdChat, currentUser)) {
@@ -120,7 +118,6 @@ const ListMenu = ({
   useSubscription(USER_CHAT_LEFT, {
     skip: !currentUser,
     onData: ({ data }) => {
-      console.log("Use USER_CHAT_LEFT-subscription:");
       const leftGroupChatDetails = data.data?.userChatLeft;
 
       if (leftGroupChatDetails && currentUser) {

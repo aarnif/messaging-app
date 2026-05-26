@@ -41,7 +41,6 @@ const SignIn = ({
       return;
     }
 
-    console.log("Submitting form...");
     setIsSubmitting(true);
 
     const { data } = await mutate({
@@ -59,7 +58,6 @@ const SignIn = ({
       client.resetStore();
       setIsSubmitting(false);
       navigate("/");
-      console.log("Form submitted succesfully!");
     }
   };
 
