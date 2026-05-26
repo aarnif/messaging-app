@@ -42,7 +42,7 @@ const ChatContent = ({
 
     const data = await findContactByUserId({
       variables: {
-        id: otherChatMember?.id ?? "",
+        id: otherChatMember?.userId ?? "",
       },
     });
 
