@@ -33,11 +33,7 @@ const ChangePasswordModal = ({
   const [mutate] = useMutation(CHANGE_PASSWORD, {
     onError: (error) => {
       console.log(error);
-      const cleanErrorMessage = String(error).replace(
-        "CombinedGraphQLErrors: ",
-        "",
-      );
-      showMessage(cleanErrorMessage);
+      showMessage(error.message);
     },
   });
 
