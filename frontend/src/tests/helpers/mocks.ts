@@ -1382,6 +1382,19 @@ export const leaveChat: MockLink.MockedResponse<
   },
 };
 
+export const leaveChatError: MockLink.MockedResponse<
+  LeaveChatMutation,
+  LeaveChatMutationVariables
+> = {
+  request: {
+    query: LEAVE_CHAT,
+    variables: {
+      id: GROUP_CHAT_DETAILS.id,
+    },
+  },
+  error: new Error("Failed to Leave Chat"),
+};
+
 export const deleteChat: MockLink.MockedResponse<
   DeleteChatMutation,
   DeleteChatMutationVariables

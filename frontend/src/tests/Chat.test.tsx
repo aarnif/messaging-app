@@ -31,6 +31,7 @@ import {
   groupChatEditedSubscription,
   isBlockedByUserTrue,
   leaveChat,
+  leaveChatError,
   markChatAsRead,
   MESSAGE_DETAILS,
   messageDeletedSubscription,
@@ -107,6 +108,18 @@ const openChatInfoModal = async (user: UserEvent) => {
     expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
     expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
   });
+};
+
+const confirmLeaveChat = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Leave Chat" }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByText("Are you sure you want to leave the chat?"),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Leave" }));
 };
 
 const openEditChatModal = async (user: UserEvent) => {
@@ -536,19 +549,41 @@ describe("<Chat />", () => {
 
     await openChatInfoModal(user);
 
-    await user.click(screen.getByRole("button", { name: "Leave Chat" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to leave the chat?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Leave" }));
+    await confirmLeaveChat(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
     });
+  });
+
+  test("displays error modal when leave chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent(
+      [
+        findChatByIdGroup,
+        allChatsByUser,
+        allContactsByUser,
+        leaveChatError,
+        markChatAsRead,
+        messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
+        groupChatEditedSubscription,
+      ],
+      currentChatItemMemberMock,
+    );
+
+    await openChatInfoModal(user);
+
+    await confirmLeaveChat(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Leave Chat" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("hides delete chat button for non admin users", async () => {
