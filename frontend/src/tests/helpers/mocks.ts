@@ -1360,6 +1360,24 @@ export const editChat: MockLink.MockedResponse<
   },
 };
 
+export const editChatError: MockLink.MockedResponse<
+  EditChatMutation,
+  EditChatMutationVariables
+> = {
+  request: {
+    query: EDIT_CHAT,
+    variables: {
+      input: {
+        id: "1",
+        name: "New Name",
+        description: "New Description",
+        members: ["2", "3"],
+      },
+    },
+  },
+  error: new Error("Failed to Edit Chat"),
+};
+
 export const leaveChat: MockLink.MockedResponse<
   LeaveChatMutation,
   LeaveChatMutationVariables

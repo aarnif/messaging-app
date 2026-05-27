@@ -54,6 +54,7 @@ const EditChatModal = ({
   const [editChat] = useMutation(EDIT_CHAT, {
     onError: (error) => {
       console.log(error);
+      showMessage(error.message);
     },
   });
 

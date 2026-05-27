@@ -21,6 +21,7 @@ import {
   deleteChatError,
   deleteMessage,
   editChat,
+  editChatError,
   editMessage,
   findChatByIdGroup,
   findChatByIdGroupWithEditedMessage,
@@ -143,6 +144,21 @@ const openEditChatModal = async (user: UserEvent) => {
   await waitFor(async () => {
     expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
   });
+};
+
+const editAndConfirmChat = async (user: UserEvent) => {
+  const nameInput = screen.getByPlaceholderText("Enter name here...");
+  const descriptionInput = screen.getByPlaceholderText(
+    "Enter description here...",
+  );
+
+  await user.clear(nameInput);
+  await user.clear(descriptionInput);
+
+  await user.type(nameInput, "New Name");
+  await user.type(descriptionInput, "New Description");
+
+  await user.click(screen.getByTestId("confirm-button"));
 };
 
 const openMessageEditMode = async (user: UserEvent) => {
@@ -507,18 +523,7 @@ describe("<Chat />", () => {
     await openChatInfoModal(user);
     await openEditChatModal(user);
 
-    const nameInput = screen.getByPlaceholderText("Enter name here...");
-    const descriptionInput = screen.getByPlaceholderText(
-      "Enter description here...",
-    );
-
-    await user.clear(nameInput);
-    await user.clear(descriptionInput);
-
-    await user.type(nameInput, "New Name");
-    await user.type(descriptionInput, "New Description");
-
-    await user.click(screen.getByTestId("confirm-button"));
+    await editAndConfirmChat(user);
 
     await waitFor(
       async () => {
@@ -526,6 +531,28 @@ describe("<Chat />", () => {
       },
       { timeout: 2000 },
     );
+  });
+
+  test("displays error message when edit chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      allChatsByUser,
+      allContactsByUser,
+      editChatError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await openChatInfoModal(user);
+    await openEditChatModal(user);
+
+    await editAndConfirmChat(user);
+
+    await assertErrorMessageAndDismissal("Failed to Edit Chat");
   });
 
   test("hides leave chat button for admin users", async () => {
