@@ -18,6 +18,7 @@ import {
   currentChatItemAdminMock,
   currentChatItemMemberMock,
   deleteChat,
+  deleteChatError,
   deleteMessage,
   editChat,
   editMessage,
@@ -120,6 +121,21 @@ const confirmLeaveChat = async (user: UserEvent) => {
   });
 
   await user.click(screen.getByRole("button", { name: "Leave" }));
+};
+
+const confirmDeleteChat = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Delete Chat" }));
+
+  await waitFor(async () => {
+    expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
+    expect(
+      screen.getByText(
+        /This will remove the chat and all messages for everyone\./i,
+      ),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Delete" }));
 };
 
 const openEditChatModal = async (user: UserEvent) => {
@@ -623,22 +639,38 @@ describe("<Chat />", () => {
 
     await openChatInfoModal(user);
 
-    await user.click(screen.getByRole("button", { name: "Delete Chat" }));
-
-    await waitFor(async () => {
-      expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
-      expect(
-        screen.getByText(
-          /This will remove the chat and all messages for everyone\./i,
-        ),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await confirmDeleteChat(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
     });
+  });
+
+  test("displays error modal when delete chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      allChatsByUser,
+      allContactsByUser,
+      deleteChatError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await openChatInfoModal(user);
+
+    await confirmDeleteChat(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Delete Chat" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("can open edit mode for own message", async () => {

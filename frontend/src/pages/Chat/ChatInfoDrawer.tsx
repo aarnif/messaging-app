@@ -83,6 +83,12 @@ const ChatInfoDrawer = ({
   const [deleteChat] = useMutation(DELETE_CHAT, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Delete Chat",
+        message: error.message,
+        close: "Close",
+      });
     },
     refetchQueries: [ALL_CHATS_BY_USER],
   });
