@@ -14,9 +14,12 @@ const ChatItem = ({
   const { id, latestMessage, unreadCount } = chat;
 
   const { sender, content, createdAt } = latestMessage;
+
+  const senderName =
+    sender.username === currentUser?.username ? "You" : sender.name;
   const messagePreview = truncateText(
     content,
-    !latestMessage.isNotification ? 40 - `${sender.name}: `.length : 40,
+    !latestMessage.isNotification ? 40 - `${senderName}: `.length : 40,
   );
 
   const formattedTime = formatDisplayDate(
@@ -43,7 +46,7 @@ const ChatItem = ({
         </div>
         <div className="flex justify-between">
           <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {!latestMessage.isNotification && `${sender?.name}: `}
+            {!latestMessage.isNotification && `${senderName}: `}
             <span className="font-normal">{messagePreview}</span>
           </p>
           {unreadCount > 0 && (
