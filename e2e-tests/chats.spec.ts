@@ -70,7 +70,7 @@ test.describe("Chats", () => {
     test("can create a private chat", async ({ page }) => {
       await createPrivateChat(page, user2, "Hello World!");
 
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await expect(page.getByText("You: Hello World!")).toBeVisible();
     });
 
     test("prevents creation without name", async ({ page }) => {
@@ -122,7 +122,7 @@ test.describe("Chats", () => {
       await expect(
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await expect(page.getByText("You: Hello World!")).toBeVisible();
     });
   });
 
@@ -192,7 +192,7 @@ test.describe("Chats", () => {
       await expect(
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await expect(page.getByText("You: Hello World!")).toBeVisible();
       await page.getByRole("link", { name: "New Group Chat" }).click();
     });
 
@@ -200,12 +200,12 @@ test.describe("Chats", () => {
       page,
     }) => {
       await sendMessage(page, "");
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await expect(page.getByText("You: Hello World!")).toBeVisible();
     });
 
     test("can send a message to existing chat", async ({ page }) => {
       await sendMessage(page, "Another message.");
-      await expect(page.getByText("User1: Another message.")).toBeVisible();
+      await expect(page.getByText("You: Another message.")).toBeVisible();
     });
 
     test("marks chat as read when opened", async ({ page }) => {
@@ -338,7 +338,7 @@ test.describe("Chats", () => {
       await expect(
         page.getByRole("link", { name: "New Group Chat" }),
       ).toBeVisible();
-      await expect(page.getByText("User1: Hello World!")).toBeVisible();
+      await expect(page.getByText("You: Hello World!")).toBeVisible();
       await page.getByRole("link", { name: "New Group Chat" }).click();
     });
 
