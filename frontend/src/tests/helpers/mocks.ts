@@ -1482,6 +1482,19 @@ export const markChatAsRead: MockLink.MockedResponse<
   },
 };
 
+export const markChatAsReadError: MockLink.MockedResponse<
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables
+> = {
+  request: {
+    query: MARK_CHAT_AS_READ,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Mark Chat As Read"),
+};
+
 export const messageSentSubscription: MockLink.MockedResponse<
   MessageSentSubscription,
   MessageSentSubscriptionVariables

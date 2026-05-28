@@ -35,6 +35,7 @@ import {
   leaveChat,
   leaveChatError,
   markChatAsRead,
+  markChatAsReadError,
   MESSAGE_DETAILS,
   messageDeletedSubscription,
   messageEditedSubscription,
@@ -259,6 +260,29 @@ describe("<Chat />", () => {
         }
       });
     });
+  });
+
+  test("displays error modal when marking chat as read fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsReadError,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Mark Chat As Read" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("applies correct message styles for current user vs contacts", async () => {
