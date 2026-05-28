@@ -1238,6 +1238,24 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
   },
 };
 
+export const editProfileDarkModeOnError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: currentChatItemAdminMock.is24HourClock,
+        isDarkMode: true,
+      },
+    },
+  },
+  error: new Error("Failed to Save Settings"),
+};
+
 export const editProfileDarkModeOff: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables
@@ -1306,6 +1324,24 @@ export const editProfile12h: MockLink.MockedResponse<
       },
     },
   },
+};
+
+export const editProfile12hError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: false,
+        isDarkMode: false,
+      },
+    },
+  },
+  error: new Error("Failed to Save Settings"),
 };
 
 export const editProfileUpdate: MockLink.MockedResponse<
