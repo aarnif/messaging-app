@@ -20,6 +20,7 @@ import {
   deleteChat,
   deleteChatError,
   deleteMessage,
+  deleteMessageError,
   editChat,
   editChatError,
   editMessage,
@@ -201,6 +202,16 @@ const openMessageDeleteConfirmation = async (user: UserEvent) => {
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
   });
+  await user.click(screen.getByRole("button", { name: "Delete" }));
+};
+
+const confirmDeleteMessage = async (user: UserEvent) => {
+  await waitFor(() => {
+    expect(
+      screen.getByText("Are you sure you want to delete the message?"),
+    ).toBeDefined();
+  });
+
   await user.click(screen.getByRole("button", { name: "Delete" }));
 };
 
@@ -891,19 +902,40 @@ describe("<Chat />", () => {
     ]);
 
     await openMessageDeleteConfirmation(user);
-    await waitFor(() => {
-      expect(
-        screen.getByText("Are you sure you want to delete the message?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await confirmDeleteMessage(user);
 
     await waitFor(() => {
       expect(
         screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
     });
+  });
+
+  test("displays error modal when delete message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+      deleteMessageError,
+    ]);
+
+    await openMessageDeleteConfirmation(user);
+    await confirmDeleteMessage(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Delete Message" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("displays Edited badge when message is edited and not deleted", async () => {

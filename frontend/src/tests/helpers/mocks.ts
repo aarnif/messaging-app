@@ -1678,6 +1678,19 @@ export const deleteMessage: MockLink.MockedResponse<
   },
 };
 
+export const deleteMessageError: MockLink.MockedResponse<
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables
+> = {
+  request: {
+    query: DELETE_MESSAGE,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Delete Message"),
+};
+
 export const editMessage: MockLink.MockedResponse<
   EditMessageMutation,
   EditMessageMutationVariables

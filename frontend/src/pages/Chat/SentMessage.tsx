@@ -46,6 +46,12 @@ const SentMessage = ({
   const [deleteMessage] = useMutation(DELETE_MESSAGE, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Delete Message",
+        message: error.message,
+        close: "Close",
+      });
     },
   });
 
