@@ -29,6 +29,7 @@ const EditProfileDrawer = ({
   const [mutate] = useMutation(EDIT_PROFILE, {
     onError: (error) => {
       console.log(error);
+      showMessage(error.message);
     },
   });
 

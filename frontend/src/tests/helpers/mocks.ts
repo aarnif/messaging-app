@@ -1366,6 +1366,24 @@ export const editProfileUpdate: MockLink.MockedResponse<
   },
 };
 
+export const editProfileError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: "New Profile Name",
+        about: "New About Text",
+        is24HourClock: true,
+        isDarkMode: false,
+      },
+    },
+  },
+  error: new Error("Failed to edit profile"),
+};
+
 export const changePassword: MockLink.MockedResponse<
   ChangePasswordMutation,
   ChangePasswordMutationVariables
