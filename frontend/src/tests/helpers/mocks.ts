@@ -1200,6 +1200,19 @@ export const addContactsEmpty: MockLink.MockedResponse<
   },
 };
 
+export const addContactsError: MockLink.MockedResponse<
+  AddContactsMutation,
+  AddContactsMutationVariables
+> = {
+  request: {
+    query: ADD_CONTACTS,
+    variables: {
+      ids: nonContactUsersMock.map((user) => user.id),
+    },
+  },
+  error: new Error("Failed to Add Contacts"),
+};
+
 export const editProfileDarkModeOn: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables

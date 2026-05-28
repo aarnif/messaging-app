@@ -41,6 +41,7 @@ const AddContactsModal = ({
   const [mutate] = useMutation(ADD_CONTACTS, {
     onError: (error) => {
       console.log(error);
+      showMessage("Failed to Add Contacts");
     },
     refetchQueries: [ALL_CONTACTS_BY_USER],
   });

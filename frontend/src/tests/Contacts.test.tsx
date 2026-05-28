@@ -5,6 +5,7 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test } from "vitest";
 import type { User } from "../__generated__/graphql";
+import NotificationProvider from "../components/NotificationProvider";
 import Contacts from "../pages/Contacts";
 import {
   assertContactsDisplayed,
@@ -15,6 +16,7 @@ import {
 import {
   addContacts,
   addContactsEmpty,
+  addContactsError,
   allContactsByUser,
   allContactsByUserEmpty,
   meMock,
@@ -33,7 +35,9 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Contacts />
+        <NotificationProvider>
+          <Contacts />
+        </NotificationProvider>
       </MemoryRouter>
     </MockedProvider>,
   );
@@ -176,6 +180,28 @@ describe("<Contacts />", () => {
       await waitFor(async () => {
         expect(screen.queryByText("Add Contacts")).toBeNull();
       });
+    });
+
+    test("displays error message when add contacts fails", async () => {
+      const user = userEvent.setup();
+      renderComponent([
+        meMock,
+        allContactsByUser,
+        nonContactUsers,
+        addContactsError,
+      ]);
+
+      await waitForPageRender();
+      await openAddContactsModal(user, nonContactUsersMock);
+      await selectContacts(user, [contact1username, contact2username]);
+
+      await waitFor(async () => {
+        assertContactsSelected([contact1username, contact2username]);
+      });
+
+      await user.click(screen.getByTestId("confirm-button"));
+
+      await assertErrorMessageAndDismissal("Failed to Add Contacts");
     });
   });
 });
