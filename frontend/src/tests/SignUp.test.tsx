@@ -86,7 +86,7 @@ describe("<SignUp />", () => {
 
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await assertErrorMessageAndDismissal("Please fill all fields.");
+    await assertErrorMessageAndDismissal(user, "Please fill all fields.");
   });
 
   test("displays error if username is too short", async () => {
@@ -101,6 +101,7 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await assertErrorMessageAndDismissal(
+      user,
       "Username must be at least 3 characters long",
     );
   });
@@ -117,6 +118,7 @@ describe("<SignUp />", () => {
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
     await assertErrorMessageAndDismissal(
+      user,
       "Password must be at least 6 characters long",
     );
   });
@@ -132,7 +134,7 @@ describe("<SignUp />", () => {
     await fillSignUpForm(user, username, password, confirmPassword);
     await user.click(screen.getByRole("button", { name: "Sign Up" }));
 
-    await assertErrorMessageAndDismissal("Passwords do not match");
+    await assertErrorMessageAndDismissal(user, "Passwords do not match");
   });
 
   test("displays error if username already exists", async () => {
@@ -148,7 +150,7 @@ describe("<SignUp />", () => {
 
     expect(screen.getByRole("button", { name: "Signing Up..." }));
 
-    await assertErrorMessageAndDismissal("Username already exists");
+    await assertErrorMessageAndDismissal(user, "Username already exists");
   });
 
   test("signs up user successfully", async () => {

@@ -532,6 +532,7 @@ describe("<Chat />", () => {
     await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal(
+      user,
       "Chat name must be at least three characters long",
     );
   });
@@ -623,7 +624,7 @@ describe("<Chat />", () => {
 
     await editAndConfirmChat(user);
 
-    await assertErrorMessageAndDismissal("Failed to Edit Chat");
+    await assertErrorMessageAndDismissal(user, "Failed to Edit Chat");
   });
 
   test("hides leave chat button for admin users", async () => {

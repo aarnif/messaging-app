@@ -142,7 +142,10 @@ describe("<Contacts />", () => {
 
       await user.click(screen.getByTestId("confirm-button"));
 
-      await assertErrorMessageAndDismissal("Select at least one contact.");
+      await assertErrorMessageAndDismissal(
+        user,
+        "Select at least one contact.",
+      );
     });
 
     test("selects users when user button is clicked", async () => {
@@ -201,7 +204,7 @@ describe("<Contacts />", () => {
 
       await user.click(screen.getByTestId("confirm-button"));
 
-      await assertErrorMessageAndDismissal("Failed to Add Contacts");
+      await assertErrorMessageAndDismissal(user, "Failed to Add Contacts");
     });
   });
 });

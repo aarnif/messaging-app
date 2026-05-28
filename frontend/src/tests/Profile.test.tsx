@@ -204,6 +204,7 @@ describe("<Profile />", () => {
     await editAndConfirmProfile(user, "", "");
 
     await assertErrorMessageAndDismissal(
+      user,
       "Profile name must be at least three characters long",
     );
   });
@@ -235,7 +236,7 @@ describe("<Profile />", () => {
 
     await editAndConfirmProfile(user, "New Profile Name", "New About Text");
 
-    await assertErrorMessageAndDismissal("Failed to edit profile");
+    await assertErrorMessageAndDismissal(user, "Failed to edit profile");
   });
 
   test("shows change password modal when change password button is clicked", async () => {
@@ -270,7 +271,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Please fill all fields.");
+    await assertErrorMessageAndDismissal(user, "Please fill all fields.");
   });
 
   test("display error if passwords do not match", async () => {
@@ -284,7 +285,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Passwords do not match");
+    await assertErrorMessageAndDismissal(user, "Passwords do not match");
   });
 
   test("display error if current password is wrong", async () => {
@@ -298,7 +299,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Current password do not match");
+    await assertErrorMessageAndDismissal(user, "Current password do not match");
   });
 
   test("changes password succesfully and closes modal", async () => {

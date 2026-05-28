@@ -1,6 +1,5 @@
 import { screen, waitFor, within } from "@testing-library/react";
 import type { UserEvent } from "@testing-library/user-event";
-import userEvent from "@testing-library/user-event";
 import { expect } from "vitest";
 import type { Contact } from "../../__generated__/graphql";
 
@@ -42,8 +41,10 @@ export const sendNewMessage = async (user: UserEvent, message: string) => {
   await user.click(screen.getByTestId("send-message-button"));
 };
 
-export const assertErrorMessageAndDismissal = async (errorMessage: string) => {
-  const user = userEvent.setup();
+export const assertErrorMessageAndDismissal = async (
+  user: UserEvent,
+  errorMessage: string,
+) => {
   await waitFor(() => {
     expect(screen.getByText(errorMessage)).toBeDefined();
   });
