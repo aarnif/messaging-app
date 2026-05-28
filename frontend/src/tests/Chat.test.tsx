@@ -46,6 +46,7 @@ import {
   mockUseOutletContext,
   privateChatEditedSubscription,
   sendMessage,
+  sendMessageError,
   USER_ONE_DETAILS,
 } from "./helpers/mocks";
 
@@ -417,6 +418,31 @@ describe("<Chat />", () => {
       ) as HTMLInputElement;
       expect(input.value).toBe("");
     });
+  });
+
+  test("displays error modal when send message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessageError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Send Message" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("shows edit chat modal when edit chat button is clicked", async () => {

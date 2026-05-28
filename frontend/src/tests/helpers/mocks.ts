@@ -774,6 +774,23 @@ export const sendMessage: MockLink.MockedResponse<
   maxUsageCount: 2,
 };
 
+export const sendMessageError: MockLink.MockedResponse<
+  SendMessageMutation,
+  SendMessageMutationVariables
+> = {
+  request: {
+    query: SEND_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: MESSAGE_DETAILS.content,
+        isNotification: false,
+      },
+    },
+  },
+  error: new Error("Failed to Send Message"),
+};
+
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,

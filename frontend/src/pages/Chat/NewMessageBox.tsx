@@ -22,6 +22,12 @@ const NewMessageBox = ({
   const [sendMessage] = useMutation(SEND_MESSAGE, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Send Message",
+        message: error.message,
+        close: "Close",
+      });
     },
   });
 
