@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import NewChat from "../pages/NewChat";
-import { sendNewMessage } from "./helpers/funcs";
+import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
 import {
   createChat,
   createChatError,
@@ -156,12 +156,6 @@ describe("<NewChat />", () => {
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Create Chat" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Create Chat");
   });
 });

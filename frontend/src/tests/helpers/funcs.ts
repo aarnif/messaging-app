@@ -55,3 +55,14 @@ export const assertErrorMessageAndDismissal = async (
     expect(screen.queryByText(errorMessage)).toBeNull();
   });
 };
+
+export const assertErrorModalAndDismissal = async (
+  user: UserEvent,
+  errorMessage: string,
+) => {
+  await waitFor(() => {
+    expect(screen.getByRole("heading", { name: errorMessage })).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Close" }));
+};

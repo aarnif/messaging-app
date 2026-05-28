@@ -10,6 +10,7 @@ import { formatDisplayDate } from "../helpers";
 import Chat from "../pages/Chat";
 import {
   assertErrorMessageAndDismissal,
+  assertErrorModalAndDismissal,
   sendNewMessage,
 } from "./helpers/funcs";
 import {
@@ -298,13 +299,7 @@ describe("<Chat />", () => {
       groupChatEditedSubscription,
     ]);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Mark Chat As Read" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Mark Chat As Read");
   });
 
   test("applies correct message styles for current user vs contacts", async () => {
@@ -457,13 +452,7 @@ describe("<Chat />", () => {
 
     await sendNewMessage(user, MESSAGE_DETAILS.content);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Send Message" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Send Message");
   });
 
   test("shows edit chat modal when edit chat button is clicked", async () => {
@@ -692,13 +681,7 @@ describe("<Chat />", () => {
 
     await confirmLeaveChat(user);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Leave Chat" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Leave Chat");
   });
 
   test("hides delete chat button for non admin users", async () => {
@@ -763,13 +746,7 @@ describe("<Chat />", () => {
 
     await confirmDeleteChat(user);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Delete Chat" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Delete Chat");
   });
 
   test("can open edit mode for own message", async () => {
@@ -848,13 +825,7 @@ describe("<Chat />", () => {
 
     await editAndConfirmMessage(user, "Edited message");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Edit Message" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Edit Message");
   });
 
   test("can open delete confirmation modal for own message", async () => {
@@ -930,13 +901,7 @@ describe("<Chat />", () => {
     await openMessageDeleteConfirmation(user);
     await confirmDeleteMessage(user);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Delete Message" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Delete Message");
   });
 
   test("displays Edited badge when message is edited and not deleted", async () => {

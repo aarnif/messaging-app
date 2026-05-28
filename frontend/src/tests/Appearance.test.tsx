@@ -6,6 +6,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Appearance from "../pages/Settings/Appearance";
+import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   currentChatItemAdminMock,
   editProfile12h,
@@ -117,13 +118,7 @@ describe("<Appearance />", () => {
 
     await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Save Settings" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
   });
 
   test("displays error modal when save clock mode fails", async () => {
@@ -134,13 +129,7 @@ describe("<Appearance />", () => {
 
     await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Save Settings" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
   });
 
   test("displays error modal when save clock mode fails", async () => {
@@ -151,12 +140,6 @@ describe("<Appearance />", () => {
 
     await toggleAndVerify(user, "toggle-clock-mode", "close-mark");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Save Settings" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
   });
 });

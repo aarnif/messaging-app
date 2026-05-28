@@ -7,6 +7,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Contact from "../pages/Contact";
+import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   CONTACT_DETAILS,
   currentChatItemAdminMock,
@@ -208,13 +209,7 @@ describe("<Contact />", () => {
 
     await toggleBlockContact(user, "Block");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Block Contact" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Block Contact");
   });
 
   test("unblocks contact when unblock contact button is clicked", async () => {
@@ -244,13 +239,7 @@ describe("<Contact />", () => {
 
     await toggleBlockContact(user, "Unblock");
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Unblock Contact" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Unblock Contact");
   });
 
   test("removes contact and navigates to contacts page when remove contact button is clicked", async () => {
@@ -276,12 +265,6 @@ describe("<Contact />", () => {
 
     await confirmRemoveContact(user);
 
-    await waitFor(() => {
-      expect(
-        screen.getByRole("heading", { name: "Failed to Remove Contact" }),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Close" }));
+    await assertErrorModalAndDismissal(user, "Failed to Remove Contact");
   });
 });
