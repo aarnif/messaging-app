@@ -961,6 +961,19 @@ export const toggleBlockContactTrue: MockLink.MockedResponse<
   },
 };
 
+export const toggleBlockContactTrueError: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Block Contact"),
+};
+
 export const toggleBlockContactFalse: MockLink.MockedResponse<
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables
@@ -979,6 +992,19 @@ export const toggleBlockContactFalse: MockLink.MockedResponse<
       },
     },
   },
+};
+
+export const toggleBlockContactFalseError: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Unblock Contact"),
 };
 
 export const removeContact: MockLink.MockedResponse<
