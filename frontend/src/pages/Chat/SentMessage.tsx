@@ -6,6 +6,7 @@ import type { Message, User } from "../../__generated__/graphql";
 import Overlay from "../../components/ui/Overlay";
 import { DELETE_MESSAGE, EDIT_MESSAGE } from "../../graphql/mutations";
 import { checkIfMessageIsSingleEmoji, formatDisplayDate } from "../../helpers";
+import useModal from "../../hooks/useModal";
 import EditMessageModal from "./EditMessageModal";
 import MessageMenu from "./MessageMenu";
 
@@ -18,6 +19,7 @@ const SentMessage = ({
   message: Message;
   latestAddedMessageId: string | null;
 }) => {
+  const modal = useModal();
   const [isMessageMenuOpen, setIsMessageMenuOpen] = useState(false);
   const [isEditing, setIsEditing] = useState(false);
   const [editedContent, setEditedContent] = useState(message.content);
@@ -32,6 +34,12 @@ const SentMessage = ({
   const [editMessage] = useMutation(EDIT_MESSAGE, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Edit Message",
+        message: error.message,
+        close: "Close",
+      });
     },
   });
 

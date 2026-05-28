@@ -1705,6 +1705,22 @@ export const editMessage: MockLink.MockedResponse<
   },
 };
 
+export const editMessageError: MockLink.MockedResponse<
+  EditMessageMutation,
+  EditMessageMutationVariables
+> = {
+  request: {
+    query: EDIT_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: "Edited message",
+      },
+    },
+  },
+  error: new Error("Failed to Edit Message"),
+};
+
 export const mockNavigate = vi.fn();
 
 export const mockMatch = vi.fn();

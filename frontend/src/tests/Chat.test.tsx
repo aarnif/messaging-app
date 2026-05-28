@@ -23,6 +23,7 @@ import {
   editChat,
   editChatError,
   editMessage,
+  editMessageError,
   findChatByIdGroup,
   findChatByIdGroupWithEditedMessage,
   findChatByIdGroupWithNotification,
@@ -178,6 +179,15 @@ const openMessageEditMode = async (user: UserEvent) => {
   await waitFor(() => {
     expect(screen.getByTestId("edit-message-input")).toBeDefined();
   });
+};
+
+const editAndConfirmMessage = async (user: UserEvent, message = "") => {
+  await user.clear(screen.getByTestId("edit-message-input"));
+  if (message) {
+    await user.type(screen.getByTestId("edit-message-input"), message);
+  }
+
+  await user.click(screen.getByTestId("submit-edit-message-button"));
 };
 
 const openMessageDeleteConfirmation = async (user: UserEvent) => {
@@ -775,9 +785,7 @@ describe("<Chat />", () => {
     )!.content;
 
     await openMessageEditMode(user);
-    await user.clear(screen.getByTestId("edit-message-input"));
-
-    await user.click(screen.getByTestId("submit-edit-message-button"));
+    await editAndConfirmMessage(user);
 
     await waitFor(() => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
@@ -802,14 +810,39 @@ describe("<Chat />", () => {
 
     await openMessageEditMode(user);
 
-    await user.clear(screen.getByTestId("edit-message-input"));
-    await user.type(screen.getByTestId("edit-message-input"), "Edited message");
-
-    await user.click(screen.getByTestId("submit-edit-message-button"));
+    await editAndConfirmMessage(user, "Edited message");
 
     await waitFor(() => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
     });
+  });
+
+  test("displays error modal when edit message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+      editMessageError,
+    ]);
+
+    await openMessageEditMode(user);
+
+    await editAndConfirmMessage(user, "Edited message");
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Edit Message" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 
   test("can open delete confirmation modal for own message", async () => {
