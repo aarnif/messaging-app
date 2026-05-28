@@ -24,6 +24,7 @@ import {
   NewPrivateChatDetails,
   PRIVATE_CHAT_DETAILS,
   removeContact,
+  removeContactError,
   toggleBlockContactFalse,
   toggleBlockContactFalseError,
   toggleBlockContactTrue,
@@ -84,6 +85,18 @@ const toggleBlockContact = async (user: UserEvent, action: string) => {
   });
 
   await user.click(screen.getByRole("button", { name: action }));
+};
+
+const confirmRemoveContact = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Remove Contact" }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByText("Are you sure you want to remove the contact?"),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Remove" }));
 };
 
 describe("<Contact />", () => {
@@ -245,18 +258,30 @@ describe("<Contact />", () => {
     renderComponent([findContactById, isBlockedByUserFalse, removeContact]);
     await waitForPageRender();
 
-    await user.click(screen.getByRole("button", { name: "Remove Contact" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to remove the contact?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Remove" }));
+    await confirmRemoveContact(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/contacts/removed");
     });
+  });
+
+  test("displays error modal when remove contact fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      removeContactError,
+    ]);
+    await waitForPageRender();
+
+    await confirmRemoveContact(user);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Remove Contact" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 });

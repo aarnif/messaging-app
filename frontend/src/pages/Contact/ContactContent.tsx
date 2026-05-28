@@ -46,6 +46,15 @@ const ContactContent = ({
 
   const [removeContact] = useMutation(REMOVE_CONTACT, {
     refetchQueries: [ALL_CONTACTS_BY_USER],
+    onError: (error) => {
+      console.log(error);
+      modal({
+        type: "danger",
+        title: `Failed to Remove Contact`,
+        message: error.message,
+        close: "Close",
+      });
+    },
   });
 
   const [isBlocked, setIsBlocked] = useState(contact.isBlocked);

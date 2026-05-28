@@ -1024,6 +1024,19 @@ export const removeContact: MockLink.MockedResponse<
   },
 };
 
+export const removeContactError: MockLink.MockedResponse<
+  RemoveContactMutation,
+  RemoveContactMutationVariables
+> = {
+  request: {
+    query: REMOVE_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Remove Contact"),
+};
+
 export const isBlockedByUserTrue: MockLink.MockedResponse<
   IsBlockedByUserQuery,
   IsBlockedByUserQueryVariables
