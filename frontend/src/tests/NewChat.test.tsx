@@ -9,6 +9,7 @@ import NewChat from "../pages/NewChat";
 import { sendNewMessage } from "./helpers/funcs";
 import {
   createChat,
+  createChatError,
   currentChatItemAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
@@ -142,5 +143,25 @@ describe("<NewChat />", () => {
       expect(input.value).toBe("");
       expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
     });
+  });
+
+  test("displays error modal when create chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      sendMessage,
+      createChatError,
+    ]);
+
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
+
+    await waitFor(() => {
+      expect(
+        screen.getByRole("heading", { name: "Failed to Create Chat" }),
+      ).toBeDefined();
+    });
+
+    await user.click(screen.getByRole("button", { name: "Close" }));
   });
 });

@@ -1534,6 +1534,24 @@ export const createChat: MockLink.MockedResponse<
   },
 };
 
+export const createChatError: MockLink.MockedResponse<
+  CreateChatMutation,
+  CreateChatMutationVariables
+> = {
+  request: {
+    query: CREATE_CHAT,
+    variables: {
+      input: {
+        name: "User2",
+        members: ["2"],
+        description: null,
+        initialMessage: MESSAGE_DETAILS.content,
+      },
+    },
+  },
+  error: new Error("Failed to Create Chat"),
+};
+
 export const markChatAsRead: MockLink.MockedResponse<
   MarkChatAsReadMutation,
   MarkChatAsReadMutationVariables
