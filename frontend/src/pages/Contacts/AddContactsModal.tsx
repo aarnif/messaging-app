@@ -60,6 +60,7 @@ const AddContactsModal = ({
   const handleAddContacts = async () => {
     if (selectedIds.size === 0) {
       showMessage("Select at least one contact.");
+      return;
     }
 
     const data = await mutate({
