@@ -40,8 +40,8 @@
   },
   "homepage": "https://github.com/aarnif/fullstack-open-project#readme",
   "devDependencies": {
-    "@playwright/test": "^1.57.0",
-    "@types/node": "^25.0.2",
-    "baseline-browser-mapping": "^2.9.8"
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1",
+    "baseline-browser-mapping": "^2.10.32"
   }
 }
