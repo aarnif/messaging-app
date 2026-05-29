@@ -267,6 +267,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
+        user,
         "Please select a contact to create a chat with",
       );
     });
@@ -299,7 +300,7 @@ describe("<Chats />", () => {
 
       await user.click(screen.getByTestId("confirm-button"));
 
-      await assertErrorMessageAndDismissal("Contact has blocked you.");
+      await assertErrorMessageAndDismissal(user, "Contact has blocked you.");
     });
 
     test("selects contact when contact button is clicked", async () => {
@@ -481,6 +482,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
+        user,
         "Chat name must be at least three characters long",
       );
     });
@@ -509,6 +511,7 @@ describe("<Chats />", () => {
       await user.click(screen.getByTestId("confirm-button"));
 
       await assertErrorMessageAndDismissal(
+        user,
         "Chat must have at least two members",
       );
     });

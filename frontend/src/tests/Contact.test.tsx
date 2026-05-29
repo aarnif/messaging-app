@@ -7,6 +7,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Contact from "../pages/Contact";
+import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   CONTACT_DETAILS,
   currentChatItemAdminMock,
@@ -24,8 +25,11 @@ import {
   NewPrivateChatDetails,
   PRIVATE_CHAT_DETAILS,
   removeContact,
+  removeContactError,
   toggleBlockContactFalse,
+  toggleBlockContactFalseError,
   toggleBlockContactTrue,
+  toggleBlockContactTrueError,
 } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {
@@ -82,6 +86,18 @@ const toggleBlockContact = async (user: UserEvent, action: string) => {
   });
 
   await user.click(screen.getByRole("button", { name: action }));
+};
+
+const confirmRemoveContact = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Remove Contact" }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByText("Are you sure you want to remove the contact?"),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Remove" }));
 };
 
 describe("<Contact />", () => {
@@ -182,6 +198,20 @@ describe("<Contact />", () => {
     });
   });
 
+  test("displays error modal when block contact fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      toggleBlockContactTrueError,
+    ]);
+    await waitForPageRender();
+
+    await toggleBlockContact(user, "Block");
+
+    await assertErrorModalAndDismissal(user, "Failed to Block Contact");
+  });
+
   test("unblocks contact when unblock contact button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([
@@ -198,23 +228,43 @@ describe("<Contact />", () => {
     });
   });
 
+  test("displays error modal when unblock contact fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findContactByIdBlocked,
+      isBlockedByUserFalse,
+      toggleBlockContactFalseError,
+    ]);
+    await waitForPageRender();
+
+    await toggleBlockContact(user, "Unblock");
+
+    await assertErrorModalAndDismissal(user, "Failed to Unblock Contact");
+  });
+
   test("removes contact and navigates to contacts page when remove contact button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([findContactById, isBlockedByUserFalse, removeContact]);
     await waitForPageRender();
 
-    await user.click(screen.getByRole("button", { name: "Remove Contact" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to remove the contact?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Remove" }));
+    await confirmRemoveContact(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/contacts/removed");
     });
+  });
+
+  test("displays error modal when remove contact fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findContactById,
+      isBlockedByUserFalse,
+      removeContactError,
+    ]);
+    await waitForPageRender();
+
+    await confirmRemoveContact(user);
+
+    await assertErrorModalAndDismissal(user, "Failed to Remove Contact");
   });
 });

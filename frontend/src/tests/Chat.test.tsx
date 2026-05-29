@@ -10,6 +10,7 @@ import { formatDisplayDate } from "../helpers";
 import Chat from "../pages/Chat";
 import {
   assertErrorMessageAndDismissal,
+  assertErrorModalAndDismissal,
   sendNewMessage,
 } from "./helpers/funcs";
 import {
@@ -18,9 +19,13 @@ import {
   currentChatItemAdminMock,
   currentChatItemMemberMock,
   deleteChat,
+  deleteChatError,
   deleteMessage,
+  deleteMessageError,
   editChat,
+  editChatError,
   editMessage,
+  editMessageError,
   findChatByIdGroup,
   findChatByIdGroupWithEditedMessage,
   findChatByIdGroupWithNotification,
@@ -31,7 +36,9 @@ import {
   groupChatEditedSubscription,
   isBlockedByUserTrue,
   leaveChat,
+  leaveChatError,
   markChatAsRead,
+  markChatAsReadError,
   MESSAGE_DETAILS,
   messageDeletedSubscription,
   messageEditedSubscription,
@@ -42,6 +49,7 @@ import {
   mockUseOutletContext,
   privateChatEditedSubscription,
   sendMessage,
+  sendMessageError,
   USER_ONE_DETAILS,
 } from "./helpers/mocks";
 
@@ -109,11 +117,53 @@ const openChatInfoModal = async (user: UserEvent) => {
   });
 };
 
+const confirmLeaveChat = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Leave Chat" }));
+
+  await waitFor(async () => {
+    expect(
+      screen.getByText("Are you sure you want to leave the chat?"),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Leave" }));
+};
+
+const confirmDeleteChat = async (user: UserEvent) => {
+  await user.click(screen.getByRole("button", { name: "Delete Chat" }));
+
+  await waitFor(async () => {
+    expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
+    expect(
+      screen.getByText(
+        /This will remove the chat and all messages for everyone\./i,
+      ),
+    ).toBeDefined();
+  });
+
+  await user.click(screen.getByRole("button", { name: "Delete" }));
+};
+
 const openEditChatModal = async (user: UserEvent) => {
   await user.click(screen.getByTestId("edit-chat-button"));
   await waitFor(async () => {
     expect(screen.getByRole("heading", { name: "Edit Chat" })).toBeDefined();
   });
+};
+
+const editAndConfirmChat = async (user: UserEvent) => {
+  const nameInput = screen.getByPlaceholderText("Enter name here...");
+  const descriptionInput = screen.getByPlaceholderText(
+    "Enter description here...",
+  );
+
+  await user.clear(nameInput);
+  await user.clear(descriptionInput);
+
+  await user.type(nameInput, "New Name");
+  await user.type(descriptionInput, "New Description");
+
+  await user.click(screen.getByTestId("confirm-button"));
 };
 
 const openMessageEditMode = async (user: UserEvent) => {
@@ -133,6 +183,15 @@ const openMessageEditMode = async (user: UserEvent) => {
   });
 };
 
+const editAndConfirmMessage = async (user: UserEvent, message = "") => {
+  await user.clear(screen.getByTestId("edit-message-input"));
+  if (message) {
+    await user.type(screen.getByTestId("edit-message-input"), message);
+  }
+
+  await user.click(screen.getByTestId("submit-edit-message-button"));
+};
+
 const openMessageDeleteConfirmation = async (user: UserEvent) => {
   await waitFor(() => {
     expect(
@@ -144,6 +203,16 @@ const openMessageDeleteConfirmation = async (user: UserEvent) => {
   await waitFor(() => {
     expect(screen.getByRole("button", { name: "Delete" })).toBeDefined();
   });
+  await user.click(screen.getByRole("button", { name: "Delete" }));
+};
+
+const confirmDeleteMessage = async (user: UserEvent) => {
+  await waitFor(() => {
+    expect(
+      screen.getByText("Are you sure you want to delete the message?"),
+    ).toBeDefined();
+  });
+
   await user.click(screen.getByRole("button", { name: "Delete" }));
 };
 
@@ -214,6 +283,23 @@ describe("<Chat />", () => {
         }
       });
     });
+  });
+
+  test("displays error modal when marking chat as read fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsReadError,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await assertErrorModalAndDismissal(user, "Failed to Mark Chat As Read");
   });
 
   test("applies correct message styles for current user vs contacts", async () => {
@@ -350,6 +436,25 @@ describe("<Chat />", () => {
     });
   });
 
+  test("displays error modal when send message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessageError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await sendNewMessage(user, MESSAGE_DETAILS.content);
+
+    await assertErrorModalAndDismissal(user, "Failed to Send Message");
+  });
+
   test("shows edit chat modal when edit chat button is clicked", async () => {
     const user = userEvent.setup();
     renderComponent([
@@ -416,6 +521,7 @@ describe("<Chat />", () => {
     await user.click(screen.getByTestId("confirm-button"));
 
     await assertErrorMessageAndDismissal(
+      user,
       "Chat name must be at least three characters long",
     );
   });
@@ -478,18 +584,7 @@ describe("<Chat />", () => {
     await openChatInfoModal(user);
     await openEditChatModal(user);
 
-    const nameInput = screen.getByPlaceholderText("Enter name here...");
-    const descriptionInput = screen.getByPlaceholderText(
-      "Enter description here...",
-    );
-
-    await user.clear(nameInput);
-    await user.clear(descriptionInput);
-
-    await user.type(nameInput, "New Name");
-    await user.type(descriptionInput, "New Description");
-
-    await user.click(screen.getByTestId("confirm-button"));
+    await editAndConfirmChat(user);
 
     await waitFor(
       async () => {
@@ -497,6 +592,28 @@ describe("<Chat />", () => {
       },
       { timeout: 2000 },
     );
+  });
+
+  test("displays error message when edit chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      allChatsByUser,
+      allContactsByUser,
+      editChatError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await openChatInfoModal(user);
+    await openEditChatModal(user);
+
+    await editAndConfirmChat(user);
+
+    await assertErrorMessageAndDismissal(user, "Failed to Edit Chat");
   });
 
   test("hides leave chat button for admin users", async () => {
@@ -536,19 +653,35 @@ describe("<Chat />", () => {
 
     await openChatInfoModal(user);
 
-    await user.click(screen.getByRole("button", { name: "Leave Chat" }));
-
-    await waitFor(async () => {
-      expect(
-        screen.getByText("Are you sure you want to leave the chat?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Leave" }));
+    await confirmLeaveChat(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/left");
     });
+  });
+
+  test("displays error modal when leave chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent(
+      [
+        findChatByIdGroup,
+        allChatsByUser,
+        allContactsByUser,
+        leaveChatError,
+        markChatAsRead,
+        messageSentSubscription,
+        messageEditedSubscription,
+        messageDeletedSubscription,
+        groupChatEditedSubscription,
+      ],
+      currentChatItemMemberMock,
+    );
+
+    await openChatInfoModal(user);
+
+    await confirmLeaveChat(user);
+
+    await assertErrorModalAndDismissal(user, "Failed to Leave Chat");
   });
 
   test("hides delete chat button for non admin users", async () => {
@@ -588,22 +721,32 @@ describe("<Chat />", () => {
 
     await openChatInfoModal(user);
 
-    await user.click(screen.getByRole("button", { name: "Delete Chat" }));
-
-    await waitFor(async () => {
-      expect(screen.getByText(/Delete this chat\?/i)).toBeDefined();
-      expect(
-        screen.getByText(
-          /This will remove the chat and all messages for everyone\./i,
-        ),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await confirmDeleteChat(user);
 
     await waitFor(async () => {
       expect(mockNavigate).toHaveBeenCalledWith("/chats/deleted");
     });
+  });
+
+  test("displays error modal when delete chat fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      allChatsByUser,
+      allContactsByUser,
+      deleteChatError,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+    ]);
+
+    await openChatInfoModal(user);
+
+    await confirmDeleteChat(user);
+
+    await assertErrorModalAndDismissal(user, "Failed to Delete Chat");
   });
 
   test("can open edit mode for own message", async () => {
@@ -631,9 +774,7 @@ describe("<Chat />", () => {
     )!.content;
 
     await openMessageEditMode(user);
-    await user.clear(screen.getByTestId("edit-message-input"));
-
-    await user.click(screen.getByTestId("submit-edit-message-button"));
+    await editAndConfirmMessage(user);
 
     await waitFor(() => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
@@ -658,14 +799,33 @@ describe("<Chat />", () => {
 
     await openMessageEditMode(user);
 
-    await user.clear(screen.getByTestId("edit-message-input"));
-    await user.type(screen.getByTestId("edit-message-input"), "Edited message");
-
-    await user.click(screen.getByTestId("submit-edit-message-button"));
+    await editAndConfirmMessage(user, "Edited message");
 
     await waitFor(() => {
       expect(screen.queryByTestId("edit-message-input")).toBeNull();
     });
+  });
+
+  test("displays error modal when edit message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+      editMessageError,
+    ]);
+
+    await openMessageEditMode(user);
+
+    await editAndConfirmMessage(user, "Edited message");
+
+    await assertErrorModalAndDismissal(user, "Failed to Edit Message");
   });
 
   test("can open delete confirmation modal for own message", async () => {
@@ -714,19 +874,34 @@ describe("<Chat />", () => {
     ]);
 
     await openMessageDeleteConfirmation(user);
-    await waitFor(() => {
-      expect(
-        screen.getByText("Are you sure you want to delete the message?"),
-      ).toBeDefined();
-    });
-
-    await user.click(screen.getByRole("button", { name: "Delete" }));
+    await confirmDeleteMessage(user);
 
     await waitFor(() => {
       expect(
         screen.queryByText("Are you sure you want to delete the message?"),
       ).toBeNull();
     });
+  });
+
+  test("displays error modal when delete message fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([
+      findChatByIdGroup,
+      findChatByIdNull,
+      allChatsByUser,
+      sendMessage,
+      markChatAsRead,
+      messageSentSubscription,
+      messageEditedSubscription,
+      messageDeletedSubscription,
+      groupChatEditedSubscription,
+      deleteMessageError,
+    ]);
+
+    await openMessageDeleteConfirmation(user);
+    await confirmDeleteMessage(user);
+
+    await assertErrorModalAndDismissal(user, "Failed to Delete Message");
   });
 
   test("displays Edited badge when message is edited and not deleted", async () => {

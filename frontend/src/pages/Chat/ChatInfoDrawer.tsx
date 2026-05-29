@@ -70,6 +70,12 @@ const ChatInfoDrawer = ({
   const [leaveChat] = useMutation(LEAVE_CHAT, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Leave Chat",
+        message: error.message,
+        close: "Close",
+      });
     },
     refetchQueries: [ALL_CHATS_BY_USER],
   });
@@ -77,6 +83,12 @@ const ChatInfoDrawer = ({
   const [deleteChat] = useMutation(DELETE_CHAT, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Delete Chat",
+        message: error.message,
+        close: "Close",
+      });
     },
     refetchQueries: [ALL_CHATS_BY_USER],
   });

@@ -774,6 +774,23 @@ export const sendMessage: MockLink.MockedResponse<
   maxUsageCount: 2,
 };
 
+export const sendMessageError: MockLink.MockedResponse<
+  SendMessageMutation,
+  SendMessageMutationVariables
+> = {
+  request: {
+    query: SEND_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: MESSAGE_DETAILS.content,
+        isNotification: false,
+      },
+    },
+  },
+  error: new Error("Failed to Send Message"),
+};
+
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,
@@ -944,6 +961,19 @@ export const toggleBlockContactTrue: MockLink.MockedResponse<
   },
 };
 
+export const toggleBlockContactTrueError: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Block Contact"),
+};
+
 export const toggleBlockContactFalse: MockLink.MockedResponse<
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables
@@ -964,6 +994,19 @@ export const toggleBlockContactFalse: MockLink.MockedResponse<
   },
 };
 
+export const toggleBlockContactFalseError: MockLink.MockedResponse<
+  ToggleBlockContactMutation,
+  ToggleBlockContactMutationVariables
+> = {
+  request: {
+    query: TOGGLE_BLOCK_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Unblock Contact"),
+};
+
 export const removeContact: MockLink.MockedResponse<
   RemoveContactMutation,
   RemoveContactMutationVariables
@@ -979,6 +1022,19 @@ export const removeContact: MockLink.MockedResponse<
       removeContact: CONTACT_DETAILS,
     },
   },
+};
+
+export const removeContactError: MockLink.MockedResponse<
+  RemoveContactMutation,
+  RemoveContactMutationVariables
+> = {
+  request: {
+    query: REMOVE_CONTACT,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Remove Contact"),
 };
 
 export const isBlockedByUserTrue: MockLink.MockedResponse<
@@ -1144,6 +1200,19 @@ export const addContactsEmpty: MockLink.MockedResponse<
   },
 };
 
+export const addContactsError: MockLink.MockedResponse<
+  AddContactsMutation,
+  AddContactsMutationVariables
+> = {
+  request: {
+    query: ADD_CONTACTS,
+    variables: {
+      ids: nonContactUsersMock.map((user) => user.id),
+    },
+  },
+  error: new Error("Failed to Add Contacts"),
+};
+
 export const editProfileDarkModeOn: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables
@@ -1167,6 +1236,24 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
       },
     },
   },
+};
+
+export const editProfileDarkModeOnError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: currentChatItemAdminMock.is24HourClock,
+        isDarkMode: true,
+      },
+    },
+  },
+  error: new Error("Failed to Save Settings"),
 };
 
 export const editProfileDarkModeOff: MockLink.MockedResponse<
@@ -1239,6 +1326,24 @@ export const editProfile12h: MockLink.MockedResponse<
   },
 };
 
+export const editProfile12hError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: currentChatItemAdminMock.name,
+        about: currentChatItemAdminMock.about,
+        is24HourClock: false,
+        isDarkMode: false,
+      },
+    },
+  },
+  error: new Error("Failed to Save Settings"),
+};
+
 export const editProfileUpdate: MockLink.MockedResponse<
   EditProfileMutation,
   EditProfileMutationVariables
@@ -1259,6 +1364,24 @@ export const editProfileUpdate: MockLink.MockedResponse<
       editProfile: currentChatItemAdminMock,
     },
   },
+};
+
+export const editProfileError: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: "New Profile Name",
+        about: "New About Text",
+        is24HourClock: true,
+        isDarkMode: false,
+      },
+    },
+  },
+  error: new Error("Failed to edit profile"),
 };
 
 export const changePassword: MockLink.MockedResponse<
@@ -1296,24 +1419,7 @@ export const changePasswordError: MockLink.MockedResponse<
       },
     },
   },
-  result: {
-    errors: [
-      {
-        message: "Current password do not match",
-        locations: [
-          {
-            line: 2,
-            column: 3,
-          },
-        ],
-        path: ["changePassword"],
-        extensions: {
-          code: "BAD_USER_INPUT",
-        },
-      },
-    ],
-    data: null,
-  },
+  error: new Error("Current password do not match"),
 };
 
 export const findContactByUserId: MockLink.MockedResponse<
@@ -1360,6 +1466,24 @@ export const editChat: MockLink.MockedResponse<
   },
 };
 
+export const editChatError: MockLink.MockedResponse<
+  EditChatMutation,
+  EditChatMutationVariables
+> = {
+  request: {
+    query: EDIT_CHAT,
+    variables: {
+      input: {
+        id: "1",
+        name: "New Name",
+        description: "New Description",
+        members: ["2", "3"],
+      },
+    },
+  },
+  error: new Error("Failed to Edit Chat"),
+};
+
 export const leaveChat: MockLink.MockedResponse<
   LeaveChatMutation,
   LeaveChatMutationVariables
@@ -1380,6 +1504,32 @@ export const leaveChat: MockLink.MockedResponse<
       },
     },
   },
+};
+
+export const leaveChatError: MockLink.MockedResponse<
+  LeaveChatMutation,
+  LeaveChatMutationVariables
+> = {
+  request: {
+    query: LEAVE_CHAT,
+    variables: {
+      id: GROUP_CHAT_DETAILS.id,
+    },
+  },
+  error: new Error("Failed to Leave Chat"),
+};
+
+export const deleteChatError: MockLink.MockedResponse<
+  DeleteChatMutation,
+  DeleteChatMutationVariables
+> = {
+  request: {
+    query: DELETE_CHAT,
+    variables: {
+      id: GROUP_CHAT_DETAILS.id,
+    },
+  },
+  error: new Error("Failed to Delete Chat"),
 };
 
 export const deleteChat: MockLink.MockedResponse<
@@ -1421,6 +1571,24 @@ export const createChat: MockLink.MockedResponse<
   },
 };
 
+export const createChatError: MockLink.MockedResponse<
+  CreateChatMutation,
+  CreateChatMutationVariables
+> = {
+  request: {
+    query: CREATE_CHAT,
+    variables: {
+      input: {
+        name: "User2",
+        members: ["2"],
+        description: null,
+        initialMessage: MESSAGE_DETAILS.content,
+      },
+    },
+  },
+  error: new Error("Failed to Create Chat"),
+};
+
 export const markChatAsRead: MockLink.MockedResponse<
   MarkChatAsReadMutation,
   MarkChatAsReadMutationVariables
@@ -1436,6 +1604,19 @@ export const markChatAsRead: MockLink.MockedResponse<
       markChatAsRead: true,
     },
   },
+};
+
+export const markChatAsReadError: MockLink.MockedResponse<
+  MarkChatAsReadMutation,
+  MarkChatAsReadMutationVariables
+> = {
+  request: {
+    query: MARK_CHAT_AS_READ,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Mark Chat As Read"),
 };
 
 export const messageSentSubscription: MockLink.MockedResponse<
@@ -1604,6 +1785,19 @@ export const deleteMessage: MockLink.MockedResponse<
   },
 };
 
+export const deleteMessageError: MockLink.MockedResponse<
+  DeleteMessageMutation,
+  DeleteMessageMutationVariables
+> = {
+  request: {
+    query: DELETE_MESSAGE,
+    variables: {
+      id: "1",
+    },
+  },
+  error: new Error("Failed to Delete Message"),
+};
+
 export const editMessage: MockLink.MockedResponse<
   EditMessageMutation,
   EditMessageMutationVariables
@@ -1629,6 +1823,22 @@ export const editMessage: MockLink.MockedResponse<
       },
     },
   },
+};
+
+export const editMessageError: MockLink.MockedResponse<
+  EditMessageMutation,
+  EditMessageMutationVariables
+> = {
+  request: {
+    query: EDIT_MESSAGE,
+    variables: {
+      input: {
+        id: "1",
+        content: "Edited message",
+      },
+    },
+  },
+  error: new Error("Failed to Edit Message"),
 };
 
 export const mockNavigate = vi.fn();

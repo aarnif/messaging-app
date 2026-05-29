@@ -11,6 +11,7 @@ import {
   changePasswordError,
   currentChatItemAdminMock,
   editProfile24h,
+  editProfileError,
   editProfileUpdate,
   mockNavigate,
   mockUseOutletContext,
@@ -64,6 +65,30 @@ const openEditProfileModal = async (user: UserEvent) => {
       screen.getByPlaceholderText("Tell something about yourself..."),
     ).toBeDefined();
   });
+};
+
+const editAndConfirmProfile = async (
+  user: UserEvent,
+  newProfileName: string,
+  newAboutText: string,
+) => {
+  const nameInput = screen.getByPlaceholderText("Enter your name here...");
+  const aboutInput = screen.getByPlaceholderText(
+    "Tell something about yourself...",
+  );
+
+  await user.clear(nameInput);
+  await user.clear(aboutInput);
+
+  if (newProfileName) {
+    await user.type(nameInput, newProfileName);
+  }
+
+  if (newAboutText) {
+    await user.type(aboutInput, newAboutText);
+  }
+
+  await user.click(screen.getByTestId("submit-edit-profile-button"));
 };
 
 const openChangePasswordModal = async (user: UserEvent) => {
@@ -176,11 +201,10 @@ describe("<Profile />", () => {
 
     await openEditProfileModal(user);
 
-    user.clear(screen.getByPlaceholderText("Enter your name here..."));
-
-    await user.click(screen.getByTestId("submit-edit-profile-button"));
+    await editAndConfirmProfile(user, "", "");
 
     await assertErrorMessageAndDismissal(
+      user,
       "Profile name must be at least three characters long",
     );
   });
@@ -193,26 +217,26 @@ describe("<Profile />", () => {
 
     await openEditProfileModal(user);
 
-    const nameInput = screen.getByPlaceholderText("Enter your name here...");
-    const aboutInput = screen.getByPlaceholderText(
-      "Tell something about yourself...",
-    );
-
-    const newProfileName = "New Profile Name";
-    const newAboutText = "New About Text";
-
-    await user.clear(nameInput);
-    await user.clear(aboutInput);
-    await user.type(nameInput, newProfileName);
-    await user.type(aboutInput, newAboutText);
-
-    await user.click(screen.getByTestId("submit-edit-profile-button"));
+    await editAndConfirmProfile(user, "New Profile Name", "New About Text");
 
     await waitFor(() => {
       expect(
         screen.queryByRole("heading", { name: "Edit Profile" }),
       ).toBeNull();
     });
+  });
+
+  test("displays error message when edit profile fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfileError]);
+
+    assertProfilePageLoaded();
+
+    await openEditProfileModal(user);
+
+    await editAndConfirmProfile(user, "New Profile Name", "New About Text");
+
+    await assertErrorMessageAndDismissal(user, "Failed to edit profile");
   });
 
   test("shows change password modal when change password button is clicked", async () => {
@@ -247,7 +271,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Please fill all fields.");
+    await assertErrorMessageAndDismissal(user, "Please fill all fields.");
   });
 
   test("display error if passwords do not match", async () => {
@@ -261,7 +285,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Passwords do not match");
+    await assertErrorMessageAndDismissal(user, "Passwords do not match");
   });
 
   test("display error if current password is wrong", async () => {
@@ -275,7 +299,7 @@ describe("<Profile />", () => {
 
     await user.click(screen.getByTestId("confirm-button"));
 
-    await assertErrorMessageAndDismissal("Current password do not match");
+    await assertErrorMessageAndDismissal(user, "Current password do not match");
   });
 
   test("changes password succesfully and closes modal", async () => {

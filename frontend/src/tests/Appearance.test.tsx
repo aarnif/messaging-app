@@ -4,13 +4,17 @@ import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
+import NotificationProvider from "../components/NotificationProvider";
 import Appearance from "../pages/Settings/Appearance";
+import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   currentChatItemAdminMock,
   editProfile12h,
+  editProfile12hError,
   editProfile24h,
   editProfileDarkModeOff,
   editProfileDarkModeOn,
+  editProfileDarkModeOnError,
   mockNavigate,
   mockUseOutletContext,
   windowMockContent,
@@ -35,7 +39,9 @@ const renderComponent = (mocks = [editProfile24h]) => {
   return render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Appearance />
+        <NotificationProvider>
+          <Appearance />
+        </NotificationProvider>
       </MemoryRouter>
     </MockedProvider>,
   );
@@ -102,5 +108,38 @@ describe("<Appearance />", () => {
 
     await toggleAndVerify(user, "toggle-clock-mode", "close-mark");
     await toggleAndVerify(user, "toggle-clock-mode", "check-mark");
+  });
+
+  test("displays error modal when save dark mode fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfileDarkModeOnError]);
+
+    await waitForAppearancePageRender();
+
+    await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
+
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
+  });
+
+  test("displays error modal when save clock mode fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfileDarkModeOnError]);
+
+    await waitForAppearancePageRender();
+
+    await toggleAndVerify(user, "toggle-dark-mode", "check-mark");
+
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
+  });
+
+  test("displays error modal when save clock mode fails", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfile12hError]);
+
+    await waitForAppearancePageRender();
+
+    await toggleAndVerify(user, "toggle-clock-mode", "close-mark");
+
+    await assertErrorModalAndDismissal(user, "Failed to Save Settings");
   });
 });

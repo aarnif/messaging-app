@@ -19,12 +19,14 @@ import {
   MESSAGE_SENT,
 } from "../../graphql/subscriptions";
 import { updateChatByIdCache } from "../../helpers";
+import useModal from "../../hooks/useModal";
 import type { InputField } from "../../types";
 import ChatContent from "./ChatContent";
 import ChatInfoDrawer from "./ChatInfoDrawer";
 import EditChatModal from "./EditChatModal";
 
 const Chat = () => {
+  const modal = useModal();
   const latestAddedMessageIdRef = useRef<string | null>(null);
   const { currentUser, searchWord } = useOutletContext<{
     currentUser: User;
@@ -54,6 +56,15 @@ const Chat = () => {
           };
         },
       );
+    },
+    onError: (error) => {
+      console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Mark Chat As Read",
+        message: error.message,
+        close: "Close",
+      });
     },
   });
 

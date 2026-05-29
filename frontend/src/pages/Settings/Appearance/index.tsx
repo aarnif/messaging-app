@@ -4,9 +4,11 @@ import { IoChevronBack } from "react-icons/io5";
 import { useNavigate, useOutletContext } from "react-router";
 import type { User } from "../../../__generated__/graphql";
 import { EDIT_PROFILE } from "../../../graphql/mutations";
+import useModal from "../../../hooks/useModal";
 import SettingsToggle from "./SettingsToggle";
 
 const Appearance = () => {
+  const modal = useModal();
   const { currentUser } = useOutletContext<{
     currentUser: User;
   }>();
@@ -15,7 +17,17 @@ const Appearance = () => {
   const [theme, setTheme] = useState(currentUser.isDarkMode ? "dark" : "light");
   const [is24HourClock, setIs24HourClock] = useState(currentUser.is24HourClock);
 
-  const [mutate] = useMutation(EDIT_PROFILE);
+  const [mutate] = useMutation(EDIT_PROFILE, {
+    onError: (error) => {
+      console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Save Settings",
+        message: error.message,
+        close: "Close",
+      });
+    },
+  });
 
   const handleToggleDarkMode = async () => {
     const newTheme = theme === "dark" ? "light" : "dark";

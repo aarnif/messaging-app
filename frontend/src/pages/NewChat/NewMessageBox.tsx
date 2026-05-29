@@ -21,6 +21,12 @@ const NewMessageBox = ({
   const [createChat] = useMutation(CREATE_CHAT, {
     onError: (error) => {
       console.log(error);
+      modal({
+        type: "danger",
+        title: "Failed to Create Chat",
+        message: error.message,
+        close: "Close",
+      });
     },
   });
 

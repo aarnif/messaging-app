@@ -77,7 +77,7 @@ describe("<SignIn />", () => {
 
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    await assertErrorMessageAndDismissal("Please fill all fields.");
+    await assertErrorMessageAndDismissal(user, "Please fill all fields.");
   });
 
   test("displays error if wrong credentials", async () => {
@@ -93,7 +93,7 @@ describe("<SignIn />", () => {
 
     expect(screen.getByRole("button", { name: "Signing In..." }));
 
-    await assertErrorMessageAndDismissal("Invalid username or password");
+    await assertErrorMessageAndDismissal(user, "Invalid username or password");
   });
 
   test("signs in user successfully", async () => {
