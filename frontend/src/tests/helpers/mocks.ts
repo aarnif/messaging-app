@@ -1419,24 +1419,7 @@ export const changePasswordError: MockLink.MockedResponse<
       },
     },
   },
-  result: {
-    errors: [
-      {
-        message: "Current password do not match",
-        locations: [
-          {
-            line: 2,
-            column: 3,
-          },
-        ],
-        path: ["changePassword"],
-        extensions: {
-          code: "BAD_USER_INPUT",
-        },
-      },
-    ],
-    data: null,
-  },
+  error: new Error("Current password do not match"),
 };
 
 export const findContactByUserId: MockLink.MockedResponse<
