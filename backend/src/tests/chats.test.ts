@@ -19,7 +19,6 @@ import {
   assertChatEquality,
   assertChatItemEquality,
   assertError,
-  assertValidationError,
   createChat,
   createUser,
   deleteChat,
@@ -74,7 +73,11 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(responseBody, "Message content cannot be empty");
+      assertError(
+        responseBody,
+        "Message content cannot be empty",
+        "BAD_USER_INPUT",
+      );
     });
 
     void test("fails with group chat without name", async () => {
@@ -89,9 +92,10 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Group chat name must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -107,9 +111,10 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Group chat name must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -170,9 +175,10 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Group chat name must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -190,9 +196,10 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Group chat name must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -473,7 +480,11 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(responseBody, "Message content cannot be empty");
+      assertError(
+        responseBody,
+        "Message content cannot be empty",
+        "BAD_USER_INPUT",
+      );
     });
 
     void test("succeeds sending message to chat", async () => {
@@ -557,7 +568,11 @@ describeGraphQLSuite("Chats", () => {
       const chat = responseBody.data;
 
       assert.strictEqual(chat, null, "Chat should be null");
-      assertValidationError(responseBody, "Message content cannot be empty");
+      assertError(
+        responseBody,
+        "Message content cannot be empty",
+        "BAD_USER_INPUT",
+      );
     });
 
     void test("fails with non-existent message ID", async () => {

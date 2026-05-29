@@ -46,6 +46,10 @@ const getChatName = (parent: Chat, currentUser: User | null): string | null => {
   return otherMember?.name || null;
 };
 
+const formatZodErrorMessage = (error: z.ZodError): string => {
+  return error.issues.map((issue) => issue.message).join(", ");
+};
+
 export const resolvers: Resolvers = {
   Date: dateScalar,
   Query: {
@@ -534,7 +538,7 @@ export const resolvers: Resolvers = {
         newUserInputSchema.parse({ username, password, confirmPassword });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -759,7 +763,7 @@ export const resolvers: Resolvers = {
         });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -829,7 +833,7 @@ export const resolvers: Resolvers = {
         newChatSchema.parse({ name, description, members, initialMessage });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -1013,7 +1017,7 @@ export const resolvers: Resolvers = {
         editChatSchema.parse({ id, name, description, members });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -1376,7 +1380,7 @@ export const resolvers: Resolvers = {
         newMessageInputSchema.parse({ id, content, isNotification });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -1494,7 +1498,7 @@ export const resolvers: Resolvers = {
         editMessageInputSchema.parse({ id, content });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,
@@ -1685,7 +1689,7 @@ export const resolvers: Resolvers = {
         });
       } catch (error) {
         if (error instanceof z.ZodError) {
-          throw new GraphQLError("Input validation failed", {
+          throw new GraphQLError(formatZodErrorMessage(error), {
             extensions: {
               code: "BAD_USER_INPUT",
               validationErrors: error.issues,

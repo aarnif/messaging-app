@@ -4,7 +4,6 @@ import { expectedUser1, user1Details, user1Input } from "./helpers/data.js";
 import {
   assertError,
   assertUserEquality,
-  assertValidationError,
   changePassword,
   createUser,
   editProfile,
@@ -24,9 +23,10 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Username must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -38,9 +38,10 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(
+      assertError(
         responseBody,
-        "Password must be at least 6 characters long",
+        "Password must be at least 6 characters long, Passwords do not match",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -52,7 +53,7 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(responseBody, "Passwords do not match");
+      assertError(responseBody, "Passwords do not match", "BAD_USER_INPUT");
     });
 
     void test("fails if user already exists", async () => {
@@ -208,9 +209,10 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Name must be at least 3 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -360,9 +362,10 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(
+      assertError(
         responseBody,
         "Password must be at least 6 characters long",
+        "BAD_USER_INPUT",
       );
     });
 
@@ -379,7 +382,7 @@ describeGraphQLSuite("Users", () => {
       const user = responseBody.data;
 
       assert.strictEqual(user, null, "User should be null");
-      assertValidationError(responseBody, "Passwords do not match");
+      assertError(responseBody, "Passwords do not match", "BAD_USER_INPUT");
     });
 
     void test("succeeds changing password", async () => {

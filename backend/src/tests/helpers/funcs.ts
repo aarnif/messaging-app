@@ -239,33 +239,6 @@ export const sendMessage = (input: SendMessageInput, token: string) =>
     token,
   );
 
-export const assertValidationError = (
-  responseBody: {
-    errors?: Array<{
-      message: string;
-      extensions?: {
-        code?: string;
-        validationErrors?: Array<{
-          message?: string;
-        }>;
-      };
-    }>;
-  },
-  expectedValidationMessage: string,
-  expectedCode: string = "BAD_USER_INPUT",
-) => {
-  assert.ok(responseBody.errors, "Response should have errors");
-  assert.ok(responseBody.errors.length > 0, "Should have at least one error");
-
-  const error = responseBody.errors[0];
-  assert.strictEqual(error.message, "Input validation failed");
-  assert.strictEqual(
-    error.extensions?.validationErrors?.[0].message,
-    expectedValidationMessage,
-  );
-  assert.strictEqual(error.extensions.code, expectedCode);
-};
-
 export const assertError = (
   responseBody: {
     errors?: Array<{
