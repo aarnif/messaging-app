@@ -59,7 +59,7 @@ describe("<Menu />", () => {
     expect(contactLink.className).toContain("active");
   });
 
-  test("logs out and navigates to signin page on log up button click", async () => {
+  test("logs out and navigates to signin page on log out button click", async () => {
     const user = userEvent.setup();
 
     renderComponent();
