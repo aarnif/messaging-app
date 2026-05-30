@@ -480,6 +480,7 @@ export const resolvers: Resolvers = {
       const contact = await Contact.findOne({
         where: {
           contactId: Number(id),
+          userId: Number(context.currentUser.id),
         },
         include: [
           {
