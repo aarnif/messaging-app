@@ -34,7 +34,7 @@ export const getChatName = (chat: ChatItem, currentUserId: string): string => {
   }
 
   const otherMember = chat.members.find(
-    (member) => member.id !== currentUserId,
+    (member) => member.userId !== currentUserId,
   );
   return otherMember?.name || "Private Chat";
 };
