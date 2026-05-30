@@ -9,6 +9,7 @@ import Contact from "./pages/Contact";
 import Contacts from "./pages/Contacts";
 import Home from "./pages/Home";
 import NewChat from "./pages/NewChat";
+import PageNotFound from "./pages/PageNotFound";
 import Settings from "./pages/Settings";
 import Appearance from "./pages/Settings/Appearance";
 import Profile from "./pages/Settings/Profile";
@@ -95,7 +96,7 @@ const App = () => {
           }
         />
 
-        <Route path="/*" element={<p>Page Not Found</p>} />
+        <Route path="/*" element={<PageNotFound />} />
       </Routes>
     </NotificationProvider>
   );
