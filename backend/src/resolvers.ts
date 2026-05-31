@@ -986,25 +986,26 @@ export const resolvers: Resolvers = {
         });
       }
 
+      const t = await sequelize.transaction();
+
       try {
-        await chatToBeDeleted.destroy();
+        await chatToBeDeleted.destroy({ transaction: t });
         await ChatMember.destroy({
           where: {
             chatId: Number(id),
           },
+          transaction: t,
         });
         await Message.destroy({
           where: {
             chatId: Number(id),
           },
+          transaction: t,
         });
 
-        await pubsub.publish("CHAT_ITEM_DELETED", {
-          chatItemDeleted: String(chatToBeDeleted.id),
-        });
-
-        return chatToBeDeleted;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to delete chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1012,6 +1013,12 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      await pubsub.publish("CHAT_ITEM_DELETED", {
+        chatItemDeleted: String(chatToBeDeleted.id),
+      });
+
+      return chatToBeDeleted;
     },
     editChat: async (_, { input }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
