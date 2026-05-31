@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { z } from "zod";
 import config from "../config.js";
+import { sequelize } from "./db.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
@@ -843,13 +844,22 @@ export const resolvers: Resolvers = {
         }
       }
 
+      let chatId: number | undefined;
+
+      const t = await sequelize.transaction();
+
       try {
-        const newChat = await Chat.create({
-          name: name || null,
-          description: description || null,
-          isGroupChat: members.length > 1,
-          createdBy: Number(context.currentUser.id),
-        });
+        const newChat = await Chat.create(
+          {
+            name: name || null,
+            description: description || null,
+            isGroupChat: members.length > 1,
+            createdBy: Number(context.currentUser.id),
+          },
+          { transaction: t },
+        );
+
+        chatId = Number(newChat.id);
 
         await ChatMember.bulkCreate(
           [context.currentUser.id, ...members].map((member) => {
@@ -861,68 +871,23 @@ export const resolvers: Resolvers = {
                 Number(member) === Number(context.currentUser?.id) ? 0 : 1,
             };
           }),
+          { transaction: t },
         );
 
-        await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(newChat.id),
-          content: initialMessage,
-          isNotification: false,
-          isDeleted: false,
-        });
+        await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(newChat.id),
+            content: initialMessage,
+            isNotification: false,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
 
-        const chat = await Chat.findByPk(newChat.id, {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: newChat.id,
-            },
-          });
-        }
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: String(chat.id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_CREATED", {
-            chatItemCreated: {
-              id: String(chat.id),
-              isGroupChat: chat.isGroupChat,
-              name: chat.name || null,
-              avatar: chat.avatar,
-              members: chat.members,
-              latestMessage: chat.messages?.at(-1),
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to create chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -930,6 +895,58 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const chat = await Chat.findByPk(chatId, {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: chatId,
+          },
+        });
+      }
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: String(chat.id) },
+      });
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_CREATED", {
+          chatItemCreated: {
+            id: String(chat.id),
+            isGroupChat: chat.isGroupChat,
+            name: chat.name || null,
+            avatar: chat.avatar,
+            members: chat.members,
+            latestMessage: chat.messages?.at(-1),
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      return chat;
     },
     deleteChat: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
