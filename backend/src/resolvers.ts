@@ -1417,14 +1417,19 @@ export const resolvers: Resolvers = {
         }
       }
 
+      const t = await sequelize.transaction();
+
       try {
-        await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(id),
-          content: content,
-          isNotification: isNotification,
-          isDeleted: false,
-        });
+        await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(id),
+            content: content,
+            isNotification: isNotification,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
 
         await ChatMember.increment(
           { unreadCount: 1 },
@@ -1435,67 +1440,13 @@ export const resolvers: Resolvers = {
                 [Op.ne]: context.currentUser.id,
               },
             },
+            transaction: t,
           },
         );
 
-        const chat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin", "unreadCount"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
-        const latestMessage = chat.toJSON().messages?.at(-1);
-
-        await pubsub.publish("MESSAGE_SENT", {
-          messageSent: latestMessage,
-        });
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: Number(id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_UPDATED", {
-            chatItemUpdated: {
-              id: String(chat.id),
-              isGroupChat: chat.isGroupChat,
-              name: chat.name || null,
-              avatar: chat.avatar,
-              members: chat.members,
-              latestMessage: latestMessage,
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to add message to chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1503,6 +1454,64 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const chat = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      const latestMessage = chat.toJSON().messages?.at(-1);
+
+      await pubsub.publish("MESSAGE_SENT", {
+        messageSent: latestMessage,
+      });
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: Number(id) },
+      });
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_UPDATED", {
+          chatItemUpdated: {
+            id: String(chat.id),
+            isGroupChat: chat.isGroupChat,
+            name: chat.name || null,
+            avatar: chat.avatar,
+            members: chat.members,
+            latestMessage: latestMessage,
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      return chat;
     },
     editMessage: async (
       _,
