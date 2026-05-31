@@ -149,7 +149,7 @@ const ContactContent = ({
         </div>
       </div>
 
-      <div className="flex w-full flex-col gap-4">
+      <div className="flex w-full flex-col items-center gap-4">
         <Button
           type="button"
           variant="tertiary"
