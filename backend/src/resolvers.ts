@@ -1078,58 +1078,49 @@ export const resolvers: Resolvers = {
       }
 
       let unreadCount = 0;
+      const notificationMessageIds: number[] = [];
+
+      const t = await sequelize.transaction();
 
       try {
         const hasNameChanged = chatToBeEdited.name !== name;
 
         if (hasNameChanged) {
-          const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser.id),
-            chatId: Number(chatToBeEdited.id),
-            content: `Chat name changed to "${name}"`,
-            isNotification: true,
-            isDeleted: false,
-          });
+          const notificationMessage = await Message.create(
+            {
+              senderId: Number(context.currentUser.id),
+              chatId: Number(chatToBeEdited.id),
+              content: `Chat name changed to "${name}"`,
+              isNotification: true,
+              isDeleted: false,
+            },
+            { transaction: t },
+          );
 
           unreadCount += 1;
-
-          const messageWithSender = await Message.findByPk(
-            notificationMessage.id,
-            {
-              include: [{ model: User, as: "sender" }],
-            },
-          );
-          await pubsub.publish("MESSAGE_SENT", {
-            messageSent: messageWithSender,
-          });
+          notificationMessageIds.push(notificationMessage.id);
         }
 
         const hasDescriptionChanged =
           chatToBeEdited.description !== description;
 
         if (hasDescriptionChanged) {
-          const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser.id),
-            chatId: Number(chatToBeEdited.id),
-            content:
-              description === ""
-                ? "Chat description was removed"
-                : `Chat description changed to "${description}"`,
-            isNotification: true,
-            isDeleted: false,
-          });
+          const notificationMessage = await Message.create(
+            {
+              senderId: Number(context.currentUser.id),
+              chatId: Number(chatToBeEdited.id),
+              content:
+                description === ""
+                  ? "Chat description was removed"
+                  : `Chat description changed to "${description}"`,
+              isNotification: true,
+              isDeleted: false,
+            },
+            { transaction: t },
+          );
 
           unreadCount += 1;
-
-          const messageWithSender = await Message.findByPk(
-            notificationMessage.id,
-            {
-              include: [{ model: User, as: "sender" }],
-            },
-          );
-          await pubsub.publish("MESSAGE_SENT", {
-            messageSent: messageWithSender,
-          });
+          notificationMessageIds.push(notificationMessage.id);
         }
 
         const currentMemberIds =
@@ -1155,10 +1146,12 @@ export const resolvers: Resolvers = {
               isAdmin: false,
               unreadCount: 0,
             })),
+            { transaction: t },
           );
 
           const addedMembers = await User.findAll({
             where: { id: { [Op.in]: membersToAdd } },
+            transaction: t,
           });
 
           const notificationMessages = await Message.bulkCreate(
@@ -1169,18 +1162,13 @@ export const resolvers: Resolvers = {
               isNotification: true,
               isDeleted: false,
             })),
+            { transaction: t },
           );
 
           unreadCount += notificationMessages.length;
-
-          for (const message of notificationMessages) {
-            const messageWithSender = await Message.findByPk(message.id, {
-              include: [{ model: User, as: "sender" }],
-            });
-            await pubsub.publish("MESSAGE_SENT", {
-              messageSent: messageWithSender,
-            });
-          }
+          notificationMessageIds.push(
+            ...notificationMessages.map((message) => message.id),
+          );
         }
 
         if (membersToRemove.length > 0) {
@@ -1192,6 +1180,7 @@ export const resolvers: Resolvers = {
                 ),
               },
             },
+            transaction: t,
           });
 
           const notificationMessages = await Message.bulkCreate(
@@ -1202,18 +1191,13 @@ export const resolvers: Resolvers = {
               isNotification: true,
               isDeleted: false,
             })),
+            { transaction: t },
           );
 
           unreadCount += notificationMessages.length;
-
-          for (const message of notificationMessages) {
-            const messageWithSender = await Message.findByPk(message.id, {
-              include: [{ model: User, as: "sender" }],
-            });
-            await pubsub.publish("MESSAGE_SENT", {
-              messageSent: messageWithSender,
-            });
-          }
+          notificationMessageIds.push(
+            ...notificationMessages.map((message) => message.id),
+          );
 
           await ChatMember.destroy({
             where: {
@@ -1222,20 +1206,14 @@ export const resolvers: Resolvers = {
               },
               chatId: Number(chatToBeEdited.id),
             },
+            transaction: t,
           });
         }
 
         chatToBeEdited.name = name;
         chatToBeEdited.description = description || null;
 
-        await chatToBeEdited.save();
-        await chatToBeEdited.reload({
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
+        await chatToBeEdited.save({ transaction: t });
 
         if (unreadCount > 0) {
           await ChatMember.increment(
@@ -1247,37 +1225,14 @@ export const resolvers: Resolvers = {
                   [Op.ne]: context.currentUser.id,
                 },
               },
+              transaction: t,
             },
           );
         }
 
-        const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: Number(id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_UPDATED", {
-            chatItemUpdated: {
-              id: String(chatToBeEdited.id),
-              isGroupChat: chatToBeEdited.isGroupChat,
-              name: chatToBeEdited.name || null,
-              avatar: chatToBeEdited.avatar,
-              members: chatToBeEdited.members,
-              latestMessage: latestMessage,
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        await pubsub.publish("CHAT_EDITED", {
-          chatEdited: chatToBeEdited,
-        });
-
-        return chatToBeEdited;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1285,6 +1240,54 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      await chatToBeEdited.reload({
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: Number(id) },
+      });
+
+      const notificationMessages = await Message.findAll({
+        where: { id: { [Op.in]: notificationMessageIds } },
+      });
+
+      for (const message of notificationMessages) {
+        const messageWithSender = await Message.findByPk(message.id, {
+          include: [{ model: User, as: "sender" }],
+        });
+        await pubsub.publish("MESSAGE_SENT", {
+          messageSent: messageWithSender,
+        });
+      }
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_UPDATED", {
+          chatItemUpdated: {
+            id: String(chatToBeEdited.id),
+            isGroupChat: chatToBeEdited.isGroupChat,
+            name: chatToBeEdited.name || null,
+            avatar: chatToBeEdited.avatar,
+            members: chatToBeEdited.members,
+            latestMessage: latestMessage,
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      await pubsub.publish("CHAT_EDITED", {
+        chatEdited: chatToBeEdited,
+      });
+
+      return chatToBeEdited;
     },
     leaveChat: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
