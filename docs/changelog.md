@@ -240,3 +240,11 @@ Ei muutoksia
 - findUserById kyselyn ja addContact mutaation poisto
 - Estä käyttäjän pääsy muiden käyttäjien chatteihin tai kontakteihin url-osoitetta muuttamalla
 - Näytä alert-modaali jos käyttäjä yrittää lähettää tyhjää viestiä chatissa
+
+## Viikko 36 (25.5-31.5.2026)
+
+- Bugin korjaus: viimeisimmän viestin animaatio saattoi toistua kun chattiin palasi
+- Nimeä uudelleen GraphQL tyyppi UserChat -> ChatItem
+- Bugin korjaus: kontaktilinkki ei toiminut kahdenkeskisissä chateissa
+- Lisää käyttöliittymään virheilmoitukset kaikille GraphQL mutaatioille niiden epäonnistuessa palvelimen virheen takia
+- Käyttöliittymän painikkeiden tyylien päivitys
