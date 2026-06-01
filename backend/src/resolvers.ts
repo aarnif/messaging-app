@@ -1296,8 +1296,6 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const currentUser = await User.findByPk(context.currentUser.id);
-
       const t = await sequelize.transaction();
       let notificationMessageId: number | undefined;
 
@@ -1314,7 +1312,7 @@ export const resolvers: Resolvers = {
           {
             senderId: Number(context.currentUser.id),
             chatId: Number(id),
-            content: `${currentUser?.name} left the chat`,
+            content: `${context.currentUser.name} left the chat`,
             isNotification: true,
             isDeleted: false,
           },
