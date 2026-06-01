@@ -4,6 +4,7 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { z } from "zod";
 import config from "../config.js";
+import { sequelize } from "./db.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
@@ -843,13 +844,22 @@ export const resolvers: Resolvers = {
         }
       }
 
+      let chatId: number | undefined;
+
+      const t = await sequelize.transaction();
+
       try {
-        const newChat = await Chat.create({
-          name: name || null,
-          description: description || null,
-          isGroupChat: members.length > 1,
-          createdBy: Number(context.currentUser.id),
-        });
+        const newChat = await Chat.create(
+          {
+            name: name || null,
+            description: description || null,
+            isGroupChat: members.length > 1,
+            createdBy: Number(context.currentUser.id),
+          },
+          { transaction: t },
+        );
+
+        chatId = Number(newChat.id);
 
         await ChatMember.bulkCreate(
           [context.currentUser.id, ...members].map((member) => {
@@ -861,68 +871,23 @@ export const resolvers: Resolvers = {
                 Number(member) === Number(context.currentUser?.id) ? 0 : 1,
             };
           }),
+          { transaction: t },
         );
 
-        await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(newChat.id),
-          content: initialMessage,
-          isNotification: false,
-          isDeleted: false,
-        });
+        await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(newChat.id),
+            content: initialMessage,
+            isNotification: false,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
 
-        const chat = await Chat.findByPk(newChat.id, {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: newChat.id,
-            },
-          });
-        }
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: String(chat.id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_CREATED", {
-            chatItemCreated: {
-              id: String(chat.id),
-              isGroupChat: chat.isGroupChat,
-              name: chat.name || null,
-              avatar: chat.avatar,
-              members: chat.members,
-              latestMessage: chat.messages?.at(-1),
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to create chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -930,6 +895,58 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const chat = await Chat.findByPk(chatId, {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: chatId,
+          },
+        });
+      }
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: String(chat.id) },
+      });
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_CREATED", {
+          chatItemCreated: {
+            id: String(chat.id),
+            isGroupChat: chat.isGroupChat,
+            name: chat.name || null,
+            avatar: chat.avatar,
+            members: chat.members,
+            latestMessage: chat.messages?.at(-1),
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      return chat;
     },
     deleteChat: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
@@ -969,25 +986,26 @@ export const resolvers: Resolvers = {
         });
       }
 
+      const t = await sequelize.transaction();
+
       try {
-        await chatToBeDeleted.destroy();
+        await chatToBeDeleted.destroy({ transaction: t });
         await ChatMember.destroy({
           where: {
             chatId: Number(id),
           },
+          transaction: t,
         });
         await Message.destroy({
           where: {
             chatId: Number(id),
           },
+          transaction: t,
         });
 
-        await pubsub.publish("CHAT_ITEM_DELETED", {
-          chatItemDeleted: String(chatToBeDeleted.id),
-        });
-
-        return chatToBeDeleted;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to delete chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -995,6 +1013,12 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      await pubsub.publish("CHAT_ITEM_DELETED", {
+        chatItemDeleted: String(chatToBeDeleted.id),
+      });
+
+      return chatToBeDeleted;
     },
     editChat: async (_, { input }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
@@ -1054,58 +1078,49 @@ export const resolvers: Resolvers = {
       }
 
       let unreadCount = 0;
+      const notificationMessageIds: number[] = [];
+
+      const t = await sequelize.transaction();
 
       try {
         const hasNameChanged = chatToBeEdited.name !== name;
 
         if (hasNameChanged) {
-          const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser.id),
-            chatId: Number(chatToBeEdited.id),
-            content: `Chat name changed to "${name}"`,
-            isNotification: true,
-            isDeleted: false,
-          });
+          const notificationMessage = await Message.create(
+            {
+              senderId: Number(context.currentUser.id),
+              chatId: Number(chatToBeEdited.id),
+              content: `Chat name changed to "${name}"`,
+              isNotification: true,
+              isDeleted: false,
+            },
+            { transaction: t },
+          );
 
           unreadCount += 1;
-
-          const messageWithSender = await Message.findByPk(
-            notificationMessage.id,
-            {
-              include: [{ model: User, as: "sender" }],
-            },
-          );
-          await pubsub.publish("MESSAGE_SENT", {
-            messageSent: messageWithSender,
-          });
+          notificationMessageIds.push(notificationMessage.id);
         }
 
         const hasDescriptionChanged =
           chatToBeEdited.description !== description;
 
         if (hasDescriptionChanged) {
-          const notificationMessage = await Message.create({
-            senderId: Number(context.currentUser.id),
-            chatId: Number(chatToBeEdited.id),
-            content:
-              description === ""
-                ? "Chat description was removed"
-                : `Chat description changed to "${description}"`,
-            isNotification: true,
-            isDeleted: false,
-          });
+          const notificationMessage = await Message.create(
+            {
+              senderId: Number(context.currentUser.id),
+              chatId: Number(chatToBeEdited.id),
+              content:
+                description === ""
+                  ? "Chat description was removed"
+                  : `Chat description changed to "${description}"`,
+              isNotification: true,
+              isDeleted: false,
+            },
+            { transaction: t },
+          );
 
           unreadCount += 1;
-
-          const messageWithSender = await Message.findByPk(
-            notificationMessage.id,
-            {
-              include: [{ model: User, as: "sender" }],
-            },
-          );
-          await pubsub.publish("MESSAGE_SENT", {
-            messageSent: messageWithSender,
-          });
+          notificationMessageIds.push(notificationMessage.id);
         }
 
         const currentMemberIds =
@@ -1131,10 +1146,12 @@ export const resolvers: Resolvers = {
               isAdmin: false,
               unreadCount: 0,
             })),
+            { transaction: t },
           );
 
           const addedMembers = await User.findAll({
             where: { id: { [Op.in]: membersToAdd } },
+            transaction: t,
           });
 
           const notificationMessages = await Message.bulkCreate(
@@ -1145,18 +1162,13 @@ export const resolvers: Resolvers = {
               isNotification: true,
               isDeleted: false,
             })),
+            { transaction: t },
           );
 
           unreadCount += notificationMessages.length;
-
-          for (const message of notificationMessages) {
-            const messageWithSender = await Message.findByPk(message.id, {
-              include: [{ model: User, as: "sender" }],
-            });
-            await pubsub.publish("MESSAGE_SENT", {
-              messageSent: messageWithSender,
-            });
-          }
+          notificationMessageIds.push(
+            ...notificationMessages.map((message) => message.id),
+          );
         }
 
         if (membersToRemove.length > 0) {
@@ -1168,6 +1180,7 @@ export const resolvers: Resolvers = {
                 ),
               },
             },
+            transaction: t,
           });
 
           const notificationMessages = await Message.bulkCreate(
@@ -1178,18 +1191,13 @@ export const resolvers: Resolvers = {
               isNotification: true,
               isDeleted: false,
             })),
+            { transaction: t },
           );
 
           unreadCount += notificationMessages.length;
-
-          for (const message of notificationMessages) {
-            const messageWithSender = await Message.findByPk(message.id, {
-              include: [{ model: User, as: "sender" }],
-            });
-            await pubsub.publish("MESSAGE_SENT", {
-              messageSent: messageWithSender,
-            });
-          }
+          notificationMessageIds.push(
+            ...notificationMessages.map((message) => message.id),
+          );
 
           await ChatMember.destroy({
             where: {
@@ -1198,20 +1206,14 @@ export const resolvers: Resolvers = {
               },
               chatId: Number(chatToBeEdited.id),
             },
+            transaction: t,
           });
         }
 
         chatToBeEdited.name = name;
         chatToBeEdited.description = description || null;
 
-        await chatToBeEdited.save();
-        await chatToBeEdited.reload({
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
+        await chatToBeEdited.save({ transaction: t });
 
         if (unreadCount > 0) {
           await ChatMember.increment(
@@ -1223,37 +1225,14 @@ export const resolvers: Resolvers = {
                   [Op.ne]: context.currentUser.id,
                 },
               },
+              transaction: t,
             },
           );
         }
 
-        const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: Number(id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_UPDATED", {
-            chatItemUpdated: {
-              id: String(chatToBeEdited.id),
-              isGroupChat: chatToBeEdited.isGroupChat,
-              name: chatToBeEdited.name || null,
-              avatar: chatToBeEdited.avatar,
-              members: chatToBeEdited.members,
-              latestMessage: latestMessage,
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        await pubsub.publish("CHAT_EDITED", {
-          chatEdited: chatToBeEdited,
-        });
-
-        return chatToBeEdited;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to edit chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1261,6 +1240,54 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      await chatToBeEdited.reload({
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: Number(id) },
+      });
+
+      const notificationMessages = await Message.findAll({
+        where: { id: { [Op.in]: notificationMessageIds } },
+      });
+
+      for (const message of notificationMessages) {
+        const messageWithSender = await Message.findByPk(message.id, {
+          include: [{ model: User, as: "sender" }],
+        });
+        await pubsub.publish("MESSAGE_SENT", {
+          messageSent: messageWithSender,
+        });
+      }
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_UPDATED", {
+          chatItemUpdated: {
+            id: String(chatToBeEdited.id),
+            isGroupChat: chatToBeEdited.isGroupChat,
+            name: chatToBeEdited.name || null,
+            avatar: chatToBeEdited.avatar,
+            members: chatToBeEdited.members,
+            latestMessage: latestMessage,
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      await pubsub.publish("CHAT_EDITED", {
+        chatEdited: chatToBeEdited,
+      });
+
+      return chatToBeEdited;
     },
     leaveChat: async (_, { id }, context: { currentUser: User | null }) => {
       if (!context.currentUser) {
@@ -1269,23 +1296,32 @@ export const resolvers: Resolvers = {
         });
       }
 
-      try {
-        const currentUser = await User.findByPk(context.currentUser.id);
+      const currentUser = await User.findByPk(context.currentUser.id);
 
+      const t = await sequelize.transaction();
+      let notificationMessageId: number | undefined;
+
+      try {
         await ChatMember.destroy({
           where: {
             userId: context.currentUser.id,
             chatId: Number(id),
           },
+          transaction: t,
         });
 
-        const notificationMessage = await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(id),
-          content: `${currentUser?.name} left the chat`,
-          isNotification: true,
-          isDeleted: false,
-        });
+        const notificationMessage = await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(id),
+            content: `${currentUser?.name} left the chat`,
+            isNotification: true,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
+
+        notificationMessageId = notificationMessage.id;
 
         await ChatMember.increment(
           { unreadCount: 1 },
@@ -1296,60 +1332,13 @@ export const resolvers: Resolvers = {
                 [Op.ne]: context.currentUser.id,
               },
             },
+            transaction: t,
           },
         );
 
-        const messageWithSender = await Message.findByPk(
-          notificationMessage.id,
-          {
-            include: [{ model: User, as: "sender" }],
-          },
-        );
-
-        await pubsub.publish("MESSAGE_SENT", {
-          messageSent: messageWithSender,
-        });
-
-        const chat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
-        await pubsub.publish("CHAT_ITEM_LEFT", {
-          chatItemLeft: {
-            chatId: String(chat.id),
-            memberId: String(context.currentUser.id),
-          },
-        });
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to leave chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1357,6 +1346,54 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const messageWithSender = await Message.findByPk(notificationMessageId, {
+        include: [{ model: User, as: "sender" }],
+      });
+
+      await pubsub.publish("MESSAGE_SENT", {
+        messageSent: messageWithSender,
+      });
+
+      const chat = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      await pubsub.publish("CHAT_ITEM_LEFT", {
+        chatItemLeft: {
+          chatId: String(chat.id),
+          memberId: String(context.currentUser.id),
+        },
+      });
+
+      return chat;
     },
     sendMessage: async (
       _,
@@ -1390,14 +1427,19 @@ export const resolvers: Resolvers = {
         }
       }
 
+      const t = await sequelize.transaction();
+
       try {
-        await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(id),
-          content: content,
-          isNotification: isNotification,
-          isDeleted: false,
-        });
+        await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(id),
+            content: content,
+            isNotification: isNotification,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
 
         await ChatMember.increment(
           { unreadCount: 1 },
@@ -1408,67 +1450,13 @@ export const resolvers: Resolvers = {
                 [Op.ne]: context.currentUser.id,
               },
             },
+            transaction: t,
           },
         );
 
-        const chat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin", "unreadCount"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
-        const latestMessage = chat.toJSON().messages?.at(-1);
-
-        await pubsub.publish("MESSAGE_SENT", {
-          messageSent: latestMessage,
-        });
-
-        const chatMembers = await ChatMember.findAll({
-          where: { chatId: Number(id) },
-        });
-
-        for (const member of chatMembers) {
-          await pubsub.publish("CHAT_ITEM_UPDATED", {
-            chatItemUpdated: {
-              id: String(chat.id),
-              isGroupChat: chat.isGroupChat,
-              name: chat.name || null,
-              avatar: chat.avatar,
-              members: chat.members,
-              latestMessage: latestMessage,
-              unreadCount: member.unreadCount,
-              userId: String(member.userId),
-            },
-          });
-        }
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to add message to chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1476,6 +1464,64 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const chat = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      const latestMessage = chat.toJSON().messages?.at(-1);
+
+      await pubsub.publish("MESSAGE_SENT", {
+        messageSent: latestMessage,
+      });
+
+      const chatMembers = await ChatMember.findAll({
+        where: { chatId: Number(id) },
+      });
+
+      for (const member of chatMembers) {
+        await pubsub.publish("CHAT_ITEM_UPDATED", {
+          chatItemUpdated: {
+            id: String(chat.id),
+            isGroupChat: chat.isGroupChat,
+            name: chat.name || null,
+            avatar: chat.avatar,
+            members: chat.members,
+            latestMessage: latestMessage,
+            unreadCount: member.unreadCount,
+            userId: String(member.userId),
+          },
+        });
+      }
+
+      return chat;
     },
     editMessage: async (
       _,
