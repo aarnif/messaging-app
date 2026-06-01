@@ -1296,23 +1296,32 @@ export const resolvers: Resolvers = {
         });
       }
 
-      try {
-        const currentUser = await User.findByPk(context.currentUser.id);
+      const currentUser = await User.findByPk(context.currentUser.id);
 
+      const t = await sequelize.transaction();
+      let notificationMessageId: number | undefined;
+
+      try {
         await ChatMember.destroy({
           where: {
             userId: context.currentUser.id,
             chatId: Number(id),
           },
+          transaction: t,
         });
 
-        const notificationMessage = await Message.create({
-          senderId: Number(context.currentUser.id),
-          chatId: Number(id),
-          content: `${currentUser?.name} left the chat`,
-          isNotification: true,
-          isDeleted: false,
-        });
+        const notificationMessage = await Message.create(
+          {
+            senderId: Number(context.currentUser.id),
+            chatId: Number(id),
+            content: `${currentUser?.name} left the chat`,
+            isNotification: true,
+            isDeleted: false,
+          },
+          { transaction: t },
+        );
+
+        notificationMessageId = notificationMessage.id;
 
         await ChatMember.increment(
           { unreadCount: 1 },
@@ -1323,60 +1332,13 @@ export const resolvers: Resolvers = {
                 [Op.ne]: context.currentUser.id,
               },
             },
+            transaction: t,
           },
         );
 
-        const messageWithSender = await Message.findByPk(
-          notificationMessage.id,
-          {
-            include: [{ model: User, as: "sender" }],
-          },
-        );
-
-        await pubsub.publish("MESSAGE_SENT", {
-          messageSent: messageWithSender,
-        });
-
-        const chat = await Chat.findByPk(Number(id), {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
-
-        if (!chat) {
-          throw new GraphQLError("Chat not found", {
-            extensions: {
-              code: "NOT_FOUND",
-              invalidArgs: id,
-            },
-          });
-        }
-
-        await pubsub.publish("CHAT_ITEM_LEFT", {
-          chatItemLeft: {
-            chatId: String(chat.id),
-            memberId: String(context.currentUser.id),
-          },
-        });
-
-        return chat;
+        await t.commit();
       } catch (error) {
+        await t.rollback();
         throw new GraphQLError("Failed to leave chat", {
           extensions: {
             code: "INTERNAL_SERVER_ERROR",
@@ -1384,6 +1346,54 @@ export const resolvers: Resolvers = {
           },
         });
       }
+
+      const messageWithSender = await Message.findByPk(notificationMessageId, {
+        include: [{ model: User, as: "sender" }],
+      });
+
+      await pubsub.publish("MESSAGE_SENT", {
+        messageSent: messageWithSender,
+      });
+
+      const chat = await Chat.findByPk(Number(id), {
+        include: [
+          {
+            model: Message,
+            as: "messages",
+            include: [{ model: User, as: "sender" }],
+          },
+          {
+            model: User,
+            as: "members",
+            through: {
+              attributes: ["id", "userId", "isAdmin"],
+            },
+          },
+        ],
+        order: [
+          [{ model: User, as: "members" }, "name", "ASC"],
+          [{ model: User, as: "members" }, "username", "ASC"],
+          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
+        ],
+      });
+
+      if (!chat) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      await pubsub.publish("CHAT_ITEM_LEFT", {
+        chatItemLeft: {
+          chatId: String(chat.id),
+          memberId: String(context.currentUser.id),
+        },
+      });
+
+      return chat;
     },
     sendMessage: async (
       _,
