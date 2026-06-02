@@ -1,55 +1,15 @@
 import bcrypt from "bcrypt";
-import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { z } from "zod";
 import config from "../config.js";
 import { sequelize } from "./db.js";
+import { dateScalar, formatZodErrorMessage, getChatName } from "./helpers.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
 import type { Resolvers } from "./types/graphql.js";
-
-// Date scalar implementation from Apollo Server documentation
-// https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar
-const dateScalar = new GraphQLScalarType({
-  name: "Date",
-  description: "Date custom scalar type",
-  serialize(value) {
-    if (value instanceof Date) {
-      return value.getTime();
-    }
-    throw Error("GraphQL Date Scalar serializer expected a `Date` object");
-  },
-  parseValue(value) {
-    if (typeof value === "number") {
-      return new Date(value);
-    }
-    throw new Error("GraphQL Date Scalar parser expected a `number`");
-  },
-  parseLiteral(ast) {
-    if (ast.kind === Kind.INT) {
-      return new Date(parseInt(ast.value, 10));
-    }
-    return null;
-  },
-});
-
-const getChatName = (parent: Chat, currentUser: User | null): string | null => {
-  if (parent.isGroupChat) {
-    return parent.name;
-  }
-
-  const otherMember = parent.members?.find(
-    (member) => member.id.toString() !== currentUser?.id.toString(),
-  );
-
-  return otherMember?.name || null;
-};
-
-const formatZodErrorMessage = (error: z.ZodError): string => {
-  return error.issues.map((issue) => issue.message).join(", ");
-};
 
 export const resolvers: Resolvers = {
   Date: dateScalar,
