@@ -10,6 +10,15 @@ import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
 import type { Resolvers } from "./types/graphql.js";
+import {
+  changePasswordInputSchema,
+  editChatSchema,
+  editMessageInputSchema,
+  editProfileInputSchema,
+  newChatSchema,
+  newMessageInputSchema,
+  newUserInputSchema,
+} from "./validationSchemas.js";
 
 export const resolvers: Resolvers = {
   Date: dateScalar,
@@ -481,21 +490,6 @@ export const resolvers: Resolvers = {
     createUser: async (_, { input }) => {
       const { username, password, confirmPassword } = input;
 
-      const newUserInputSchema = z
-        .object({
-          username: z
-            .string()
-            .min(3, "Username must be at least 3 characters long"),
-          password: z
-            .string()
-            .min(6, "Password must be at least 6 characters long"),
-          confirmPassword: z.string(),
-        })
-        .refine((data) => data.password === data.confirmPassword, {
-          message: "Passwords do not match",
-          path: ["confirmPassword"],
-        });
-
       try {
         newUserInputSchema.parse({ username, password, confirmPassword });
       } catch (error) {
@@ -709,13 +703,6 @@ export const resolvers: Resolvers = {
 
       const { name, about, is24HourClock, isDarkMode } = input;
 
-      const editProfileInputSchema = z.object({
-        name: z.string().min(3, "Name must be at least 3 characters long"),
-        about: z.string().nullable(),
-        is24HourClock: z.boolean(),
-        isDarkMode: z.boolean(),
-      });
-
       try {
         editProfileInputSchema.parse({
           name,
@@ -770,26 +757,6 @@ export const resolvers: Resolvers = {
       }
 
       const { name, description, members, initialMessage } = input;
-
-      const newChatSchema = z
-        .object({
-          name: z.string().nullable(),
-          description: z.string().nullable(),
-          members: z.string().array(),
-          initialMessage: z.string().min(1, "Message content cannot be empty"),
-        })
-        .refine(
-          (data) => {
-            if (data.members.length > 1) {
-              return data.name && data.name.trim().length >= 3;
-            }
-            return true;
-          },
-          {
-            message: "Group chat name must be at least 3 characters long",
-            path: ["name"],
-          },
-        );
 
       try {
         newChatSchema.parse({ name, description, members, initialMessage });
@@ -988,15 +955,6 @@ export const resolvers: Resolvers = {
       }
 
       const { id, name, description, members } = input;
-
-      const editChatSchema = z.object({
-        id: z.string(),
-        name: z
-          .string()
-          .min(3, "Group chat name must be at least 3 characters long"),
-        description: z.string().nullable(),
-        members: z.string().array(),
-      });
 
       try {
         editChatSchema.parse({ id, name, description, members });
@@ -1366,12 +1324,6 @@ export const resolvers: Resolvers = {
 
       const { id, content, isNotification } = input;
 
-      const newMessageInputSchema = z.object({
-        id: z.string(),
-        content: z.string().min(1, "Message content cannot be empty"),
-        isNotification: z.boolean(),
-      });
-
       try {
         newMessageInputSchema.parse({ id, content, isNotification });
       } catch (error) {
@@ -1493,11 +1445,6 @@ export const resolvers: Resolvers = {
       }
 
       const { id, content } = input;
-
-      const editMessageInputSchema = z.object({
-        id: z.string(),
-        content: z.string().min(1, "Message content cannot be empty"),
-      });
 
       try {
         editMessageInputSchema.parse({ id, content });
@@ -1672,19 +1619,6 @@ export const resolvers: Resolvers = {
       }
 
       const { currentPassword, newPassword, confirmNewPassword } = input;
-
-      const changePasswordInputSchema = z
-        .object({
-          currentPassword: z.string(),
-          newPassword: z
-            .string()
-            .min(6, "Password must be at least 6 characters long"),
-          confirmNewPassword: z.string(),
-        })
-        .refine((data) => data.newPassword === data.confirmNewPassword, {
-          message: "Passwords do not match",
-          path: ["confirmPassword"],
-        });
 
       try {
         changePasswordInputSchema.parse({
