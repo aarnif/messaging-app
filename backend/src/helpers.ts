@@ -1,4 +1,4 @@
-import { GraphQLScalarType, Kind } from "graphql";
+import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { z } from "zod";
 import { Chat, User } from "./models/index.js";
 
@@ -44,4 +44,19 @@ export const getChatName = (
 
 export const formatZodErrorMessage = (error: z.ZodError): string => {
   return error.issues.map((issue) => issue.message).join(", ");
+};
+
+export const validateInput = <T>(schema: z.ZodSchema, data: T): void => {
+  try {
+    schema.parse(data);
+  } catch (error) {
+    if (error instanceof z.ZodError) {
+      throw new GraphQLError(formatZodErrorMessage(error), {
+        extensions: {
+          code: "BAD_USER_INPUT",
+          validationErrors: error.issues,
+        },
+      });
+    }
+  }
 };
