@@ -4,6 +4,11 @@ import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import { z } from "zod";
 import config from "../config.js";
+import {
+  CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
+  CHAT_ORDER_MEMBERS_AND_MESSAGES,
+  CHAT_WITH_MEMBERS_AND_MESSAGES,
+} from "./constants.js";
 import { sequelize } from "./db.js";
 import { dateScalar, formatZodErrorMessage, getChatName } from "./helpers.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
@@ -148,27 +153,10 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const chat = await Chat.findByPk(Number(id), {
-        include: [
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-        ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
-      });
+      const chat = await Chat.findByPk(
+        Number(id),
+        CHAT_WITH_MEMBERS_AND_MESSAGES,
+      );
 
       if (!chat) {
         throw new GraphQLError("Chat not found", {
@@ -426,11 +414,7 @@ export const resolvers: Resolvers = {
             },
           },
         ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
+        order: CHAT_ORDER_MEMBERS_AND_MESSAGES,
       });
       const chat = chats.find((c) => c.members && c.members.length === 2);
 
@@ -823,27 +807,7 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const chat = await Chat.findByPk(chatId, {
-        include: [
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-        ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
-      });
+      const chat = await Chat.findByPk(chatId, CHAT_WITH_MEMBERS_AND_MESSAGES);
 
       if (!chat) {
         throw new GraphQLError("Chat not found", {
@@ -882,27 +846,10 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const chatToBeDeleted = await Chat.findByPk(Number(id), {
-        include: [
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-        ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
-      });
+      const chatToBeDeleted = await Chat.findByPk(
+        Number(id),
+        CHAT_WITH_MEMBERS_AND_MESSAGES,
+      );
 
       if (!chatToBeDeleted) {
         throw new GraphQLError("Chat not found", {
@@ -970,20 +917,7 @@ export const resolvers: Resolvers = {
       }
 
       const chatToBeEdited = await Chat.findByPk(Number(id), {
-        include: [
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-        ],
+        include: CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
       });
 
       if (!chatToBeEdited) {
@@ -1160,11 +1094,7 @@ export const resolvers: Resolvers = {
       }
 
       await chatToBeEdited.reload({
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
+        order: CHAT_ORDER_MEMBERS_AND_MESSAGES,
       });
 
       const latestMessage = chatToBeEdited.toJSON().messages?.at(-1);
@@ -1271,27 +1201,10 @@ export const resolvers: Resolvers = {
         messageSent: messageWithSender,
       });
 
-      const chat = await Chat.findByPk(Number(id), {
-        include: [
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-        ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
-      });
+      const chat = await Chat.findByPk(
+        Number(id),
+        CHAT_WITH_MEMBERS_AND_MESSAGES,
+      );
 
       if (!chat) {
         throw new GraphQLError("Chat not found", {
@@ -1375,27 +1288,10 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const chat = await Chat.findByPk(Number(id), {
-        include: [
-          {
-            model: Message,
-            as: "messages",
-            include: [{ model: User, as: "sender" }],
-          },
-          {
-            model: User,
-            as: "members",
-            through: {
-              attributes: ["id", "userId", "isAdmin", "unreadCount"],
-            },
-          },
-        ],
-        order: [
-          [{ model: User, as: "members" }, "name", "ASC"],
-          [{ model: User, as: "members" }, "username", "ASC"],
-          [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-        ],
-      });
+      const chat = await Chat.findByPk(
+        Number(id),
+        CHAT_WITH_MEMBERS_AND_MESSAGES,
+      );
 
       if (!chat) {
         throw new GraphQLError("Chat not found", {
@@ -1480,27 +1376,10 @@ export const resolvers: Resolvers = {
         message.content = content;
         await message.save();
 
-        const chat = await Chat.findByPk(message.chatId, {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin", "unreadCount"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
+        const chat = await Chat.findByPk(
+          message.chatId,
+          CHAT_WITH_MEMBERS_AND_MESSAGES,
+        );
 
         if (!chat) {
           throw new GraphQLError("Chat not found", {
@@ -1558,27 +1437,10 @@ export const resolvers: Resolvers = {
         message.isDeleted = true;
         await message.save();
 
-        const chat = await Chat.findByPk(message.chatId, {
-          include: [
-            {
-              model: Message,
-              as: "messages",
-              include: [{ model: User, as: "sender" }],
-            },
-            {
-              model: User,
-              as: "members",
-              through: {
-                attributes: ["id", "userId", "isAdmin", "unreadCount"],
-              },
-            },
-          ],
-          order: [
-            [{ model: User, as: "members" }, "name", "ASC"],
-            [{ model: User, as: "members" }, "username", "ASC"],
-            [{ model: Message, as: "messages" }, "createdAt", "ASC"],
-          ],
-        });
+        const chat = await Chat.findByPk(
+          message.chatId,
+          CHAT_WITH_MEMBERS_AND_MESSAGES,
+        );
 
         if (!chat) {
           throw new GraphQLError("Chat not found", {
