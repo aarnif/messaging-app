@@ -159,7 +159,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
         ],
@@ -422,7 +422,7 @@ export const resolvers: Resolvers = {
               },
             },
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
         ],
@@ -834,7 +834,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
         ],
@@ -893,7 +893,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
         ],
@@ -975,7 +975,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
           {
@@ -1282,7 +1282,7 @@ export const resolvers: Resolvers = {
             model: User,
             as: "members",
             through: {
-              attributes: ["id", "userId", "isAdmin"],
+              attributes: ["id", "userId", "isAdmin", "unreadCount"],
             },
           },
         ],
