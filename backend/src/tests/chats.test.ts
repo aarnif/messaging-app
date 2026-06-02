@@ -123,7 +123,13 @@ describeGraphQLSuite("Chats", () => {
 
       const chat = responseBody.data?.createChat;
 
-      assertChatEquality(chat, expectedPrivateChat);
+      assertChatEquality(chat, {
+        ...expectedPrivateChat,
+        members: [
+          expectedPrivateChat.members[0],
+          { ...expectedPrivateChat.members[1], unreadCount: 1 },
+        ],
+      });
     });
 
     void test("succeeds creating group chat", async () => {
@@ -131,7 +137,14 @@ describeGraphQLSuite("Chats", () => {
 
       const chat = responseBody.data?.createChat;
 
-      assertChatEquality(chat, expectedGroupChat);
+      assertChatEquality(chat, {
+        ...expectedGroupChat,
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 1 },
+          { ...expectedGroupChat.members[2], unreadCount: 1 },
+        ],
+      });
     });
   });
 
@@ -237,6 +250,11 @@ describeGraphQLSuite("Chats", () => {
         ...expectedGroupChat,
         name: "Updated Group Chat",
         description: "Updated test description",
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 3 },
+          { ...expectedGroupChat.members[2], unreadCount: 3 },
+        ],
         messages: expectedGroupChat.messages.concat([
           {
             id: "2",
@@ -279,9 +297,10 @@ describeGraphQLSuite("Chats", () => {
         ...expectedGroupChat,
         name: "Updated Group Chat",
         description: "Updated test description",
-        members: expectedGroupChat.members.filter(
-          (member) => member.id !== user3Details.id,
-        ),
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 4 },
+        ],
         messages: expectedGroupChat.messages.concat([
           {
             id: "2",
@@ -334,6 +353,11 @@ describeGraphQLSuite("Chats", () => {
         ...expectedGroupChat,
         name: "Chat with No Description",
         description: null,
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 3 },
+          { ...expectedGroupChat.members[2], unreadCount: 3 },
+        ],
         messages: expectedGroupChat.messages.concat([
           {
             id: "2",
@@ -392,7 +416,14 @@ describeGraphQLSuite("Chats", () => {
 
       const chat = responseBody.data?.deleteChat;
 
-      assertChatEquality(chat, expectedGroupChat);
+      assertChatEquality(chat, {
+        ...expectedGroupChat,
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 1 },
+          { ...expectedGroupChat.members[2], unreadCount: 1 },
+        ],
+      });
     });
 
     void test("fails when trying to delete same chat twice", async () => {
@@ -438,7 +469,14 @@ describeGraphQLSuite("Chats", () => {
 
       const chat = responseBody.data?.findChatById;
 
-      assertChatEquality(chat, expectedGroupChat);
+      assertChatEquality(chat, {
+        ...expectedGroupChat,
+        members: [
+          expectedGroupChat.members[0],
+          { ...expectedGroupChat.members[1], unreadCount: 1 },
+          { ...expectedGroupChat.members[2], unreadCount: 1 },
+        ],
+      });
     });
   });
 
@@ -740,9 +778,10 @@ describeGraphQLSuite("Chats", () => {
 
       assertChatEquality(chat, {
         ...expectedGroupChat,
-        members: expectedGroupChat.members.filter(
-          (member) => member.id !== user2Details.id,
-        ),
+        members: [
+          { ...expectedGroupChat.members[0], unreadCount: 1 },
+          { ...expectedGroupChat.members[2], unreadCount: 2 },
+        ],
         messages: expectedGroupChat.messages.concat({
           id: "2",
           chatId: "1",
