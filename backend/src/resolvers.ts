@@ -2,7 +2,6 @@ import bcrypt from "bcrypt";
 import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
-import { z } from "zod";
 import config from "../config.js";
 import {
   CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
@@ -10,7 +9,7 @@ import {
   CHAT_WITH_MEMBERS_AND_MESSAGES,
 } from "./constants.js";
 import { sequelize } from "./db.js";
-import { dateScalar, formatZodErrorMessage, getChatName } from "./helpers.js";
+import { dateScalar, getChatName, validateInput } from "./helpers.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
@@ -474,18 +473,11 @@ export const resolvers: Resolvers = {
     createUser: async (_, { input }) => {
       const { username, password, confirmPassword } = input;
 
-      try {
-        newUserInputSchema.parse({ username, password, confirmPassword });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(newUserInputSchema, {
+        username,
+        password,
+        confirmPassword,
+      });
 
       const userExists = await User.findOne({
         where: {
@@ -687,23 +679,12 @@ export const resolvers: Resolvers = {
 
       const { name, about, is24HourClock, isDarkMode } = input;
 
-      try {
-        editProfileInputSchema.parse({
-          name,
-          about,
-          is24HourClock,
-          isDarkMode,
-        });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(editProfileInputSchema, {
+        name,
+        about,
+        is24HourClock,
+        isDarkMode,
+      });
 
       const user = await User.findByPk(context.currentUser.id);
 
@@ -742,18 +723,12 @@ export const resolvers: Resolvers = {
 
       const { name, description, members, initialMessage } = input;
 
-      try {
-        newChatSchema.parse({ name, description, members, initialMessage });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(newChatSchema, {
+        name,
+        description,
+        members,
+        initialMessage,
+      });
 
       let chatId: number | undefined;
 
@@ -903,18 +878,7 @@ export const resolvers: Resolvers = {
 
       const { id, name, description, members } = input;
 
-      try {
-        editChatSchema.parse({ id, name, description, members });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(editChatSchema, { id, name, description, members });
 
       const chatToBeEdited = await Chat.findByPk(Number(id), {
         include: CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
@@ -1237,18 +1201,11 @@ export const resolvers: Resolvers = {
 
       const { id, content, isNotification } = input;
 
-      try {
-        newMessageInputSchema.parse({ id, content, isNotification });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(newMessageInputSchema, {
+        id,
+        content,
+        isNotification,
+      });
 
       const t = await sequelize.transaction();
 
@@ -1342,18 +1299,7 @@ export const resolvers: Resolvers = {
 
       const { id, content } = input;
 
-      try {
-        editMessageInputSchema.parse({ id, content });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(editMessageInputSchema, { id, content });
 
       const message = await Message.findOne({
         where: {
@@ -1482,22 +1428,11 @@ export const resolvers: Resolvers = {
 
       const { currentPassword, newPassword, confirmNewPassword } = input;
 
-      try {
-        changePasswordInputSchema.parse({
-          currentPassword,
-          newPassword,
-          confirmNewPassword,
-        });
-      } catch (error) {
-        if (error instanceof z.ZodError) {
-          throw new GraphQLError(formatZodErrorMessage(error), {
-            extensions: {
-              code: "BAD_USER_INPUT",
-              validationErrors: error.issues,
-            },
-          });
-        }
-      }
+      validateInput(changePasswordInputSchema, {
+        currentPassword,
+        newPassword,
+        confirmNewPassword,
+      });
 
       const userExists = await User.findOne({
         where: { username: context.currentUser.username },
