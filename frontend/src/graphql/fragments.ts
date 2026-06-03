@@ -21,3 +21,18 @@ export const CONTACT_INFO = gql(`
     }
   }
 `);
+
+export const CHAT_MEMBER_INFO = gql(`
+  fragment ChatMemberInfo on ChatMember {
+    id
+    userId
+    username
+    name
+    about
+    avatar
+    isAdmin
+    is24HourClock
+    isDarkMode
+    unreadCount
+  }
+`);

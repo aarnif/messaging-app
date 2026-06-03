@@ -16,16 +16,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
     avatar
     unreadCount
     members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
-      unreadCount
+      ...ChatMemberInfo
     }
     latestMessage {
       id
@@ -63,16 +54,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
     description
     avatar
     members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
-      unreadCount
+      ...ChatMemberInfo
     }
     messages {
       id
@@ -117,15 +99,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
     description
     avatar
     members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
+      ...ChatMemberInfo
     }
   }
 }`);

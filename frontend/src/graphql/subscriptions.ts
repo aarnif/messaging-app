@@ -79,16 +79,7 @@ export const CHAT_ITEM_UPDATED = gql(`
       unreadCount
       userId
       members {
-        id
-        userId
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       latestMessage {
         id
@@ -121,16 +112,7 @@ export const CHAT_ITEM_CREATED = gql(`
       unreadCount
       userId
       members {
-        id
-        userId
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       latestMessage {
         id
@@ -174,16 +156,7 @@ export const CHAT_EDITED = gql(`
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
