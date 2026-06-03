@@ -67,6 +67,7 @@ import type {
   SendMessageMutationVariables,
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables,
+  User,
 } from "../../__generated__/graphql";
 import {
   ADD_CONTACTS,
@@ -374,7 +375,8 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-export const currentChatItemAdminMock = {
+export const currentChatItemAdminMock: User = {
+  __typename: "User",
   id: USER_ONE_DETAILS.id,
   username: USER_ONE_DETAILS.username,
   name: USER_ONE_DETAILS.name,
@@ -1086,8 +1088,9 @@ export const isBlockedByUserNull: MockLink.MockedResponse<
   },
 };
 
-export const nonContactUsersMock = [
+export const nonContactUsersMock: User[] = [
   {
+    __typename: "User",
     id: USER_FOUR_DETAILS.id,
     username: USER_FOUR_DETAILS.username,
     name: USER_FOUR_DETAILS.name,
@@ -1097,6 +1100,7 @@ export const nonContactUsersMock = [
     isDarkMode: false,
   },
   {
+    __typename: "User",
     id: USER_FIVE_DETAILS.id,
     username: USER_FIVE_DETAILS.username,
     name: USER_FIVE_DETAILS.name,

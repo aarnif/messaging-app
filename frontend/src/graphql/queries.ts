@@ -3,13 +3,7 @@ import { gql } from "../__generated__/gql";
 export const ME = gql(`
   query Me {
     me {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
 `);
@@ -172,13 +166,7 @@ export const IS_BLOCKED_BY_USER = gql(`query IsBlockedByUser($id: ID!) {
 
 export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
   nonContactUsers(search: $search) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }`);
 

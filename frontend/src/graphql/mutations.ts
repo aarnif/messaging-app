@@ -11,13 +11,7 @@ export const LOGIN = gql(`
 export const CREATE_USER = gql(`
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
 `);
@@ -281,13 +275,7 @@ export const ADD_CONTACTS = gql(`mutation AddContacts($ids: [ID!]!) {
 export const EDIT_PROFILE =
   gql(`mutation EditProfile($input: EditProfileInput!) {
   editProfile(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }
 `);
@@ -295,13 +283,7 @@ export const EDIT_PROFILE =
 export const CHANGE_PASSWORD =
   gql(`mutation ChangePassword($input: ChangePasswordInput!) {
   changePassword(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }`);
 
