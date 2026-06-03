@@ -232,43 +232,19 @@ export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
 
 export const TOGGLE_BLOCK_CONTACT = gql(`mutation ToggleBlockContact($id: ID!) {
   toggleBlockContact(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 
 export const REMOVE_CONTACT = gql(`mutation RemoveContact($id: ID!) {
   removeContact(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 
 export const ADD_CONTACTS = gql(`mutation AddContacts($ids: [ID!]!) {
   addContacts(ids: $ids) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 

@@ -19,6 +19,7 @@ import type {
   ChatItemLeftSubscriptionVariables,
   ChatItemUpdatedSubscription,
   ChatItemUpdatedSubscriptionVariables,
+  Contact,
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables,
   CreateChatMutation,
@@ -345,10 +346,12 @@ export const MESSAGE_DETAILS = {
   updatedAt: 1759094100000 + 3 * 86400000,
 };
 
-export const CONTACT_DETAILS = {
+export const CONTACT_DETAILS: Contact = {
+  __typename: "Contact",
   id: "1",
   isBlocked: false,
   contactDetails: {
+    __typename: "User",
     id: USER_TWO_DETAILS.id,
     username: USER_TWO_DETAILS.username,
     name: USER_TWO_DETAILS.name,
@@ -387,6 +390,7 @@ export const currentChatItemAdminMock: User = {
 };
 
 export const currentChatItemMemberMock = {
+  __typename: "User",
   id: USER_TWO_DETAILS.id,
   username: USER_TWO_DETAILS.username,
   name: USER_TWO_DETAILS.name,
@@ -582,11 +586,13 @@ export const allContactsByUserEmpty: MockLink.MockedResponse<
   },
 };
 
-export const userContactsMock = [
+export const userContactsMock: Contact[] = [
   {
+    __typename: "Contact",
     id: "1",
     isBlocked: false,
     contactDetails: {
+      __typename: "User",
       id: USER_TWO_DETAILS.id,
       username: USER_TWO_DETAILS.username,
       name: USER_TWO_DETAILS.name,
@@ -597,9 +603,11 @@ export const userContactsMock = [
     },
   },
   {
+    __typename: "Contact",
     id: "2",
     isBlocked: false,
     contactDetails: {
+      __typename: "User",
       id: USER_THREE_DETAILS.id,
       username: USER_THREE_DETAILS.username,
       name: USER_THREE_DETAILS.name,
@@ -1145,27 +1153,35 @@ export const nonContactUsersEmpty: MockLink.MockedResponse<
   },
 };
 
-export const ADDED_CONTACTS = [
+export const ADDED_CONTACTS: Contact[] = [
   {
+    __typename: "Contact",
     id: "2",
     isBlocked: false,
     contactDetails: {
+      __typename: "User",
       id: USER_FOUR_DETAILS.id,
       username: USER_FOUR_DETAILS.username,
       name: USER_FOUR_DETAILS.name,
       about: "Hi! My name is User 4!",
       avatar: null,
+      is24HourClock: true,
+      isDarkMode: false,
     },
   },
   {
+    __typename: "Contact",
     id: "3",
     isBlocked: false,
     contactDetails: {
+      __typename: "User",
       id: USER_FIVE_DETAILS.id,
       username: USER_FIVE_DETAILS.username,
       name: USER_FIVE_DETAILS.name,
       about: "Hi! My name is User 5!",
       avatar: null,
+      is24HourClock: true,
+      isDarkMode: false,
     },
   },
 ];

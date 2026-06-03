@@ -11,3 +11,13 @@ export const USER_INFO = gql(`
     isDarkMode
   }
 `);
+
+export const CONTACT_INFO = gql(`
+  fragment ContactInfo on Contact {
+    id
+    isBlocked
+    contactDetails {
+      ...UserInfo
+    }
+  }
+`);

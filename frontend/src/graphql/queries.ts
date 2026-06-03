@@ -51,17 +51,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
 export const ALL_CONTACTS_BY_USER =
   gql(`query AllContactsByUser($search: String) {
   allContactsByUser(search: $search) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
@@ -108,33 +98,13 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
 export const CONTACTS_WITHOUT_PRIVATE_CHAT =
   gql(`query ContactsWithoutPrivateChat($search: String) {
   contactsWithoutPrivateChat(search: $search) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
 export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
   findContactById(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
@@ -173,16 +143,6 @@ export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
 export const FIND_CONTACT_BY_USER_ID =
   gql(`query FindContactByUserId($id: ID!) {
   findContactByUserId(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
