@@ -27,36 +27,16 @@ export const MESSAGE_DELETED = gql(`
 export const CHAT_ITEM_UPDATED = gql(`
   subscription ChatItemUpdated {
     chatItemUpdated {
-      id
-      isGroupChat
-      name
-      avatar
-      unreadCount
+      ...ChatItemInfo
       userId
-      members {
-        ...ChatMemberInfo
-      }
-      latestMessage {
-        ...MessageInfo
-      }
     }
 }`);
 
 export const CHAT_ITEM_CREATED = gql(`
   subscription ChatItemCreated {
     chatItemCreated {
-      id
-      isGroupChat
-      name
-      avatar
-      unreadCount
+      ...ChatItemInfo
       userId
-      members {
-        ...ChatMemberInfo
-      }
-      latestMessage {
-        ...MessageInfo
-      }
     }
 }`);
 

@@ -51,3 +51,19 @@ export const MESSAGE_INFO = gql(`
     updatedAt
   }
 `);
+
+export const CHAT_ITEM_INFO = gql(`
+  fragment ChatItemInfo on ChatItem {
+    id
+    isGroupChat
+    name
+    avatar
+    unreadCount
+    members {
+      ...ChatMemberInfo
+    }
+    latestMessage {
+      ...MessageInfo
+    }
+  }
+`);

@@ -11,6 +11,7 @@ import type {
   ChangePasswordMutationVariables,
   ChatEditedSubscription,
   ChatEditedSubscriptionVariables,
+  ChatItem,
   ChatItemCreatedSubscription,
   ChatItemCreatedSubscriptionVariables,
   ChatItemDeletedSubscription,
@@ -483,8 +484,9 @@ export const allChatsByUserEmpty: MockLink.MockedResponse<
   },
 };
 
-export const chatItemsMock = [
+export const chatItemsMock: ChatItem[] = [
   {
+    __typename: "ChatItem",
     id: GROUP_CHAT_DETAILS.id,
     isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: GROUP_CHAT_DETAILS.name,
@@ -495,6 +497,7 @@ export const chatItemsMock = [
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
   {
+    __typename: "ChatItem",
     id: "2",
     isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: "Test Chat 2",
