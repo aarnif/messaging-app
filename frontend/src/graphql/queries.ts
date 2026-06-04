@@ -3,144 +3,40 @@ import { gql } from "../__generated__/gql";
 export const ME = gql(`
   query Me {
     me {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
 `);
 
 export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
   allChatsByUser(search: $search) {
-    id
-    isGroupChat
-    name
-    avatar
-    unreadCount
-    members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
-      unreadCount
-    }
-    latestMessage {
-      id
-      chatId
-      isNotification
-      isDeleted
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
-      content
-      createdAt
-      updatedAt
-    }
+    ...ChatItemInfo
   }
 }`);
 
 export const ALL_CONTACTS_BY_USER =
   gql(`query AllContactsByUser($search: String) {
   allContactsByUser(search: $search) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
 export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
   findChatById(id: $id) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
-      unreadCount
-    }
-    messages {
-      id
-      chatId
-      isNotification
-      isDeleted
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
-      content
-      createdAt
-      updatedAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const CONTACTS_WITHOUT_PRIVATE_CHAT =
   gql(`query ContactsWithoutPrivateChat($search: String) {
   contactsWithoutPrivateChat(search: $search) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
 export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
   findContactById(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);
 
@@ -153,15 +49,7 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT =
     description
     avatar
     members {
-      id
-      userId
-      username
-      name
-      about
-      avatar
-      isAdmin
-      is24HourClock
-      isDarkMode
+      ...ChatMemberInfo
     }
   }
 }`);
@@ -172,29 +60,13 @@ export const IS_BLOCKED_BY_USER = gql(`query IsBlockedByUser($id: ID!) {
 
 export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
   nonContactUsers(search: $search) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }`);
 
 export const FIND_CONTACT_BY_USER_ID =
   gql(`query FindContactByUserId($id: ID!) {
   findContactByUserId(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
-    }
+    ...ContactInfo
   }
 }`);

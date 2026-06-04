@@ -132,7 +132,7 @@ describe("<Chats />", () => {
             expect(badge.textContent).toBe(String(unreadCount));
           }
 
-          expect(within(chatItem).getByText(name)).toBeDefined();
+          expect(within(chatItem).getByText(name ?? "")).toBeDefined();
 
           if (!latestMessage.isNotification) {
             expect(

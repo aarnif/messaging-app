@@ -11,13 +11,7 @@ export const LOGIN = gql(`
 export const CREATE_USER = gql(`
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
 `);
@@ -25,269 +19,69 @@ export const CREATE_USER = gql(`
 export const SEND_MESSAGE =
   gql(`mutation SendMessage($input: SendMessageInput!) {
   sendMessage(input: $input) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const EDIT_MESSAGE =
   gql(`mutation EditMessage($input: EditMessageInput!) {
   editMessage(input: $input) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-      updatedAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
   deleteMessage(id: $id) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-      updatedAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
   createChat(input: $input) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
   editChat(input: $input) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
   leaveChat(id: $id) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
   deleteChat(id: $id) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      id
-      userId
-      username
-      name
-      avatar
-      isAdmin
-    }
-    messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-    }
+    ...ChatInfo
   }
 }`);
 
 export const TOGGLE_BLOCK_CONTACT = gql(`mutation ToggleBlockContact($id: ID!) {
   toggleBlockContact(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 
 export const REMOVE_CONTACT = gql(`mutation RemoveContact($id: ID!) {
   removeContact(id: $id) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 
 export const ADD_CONTACTS = gql(`mutation AddContacts($ids: [ID!]!) {
   addContacts(ids: $ids) {
-    id
-    isBlocked
-    contactDetails {
-      id
-      username
-      name
-      about
-      avatar
-    }
+    ...ContactInfo
   }
 }`);
 
 export const EDIT_PROFILE =
   gql(`mutation EditProfile($input: EditProfileInput!) {
   editProfile(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }
 `);
@@ -295,13 +89,7 @@ export const EDIT_PROFILE =
 export const CHANGE_PASSWORD =
   gql(`mutation ChangePassword($input: ChangePasswordInput!) {
   changePassword(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+    ...UserInfo
   }
 }`);
 

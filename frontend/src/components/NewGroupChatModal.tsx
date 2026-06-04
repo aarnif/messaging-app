@@ -73,6 +73,7 @@ const NewGroupChatModal = ({
       .filter((user) => user.isSelected)
       .map((user) => {
         return {
+          __typename: "User",
           id: user.id,
           username: user.username,
           name: user.name,
