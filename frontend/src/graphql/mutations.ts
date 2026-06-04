@@ -28,16 +28,7 @@ export const SEND_MESSAGE =
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
+      ...MessageInfo
     }
   }
 }`);
@@ -54,17 +45,7 @@ export const EDIT_MESSAGE =
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-      updatedAt
+      ...MessageInfo
     }
   }
 }`);
@@ -80,17 +61,7 @@ export const DELETE_MESSAGE = gql(`mutation DeleteMessage($id: ID!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
-      updatedAt
+      ...MessageInfo
     }
   }
 }`);
@@ -106,16 +77,7 @@ export const CREATE_CHAT = gql(`mutation CreateChat($input: CreateChatInput!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
+      ...MessageInfo
     }
   }
 }`);
@@ -131,16 +93,7 @@ export const EDIT_CHAT = gql(`mutation EditChat($input: EditChatInput!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
+      ...MessageInfo
     }
   }
 }`);
@@ -156,16 +109,7 @@ export const LEAVE_CHAT = gql(`mutation LeaveChat($id: ID!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
+      ...MessageInfo
     }
   }
 }`);
@@ -181,16 +125,7 @@ export const DELETE_CHAT = gql(`mutation DeleteChat($id: ID!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-      }
-      content
-      createdAt
+      ...MessageInfo
     }
   }
 }`);

@@ -19,22 +19,7 @@ export const ALL_CHATS_BY_USER = gql(`query AllChatsByUser($search: String) {
       ...ChatMemberInfo
     }
     latestMessage {
-      id
-      chatId
-      isNotification
-      isDeleted
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
-      content
-      createdAt
-      updatedAt
+      ...MessageInfo
     }
   }
 }`);
@@ -57,22 +42,7 @@ export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
       ...ChatMemberInfo
     }
     messages {
-      id
-      chatId
-      isNotification
-      isDeleted
-      sender {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
-      content
-      createdAt
-      updatedAt
+      ...MessageInfo
     }
   }
 }`);

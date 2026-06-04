@@ -36,3 +36,18 @@ export const CHAT_MEMBER_INFO = gql(`
     unreadCount
   }
 `);
+
+export const MESSAGE_INFO = gql(`
+  fragment MessageInfo on Message {
+    id
+    chatId
+    isNotification
+    isDeleted
+    sender {
+      ...UserInfo
+    }
+    content
+    createdAt
+    updatedAt
+  }
+`);
