@@ -1,3 +1,11 @@
+import {
+  CHAT_INFO,
+  CHAT_MEMBER_INFO,
+  CONTACT_INFO,
+  MESSAGE_INFO,
+  USER_INFO,
+} from "./fragments";
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -7,15 +15,10 @@ export const COUNT_DOCUMENTS = `
 export const CREATE_USER = `
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const LOGIN = `
@@ -29,358 +32,127 @@ export const LOGIN = `
 export const ME = `
   query Me {
     me {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const ADD_CONTACT = `
   mutation AddContact($id: ID!) {
     addContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const ADD_CONTACTS = `
   mutation AddContacts($ids: [ID!]!) {
     addContacts(ids: $ids) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const REMOVE_CONTACT = `
   mutation RemoveContact($id: ID!) {
     removeContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const CREATE_CHAT = `
   mutation CreateChat($input: CreateChatInput!) {
     createChat(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const EDIT_CHAT = `
   mutation EditChat($input: EditChatInput!) {
     editChat(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const DELETE_CHAT = `
   mutation DeleteChat($id: ID!) {
     deleteChat(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const TOGGLE_BLOCK_CONTACT = `
   mutation ToggleBlockContact($id: ID!) {
     toggleBlockContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const SEND_MESSAGE = `
   mutation SendMessage($input: SendMessageInput!) {
     sendMessage(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const EDIT_MESSAGE = `
   mutation EditMessage($input: EditMessageInput!) {
     editMessage(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const DELETE_MESSAGE = `
   mutation DeleteMessage($id: ID!) {
     deleteMessage(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        isDeleted
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const LEAVE_CHAT = `
   mutation LeaveChat($id: ID!) {
     leaveChat(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const EDIT_PROFILE = `
   mutation EditProfile($input: EditProfileInput!) {
     editProfile(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const FIND_CHAT_BY_ID = `
   query FindChatById($id: ID!) {
     findChatById(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
-      }
-      messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
-      }
+      ...ChatInfo
     }
   }
+  ${CHAT_INFO}
 `;
 
 export const IS_BLOCKED_BY_USER = `
@@ -392,37 +164,19 @@ export const IS_BLOCKED_BY_USER = `
 export const ALL_CONTACTS_BY_USER = `
   query AllContactsByUser($search: String) {
     allContactsByUser(search: $search) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
   query ContactsWithoutPrivateChat($search: String) {
     contactsWithoutPrivateChat(search: $search) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const ALL_CHATS_BY_USER = `
@@ -434,48 +188,24 @@ export const ALL_CHATS_BY_USER = `
       avatar
       unreadCount
       members {
-        id
-        userId
-        username
-        name
-        about
-        avatar
-        isAdmin
-        is24HourClock
-        isDarkMode
-        unreadCount
+        ...ChatMemberInfo
       }
       latestMessage {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const FIND_CONTACT_BY_ID = `
   query FindContactById($id: ID!) {
     findContactById(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
@@ -487,46 +217,29 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        about
-        isAdmin
+        ...ChatMemberInfo
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
-export const CHANGE_PASSWORD = `mutation ChangePassword($input: ChangePasswordInput!) {
-  changePassword(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+export const CHANGE_PASSWORD = `
+  mutation ChangePassword($input: ChangePasswordInput!) {
+    changePassword(input: $input) {
+      ...UserInfo
+    }
   }
-}`;
+  ${USER_INFO}
+`;
 
 export const FIND_CONTACT_BY_USER_ID = `
   query FindContactByUserId($id: ID!) {
     findContactByUserId(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
-      }
+      ...ContactInfo
     }
   }
+  ${CONTACT_INFO}
 `;
 
 export const MARK_CHAT_AS_READ = `
@@ -538,13 +251,8 @@ export const MARK_CHAT_AS_READ = `
 export const NON_CONTACT_USERS = `
   query NonContactUsers($search: String) {
     nonContactUsers(search: $search) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
