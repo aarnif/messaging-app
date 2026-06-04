@@ -36,6 +36,22 @@ const CHAT_MEMBER_INFO = `
   }
 `;
 
+const MESSAGE_INFO = `
+  fragment MessageInfo on Message {
+    id
+    chatId
+    isNotification
+    isDeleted
+    sender {
+      ...UserInfo
+    }
+    content
+    createdAt
+    updatedAt
+  }
+  ${USER_INFO}
+`;
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -107,19 +123,12 @@ export const CREATE_CHAT = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const EDIT_CHAT = `
@@ -134,19 +143,12 @@ export const EDIT_CHAT = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const DELETE_CHAT = `
@@ -161,19 +163,12 @@ export const DELETE_CHAT = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const TOGGLE_BLOCK_CONTACT = `
@@ -197,19 +192,12 @@ export const SEND_MESSAGE = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const EDIT_MESSAGE = `
@@ -224,19 +212,12 @@ export const EDIT_MESSAGE = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const DELETE_MESSAGE = `
@@ -251,20 +232,12 @@ export const DELETE_MESSAGE = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        isDeleted
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const LEAVE_CHAT = `
@@ -279,19 +252,12 @@ export const LEAVE_CHAT = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const EDIT_PROFILE = `
@@ -315,19 +281,12 @@ export const FIND_CHAT_BY_ID = `
         ...ChatMemberInfo
       }
       messages {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const IS_BLOCKED_BY_USER = `
@@ -366,19 +325,12 @@ export const ALL_CHATS_BY_USER = `
         ...ChatMemberInfo
       }
       latestMessage {
-        id
-        isNotification
-        sender {
-          id
-          username
-          name
-        }
-        content
-        createdAt
+        ...MessageInfo
       }
     }
   }
   ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
 `;
 
 export const FIND_CONTACT_BY_ID = `
