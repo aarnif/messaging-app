@@ -150,7 +150,7 @@ export const USER_FIVE_DETAILS = {
   username: "user5",
 };
 
-const ChatMembers: ChatMember[] = [
+const CHAT_MEMBERS: ChatMember[] = [
   {
     __typename: "ChatMember",
     id: USER_ONE_DETAILS.id,
@@ -200,7 +200,7 @@ export const GROUP_CHAT_DETAILS = {
   avatar: null,
   unreadCount: 0,
   userId: USER_ONE_DETAILS.id,
-  members: ChatMembers,
+  members: CHAT_MEMBERS,
   messages: [
     {
       id: "1",
@@ -267,7 +267,7 @@ export const PRIVATE_CHAT_DETAILS = {
   avatar: null,
   unreadCount: 0,
   userId: USER_ONE_DETAILS.id,
-  members: ChatMembers.slice(0, 2),
+  members: CHAT_MEMBERS.slice(0, 2),
   messages: [
     {
       id: "1",
