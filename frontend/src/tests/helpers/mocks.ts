@@ -344,7 +344,7 @@ export const currentChatItemAdminMock: User = {
   isDarkMode: false,
 };
 
-export const currentChatItemMemberMock = {
+export const currentChatItemMemberMock: User = {
   __typename: "User",
   id: USER_TWO_DETAILS.id,
   username: USER_TWO_DETAILS.username,
