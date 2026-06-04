@@ -107,13 +107,15 @@ const renderComponent = (
 const openChatInfoModal = async (user: UserEvent) => {
   await waitFor(async () => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name ?? "" }),
     ).toBeDefined();
   });
   await user.click(screen.getByTestId("chat-info-button"));
   await waitFor(async () => {
     expect(screen.getByRole("heading", { name: "Chat" })).toBeDefined();
-    expect(screen.getByText(GROUP_CHAT_DETAILS.description)).toBeDefined();
+    expect(
+      screen.getByText(GROUP_CHAT_DETAILS.description ?? ""),
+    ).toBeDefined();
   });
 };
 
@@ -169,7 +171,7 @@ const editAndConfirmChat = async (user: UserEvent) => {
 const openMessageEditMode = async (user: UserEvent) => {
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name ?? "" }),
     ).toBeDefined();
   });
   const [firstMessageMenuButton] = screen.getAllByTestId("sent-message");
@@ -195,7 +197,7 @@ const editAndConfirmMessage = async (user: UserEvent, message = "") => {
 const openMessageDeleteConfirmation = async (user: UserEvent) => {
   await waitFor(() => {
     expect(
-      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
+      screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name ?? "" }),
     ).toBeDefined();
   });
   const [firstMessageMenuButton] = screen.getAllByTestId("sent-message");
@@ -257,7 +259,7 @@ describe("<Chat />", () => {
     renderComponent();
     await waitFor(() => {
       expect(
-        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name }),
+        screen.getByRole("heading", { name: GROUP_CHAT_DETAILS.name ?? "" }),
       ).toBeDefined();
       expect(
         screen.getByText(
@@ -383,7 +385,9 @@ describe("<Chat />", () => {
 
     await waitFor(async () => {
       expect(screen.queryByRole("heading", { name: "Chat" })).toBeNull();
-      expect(screen.queryByText(GROUP_CHAT_DETAILS.description)).toBeNull();
+      expect(
+        screen.queryByText(GROUP_CHAT_DETAILS.description ?? ""),
+      ).toBeNull();
     });
   });
 

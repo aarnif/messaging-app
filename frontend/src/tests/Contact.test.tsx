@@ -69,7 +69,7 @@ const waitForPageRender = async () => {
       screen.getByRole("heading", { name: contactDetails.name }),
     ).toBeDefined();
     expect(screen.getByText(`@${contactDetails.username}`)).toBeDefined();
-    expect(screen.getByText(contactDetails.about)).toBeDefined();
+    expect(screen.getByText(contactDetails.about ?? "")).toBeDefined();
     expect(screen.getByRole("button", { name: "Chat" })).toBeDefined();
   });
 };
