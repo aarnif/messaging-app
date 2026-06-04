@@ -9,6 +9,7 @@ import type {
   AllContactsByUserQueryVariables,
   ChangePasswordMutation,
   ChangePasswordMutationVariables,
+  Chat,
   ChatEditedSubscription,
   ChatEditedSubscriptionVariables,
   ChatItem,
@@ -257,26 +258,24 @@ const CHAT_MESSAGES: Message[] = [
   },
 ];
 
-export const GROUP_CHAT_DETAILS = {
+export const GROUP_CHAT_DETAILS: Chat = {
+  __typename: "Chat",
   id: "1",
   isGroupChat: true,
   name: "Test Chat 1",
   description: "This is a group chat.",
   avatar: null,
-  unreadCount: 0,
-  userId: USER_ONE_DETAILS.id,
   members: CHAT_MEMBERS,
   messages: CHAT_MESSAGES,
 };
 
-export const PRIVATE_CHAT_DETAILS = {
+export const PRIVATE_CHAT_DETAILS: Chat = {
+  __typename: "Chat",
   id: "1",
   isGroupChat: false,
   name: "User2",
   description: null,
   avatar: null,
-  unreadCount: 0,
-  userId: USER_ONE_DETAILS.id,
   members: CHAT_MEMBERS.slice(0, 2),
   messages: CHAT_MESSAGES.slice(0, 2),
 };
@@ -491,7 +490,7 @@ export const chatItemsMock: ChatItem[] = [
     isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: GROUP_CHAT_DETAILS.name,
     avatar: null,
-    unreadCount: GROUP_CHAT_DETAILS.unreadCount,
+    unreadCount: 0,
     members: GROUP_CHAT_DETAILS.members,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
@@ -1655,7 +1654,7 @@ export const chatItemUpdatedSubscription: MockLink.MockedResponse<
         isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
-        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
+        unreadCount: 0,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },
@@ -1678,7 +1677,7 @@ export const chatItemCreatedSubscription: MockLink.MockedResponse<
         isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
         name: GROUP_CHAT_DETAILS.name,
         avatar: GROUP_CHAT_DETAILS.avatar,
-        unreadCount: GROUP_CHAT_DETAILS.unreadCount,
+        unreadCount: 0,
         members: GROUP_CHAT_DETAILS.members,
         latestMessage: MESSAGE_DETAILS,
       },

@@ -23,17 +23,7 @@ export const ALL_CONTACTS_BY_USER =
 
 export const FIND_CHAT_BY_ID = gql(`query FindChatById($id: ID!) {
   findChatById(id: $id) {
-    id
-    isGroupChat
-    name
-    description
-    avatar
-    members {
-      ...ChatMemberInfo
-    }
-    messages {
-      ...MessageInfo
-    }
+    ...ChatInfo
   }
 }`);
 

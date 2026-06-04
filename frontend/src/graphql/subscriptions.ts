@@ -55,16 +55,6 @@ export const CHAT_ITEM_LEFT = gql(`
 export const CHAT_EDITED = gql(`
   subscription ChatEdited {
     chatEdited {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
 }`);

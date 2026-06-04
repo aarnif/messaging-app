@@ -67,3 +67,19 @@ export const CHAT_ITEM_INFO = gql(`
     }
   }
 `);
+
+export const CHAT_INFO = gql(`
+  fragment ChatInfo on Chat {
+    id
+    isGroupChat
+    name
+    description
+    avatar
+    members {
+      ...ChatMemberInfo
+    }
+    messages {
+      ...MessageInfo
+    }
+  }
+`);
