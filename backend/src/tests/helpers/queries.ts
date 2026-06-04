@@ -10,6 +10,17 @@ const USER_INFO = `
   }
 `;
 
+const CONTACT_INFO = `
+  fragment ContactInfo on Contact {
+    id
+    isBlocked
+    contactDetails {
+      ...UserInfo
+    }
+  }
+  ${USER_INFO}
+`;
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -45,40 +56,28 @@ export const ME = `
 export const ADD_CONTACT = `
   mutation AddContact($id: ID!) {
     addContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const ADD_CONTACTS = `
   mutation AddContacts($ids: [ID!]!) {
     addContacts(ids: $ids) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const REMOVE_CONTACT = `
   mutation RemoveContact($id: ID!) {
     removeContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const CREATE_CHAT = `
@@ -180,14 +179,10 @@ export const DELETE_CHAT = `
 export const TOGGLE_BLOCK_CONTACT = `
   mutation ToggleBlockContact($id: ID!) {
     toggleBlockContact(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const SEND_MESSAGE = `
@@ -369,27 +364,19 @@ export const IS_BLOCKED_BY_USER = `
 export const ALL_CONTACTS_BY_USER = `
   query AllContactsByUser($search: String) {
     allContactsByUser(search: $search) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
   query ContactsWithoutPrivateChat($search: String) {
     contactsWithoutPrivateChat(search: $search) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const ALL_CHATS_BY_USER = `
@@ -430,14 +417,10 @@ export const ALL_CHATS_BY_USER = `
 export const FIND_CONTACT_BY_ID = `
   query FindContactById($id: ID!) {
     findContactById(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
@@ -473,14 +456,10 @@ export const CHANGE_PASSWORD = `
 export const FIND_CONTACT_BY_USER_ID = `
   query FindContactByUserId($id: ID!) {
     findContactByUserId(id: $id) {
-      id
-      isBlocked
-      contactDetails {
-        ...UserInfo
-      }
+      ...ContactInfo
     }
   }
-  ${USER_INFO}
+  ${CONTACT_INFO}
 `;
 
 export const MARK_CHAT_AS_READ = `
