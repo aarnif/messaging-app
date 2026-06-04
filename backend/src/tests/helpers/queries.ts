@@ -1,3 +1,15 @@
+const USER_INFO = `
+  fragment UserInfo on User {
+    id
+    username
+    name
+    about
+    avatar
+    is24HourClock
+    isDarkMode
+  }
+`;
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -7,15 +19,10 @@ export const COUNT_DOCUMENTS = `
 export const CREATE_USER = `
   mutation CreateUser($input: CreateUserInput!) {
     createUser(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const LOGIN = `
@@ -29,15 +36,10 @@ export const LOGIN = `
 export const ME = `
   query Me {
     me {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const ADD_CONTACT = `
@@ -46,16 +48,11 @@ export const ADD_CONTACT = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const ADD_CONTACTS = `
@@ -64,16 +61,11 @@ export const ADD_CONTACTS = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const REMOVE_CONTACT = `
@@ -82,16 +74,11 @@ export const REMOVE_CONTACT = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const CREATE_CHAT = `
@@ -196,16 +183,11 @@ export const TOGGLE_BLOCK_CONTACT = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const SEND_MESSAGE = `
@@ -340,15 +322,10 @@ export const LEAVE_CHAT = `
 export const EDIT_PROFILE = `
   mutation EditProfile($input: EditProfileInput!) {
     editProfile(input: $input) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
 
 export const FIND_CHAT_BY_ID = `
@@ -395,16 +372,11 @@ export const ALL_CONTACTS_BY_USER = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
@@ -413,16 +385,11 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const ALL_CHATS_BY_USER = `
@@ -466,16 +433,11 @@ export const FIND_CONTACT_BY_ID = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
@@ -499,17 +461,14 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
   }
 `;
 
-export const CHANGE_PASSWORD = `mutation ChangePassword($input: ChangePasswordInput!) {
-  changePassword(input: $input) {
-    id
-    username
-    name
-    about
-    avatar
-    is24HourClock
-    isDarkMode
+export const CHANGE_PASSWORD = `
+  mutation ChangePassword($input: ChangePasswordInput!) {
+    changePassword(input: $input) {
+      ...UserInfo
+    }
   }
-}`;
+  ${USER_INFO}
+`;
 
 export const FIND_CONTACT_BY_USER_ID = `
   query FindContactByUserId($id: ID!) {
@@ -517,16 +476,11 @@ export const FIND_CONTACT_BY_USER_ID = `
       id
       isBlocked
       contactDetails {
-        id
-        username
-        name
-        about
-        avatar
-        is24HourClock
-        isDarkMode
+        ...UserInfo
       }
     }
   }
+  ${USER_INFO}
 `;
 
 export const MARK_CHAT_AS_READ = `
@@ -538,13 +492,8 @@ export const MARK_CHAT_AS_READ = `
 export const NON_CONTACT_USERS = `
   query NonContactUsers($search: String) {
     nonContactUsers(search: $search) {
-      id
-      username
-      name
-      about
-      avatar
-      is24HourClock
-      isDarkMode
+      ...UserInfo
     }
   }
+  ${USER_INFO}
 `;
