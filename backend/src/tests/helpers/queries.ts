@@ -21,6 +21,21 @@ const CONTACT_INFO = `
   ${USER_INFO}
 `;
 
+const CHAT_MEMBER_INFO = `
+  fragment ChatMemberInfo on ChatMember {
+    id
+    userId
+    username
+    name
+    about
+    avatar
+    isAdmin
+    is24HourClock
+    isDarkMode
+    unreadCount
+  }
+`;
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -89,13 +104,7 @@ export const CREATE_CHAT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -110,6 +119,7 @@ export const CREATE_CHAT = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const EDIT_CHAT = `
@@ -121,13 +131,7 @@ export const EDIT_CHAT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -142,6 +146,7 @@ export const EDIT_CHAT = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const DELETE_CHAT = `
@@ -153,13 +158,7 @@ export const DELETE_CHAT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -174,6 +173,7 @@ export const DELETE_CHAT = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const TOGGLE_BLOCK_CONTACT = `
@@ -194,13 +194,7 @@ export const SEND_MESSAGE = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -215,6 +209,7 @@ export const SEND_MESSAGE = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const EDIT_MESSAGE = `
@@ -226,13 +221,7 @@ export const EDIT_MESSAGE = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -247,6 +236,7 @@ export const EDIT_MESSAGE = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const DELETE_MESSAGE = `
@@ -258,13 +248,7 @@ export const DELETE_MESSAGE = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -280,6 +264,7 @@ export const DELETE_MESSAGE = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const LEAVE_CHAT = `
@@ -291,13 +276,7 @@ export const LEAVE_CHAT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -312,6 +291,7 @@ export const LEAVE_CHAT = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const EDIT_PROFILE = `
@@ -332,13 +312,7 @@ export const FIND_CHAT_BY_ID = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        isAdmin
-        unreadCount
+        ...ChatMemberInfo
       }
       messages {
         id
@@ -353,6 +327,7 @@ export const FIND_CHAT_BY_ID = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const IS_BLOCKED_BY_USER = `
@@ -388,16 +363,7 @@ export const ALL_CHATS_BY_USER = `
       avatar
       unreadCount
       members {
-        id
-        userId
-        username
-        name
-        about
-        avatar
-        isAdmin
-        is24HourClock
-        isDarkMode
-        unreadCount
+        ...ChatMemberInfo
       }
       latestMessage {
         id
@@ -412,6 +378,7 @@ export const ALL_CHATS_BY_USER = `
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const FIND_CONTACT_BY_ID = `
@@ -432,16 +399,11 @@ export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
       description
       avatar
       members {
-        id
-        userId
-        username
-        name
-        avatar
-        about
-        isAdmin
+        ...ChatMemberInfo
       }
     }
   }
+  ${CHAT_MEMBER_INFO}
 `;
 
 export const CHANGE_PASSWORD = `
