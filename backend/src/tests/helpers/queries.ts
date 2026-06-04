@@ -52,6 +52,24 @@ const MESSAGE_INFO = `
   ${USER_INFO}
 `;
 
+const CHAT_INFO = `
+  fragment ChatInfo on Chat {
+    id
+    isGroupChat
+    name
+    description
+    avatar
+    members {
+      ...ChatMemberInfo
+    }
+    messages {
+      ...MessageInfo
+    }
+  }
+  ${CHAT_MEMBER_INFO}
+  ${MESSAGE_INFO}
+`;
+
 export const COUNT_DOCUMENTS = `
   query CountDocuments {
     countDocuments
@@ -114,61 +132,28 @@ export const REMOVE_CONTACT = `
 export const CREATE_CHAT = `
   mutation CreateChat($input: CreateChatInput!) {
     createChat(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const EDIT_CHAT = `
   mutation EditChat($input: EditChatInput!) {
     editChat(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const DELETE_CHAT = `
   mutation DeleteChat($id: ID!) {
     deleteChat(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const TOGGLE_BLOCK_CONTACT = `
@@ -183,81 +168,37 @@ export const TOGGLE_BLOCK_CONTACT = `
 export const SEND_MESSAGE = `
   mutation SendMessage($input: SendMessageInput!) {
     sendMessage(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const EDIT_MESSAGE = `
   mutation EditMessage($input: EditMessageInput!) {
     editMessage(input: $input) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const DELETE_MESSAGE = `
   mutation DeleteMessage($id: ID!) {
     deleteMessage(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const LEAVE_CHAT = `
   mutation LeaveChat($id: ID!) {
     leaveChat(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const EDIT_PROFILE = `
@@ -272,21 +213,10 @@ export const EDIT_PROFILE = `
 export const FIND_CHAT_BY_ID = `
   query FindChatById($id: ID!) {
     findChatById(id: $id) {
-      id
-      isGroupChat
-      name
-      description
-      avatar
-      members {
-        ...ChatMemberInfo
-      }
-      messages {
-        ...MessageInfo
-      }
+      ...ChatInfo
     }
   }
-  ${CHAT_MEMBER_INFO}
-  ${MESSAGE_INFO}
+  ${CHAT_INFO}
 `;
 
 export const IS_BLOCKED_BY_USER = `
