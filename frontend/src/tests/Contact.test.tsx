@@ -14,6 +14,7 @@ import {
   PRIVATE_CHAT_DETAILS,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal } from "./helpers/funcs";
+import { mockMatch, mockNavigate, mockUseOutletContext } from "./helpers/mocks";
 import {
   findContactById,
   findContactByIdBlocked,
@@ -23,16 +24,13 @@ import {
   isBlockedByUserFalse,
   isBlockedByUserNull,
   isBlockedByUserTrue,
-  mockMatch,
-  mockNavigate,
-  mockUseOutletContext,
   removeContact,
   removeContactError,
   toggleBlockContactFalse,
   toggleBlockContactFalseError,
   toggleBlockContactTrue,
   toggleBlockContactTrueError,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

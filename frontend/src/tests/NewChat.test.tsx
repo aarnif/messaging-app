@@ -14,15 +14,14 @@ import {
   USER_ONE_DETAILS,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
+import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
 import {
   createChat,
   createChatError,
   findChatByIdGroup,
   findChatByIdNull,
-  mockNavigate,
-  mockUseOutletContext,
   sendMessage,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

@@ -19,6 +19,7 @@ import {
   assertErrorMessageAndDismissal,
   selectContacts,
 } from "./helpers/funcs";
+import { mockChatsSearchWord, mockNavigate } from "./helpers/mocks";
 import {
   allChatsByUser,
   allChatsByUserEmpty,
@@ -33,9 +34,7 @@ import {
   isBlockedByUserFalse,
   isBlockedByUserTrue,
   meMock,
-  mockChatsSearchWord,
-  mockNavigate,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

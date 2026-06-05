@@ -21,6 +21,12 @@ import {
   sendNewMessage,
 } from "./helpers/funcs";
 import {
+  mockChatsSearchWord,
+  mockMatch,
+  mockNavigate,
+  mockUseOutletContext,
+} from "./helpers/mocks";
+import {
   allChatsByUser,
   allContactsByUser,
   deleteChat,
@@ -46,14 +52,10 @@ import {
   messageDeletedSubscription,
   messageEditedSubscription,
   messageSentSubscription,
-  mockChatsSearchWord,
-  mockMatch,
-  mockNavigate,
-  mockUseOutletContext,
   privateChatEditedSubscription,
   sendMessage,
   sendMessageError,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

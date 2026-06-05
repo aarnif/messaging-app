@@ -9,6 +9,7 @@ import {
   GROUP_CHAT_DETAILS,
   LOGIN_TOKEN,
 } from "./helpers/data";
+import { windowMockContent } from "./helpers/mocks";
 import {
   allChatsByUser,
   allContactsByUser,
@@ -26,8 +27,7 @@ import {
   messageDeletedSubscription,
   messageEditedSubscription,
   messageSentSubscription,
-  windowMockContent,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 Element.prototype.scrollIntoView = vi.fn();
 

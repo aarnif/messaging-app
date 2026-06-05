@@ -14,14 +14,12 @@ import {
   mismatchedPasswords,
 } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
+import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
 import {
   createUserErrorMock,
   createUserMock,
   loginMock,
-  mockClient,
-  mockNavigate,
-  mockSetToken,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

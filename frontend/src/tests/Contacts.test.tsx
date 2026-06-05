@@ -24,7 +24,7 @@ import {
   nonContactUsers,
   nonContactUsersEmpty,
   nonContactUsersMock,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 const contact1username = nonContactUsersMock[0].username;
 const contact2username = nonContactUsersMock[1].username;
