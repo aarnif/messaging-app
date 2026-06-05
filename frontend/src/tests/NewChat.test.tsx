@@ -6,20 +6,22 @@ import { MemoryRouter } from "react-router";
 import { beforeEach, describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import NewChat from "../pages/NewChat";
+import {
+  currentChatItemAdminMock,
+  MESSAGE_DETAILS,
+  NewGroupChatDetails,
+  NewPrivateChatDetails,
+  USER_ONE_DETAILS,
+} from "./helpers/data";
 import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
 import {
   createChat,
   createChatError,
-  currentChatItemAdminMock,
   findChatByIdGroup,
   findChatByIdNull,
-  MESSAGE_DETAILS,
   mockNavigate,
   mockUseOutletContext,
-  NewGroupChatDetails,
-  NewPrivateChatDetails,
   sendMessage,
-  USER_ONE_DETAILS,
 } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {

@@ -6,16 +6,18 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SignUp from "../pages/SignUp";
-import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   LOGIN_TOKEN,
-  createUserErrorMock,
   createUserInput,
-  createUserMock,
   invalidPassword,
   invalidUsername,
-  loginMock,
   mismatchedPasswords,
+} from "./helpers/data";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
+import {
+  createUserErrorMock,
+  createUserMock,
+  loginMock,
   mockClient,
   mockNavigate,
   mockSetToken,

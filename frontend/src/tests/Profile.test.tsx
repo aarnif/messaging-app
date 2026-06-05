@@ -5,11 +5,11 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Profile from "../pages/Settings/Profile";
+import { currentChatItemAdminMock } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   changePassword,
   changePasswordError,
-  currentChatItemAdminMock,
   editProfile24h,
   editProfileError,
   editProfileUpdate,

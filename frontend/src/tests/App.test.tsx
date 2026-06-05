@@ -5,19 +5,21 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import App from "../App";
 import {
+  CONTACT_DETAILS,
+  GROUP_CHAT_DETAILS,
+  LOGIN_TOKEN,
+} from "./helpers/data";
+import {
   allChatsByUser,
   allContactsByUser,
   chatItemCreatedSubscription,
   chatItemDeletedSubscription,
   chatItemLeftSubscription,
   chatItemUpdatedSubscription,
-  CONTACT_DETAILS,
   findChatByIdGroup,
   findContactById,
-  GROUP_CHAT_DETAILS,
   groupChatEditedSubscription,
   isBlockedByUserFalse,
-  LOGIN_TOKEN,
   markChatAsRead,
   meMock,
   meNullMock,

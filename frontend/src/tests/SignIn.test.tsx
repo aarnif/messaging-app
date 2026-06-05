@@ -5,10 +5,10 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SignIn from "../pages/SignIn";
+import { LOGIN_TOKEN } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   invalidLoginPassword,
-  LOGIN_TOKEN,
   loginErrorMock,
   loginInput,
   loginMock,

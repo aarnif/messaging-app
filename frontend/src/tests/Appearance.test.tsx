@@ -6,9 +6,9 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Appearance from "../pages/Settings/Appearance";
+import { currentChatItemAdminMock } from "./helpers/data";
 import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
-  currentChatItemAdminMock,
   editProfile12h,
   editProfile12hError,
   editProfile24h,

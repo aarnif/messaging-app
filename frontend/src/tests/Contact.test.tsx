@@ -7,10 +7,14 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Contact from "../pages/Contact";
-import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   CONTACT_DETAILS,
   currentChatItemAdminMock,
+  NewPrivateChatDetails,
+  PRIVATE_CHAT_DETAILS,
+} from "./helpers/data";
+import { assertErrorModalAndDismissal } from "./helpers/funcs";
+import {
   findContactById,
   findContactByIdBlocked,
   findContactByIdNull,
@@ -22,8 +26,6 @@ import {
   mockMatch,
   mockNavigate,
   mockUseOutletContext,
-  NewPrivateChatDetails,
-  PRIVATE_CHAT_DETAILS,
   removeContact,
   removeContactError,
   toggleBlockContactFalse,

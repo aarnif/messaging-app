@@ -8,14 +8,18 @@ import { describe, expect, test, vi } from "vitest";
 import { formatDisplayDate, truncateText } from "../helpers";
 import Chats from "../pages/Chats";
 import {
+  NewGroupChatDetails,
+  NewPrivateChatDetails,
+  chatItemsMock,
+  userContactsMock,
+} from "./helpers/data";
+import {
   assertContactsDisplayed,
   assertContactsSelected,
   assertErrorMessageAndDismissal,
   selectContacts,
 } from "./helpers/funcs";
 import {
-  NewGroupChatDetails,
-  NewPrivateChatDetails,
   allChatsByUser,
   allChatsByUserEmpty,
   allContactsByUser,
@@ -24,7 +28,6 @@ import {
   chatItemDeletedSubscription,
   chatItemLeftSubscription,
   chatItemUpdatedSubscription,
-  chatItemsMock,
   contactsWithoutPrivateChats,
   contactsWithoutPrivateChatsEmpty,
   isBlockedByUserFalse,
@@ -32,7 +35,6 @@ import {
   meMock,
   mockChatsSearchWord,
   mockNavigate,
-  userContactsMock,
 } from "./helpers/mocks";
 
 vi.mock("react-router", async () => {

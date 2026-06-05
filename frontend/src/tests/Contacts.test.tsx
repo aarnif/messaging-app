@@ -7,6 +7,7 @@ import { describe, expect, test } from "vitest";
 import type { User } from "../__generated__/graphql";
 import NotificationProvider from "../components/NotificationProvider";
 import Contacts from "../pages/Contacts";
+import { userContactsMock } from "./helpers/data";
 import {
   assertContactsDisplayed,
   assertContactsSelected,
@@ -23,7 +24,6 @@ import {
   nonContactUsers,
   nonContactUsersEmpty,
   nonContactUsersMock,
-  userContactsMock,
 } from "./helpers/mocks";
 
 const contact1username = nonContactUsersMock[0].username;
