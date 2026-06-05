@@ -5,17 +5,16 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Profile from "../pages/Settings/Profile";
+import { currentChatItemAdminMock } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
+import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
 import {
   changePassword,
   changePasswordError,
-  currentChatItemAdminMock,
   editProfile24h,
   editProfileError,
   editProfileUpdate,
-  mockNavigate,
-  mockUseOutletContext,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

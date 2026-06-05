@@ -6,20 +6,20 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SignUp from "../pages/SignUp";
-import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import {
   LOGIN_TOKEN,
-  createUserErrorMock,
   createUserInput,
-  createUserMock,
   invalidPassword,
   invalidUsername,
-  loginMock,
   mismatchedPasswords,
-  mockClient,
-  mockNavigate,
-  mockSetToken,
-} from "./helpers/mocks";
+} from "./helpers/data";
+import { assertErrorMessageAndDismissal } from "./helpers/funcs";
+import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
+import {
+  createUserErrorMock,
+  createUserMock,
+  loginMock,
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

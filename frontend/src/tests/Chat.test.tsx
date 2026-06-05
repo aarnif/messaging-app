@@ -9,15 +9,26 @@ import NotificationProvider from "../components/NotificationProvider";
 import { formatDisplayDate } from "../helpers";
 import Chat from "../pages/Chat";
 import {
+  currentChatItemAdminMock,
+  currentChatItemMemberMock,
+  GROUP_CHAT_DETAILS,
+  MESSAGE_DETAILS,
+  USER_ONE_DETAILS,
+} from "./helpers/data";
+import {
   assertErrorMessageAndDismissal,
   assertErrorModalAndDismissal,
   sendNewMessage,
 } from "./helpers/funcs";
 import {
+  mockChatsSearchWord,
+  mockMatch,
+  mockNavigate,
+  mockUseOutletContext,
+} from "./helpers/mocks";
+import {
   allChatsByUser,
   allContactsByUser,
-  currentChatItemAdminMock,
-  currentChatItemMemberMock,
   deleteChat,
   deleteChatError,
   deleteMessage,
@@ -32,26 +43,19 @@ import {
   findChatByIdNull,
   findChatByIdPrivate,
   findContactByUserId,
-  GROUP_CHAT_DETAILS,
   groupChatEditedSubscription,
   isBlockedByUserTrue,
   leaveChat,
   leaveChatError,
   markChatAsRead,
   markChatAsReadError,
-  MESSAGE_DETAILS,
   messageDeletedSubscription,
   messageEditedSubscription,
   messageSentSubscription,
-  mockChatsSearchWord,
-  mockMatch,
-  mockNavigate,
-  mockUseOutletContext,
   privateChatEditedSubscription,
   sendMessage,
   sendMessageError,
-  USER_ONE_DETAILS,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

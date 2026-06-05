@@ -6,19 +6,21 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Appearance from "../pages/Settings/Appearance";
+import { currentChatItemAdminMock } from "./helpers/data";
 import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
-  currentChatItemAdminMock,
+  mockNavigate,
+  mockUseOutletContext,
+  windowMockContent,
+} from "./helpers/mocks";
+import {
   editProfile12h,
   editProfile12hError,
   editProfile24h,
   editProfileDarkModeOff,
   editProfileDarkModeOn,
   editProfileDarkModeOnError,
-  mockNavigate,
-  mockUseOutletContext,
-  windowMockContent,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");

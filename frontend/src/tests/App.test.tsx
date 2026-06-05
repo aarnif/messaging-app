@@ -5,27 +5,29 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import App from "../App";
 import {
+  CONTACT_DETAILS,
+  GROUP_CHAT_DETAILS,
+  LOGIN_TOKEN,
+} from "./helpers/data";
+import { windowMockContent } from "./helpers/mocks";
+import {
   allChatsByUser,
   allContactsByUser,
   chatItemCreatedSubscription,
   chatItemDeletedSubscription,
   chatItemLeftSubscription,
   chatItemUpdatedSubscription,
-  CONTACT_DETAILS,
   findChatByIdGroup,
   findContactById,
-  GROUP_CHAT_DETAILS,
   groupChatEditedSubscription,
   isBlockedByUserFalse,
-  LOGIN_TOKEN,
   markChatAsRead,
   meMock,
   meNullMock,
   messageDeletedSubscription,
   messageEditedSubscription,
   messageSentSubscription,
-  windowMockContent,
-} from "./helpers/mocks";
+} from "./helpers/responses";
 
 Element.prototype.scrollIntoView = vi.fn();
 

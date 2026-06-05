@@ -3,7 +3,8 @@ import { render, screen } from "@testing-library/react";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Settings from "../pages/Settings";
-import { meMock, mockNavigate } from "./helpers/mocks";
+import { mockNavigate } from "./helpers/mocks";
+import { meMock } from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
