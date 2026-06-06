@@ -82,40 +82,41 @@ const CHAT_MEMBERS = [
   createChatMember(USER_THREE, false),
 ];
 
-const CHAT_MESSAGES: Message[] = [
-  {
-    __typename: "Message",
-    id: "1",
-    chatId: "1",
-    isNotification: false,
-    isDeleted: false,
-    sender: USER_ONE,
-    content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
-    createdAt: 1759094100000,
-    updatedAt: 1759094100000,
-  },
-  {
-    __typename: "Message",
-    id: "2",
-    chatId: "1",
-    isNotification: false,
-    isDeleted: false,
-    sender: USER_TWO,
-    content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
-    createdAt: 1759094100000 + 86400000,
-    updatedAt: 1759094100000 + 86400000,
-  },
-  {
-    __typename: "Message",
-    id: "3",
-    chatId: "1",
-    isNotification: false,
-    isDeleted: false,
-    sender: USER_THREE,
-    content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
-    createdAt: 1759094100000 + 2 * 86400000,
-    updatedAt: 1759094100000 + 2 * 86400000,
-  },
+const createMessage = (
+  id: string,
+  sender: User,
+  content: string,
+  createdAtOffset: number = 0,
+): Message => ({
+  __typename: "Message",
+  id,
+  chatId: "1",
+  isNotification: false,
+  isDeleted: false,
+  sender,
+  content,
+  createdAt: 1759094100000 + createdAtOffset,
+  updatedAt: 1759094100000 + createdAtOffset,
+});
+
+const CHAT_MESSAGES = [
+  createMessage(
+    "1",
+    USER_ONE,
+    `This is a chat message from ${USER_ONE_DETAILS.name}`,
+  ),
+  createMessage(
+    "2",
+    USER_TWO,
+    `This is a chat message from ${USER_TWO_DETAILS.name}`,
+    86400000,
+  ),
+  createMessage(
+    "3",
+    USER_THREE,
+    `This is a chat message from ${USER_THREE_DETAILS.name}`,
+    2 * 86400000,
+  ),
 ];
 
 export const GROUP_CHAT_DETAILS: Chat = {
@@ -140,17 +141,12 @@ export const PRIVATE_CHAT_DETAILS: Chat = {
   messages: CHAT_MESSAGES.slice(0, 2),
 };
 
-export const MESSAGE_DETAILS: Message = {
-  __typename: "Message",
-  id: "4",
-  chatId: GROUP_CHAT_DETAILS.id,
-  isNotification: false,
-  isDeleted: false,
-  sender: USER_ONE,
-  content: "This is a new message.",
-  createdAt: 1759094100000 + 3 * 86400000,
-  updatedAt: 1759094100000 + 3 * 86400000,
-};
+export const MESSAGE_DETAILS = createMessage(
+  "4",
+  USER_ONE,
+  "This is a new message.",
+  3 * 86400000,
+);
 
 export const CONTACT_DETAILS: Contact = {
   __typename: "Contact",
