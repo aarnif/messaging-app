@@ -328,3 +328,59 @@ export const NewGroupChatDetails = {
   ],
   avatar: null,
 };
+
+export const nonContactUsersMock: User[] = [
+  {
+    __typename: "User",
+    id: USER_FOUR_DETAILS.id,
+    username: USER_FOUR_DETAILS.username,
+    name: USER_FOUR_DETAILS.name,
+    about: "Hi! My name is User 4!",
+    avatar: null,
+    is24HourClock: true,
+    isDarkMode: false,
+  },
+  {
+    __typename: "User",
+    id: USER_FIVE_DETAILS.id,
+    username: USER_FIVE_DETAILS.username,
+    name: USER_FIVE_DETAILS.name,
+    about: "Hi! My name is User 5!",
+    avatar: null,
+    is24HourClock: true,
+    isDarkMode: false,
+  },
+];
+
+export const ADDED_CONTACTS: Contact[] = [
+  {
+    __typename: "Contact",
+    id: "2",
+    isBlocked: false,
+    contactDetails: {
+      __typename: "User",
+      id: USER_FOUR_DETAILS.id,
+      username: USER_FOUR_DETAILS.username,
+      name: USER_FOUR_DETAILS.name,
+      about: "Hi! My name is User 4!",
+      avatar: null,
+      is24HourClock: true,
+      isDarkMode: false,
+    },
+  },
+  {
+    __typename: "Contact",
+    id: "3",
+    isBlocked: false,
+    contactDetails: {
+      __typename: "User",
+      id: USER_FIVE_DETAILS.id,
+      username: USER_FIVE_DETAILS.username,
+      name: USER_FIVE_DETAILS.name,
+      about: "Hi! My name is User 5!",
+      avatar: null,
+      is24HourClock: true,
+      isDarkMode: false,
+    },
+  },
+];

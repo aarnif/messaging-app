@@ -18,7 +18,6 @@ import type {
   ChatItemLeftSubscriptionVariables,
   ChatItemUpdatedSubscription,
   ChatItemUpdatedSubscriptionVariables,
-  Contact,
   ContactsWithoutPrivateChatQuery,
   ContactsWithoutPrivateChatQueryVariables,
   CreateChatMutation,
@@ -67,7 +66,6 @@ import type {
   SendMessageMutationVariables,
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables,
-  User,
 } from "../../__generated__/graphql";
 import {
   ADD_CONTACTS,
@@ -109,18 +107,18 @@ import {
   MESSAGE_SENT,
 } from "../../graphql/subscriptions";
 import {
+  ADDED_CONTACTS,
+  chatItemsMock,
   CONTACT_DETAILS,
+  createUserInput,
+  currentChatItemAdminMock,
   GROUP_CHAT_DETAILS,
   LOGIN_TOKEN,
   MESSAGE_DETAILS,
+  nonContactUsersMock,
   PRIVATE_CHAT_DETAILS,
-  USER_FIVE_DETAILS,
-  USER_FOUR_DETAILS,
   USER_ONE_DETAILS,
   USER_TWO_DETAILS,
-  chatItemsMock,
-  createUserInput,
-  currentChatItemAdminMock,
   userContactsMock,
 } from "./data";
 
@@ -730,29 +728,6 @@ export const isBlockedByUserNull: MockLink.MockedResponse<
   },
 };
 
-export const nonContactUsersMock: User[] = [
-  {
-    __typename: "User",
-    id: USER_FOUR_DETAILS.id,
-    username: USER_FOUR_DETAILS.username,
-    name: USER_FOUR_DETAILS.name,
-    about: "Hi! My name is User 4!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
-  {
-    __typename: "User",
-    id: USER_FIVE_DETAILS.id,
-    username: USER_FIVE_DETAILS.username,
-    name: USER_FIVE_DETAILS.name,
-    about: "Hi! My name is User 5!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
-];
-
 export const nonContactUsers: MockLink.MockedResponse<
   NonContactUsersQuery,
   NonContactUsersQueryVariables
@@ -786,39 +761,6 @@ export const nonContactUsersEmpty: MockLink.MockedResponse<
     },
   },
 };
-
-export const ADDED_CONTACTS: Contact[] = [
-  {
-    __typename: "Contact",
-    id: "2",
-    isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_FOUR_DETAILS.id,
-      username: USER_FOUR_DETAILS.username,
-      name: USER_FOUR_DETAILS.name,
-      about: "Hi! My name is User 4!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
-  },
-  {
-    __typename: "Contact",
-    id: "3",
-    isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_FIVE_DETAILS.id,
-      username: USER_FIVE_DETAILS.username,
-      name: USER_FIVE_DETAILS.name,
-      about: "Hi! My name is User 5!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
-  },
-];
 
 export const addContacts: MockLink.MockedResponse<
   AddContactsMutation,
