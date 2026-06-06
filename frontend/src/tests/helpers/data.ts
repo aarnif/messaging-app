@@ -68,28 +68,18 @@ export const USER_THREE = createUser(USER_THREE_DETAILS);
 export const USER_FOUR = createUser(USER_FOUR_DETAILS);
 export const USER_FIVE = createUser(USER_FIVE_DETAILS);
 
-const CHAT_MEMBERS: ChatMember[] = [
-  {
-    ...USER_ONE,
-    __typename: "ChatMember",
-    userId: USER_ONE.id,
-    isAdmin: true,
-    unreadCount: 0,
-  },
-  {
-    ...USER_TWO,
-    __typename: "ChatMember",
-    userId: USER_TWO.id,
-    isAdmin: false,
-    unreadCount: 0,
-  },
-  {
-    ...USER_THREE,
-    __typename: "ChatMember",
-    userId: USER_THREE.id,
-    isAdmin: false,
-    unreadCount: 0,
-  },
+const createChatMember = (user: User, isAdmin: boolean): ChatMember => ({
+  ...user,
+  __typename: "ChatMember",
+  userId: user.id,
+  isAdmin: isAdmin,
+  unreadCount: 0,
+});
+
+const CHAT_MEMBERS = [
+  createChatMember(USER_ONE, true),
+  createChatMember(USER_TWO, false),
+  createChatMember(USER_THREE, false),
 ];
 
 const CHAT_MESSAGES: Message[] = [
