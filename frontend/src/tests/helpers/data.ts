@@ -148,12 +148,18 @@ export const MESSAGE_DETAILS = createMessage(
   3 * 86400000,
 );
 
-export const CONTACT_DETAILS: Contact = {
+const createContact = (
+  id: string,
+  user: User,
+  isBlocked: boolean = false,
+): Contact => ({
   __typename: "Contact",
-  id: "1",
-  isBlocked: false,
-  contactDetails: USER_TWO,
-};
+  id,
+  isBlocked,
+  contactDetails: user,
+});
+
+export const CONTACT_DETAILS = createContact("1", USER_TWO);
 
 export const invalidUsername = {
   ...USER_ONE_DETAILS,
@@ -206,19 +212,9 @@ export const chatItemsMock: ChatItem[] = [
   },
 ];
 
-export const userContactsMock: Contact[] = [
-  {
-    __typename: "Contact",
-    id: "1",
-    isBlocked: false,
-    contactDetails: USER_TWO,
-  },
-  {
-    __typename: "Contact",
-    id: "2",
-    isBlocked: false,
-    contactDetails: USER_THREE,
-  },
+export const userContactsMock = [
+  createContact("1", USER_TWO),
+  createContact("2", USER_THREE),
 ];
 
 export const NewPrivateChatDetails = {
@@ -241,17 +237,7 @@ export const NewGroupChatDetails = {
 
 export const nonContactUsersMock: User[] = [USER_FOUR, USER_FIVE];
 
-export const ADDED_CONTACTS: Contact[] = [
-  {
-    __typename: "Contact",
-    id: "2",
-    isBlocked: false,
-    contactDetails: USER_FOUR,
-  },
-  {
-    __typename: "Contact",
-    id: "3",
-    isBlocked: false,
-    contactDetails: USER_FIVE,
-  },
+export const ADDED_CONTACTS = [
+  createContact("2", USER_FOUR),
+  createContact("3", USER_FIVE),
 ];
