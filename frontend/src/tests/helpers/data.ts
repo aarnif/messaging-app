@@ -45,43 +45,48 @@ export const USER_FIVE_DETAILS = {
   username: "user5",
 };
 
+const createUser = (userDetails: {
+  id: string;
+  name: string;
+  username: string;
+  password: string;
+  confirmPassword: string;
+}): User => ({
+  __typename: "User",
+  id: userDetails.id,
+  username: userDetails.username,
+  name: userDetails.name,
+  about: `Hi! My name is User ${userDetails.id}`,
+  avatar: null,
+  is24HourClock: true,
+  isDarkMode: false,
+});
+
+export const USER_ONE = createUser(USER_ONE_DETAILS);
+export const USER_TWO = createUser(USER_TWO_DETAILS);
+export const USER_THREE = createUser(USER_THREE_DETAILS);
+export const USER_FOUR = createUser(USER_FOUR_DETAILS);
+export const USER_FIVE = createUser(USER_FIVE_DETAILS);
+
 const CHAT_MEMBERS: ChatMember[] = [
   {
+    ...USER_ONE,
     __typename: "ChatMember",
-    id: USER_ONE_DETAILS.id,
-    userId: USER_ONE_DETAILS.id,
-    username: USER_ONE_DETAILS.username,
-    name: USER_ONE_DETAILS.name,
-    about: "Hi! My name is User 1!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
+    userId: USER_ONE.id,
     isAdmin: true,
     unreadCount: 0,
   },
   {
+    ...USER_TWO,
     __typename: "ChatMember",
-    id: USER_TWO_DETAILS.id,
-    userId: USER_TWO_DETAILS.id,
-    username: USER_TWO_DETAILS.username,
-    name: USER_TWO_DETAILS.name,
-    about: "Hi! My name is User 2!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
+    userId: USER_TWO.id,
     isAdmin: false,
     unreadCount: 0,
   },
   {
+    ...USER_THREE,
     __typename: "ChatMember",
-    id: USER_THREE_DETAILS.id,
-    userId: USER_THREE_DETAILS.id,
-    username: USER_THREE_DETAILS.username,
-    name: USER_THREE_DETAILS.name,
-    about: "Hi! My name is User 3!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
+    userId: USER_THREE.id,
     isAdmin: false,
     unreadCount: 0,
   },
@@ -94,16 +99,7 @@ const CHAT_MESSAGES: Message[] = [
     chatId: "1",
     isNotification: false,
     isDeleted: false,
-    sender: {
-      __typename: "User",
-      id: USER_ONE_DETAILS.id,
-      username: USER_ONE_DETAILS.username,
-      name: USER_ONE_DETAILS.name,
-      about: "Hi! My name is User 1!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    sender: USER_ONE,
     content: `This is a chat message from ${USER_ONE_DETAILS.name}`,
     createdAt: 1759094100000,
     updatedAt: 1759094100000,
@@ -114,16 +110,7 @@ const CHAT_MESSAGES: Message[] = [
     chatId: "1",
     isNotification: false,
     isDeleted: false,
-    sender: {
-      __typename: "User",
-      id: USER_TWO_DETAILS.id,
-      username: USER_TWO_DETAILS.username,
-      name: USER_TWO_DETAILS.name,
-      about: "Hi! My name is User 2!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    sender: USER_TWO,
     content: `This is a chat message from ${USER_TWO_DETAILS.name}`,
     createdAt: 1759094100000 + 86400000,
     updatedAt: 1759094100000 + 86400000,
@@ -134,16 +121,7 @@ const CHAT_MESSAGES: Message[] = [
     chatId: "1",
     isNotification: false,
     isDeleted: false,
-    sender: {
-      __typename: "User",
-      id: USER_THREE_DETAILS.id,
-      username: USER_THREE_DETAILS.username,
-      name: USER_THREE_DETAILS.name,
-      about: "Hi! My name is User 3!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    sender: USER_THREE,
     content: `This is a chat message from ${USER_THREE_DETAILS.name}`,
     createdAt: 1759094100000 + 2 * 86400000,
     updatedAt: 1759094100000 + 2 * 86400000,
@@ -178,16 +156,7 @@ export const MESSAGE_DETAILS: Message = {
   chatId: GROUP_CHAT_DETAILS.id,
   isNotification: false,
   isDeleted: false,
-  sender: {
-    __typename: "User",
-    id: USER_ONE_DETAILS.id,
-    username: USER_ONE_DETAILS.username,
-    name: USER_ONE_DETAILS.name,
-    about: "Hi! My name is User 1!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
+  sender: USER_ONE,
   content: "This is a new message.",
   createdAt: 1759094100000 + 3 * 86400000,
   updatedAt: 1759094100000 + 3 * 86400000,
@@ -197,16 +166,7 @@ export const CONTACT_DETAILS: Contact = {
   __typename: "Contact",
   id: "1",
   isBlocked: false,
-  contactDetails: {
-    __typename: "User",
-    id: USER_TWO_DETAILS.id,
-    username: USER_TWO_DETAILS.username,
-    name: USER_TWO_DETAILS.name,
-    about: "Hi! My name is User 2!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
+  contactDetails: USER_TWO,
 };
 
 export const invalidUsername = {
@@ -225,27 +185,9 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-export const currentChatItemAdminMock: User = {
-  __typename: "User",
-  id: USER_ONE_DETAILS.id,
-  username: USER_ONE_DETAILS.username,
-  name: USER_ONE_DETAILS.name,
-  about: "Hi! My name is User 1!",
-  avatar: null,
-  is24HourClock: true,
-  isDarkMode: false,
-};
+export const currentChatItemAdminMock = USER_ONE;
 
-export const currentChatItemMemberMock: User = {
-  __typename: "User",
-  id: USER_TWO_DETAILS.id,
-  username: USER_TWO_DETAILS.username,
-  name: USER_TWO_DETAILS.name,
-  about: "Hi! My name is User 2!",
-  avatar: null,
-  is24HourClock: true,
-  isDarkMode: false,
-};
+export const currentChatItemMemberMock = USER_TWO;
 
 export const createUserInput = {
   username: USER_ONE_DETAILS.username,
@@ -283,31 +225,13 @@ export const userContactsMock: Contact[] = [
     __typename: "Contact",
     id: "1",
     isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_TWO_DETAILS.id,
-      username: USER_TWO_DETAILS.username,
-      name: USER_TWO_DETAILS.name,
-      about: "Hi! My name is User 2!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    contactDetails: USER_TWO,
   },
   {
     __typename: "Contact",
     id: "2",
     isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_THREE_DETAILS.id,
-      username: USER_THREE_DETAILS.username,
-      name: USER_THREE_DETAILS.name,
-      about: "Hi! My name is User 3!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    contactDetails: USER_THREE,
   },
 ];
 
@@ -329,58 +253,19 @@ export const NewGroupChatDetails = {
   avatar: null,
 };
 
-export const nonContactUsersMock: User[] = [
-  {
-    __typename: "User",
-    id: USER_FOUR_DETAILS.id,
-    username: USER_FOUR_DETAILS.username,
-    name: USER_FOUR_DETAILS.name,
-    about: "Hi! My name is User 4!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
-  {
-    __typename: "User",
-    id: USER_FIVE_DETAILS.id,
-    username: USER_FIVE_DETAILS.username,
-    name: USER_FIVE_DETAILS.name,
-    about: "Hi! My name is User 5!",
-    avatar: null,
-    is24HourClock: true,
-    isDarkMode: false,
-  },
-];
+export const nonContactUsersMock: User[] = [USER_FOUR, USER_FIVE];
 
 export const ADDED_CONTACTS: Contact[] = [
   {
     __typename: "Contact",
     id: "2",
     isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_FOUR_DETAILS.id,
-      username: USER_FOUR_DETAILS.username,
-      name: USER_FOUR_DETAILS.name,
-      about: "Hi! My name is User 4!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    contactDetails: USER_FOUR,
   },
   {
     __typename: "Contact",
     id: "3",
     isBlocked: false,
-    contactDetails: {
-      __typename: "User",
-      id: USER_FIVE_DETAILS.id,
-      username: USER_FIVE_DETAILS.username,
-      name: USER_FIVE_DETAILS.name,
-      about: "Hi! My name is User 5!",
-      avatar: null,
-      is24HourClock: true,
-      isDarkMode: false,
-    },
+    contactDetails: USER_FIVE,
   },
 ];
