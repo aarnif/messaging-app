@@ -373,7 +373,7 @@ export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
               id: USER_ONE_DETAILS.id,
               username: USER_ONE_DETAILS.username,
               name: USER_ONE_DETAILS.name,
-              about: null,
+              about: "Hi! My name is User 1!",
               avatar: null,
               is24HourClock: true,
               isDarkMode: false,
