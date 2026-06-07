@@ -364,15 +364,9 @@ export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
         messages: [
           ...GROUP_CHAT_DETAILS.messages,
           {
-            __typename: "Message",
-            id: "4",
-            chatId: "1",
+            ...MESSAGE_DETAILS,
             isNotification: true,
-            isDeleted: false,
-            sender: USER_ONE,
             content: `${USER_ONE.name} created the group`,
-            createdAt: 1759094100000 + 3 * 86400000,
-            updatedAt: 1759094100000 + 3 * 86400000,
           },
         ],
       },
