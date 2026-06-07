@@ -113,11 +113,13 @@ import {
   createUserInput,
   currentChatItemAdminMock,
   GROUP_CHAT_DETAILS,
+  invalidLoginPassword,
   LOGIN_TOKEN,
+  loginInput,
   MESSAGE_DETAILS,
   nonContactUsersMock,
   PRIVATE_CHAT_DETAILS,
-  USER_ONE_DETAILS,
+  USER_ONE,
   USER_TWO_DETAILS,
   userContactsMock,
 } from "./data";
@@ -180,13 +182,6 @@ export const createUserErrorMock: MockLink.MockedResponse<
     data: null,
   },
 };
-
-export const loginInput = {
-  username: USER_ONE_DETAILS.username,
-  password: USER_ONE_DETAILS.password,
-};
-
-export const invalidLoginPassword = loginInput.password.slice(0, -1);
 
 export const loginMock: MockLink.MockedResponse<
   LoginMutation,
@@ -363,24 +358,9 @@ export const findChatByIdGroupWithNotification: MockLink.MockedResponse<
         messages: [
           ...GROUP_CHAT_DETAILS.messages,
           {
-            __typename: "Message",
-            id: "4",
-            chatId: "1",
+            ...MESSAGE_DETAILS,
             isNotification: true,
-            isDeleted: false,
-            sender: {
-              __typename: "User",
-              id: USER_ONE_DETAILS.id,
-              username: USER_ONE_DETAILS.username,
-              name: USER_ONE_DETAILS.name,
-              about: null,
-              avatar: null,
-              is24HourClock: true,
-              isDarkMode: false,
-            },
-            content: `${USER_ONE_DETAILS.name} created the group`,
-            createdAt: 1759094100000 + 3 * 86400000,
-            updatedAt: 1759094100000 + 3 * 86400000,
+            content: `${USER_ONE.name} created the group`,
           },
         ],
       },
