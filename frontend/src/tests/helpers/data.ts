@@ -190,29 +190,20 @@ export const createUserInput = {
   confirmPassword: USER_ONE_DETAILS.password,
 };
 
-export const chatItemsMock: ChatItem[] = [
-  {
-    __typename: "ChatItem",
-    id: GROUP_CHAT_DETAILS.id,
-    isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
-    name: GROUP_CHAT_DETAILS.name,
-    avatar: GROUP_CHAT_DETAILS.avatar,
-    members: GROUP_CHAT_DETAILS.members,
-    unreadCount: 0,
-    latestMessage:
-      GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
-  },
-  {
-    __typename: "ChatItem",
-    id: PRIVATE_CHAT_DETAILS.id,
-    isGroupChat: PRIVATE_CHAT_DETAILS.isGroupChat,
-    name: PRIVATE_CHAT_DETAILS.name,
-    avatar: PRIVATE_CHAT_DETAILS.avatar,
-    members: GROUP_CHAT_DETAILS.members,
-    unreadCount: 1,
-    latestMessage:
-      GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
-  },
+const createChatItem = (chat: Chat, unreadCount: number = 0): ChatItem => ({
+  __typename: "ChatItem",
+  id: chat.id,
+  isGroupChat: chat.isGroupChat,
+  name: chat.name,
+  avatar: chat.avatar,
+  members: chat.members,
+  unreadCount,
+  latestMessage: chat.messages[chat.messages.length - 1],
+});
+
+export const chatItemsMock = [
+  createChatItem(GROUP_CHAT_DETAILS, 0),
+  createChatItem(PRIVATE_CHAT_DETAILS, 1),
 ];
 
 export const userContactsMock = [
