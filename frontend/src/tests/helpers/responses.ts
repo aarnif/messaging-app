@@ -113,12 +113,13 @@ import {
   createUserInput,
   currentChatItemAdminMock,
   GROUP_CHAT_DETAILS,
+  invalidLoginPassword,
   LOGIN_TOKEN,
+  loginInput,
   MESSAGE_DETAILS,
   nonContactUsersMock,
   PRIVATE_CHAT_DETAILS,
   USER_ONE,
-  USER_ONE_DETAILS,
   USER_TWO_DETAILS,
   userContactsMock,
 } from "./data";
@@ -181,13 +182,6 @@ export const createUserErrorMock: MockLink.MockedResponse<
     data: null,
   },
 };
-
-export const loginInput = {
-  username: USER_ONE_DETAILS.username,
-  password: USER_ONE_DETAILS.password,
-};
-
-export const invalidLoginPassword = loginInput.password.slice(0, -1);
 
 export const loginMock: MockLink.MockedResponse<
   LoginMutation,

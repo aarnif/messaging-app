@@ -190,6 +190,13 @@ export const createUserInput = {
   confirmPassword: USER_ONE_DETAILS.password,
 };
 
+export const loginInput = {
+  username: USER_ONE_DETAILS.username,
+  password: USER_ONE_DETAILS.password,
+};
+
+export const invalidLoginPassword = loginInput.password.slice(0, -1);
+
 const createChatItem = (chat: Chat, unreadCount: number = 0): ChatItem => ({
   __typename: "ChatItem",
   id: chat.id,
