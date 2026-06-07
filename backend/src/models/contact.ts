@@ -11,7 +11,7 @@ class Contact extends Model<
   InferCreationAttributes<Contact>
 > {
   declare id: CreationOptional<number>;
-  declare userId: number;
+  declare ownerId: number;
   declare contactId: number;
   declare isBlocked: boolean;
   declare contactDetails?: Contact;
@@ -23,7 +23,7 @@ Contact.init(
       primaryKey: true,
       autoIncrement: true,
     },
-    userId: {
+    ownerId: {
       type: DataTypes.INTEGER,
       allowNull: false,
       references: {

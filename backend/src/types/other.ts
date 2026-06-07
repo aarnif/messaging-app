@@ -1,5 +1,5 @@
 export interface Contact {
-  userId: number;
+  ownerId: number;
   contactId: number;
   isBlocked: boolean;
 }

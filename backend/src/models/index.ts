@@ -4,8 +4,8 @@ import { Contact } from "./contact.js";
 import { Message } from "./message.js";
 import { User } from "./user.js";
 
-User.hasMany(Contact, { foreignKey: "userId", as: "contacts" });
-Contact.belongsTo(User, { foreignKey: "userId", as: "owner" });
+User.hasMany(Contact, { foreignKey: "ownerId", as: "contacts" });
+Contact.belongsTo(User, { foreignKey: "ownerId", as: "owner" });
 Contact.belongsTo(User, { foreignKey: "contactId", as: "contactDetails" });
 
 User.hasMany(Chat, { foreignKey: "createdBy", as: "createdChats" });
