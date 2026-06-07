@@ -5,7 +5,7 @@ import Avatar from "../../components/ui/Avatar";
 const ContactItem = ({ contact }: { contact: Contact }) => {
   const { id, contactDetails } = contact;
 
-  const { name, username, about, avatar } = contactDetails;
+  const { id: userId, name, username, about, avatar } = contactDetails;
 
   return (
     <NavLink
@@ -16,7 +16,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
           : "rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-slate-700"
       }
     >
-      <div className="flex gap-4 p-2">
+      <div data-testid={`user-${userId}`} className="flex gap-4 p-2">
         <Avatar name={name} size="medium" avatar={avatar} />
         <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">

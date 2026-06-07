@@ -5,10 +5,11 @@ import type { Contact } from "../../__generated__/graphql";
 
 export const assertContactsDisplayed = (contacts: Contact[]) => {
   contacts.forEach((contact) => {
-    const { name, username, about } = contact.contactDetails;
-    expect(screen.getByText(name)).toBeDefined();
-    expect(screen.getByText(`@${username}`)).toBeDefined();
-    expect(screen.getByText(about ?? "")).toBeDefined();
+    const { id, name, username, about } = contact.contactDetails;
+    const user = screen.getByTestId(`user-${id}`);
+    expect(within(user).getByText(name)).toBeDefined();
+    expect(within(user).getByText(`@${username}`)).toBeDefined();
+    expect(within(user).getByText(about ?? "")).toBeDefined();
   });
 };
 

@@ -10,14 +10,14 @@ const SelectUserButton = ({
   isSelected: boolean;
   callback: () => void;
 }) => {
-  const { name, username, about } = user;
+  const { id, name, username, about } = user;
   return (
     <button
       data-testid={isSelected && "selected"}
       onClick={callback}
       className="flex w-full cursor-pointer items-center"
     >
-      <div className="flex grow gap-4 p-2">
+      <div data-testid={`user-${id}`} className="flex grow gap-4 p-2">
         <img
           className="h-12 w-12 rounded-full"
           src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
