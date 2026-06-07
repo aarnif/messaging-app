@@ -305,7 +305,7 @@ export const resolvers: Resolvers = {
         : {};
 
       const existingContacts = await Contact.findAll({
-        where: { userId: context.currentUser.id },
+        where: { ownerId: context.currentUser.id },
         attributes: ["contactId"],
       });
 
@@ -338,7 +338,7 @@ export const resolvers: Resolvers = {
       const contact = await Contact.findOne({
         where: {
           contactId: context.currentUser.id,
-          userId: Number(id),
+          ownerId: Number(id),
         },
         include: [{ model: User, as: "contactDetails" }],
       });
@@ -359,7 +359,7 @@ export const resolvers: Resolvers = {
       const contact = await Contact.findOne({
         where: {
           id: Number(id),
-          userId: Number(context.currentUser.id),
+          ownerId: Number(context.currentUser.id),
         },
         include: [
           {
@@ -433,7 +433,7 @@ export const resolvers: Resolvers = {
       const contact = await Contact.findOne({
         where: {
           contactId: Number(id),
-          userId: Number(context.currentUser.id),
+          ownerId: Number(context.currentUser.id),
         },
         include: [
           {
@@ -556,7 +556,7 @@ export const resolvers: Resolvers = {
       try {
         await Contact.bulkCreate(
           userIds.map((id) => ({
-            userId: currentUserId,
+            ownerId: currentUserId,
             contactId: Number(id),
             isBlocked: false,
           })),
@@ -564,7 +564,7 @@ export const resolvers: Resolvers = {
 
         return await Contact.findAll({
           where: {
-            userId: currentUserId,
+            ownerId: currentUserId,
           },
           include: [
             {
@@ -597,7 +597,7 @@ export const resolvers: Resolvers = {
       const contactToBeRemoved = await Contact.findOne({
         where: {
           id: Number(id),
-          userId: context.currentUser.id,
+          ownerId: context.currentUser.id,
         },
         include: [{ model: User, as: "contactDetails" }],
       });
@@ -638,7 +638,7 @@ export const resolvers: Resolvers = {
       const targetContact = await Contact.findOne({
         where: {
           id: Number(id),
-          userId: context.currentUser.id,
+          ownerId: context.currentUser.id,
         },
         include: [{ model: User, as: "contactDetails" }],
       });
