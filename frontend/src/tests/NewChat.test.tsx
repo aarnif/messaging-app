@@ -142,7 +142,7 @@ describe("<NewChat />", () => {
         "New Message...",
       ) as HTMLInputElement;
       expect(input.value).toBe("");
-      expect(mockNavigate).toHaveBeenCalledWith("/chats/1");
+      expect(mockNavigate).toHaveBeenCalledWith("/chats/2");
     });
   });
 

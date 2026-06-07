@@ -135,7 +135,7 @@ export const GROUP_CHAT_DETAILS: Chat = {
 
 export const PRIVATE_CHAT_DETAILS: Chat = {
   __typename: "Chat",
-  id: "1",
+  id: "2",
   isGroupChat: false,
   name: "User2",
   description: null,
@@ -196,20 +196,20 @@ export const chatItemsMock: ChatItem[] = [
     id: GROUP_CHAT_DETAILS.id,
     isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
     name: GROUP_CHAT_DETAILS.name,
-    avatar: null,
-    unreadCount: 0,
+    avatar: GROUP_CHAT_DETAILS.avatar,
     members: GROUP_CHAT_DETAILS.members,
+    unreadCount: 0,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
   {
     __typename: "ChatItem",
-    id: "2",
-    isGroupChat: GROUP_CHAT_DETAILS.isGroupChat,
-    name: "Test Chat 2",
-    avatar: null,
-    unreadCount: 1,
+    id: PRIVATE_CHAT_DETAILS.id,
+    isGroupChat: PRIVATE_CHAT_DETAILS.isGroupChat,
+    name: PRIVATE_CHAT_DETAILS.name,
+    avatar: PRIVATE_CHAT_DETAILS.avatar,
     members: GROUP_CHAT_DETAILS.members,
+    unreadCount: 1,
     latestMessage:
       GROUP_CHAT_DETAILS.messages[GROUP_CHAT_DETAILS.messages.length - 1],
   },
