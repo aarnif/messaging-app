@@ -34,6 +34,12 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT =
   }
 }`);
 
+export const FIND_CONTACT = gql(`query FindContact($input: FindContactInput!) {
+  findContact(input: $input) {
+    ...ContactInfo
+  }
+}`);
+
 export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
   findContactById(id: $id) {
     ...ContactInfo
