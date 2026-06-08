@@ -248,3 +248,10 @@ Ei muutoksia
 - Bugin korjaus: kontaktilinkki ei toiminut kahdenkeskisissä chateissa
 - Lisää käyttöliittymään virheilmoitukset kaikille GraphQL mutaatioille niiden epäonnistuessa palvelimen virheen takia
 - Käyttöliittymän painikkeiden tyylien päivitys
+
+## Viikko 37 (1.6-7.6.2026)
+
+- Bugin korjaus: tuotantoversion Docker kontti kaatui puuttuvien npm-riippuvuuden takia
+- Refaktoroi GrahpQL-resolverien koodi
+- Käytä fragmentteja GrahpQL-operaatioissa
+- Refaktoroi komponenttitestien data
