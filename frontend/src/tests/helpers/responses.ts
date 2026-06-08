@@ -65,7 +65,6 @@ import type {
   ToggleBlockContactMutation,
   ToggleBlockContactMutationVariables,
 } from "../../__generated__/graphql";
-import { ContactLookupBy } from "../../__generated__/graphql";
 import {
   ADD_CONTACTS,
   CHANGE_PASSWORD,
@@ -484,7 +483,7 @@ export const findContactById: MockLink.MockedResponse<
     variables: {
       input: {
         id: "1",
-        lookupBy: ContactLookupBy.Id,
+        lookupBy: "ID",
       },
     },
   },
@@ -504,7 +503,7 @@ export const findContactByIdNull: MockLink.MockedResponse<
     variables: {
       input: {
         id: "999",
-        lookupBy: ContactLookupBy.Id,
+        lookupBy: "ID",
       },
     },
   },
@@ -522,7 +521,7 @@ export const findContactByIdBlocked: MockLink.MockedResponse<
     variables: {
       input: {
         id: "1",
-        lookupBy: ContactLookupBy.Id,
+        lookupBy: "ID",
       },
     },
   },
@@ -545,7 +544,7 @@ export const findContactByUserId: MockLink.MockedResponse<
     variables: {
       input: {
         id: "2",
-        lookupBy: ContactLookupBy.UserId,
+        lookupBy: "USER_ID",
       },
     },
   },

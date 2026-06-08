@@ -1,6 +1,5 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
-import { ContactLookupBy } from "~/types/graphql.js";
 import {
   expectedContact1,
   expectedContact2,
@@ -502,7 +501,7 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContact(
         {
           id: contactId,
-          lookupBy: ContactLookupBy.Id,
+          lookupBy: "ID",
         },
         "",
       );
@@ -517,7 +516,7 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContact(
         {
           id: "999",
-          lookupBy: ContactLookupBy.Id,
+          lookupBy: "ID",
         },
         token,
       );
@@ -532,7 +531,7 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContact(
         {
           id: "999",
-          lookupBy: ContactLookupBy.UserId,
+          lookupBy: "USER_ID",
         },
         token,
       );
@@ -547,7 +546,7 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContact(
         {
           id: contactId,
-          lookupBy: ContactLookupBy.Id,
+          lookupBy: "ID",
         },
         token,
       );
@@ -561,7 +560,7 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContact(
         {
           id: userId,
-          lookupBy: ContactLookupBy.UserId,
+          lookupBy: "USER_ID",
         },
         token,
       );

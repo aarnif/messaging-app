@@ -1,7 +1,6 @@
 import { useLazyQuery } from "@apollo/client/react";
 import { useNavigate } from "react-router";
 import type { Chat as ChatType, User } from "../../__generated__/graphql";
-import { ContactLookupBy } from "../../__generated__/graphql";
 import ChatHeader from "../../components/ui/ChatHeader";
 import { FIND_CONTACT, IS_BLOCKED_BY_USER } from "../../graphql/queries";
 import ChatMessages from "./ChatMessages";
@@ -42,7 +41,7 @@ const ChatContent = ({
       variables: {
         input: {
           id: otherChatMember?.userId ?? "",
-          lookupBy: ContactLookupBy.UserId,
+          lookupBy: "USER_ID",
         },
       },
     });

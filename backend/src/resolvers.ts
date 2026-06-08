@@ -14,7 +14,6 @@ import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
 import type { Resolvers } from "./types/graphql.js";
-import { ContactLookupBy } from "./types/graphql.js";
 import {
   changePasswordInputSchema,
   editChatSchema,
@@ -365,7 +364,7 @@ export const resolvers: Resolvers = {
         lookupBy,
       });
 
-      const idField = lookupBy === ContactLookupBy.Id ? "id" : "contactId";
+      const idField = lookupBy === "ID" ? "id" : "contactId";
 
       const contact = await Contact.findOne({
         where: {

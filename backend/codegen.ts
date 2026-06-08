@@ -12,6 +12,7 @@ const config: CodegenConfig = {
           ChatMember: "src/models/chatMember#ChatMember as SequelizeChatMember",
           Message: "src/models/message#Message as SequelizeMessage",
         },
+        enumsAsTypes: true,
       },
       plugins: ["typescript", "typescript-resolvers"],
     },

@@ -2,7 +2,6 @@ import { useLazyQuery, useQuery } from "@apollo/client/react";
 import { useEffect } from "react";
 import { useMatch, useOutletContext } from "react-router";
 import type { User } from "../../__generated__/graphql";
-import { ContactLookupBy } from "../../__generated__/graphql";
 import NotFound from "../../components/ui/NotFound";
 import Spinner from "../../components/ui/Spinner";
 import { FIND_CONTACT, IS_BLOCKED_BY_USER } from "../../graphql/queries";
@@ -21,7 +20,7 @@ const Contact = () => {
       variables: {
         input: {
           id: match?.id ?? "",
-          lookupBy: ContactLookupBy.Id,
+          lookupBy: "ID",
         },
       },
     },
