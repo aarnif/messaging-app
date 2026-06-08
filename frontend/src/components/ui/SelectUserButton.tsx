@@ -1,5 +1,6 @@
 import { MdCheck } from "react-icons/md";
 import type { User } from "../../__generated__/graphql";
+import Avatar from "./Avatar";
 
 const SelectUserButton = ({
   user,
@@ -10,7 +11,7 @@ const SelectUserButton = ({
   isSelected: boolean;
   callback: () => void;
 }) => {
-  const { id, name, username, about } = user;
+  const { id, name, username, about, avatar } = user;
   return (
     <button
       data-testid={isSelected && "selected"}
@@ -18,10 +19,7 @@ const SelectUserButton = ({
       className="flex w-full cursor-pointer items-center"
     >
       <div data-testid={`user-${id}`} className="flex grow gap-4 p-2">
-        <img
-          className="h-12 w-12 rounded-full"
-          src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
-        />
+        <Avatar name={name} size="medium" avatar={avatar} />
         <div className="flex w-full flex-col gap-1 border-slate-200 dark:border-slate-700">
           <div className="flex items-center justify-between">
             <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
