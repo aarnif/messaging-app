@@ -14,11 +14,13 @@ import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
 import type { Resolvers } from "./types/graphql.js";
+import { ContactLookupBy } from "./types/graphql.js";
 import {
   changePasswordInputSchema,
   editChatSchema,
   editMessageInputSchema,
   editProfileInputSchema,
+  findContactInputSchema,
   newChatSchema,
   newMessageInputSchema,
   newUserInputSchema,
@@ -344,6 +346,49 @@ export const resolvers: Resolvers = {
       });
 
       return !contact ? false : contact.isBlocked;
+    },
+    findContact: async (
+      _,
+      { input },
+      context: { currentUser: User | null },
+    ) => {
+      if (!context.currentUser) {
+        throw new GraphQLError("Not authenticated", {
+          extensions: { code: "UNAUTHENTICATED" },
+        });
+      }
+
+      const { id, lookupBy } = input;
+
+      validateInput(findContactInputSchema, {
+        id,
+        lookupBy,
+      });
+
+      const idField = lookupBy === ContactLookupBy.Id ? "id" : "contactId";
+
+      const contact = await Contact.findOne({
+        where: {
+          [idField]: Number(id),
+          ownerId: Number(context.currentUser.id),
+        },
+        include: [
+          {
+            model: User,
+            as: "contactDetails",
+          },
+        ],
+      });
+
+      if (!contact) {
+        throw new GraphQLError("Contact not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+      return contact;
     },
     findContactById: async (
       _,

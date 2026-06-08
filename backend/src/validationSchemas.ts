@@ -1,4 +1,10 @@
 import { z } from "zod";
+import { ContactLookupBy } from "./types/graphql";
+
+export const findContactInputSchema = z.object({
+  id: z.string(),
+  lookupBy: z.enum(ContactLookupBy),
+});
 
 export const newUserInputSchema = z
   .object({
