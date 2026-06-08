@@ -24,8 +24,6 @@ import {
   createChat,
   createUser,
   findContact,
-  findContactById,
-  findContactByUserId,
   isBlockedByUser,
   login,
   nonContactUsers,
@@ -473,98 +471,6 @@ describeGraphQLSuite("Contacts", () => {
       assert.strictEqual(contacts.length, 1, "Should have 1 contact");
 
       const contact = contacts[0];
-
-      assertContactEquality(contact, expectedContact1);
-    });
-  });
-
-  void describe("Find contact by ID", () => {
-    let token: string;
-    let contactId: string;
-
-    beforeEach(async () => {
-      const loginBody = await login({
-        username: user1Details.username,
-        password: user1Details.password,
-      });
-
-      assert.ok(loginBody.data, "Login token value should be defined");
-      token = loginBody.data.login.value;
-
-      const responseBody = await addContacts([user2Details.id], user1Token);
-
-      const contact = responseBody.data?.addContacts[0];
-      assert.ok(contact?.id, "Contact ID should be defined");
-      contactId = contact.id;
-    });
-
-    void test("fails without authentication", async () => {
-      const responseBody = await findContactById(contactId, "");
-
-      const contact = responseBody.data;
-
-      assert.strictEqual(contact, null, "Contact should be null");
-      assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
-    });
-
-    void test("fails with non-existent user ID", async () => {
-      const responseBody = await findContactById("999", token);
-
-      const contact = responseBody.data;
-
-      assert.strictEqual(contact, null, "Contact should be null");
-      assertError(responseBody, "Contact not found", "NOT_FOUND");
-    });
-
-    void test("succeeds with valid contact ID", async () => {
-      const responseBody = await findContactById(contactId, token);
-
-      const contact = responseBody.data?.findContactById;
-
-      assertContactEquality(contact, expectedContact1);
-    });
-  });
-
-  void describe("Find contact by user ID", () => {
-    let token: string;
-
-    beforeEach(async () => {
-      const loginBody = await login({
-        username: user1Details.username,
-        password: user1Details.password,
-      });
-
-      assert.ok(loginBody.data, "Login token value should be defined");
-      token = loginBody.data.login.value;
-
-      const responseBody = await addContacts([user2Details.id], user1Token);
-
-      const contact = responseBody.data?.addContacts[0];
-      assert.ok(contact, "Contact should be defined");
-    });
-
-    void test("fails without authentication", async () => {
-      const responseBody = await findContactByUserId(user2Details.id, "");
-
-      const contact = responseBody.data;
-
-      assert.strictEqual(contact, null, "Contact should be null");
-      assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
-    });
-
-    void test("fails with non-existent user ID", async () => {
-      const responseBody = await findContactByUserId("999", token);
-
-      const contact = responseBody.data;
-
-      assert.strictEqual(contact, null, "Contact should be null");
-      assertError(responseBody, "Contact not found", "NOT_FOUND");
-    });
-
-    void test("succeeds with valid user ID", async () => {
-      const responseBody = await findContactByUserId(user2Details.id, token);
-
-      const contact = responseBody.data?.findContactByUserId;
 
       assertContactEquality(contact, expectedContact1);
     });

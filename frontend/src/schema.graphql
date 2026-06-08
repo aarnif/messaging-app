@@ -18,9 +18,7 @@ type Query {
   contactsWithoutPrivateChat(search: String): [Contact!]!
   isBlockedByUser(id: ID!): Boolean!
   findContact(input: FindContactInput!): Contact!
-  findContactById(id: ID!): Contact!
   findPrivateChatWithContact(id: ID!): Chat
-  findContactByUserId(id: ID!): Contact!
 }
 
 type User {

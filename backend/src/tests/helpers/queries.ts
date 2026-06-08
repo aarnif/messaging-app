@@ -208,15 +208,6 @@ export const FIND_CONTACT = `
   ${CONTACT_INFO}
 `;
 
-export const FIND_CONTACT_BY_ID = `
-  query FindContactById($id: ID!) {
-    findContactById(id: $id) {
-      ...ContactInfo
-    }
-  }
-  ${CONTACT_INFO}
-`;
-
 export const FIND_PRIVATE_CHAT_WITH_CONTACT = `
   query FindPrivateChatWithContact($id: ID!) {
     findPrivateChatWithContact(id: $id) {
@@ -240,15 +231,6 @@ export const CHANGE_PASSWORD = `
     }
   }
   ${USER_INFO}
-`;
-
-export const FIND_CONTACT_BY_USER_ID = `
-  query FindContactByUserId($id: ID!) {
-    findContactByUserId(id: $id) {
-      ...ContactInfo
-    }
-  }
-  ${CONTACT_INFO}
 `;
 
 export const MARK_CHAT_AS_READ = `

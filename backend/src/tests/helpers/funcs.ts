@@ -33,8 +33,6 @@ import {
   EDIT_PROFILE,
   FIND_CHAT_BY_ID,
   FIND_CONTACT,
-  FIND_CONTACT_BY_ID,
-  FIND_CONTACT_BY_USER_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
   LEAVE_CHAT,
@@ -146,23 +144,6 @@ export const findContact = (input: FindContactInput, token: string) =>
     },
     token,
   );
-
-export const findContactById = (id: string, token: string) =>
-  query<{ findContactById: Contact }, { id: string }>(
-    FIND_CONTACT_BY_ID,
-    {
-      id,
-    },
-    token,
-  );
-
-export const findContactByUserId = (id: string, token: string) =>
-  query<
-    {
-      findContactByUserId: Contact;
-    },
-    { id: string }
-  >(FIND_CONTACT_BY_USER_ID, { id }, token);
 
 export const isBlockedByUser = (id: string, token: string) =>
   query<{ isBlockedByUser: boolean }, { id: string }>(
