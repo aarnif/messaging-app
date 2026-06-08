@@ -36,6 +36,8 @@ import type {
   EditProfileMutationVariables,
   FindChatByIdQuery,
   FindChatByIdQueryVariables,
+  FindContactQuery,
+  FindContactQueryVariables,
   FindPrivateChatWithContactQuery,
   FindPrivateChatWithContactQueryVariables,
   IsBlockedByUserQuery,
