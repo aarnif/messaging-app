@@ -1,5 +1,6 @@
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
+import { ContactLookupBy } from "~/types/graphql.js";
 import {
   expectedContact1,
   expectedContact2,
@@ -22,6 +23,7 @@ import {
   contactsWithoutPrivateChat,
   createChat,
   createUser,
+  findContact,
   findContactById,
   findContactByUserId,
   isBlockedByUser,
@@ -563,6 +565,102 @@ describeGraphQLSuite("Contacts", () => {
       const responseBody = await findContactByUserId(user2Details.id, token);
 
       const contact = responseBody.data?.findContactByUserId;
+
+      assertContactEquality(contact, expectedContact1);
+    });
+  });
+
+  void describe("Find contact", () => {
+    let token: string;
+    let contactId: string;
+    let userId: string;
+
+    beforeEach(async () => {
+      const loginBody = await login({
+        username: user1Details.username,
+        password: user1Details.password,
+      });
+
+      assert.ok(loginBody.data, "Login token value should be defined");
+      token = loginBody.data.login.value;
+
+      const responseBody = await addContacts([user2Details.id], user1Token);
+
+      const contact = responseBody.data?.addContacts[0];
+      assert.ok(contact?.id, "Contact ID should be defined");
+      contactId = contact.id;
+      userId = contact.contactDetails.id;
+    });
+
+    void test("fails without authentication", async () => {
+      const responseBody = await findContact(
+        {
+          id: contactId,
+          lookupBy: ContactLookupBy.Id,
+        },
+        "",
+      );
+
+      const contact = responseBody.data;
+
+      assert.strictEqual(contact, null, "Contact should be null");
+      assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+    });
+
+    void test("fails with non-existent contact ID", async () => {
+      const responseBody = await findContact(
+        {
+          id: "999",
+          lookupBy: ContactLookupBy.Id,
+        },
+        token,
+      );
+
+      const contact = responseBody.data;
+
+      assert.strictEqual(contact, null, "Contact should be null");
+      assertError(responseBody, "Contact not found", "NOT_FOUND");
+    });
+
+    void test("fails with non-existent user ID", async () => {
+      const responseBody = await findContact(
+        {
+          id: "999",
+          lookupBy: ContactLookupBy.UserId,
+        },
+        token,
+      );
+
+      const contact = responseBody.data;
+
+      assert.strictEqual(contact, null, "Contact should be null");
+      assertError(responseBody, "Contact not found", "NOT_FOUND");
+    });
+
+    void test("succeeds with valid contact ID", async () => {
+      const responseBody = await findContact(
+        {
+          id: contactId,
+          lookupBy: ContactLookupBy.Id,
+        },
+        token,
+      );
+
+      const contact = responseBody.data?.findContact;
+
+      assertContactEquality(contact, expectedContact1);
+    });
+
+    void test("succeeds with valid user ID", async () => {
+      const responseBody = await findContact(
+        {
+          id: userId,
+          lookupBy: ContactLookupBy.UserId,
+        },
+        token,
+      );
+
+      const contact = responseBody.data?.findContact;
 
       assertContactEquality(contact, expectedContact1);
     });

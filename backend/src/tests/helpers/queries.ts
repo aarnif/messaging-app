@@ -199,6 +199,15 @@ export const ALL_CHATS_BY_USER = `
   ${MESSAGE_INFO}
 `;
 
+export const FIND_CONTACT = `
+  query FindContact($input: FindContactInput!) {
+    findContact(input: $input) {
+      ...ContactInfo
+    }
+  }
+  ${CONTACT_INFO}
+`;
+
 export const FIND_CONTACT_BY_ID = `
   query FindContactById($id: ID!) {
     findContactById(id: $id) {

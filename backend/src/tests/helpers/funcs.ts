@@ -10,6 +10,7 @@ import type {
   EditChatInput,
   EditMessageInput,
   EditProfileInput,
+  FindContactInput,
   LoginInput,
   SendMessageInput,
   User,
@@ -31,6 +32,7 @@ import {
   EDIT_MESSAGE,
   EDIT_PROFILE,
   FIND_CHAT_BY_ID,
+  FIND_CONTACT,
   FIND_CONTACT_BY_ID,
   FIND_CONTACT_BY_USER_ID,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
@@ -130,6 +132,15 @@ export const contactsWithoutPrivateChat = (search: string, token: string) =>
 export const createChat = (input: CreateChatInput, token: string) =>
   query<{ createChat: Chat }, { input: CreateChatInput }>(
     CREATE_CHAT,
+    {
+      input,
+    },
+    token,
+  );
+
+export const findContact = (input: FindContactInput, token: string) =>
+  query<{ findContact: Contact }, { input: FindContactInput }>(
+    FIND_CONTACT,
     {
       input,
     },
