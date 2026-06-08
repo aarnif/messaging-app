@@ -163,4 +163,13 @@
 | 30.5  | 1    | 404-virhesivun päivitys                       |
 | 31.5  | 2    | käyttöliittymän painikkeiden tyylien päivitys |
 | 31.5  | 1    | tietokantaoperaatioiden atomisuus             |
-|  yht  | 300  |                                               |
+|  1.6  | 1    |                                               |
+|  1.6  | 1    | bugin korjaus                                 |
+|  2.6  | 3    | koodin refaktorointi                          |
+|  3.6  | 2    |                                               |
+|  4.6  | 3    |                                               |
+|  5.6  | 0.5  | kayttöohjeen päivitys                         |
+|  5.6  | 1    | koodin refaktorointi                          |
+|  6.6  | 2    |                                               |
+|  7.6  | 1.5  |                                               |
+|  yht  | 315  |                                               |
