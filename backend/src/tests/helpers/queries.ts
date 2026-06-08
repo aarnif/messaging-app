@@ -199,9 +199,9 @@ export const ALL_CHATS_BY_USER = `
   ${MESSAGE_INFO}
 `;
 
-export const FIND_CONTACT_BY_ID = `
-  query FindContactById($id: ID!) {
-    findContactById(id: $id) {
+export const FIND_CONTACT = `
+  query FindContact($input: FindContactInput!) {
+    findContact(input: $input) {
       ...ContactInfo
     }
   }
@@ -231,15 +231,6 @@ export const CHANGE_PASSWORD = `
     }
   }
   ${USER_INFO}
-`;
-
-export const FIND_CONTACT_BY_USER_ID = `
-  query FindContactByUserId($id: ID!) {
-    findContactByUserId(id: $id) {
-      ...ContactInfo
-    }
-  }
-  ${CONTACT_INFO}
 `;
 
 export const MARK_CHAT_AS_READ = `

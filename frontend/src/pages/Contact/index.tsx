@@ -4,7 +4,7 @@ import { useMatch, useOutletContext } from "react-router";
 import type { User } from "../../__generated__/graphql";
 import NotFound from "../../components/ui/NotFound";
 import Spinner from "../../components/ui/Spinner";
-import { FIND_CONTACT_BY_ID, IS_BLOCKED_BY_USER } from "../../graphql/queries";
+import { FIND_CONTACT, IS_BLOCKED_BY_USER } from "../../graphql/queries";
 import ContactContent from "./ContactContent";
 
 const Contact = () => {
@@ -15,10 +15,13 @@ const Contact = () => {
   const match = useMatch("/contacts/:id")?.params;
 
   const { data: contactData, loading: contactLoading } = useQuery(
-    FIND_CONTACT_BY_ID,
+    FIND_CONTACT,
     {
       variables: {
-        id: match?.id ?? "",
+        input: {
+          id: match?.id ?? "",
+          lookupBy: "ID",
+        },
       },
     },
   );
@@ -28,7 +31,7 @@ const Contact = () => {
       fetchPolicy: "network-only",
     });
 
-  const contact = contactData?.findContactById;
+  const contact = contactData?.findContact;
   const isBlockedByUser = blockedData?.isBlockedByUser;
 
   useEffect(() => {

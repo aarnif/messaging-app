@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+export const findContactInputSchema = z.object({
+  id: z.string(),
+  lookupBy: z.enum(["ID", "USER_ID"]),
+});
+
 export const newUserInputSchema = z
   .object({
     username: z.string().min(3, "Username must be at least 3 characters long"),

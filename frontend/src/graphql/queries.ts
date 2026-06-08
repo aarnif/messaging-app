@@ -34,8 +34,8 @@ export const CONTACTS_WITHOUT_PRIVATE_CHAT =
   }
 }`);
 
-export const FIND_CONTACT_BY_ID = gql(`query FindContactById($id: ID!) {
-  findContactById(id: $id) {
+export const FIND_CONTACT = gql(`query FindContact($input: FindContactInput!) {
+  findContact(input: $input) {
     ...ContactInfo
   }
 }`);
@@ -61,12 +61,5 @@ export const IS_BLOCKED_BY_USER = gql(`query IsBlockedByUser($id: ID!) {
 export const NON_CONTACT_USERS = gql(`query NonContactUsers($search: String) {
   nonContactUsers(search: $search) {
     ...UserInfo
-  }
-}`);
-
-export const FIND_CONTACT_BY_USER_ID =
-  gql(`query FindContactByUserId($id: ID!) {
-  findContactByUserId(id: $id) {
-    ...ContactInfo
   }
 }`);

@@ -13,6 +13,7 @@ const config: CodegenConfig = {
       },
       config: {
         useTypeImports: true,
+        enumsAsTypes: true,
       },
     },
   },

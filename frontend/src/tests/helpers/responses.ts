@@ -36,10 +36,8 @@ import type {
   EditProfileMutationVariables,
   FindChatByIdQuery,
   FindChatByIdQueryVariables,
-  FindContactByIdQuery,
-  FindContactByIdQueryVariables,
-  FindContactByUserIdQuery,
-  FindContactByUserIdQueryVariables,
+  FindContactQuery,
+  FindContactQueryVariables,
   FindPrivateChatWithContactQuery,
   FindPrivateChatWithContactQueryVariables,
   IsBlockedByUserQuery,
@@ -89,8 +87,7 @@ import {
   ALL_CONTACTS_BY_USER,
   CONTACTS_WITHOUT_PRIVATE_CHAT,
   FIND_CHAT_BY_ID,
-  FIND_CONTACT_BY_ID,
-  FIND_CONTACT_BY_USER_ID,
+  FIND_CONTACT,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
   ME,
@@ -478,30 +475,36 @@ export const contactsWithoutPrivateChatsEmpty: MockLink.MockedResponse<
 };
 
 export const findContactById: MockLink.MockedResponse<
-  FindContactByIdQuery,
-  FindContactByIdQueryVariables
+  FindContactQuery,
+  FindContactQueryVariables
 > = {
   request: {
-    query: FIND_CONTACT_BY_ID,
+    query: FIND_CONTACT,
     variables: {
-      id: "1",
+      input: {
+        id: "1",
+        lookupBy: "ID",
+      },
     },
   },
   result: {
     data: {
-      findContactById: CONTACT_DETAILS,
+      findContact: CONTACT_DETAILS,
     },
   },
 };
 
 export const findContactByIdNull: MockLink.MockedResponse<
-  FindContactByIdQuery,
-  FindContactByIdQueryVariables
+  FindContactQuery,
+  FindContactQueryVariables
 > = {
   request: {
-    query: FIND_CONTACT_BY_ID,
+    query: FIND_CONTACT,
     variables: {
-      id: "999",
+      input: {
+        id: "999",
+        lookupBy: "ID",
+      },
     },
   },
   result: {
@@ -510,23 +513,47 @@ export const findContactByIdNull: MockLink.MockedResponse<
 };
 
 export const findContactByIdBlocked: MockLink.MockedResponse<
-  FindContactByIdQuery,
-  FindContactByIdQueryVariables
+  FindContactQuery,
+  FindContactQueryVariables
 > = {
   request: {
-    query: FIND_CONTACT_BY_ID,
+    query: FIND_CONTACT,
     variables: {
-      id: "1",
+      input: {
+        id: "1",
+        lookupBy: "ID",
+      },
     },
   },
   result: {
     data: {
-      findContactById: {
+      findContact: {
         ...CONTACT_DETAILS,
         isBlocked: true,
       },
     },
   },
+};
+
+export const findContactByUserId: MockLink.MockedResponse<
+  FindContactQuery,
+  FindContactQueryVariables
+> = {
+  request: {
+    query: FIND_CONTACT,
+    variables: {
+      input: {
+        id: "2",
+        lookupBy: "USER_ID",
+      },
+    },
+  },
+  result: {
+    data: {
+      findContact: CONTACT_DETAILS,
+    },
+  },
+  maxUsageCount: 2,
 };
 
 export const findPrivateChatWithContact: MockLink.MockedResponse<
@@ -996,24 +1023,6 @@ export const changePasswordError: MockLink.MockedResponse<
     },
   },
   error: new Error("Current password do not match"),
-};
-
-export const findContactByUserId: MockLink.MockedResponse<
-  FindContactByUserIdQuery,
-  FindContactByUserIdQueryVariables
-> = {
-  request: {
-    query: FIND_CONTACT_BY_USER_ID,
-    variables: {
-      id: "2",
-    },
-  },
-  result: {
-    data: {
-      findContactByUserId: CONTACT_DETAILS,
-    },
-  },
-  maxUsageCount: 2,
 };
 
 export const editChat: MockLink.MockedResponse<

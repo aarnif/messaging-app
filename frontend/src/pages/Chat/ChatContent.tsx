@@ -2,10 +2,7 @@ import { useLazyQuery } from "@apollo/client/react";
 import { useNavigate } from "react-router";
 import type { Chat as ChatType, User } from "../../__generated__/graphql";
 import ChatHeader from "../../components/ui/ChatHeader";
-import {
-  FIND_CONTACT_BY_USER_ID,
-  IS_BLOCKED_BY_USER,
-} from "../../graphql/queries";
+import { FIND_CONTACT, IS_BLOCKED_BY_USER } from "../../graphql/queries";
 import ChatMessages from "./ChatMessages";
 import NewMessageBox from "./NewMessageBox";
 
@@ -24,7 +21,7 @@ const ChatContent = ({
   const [checkIsBlocked] = useLazyQuery(IS_BLOCKED_BY_USER, {
     fetchPolicy: "network-only",
   });
-  const [findContactByUserId] = useLazyQuery(FIND_CONTACT_BY_USER_ID, {
+  const [findContact] = useLazyQuery(FIND_CONTACT, {
     fetchPolicy: "network-only",
   });
 
@@ -40,13 +37,16 @@ const ChatContent = ({
       return;
     }
 
-    const data = await findContactByUserId({
+    const data = await findContact({
       variables: {
-        id: otherChatMember?.userId ?? "",
+        input: {
+          id: otherChatMember?.userId ?? "",
+          lookupBy: "USER_ID",
+        },
       },
     });
 
-    const contact = data.data?.findContactByUserId;
+    const contact = data.data?.findContact;
 
     if (contact) {
       navigate(`/contacts/${contact.id}`);

@@ -19,6 +19,7 @@ import {
   editChatSchema,
   editMessageInputSchema,
   editProfileInputSchema,
+  findContactInputSchema,
   newChatSchema,
   newMessageInputSchema,
   newUserInputSchema,
@@ -345,9 +346,9 @@ export const resolvers: Resolvers = {
 
       return !contact ? false : contact.isBlocked;
     },
-    findContactById: async (
+    findContact: async (
       _,
-      { id },
+      { input },
       context: { currentUser: User | null },
     ) => {
       if (!context.currentUser) {
@@ -356,9 +357,18 @@ export const resolvers: Resolvers = {
         });
       }
 
+      const { id, lookupBy } = input;
+
+      validateInput(findContactInputSchema, {
+        id,
+        lookupBy,
+      });
+
+      const idField = lookupBy === "ID" ? "id" : "contactId";
+
       const contact = await Contact.findOne({
         where: {
-          id: Number(id),
+          [idField]: Number(id),
           ownerId: Number(context.currentUser.id),
         },
         include: [
@@ -418,40 +428,6 @@ export const resolvers: Resolvers = {
       const chat = chats.find((c) => c.members && c.members.length === 2);
 
       return chat || null;
-    },
-    findContactByUserId: async (
-      _,
-      { id },
-      context: { currentUser: User | null },
-    ) => {
-      if (!context.currentUser) {
-        throw new GraphQLError("Not authenticated", {
-          extensions: { code: "UNAUTHENTICATED" },
-        });
-      }
-
-      const contact = await Contact.findOne({
-        where: {
-          contactId: Number(id),
-          ownerId: Number(context.currentUser.id),
-        },
-        include: [
-          {
-            model: User,
-            as: "contactDetails",
-          },
-        ],
-      });
-
-      if (!contact) {
-        throw new GraphQLError("Contact not found", {
-          extensions: {
-            code: "NOT_FOUND",
-            invalidArgs: id,
-          },
-        });
-      }
-      return contact;
     },
   },
   Chat: {

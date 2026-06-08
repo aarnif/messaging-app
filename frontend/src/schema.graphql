@@ -1,3 +1,13 @@
+enum ContactLookupBy {
+  ID
+  USER_ID
+}
+
+input FindContactInput {
+  id: ID!
+  lookupBy: ContactLookupBy!
+}
+
 type Query {
   countDocuments: Int!
   me: User
@@ -7,9 +17,8 @@ type Query {
   findChatById(id: ID!): Chat!
   contactsWithoutPrivateChat(search: String): [Contact!]!
   isBlockedByUser(id: ID!): Boolean!
-  findContactById(id: ID!): Contact!
+  findContact(input: FindContactInput!): Contact!
   findPrivateChatWithContact(id: ID!): Chat
-  findContactByUserId(id: ID!): Contact!
 }
 
 type User {

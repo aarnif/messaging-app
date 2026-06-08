@@ -10,6 +10,7 @@ import type {
   EditChatInput,
   EditMessageInput,
   EditProfileInput,
+  FindContactInput,
   LoginInput,
   SendMessageInput,
   User,
@@ -31,8 +32,7 @@ import {
   EDIT_MESSAGE,
   EDIT_PROFILE,
   FIND_CHAT_BY_ID,
-  FIND_CONTACT_BY_ID,
-  FIND_CONTACT_BY_USER_ID,
+  FIND_CONTACT,
   FIND_PRIVATE_CHAT_WITH_CONTACT,
   IS_BLOCKED_BY_USER,
   LEAVE_CHAT,
@@ -136,22 +136,14 @@ export const createChat = (input: CreateChatInput, token: string) =>
     token,
   );
 
-export const findContactById = (id: string, token: string) =>
-  query<{ findContactById: Contact }, { id: string }>(
-    FIND_CONTACT_BY_ID,
+export const findContact = (input: FindContactInput, token: string) =>
+  query<{ findContact: Contact }, { input: FindContactInput }>(
+    FIND_CONTACT,
     {
-      id,
+      input,
     },
     token,
   );
-
-export const findContactByUserId = (id: string, token: string) =>
-  query<
-    {
-      findContactByUserId: Contact;
-    },
-    { id: string }
-  >(FIND_CONTACT_BY_USER_ID, { id }, token);
 
 export const isBlockedByUser = (id: string, token: string) =>
   query<{ isBlockedByUser: boolean }, { id: string }>(
