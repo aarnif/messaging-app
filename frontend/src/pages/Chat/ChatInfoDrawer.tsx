@@ -8,6 +8,7 @@ import type {
   Chat as ChatType,
   User,
 } from "../../__generated__/graphql";
+import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
 import { DELETE_CHAT, LEAVE_CHAT } from "../../graphql/mutations";
 import { ALL_CHATS_BY_USER } from "../../graphql/queries";
@@ -20,14 +21,11 @@ const ChatMemberItem = ({
   member: ChatMember;
   currentUser: User;
 }) => {
-  const { name, username, about } = member;
+  const { name, username, about, avatar } = member;
 
   return (
     <div className="flex gap-4">
-      <img
-        className="h-12 w-12 rounded-full"
-        src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
-      />
+      <Avatar name={name} size="medium" avatar={avatar} />
       <div className="flex w-full flex-col gap-1 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
