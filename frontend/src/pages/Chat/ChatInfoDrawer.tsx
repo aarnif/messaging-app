@@ -21,7 +21,7 @@ const ChatMemberItem = ({
   member: ChatMember;
   currentUser: User;
 }) => {
-  const { name, username, about, avatar } = member;
+  const { name, username, about, avatar, isAdmin } = member;
 
   return (
     <div className="flex gap-4">
@@ -40,7 +40,7 @@ const ChatMemberItem = ({
         </p>
       </div>
       <div className="flex items-center justify-center min-w-12 sm:min-w-14">
-        {member.isAdmin && (
+        {isAdmin && (
           <p className="px-2.5 py-1 rounded-2xl bg-slate-300 dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-slate-50">
             Admin
           </p>
