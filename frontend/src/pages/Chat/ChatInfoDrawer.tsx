@@ -8,8 +8,8 @@ import type {
   Chat as ChatType,
   User,
 } from "../../__generated__/graphql";
-import Avatar from "../../components/ui/Avatar";
 import Button from "../../components/ui/Button";
+import UserCard from "../../components/ui/UserCard";
 import { DELETE_CHAT, LEAVE_CHAT } from "../../graphql/mutations";
 import { ALL_CHATS_BY_USER } from "../../graphql/queries";
 import useModal from "../../hooks/useModal";
@@ -21,24 +21,33 @@ const ChatMemberItem = ({
   member: ChatMember;
   currentUser: User;
 }) => {
-  const { name, username, about, avatar, isAdmin } = member;
+  const {
+    id,
+    name,
+    username,
+    about,
+    avatar,
+    is24HourClock,
+    isDarkMode,
+    isAdmin,
+  } = member;
 
   return (
     <div className="flex gap-4">
-      <Avatar name={name} size="medium" avatar={avatar} />
-      <div className="flex w-full flex-col gap-1">
-        <div className="flex items-center justify-between">
-          <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
-            {name === currentUser.name ? "You" : name}
-          </h2>
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            @{username}
-          </p>
-        </div>
-        <p className="text-left text-xs font-medium text-slate-700 dark:text-slate-200">
-          {about}
-        </p>
-      </div>
+      <UserCard
+        user={{
+          __typename: "User",
+          id,
+          name,
+          username,
+          about,
+          avatar,
+          is24HourClock,
+          isDarkMode,
+        }}
+        displayName={name === currentUser.name ? "You" : undefined}
+        borderVariant="none"
+      />
       <div className="flex items-center justify-center min-w-12 sm:min-w-14">
         {isAdmin && (
           <p className="px-2.5 py-1 rounded-2xl bg-slate-300 dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-slate-50">
