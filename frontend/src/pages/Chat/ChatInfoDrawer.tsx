@@ -21,12 +21,12 @@ const ChatMemberItem = ({
   member: ChatMember;
   currentUser: User;
 }) => {
-  const { name, username, about, avatar } = member;
+  const { name, username, about, avatar, isAdmin } = member;
 
   return (
     <div className="flex gap-4">
       <Avatar name={name} size="medium" avatar={avatar} />
-      <div className="flex w-full flex-col gap-1 dark:border-slate-700">
+      <div className="flex w-full flex-col gap-1">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
             {name === currentUser.name ? "You" : name}
@@ -35,16 +35,16 @@ const ChatMemberItem = ({
             @{username}
           </p>
         </div>
-        <div className="flex justify-between">
-          <p className="text-xs font-medium text-slate-700 dark:text-slate-200">
-            {about}
+        <p className="text-left text-xs font-medium text-slate-700 dark:text-slate-200">
+          {about}
+        </p>
+      </div>
+      <div className="flex items-center justify-center min-w-12 sm:min-w-14">
+        {isAdmin && (
+          <p className="px-2.5 py-1 rounded-2xl bg-slate-300 dark:bg-slate-900 text-xs font-medium text-slate-900 dark:text-slate-50">
+            Admin
           </p>
-          {member.isAdmin && (
-            <p className="text-xs font-medium text-slate-900 dark:text-slate-50">
-              Admin
-            </p>
-          )}
-        </div>
+        )}
       </div>
     </div>
   );
@@ -145,7 +145,7 @@ const ChatInfoDrawer = ({
           </button>
         )}
       </div>
-      <div className="flex flex-col items-center gap-2.5">
+      <div className="flex flex-col items-center gap-2.5 sm:max-w-124">
         <img
           className="h-20 w-20 rounded-full"
           src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
@@ -166,7 +166,7 @@ const ChatInfoDrawer = ({
         </div>
       </div>
 
-      <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-90">
+      <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-124">
         <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
           {members.length} members
         </h4>
