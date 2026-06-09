@@ -145,7 +145,7 @@ const ChatInfoDrawer = ({
           </button>
         )}
       </div>
-      <div className="flex flex-col items-center gap-2.5">
+      <div className="flex flex-col items-center gap-2.5 sm:max-w-124">
         <img
           className="h-20 w-20 rounded-full"
           src="https://i.ibb.co/bRb0SYw/chat-placeholder.png"
@@ -166,7 +166,7 @@ const ChatInfoDrawer = ({
         </div>
       </div>
 
-      <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-90">
+      <div className="flex w-full grow flex-col gap-2 p-2 sm:max-w-124">
         <h4 className="text-xs font-semibold text-slate-900 dark:text-slate-50">
           {members.length} members
         </h4>
