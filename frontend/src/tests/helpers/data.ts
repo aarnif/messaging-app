@@ -232,7 +232,7 @@ export const NewGroupChatDetails = {
   avatar: null,
 };
 
-export const nonContactUsersMock: User[] = [USER_FOUR, USER_FIVE];
+export const nonContactUsersMock = [USER_FOUR, USER_FIVE];
 
 export const ADDED_CONTACTS = [
   createContact("2", USER_FOUR),
