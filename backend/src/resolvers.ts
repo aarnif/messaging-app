@@ -778,7 +778,7 @@ export const resolvers: Resolvers = {
           chatItemCreated: {
             id: String(chat.id),
             isGroupChat: chat.isGroupChat,
-            name: chat.name || null,
+            name: getChatName(chat, context.currentUser),
             avatar: chat.avatar,
             members: chat.members,
             latestMessage: chat.messages?.at(-1),
@@ -1061,7 +1061,7 @@ export const resolvers: Resolvers = {
           chatItemUpdated: {
             id: String(chatToBeEdited.id),
             isGroupChat: chatToBeEdited.isGroupChat,
-            name: chatToBeEdited.name || null,
+            name: getChatName(chatToBeEdited, context.currentUser),
             avatar: chatToBeEdited.avatar,
             members: chatToBeEdited.members,
             latestMessage: latestMessage,
