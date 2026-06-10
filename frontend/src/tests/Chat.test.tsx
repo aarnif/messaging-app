@@ -9,11 +9,11 @@ import NotificationProvider from "../components/NotificationProvider";
 import { formatDisplayDate } from "../helpers";
 import Chat from "../pages/Chat";
 import {
-  currentChatItemAdminMock,
-  currentChatItemMemberMock,
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
+  USER_ONE,
   USER_ONE_DETAILS,
+  USER_TWO,
 } from "./helpers/data";
 import {
   assertErrorMessageAndDismissal,
@@ -90,7 +90,7 @@ const renderComponent = (
     messageDeletedSubscription,
     groupChatEditedSubscription,
   ],
-  currentUser = currentChatItemAdminMock,
+  currentUser = USER_ONE,
 ) => {
   mockUseOutletContext.mockReturnValue({
     currentUser,
@@ -656,7 +656,7 @@ describe("<Chat />", () => {
         messageDeletedSubscription,
         groupChatEditedSubscription,
       ],
-      currentChatItemMemberMock,
+      USER_TWO,
     );
 
     await openChatInfoModal(user);
@@ -682,7 +682,7 @@ describe("<Chat />", () => {
         messageDeletedSubscription,
         groupChatEditedSubscription,
       ],
-      currentChatItemMemberMock,
+      USER_TWO,
     );
 
     await openChatInfoModal(user);
@@ -705,7 +705,7 @@ describe("<Chat />", () => {
         messageDeletedSubscription,
         groupChatEditedSubscription,
       ],
-      currentChatItemMemberMock,
+      USER_TWO,
     );
 
     await openChatInfoModal(user);

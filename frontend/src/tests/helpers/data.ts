@@ -180,10 +180,6 @@ export const mismatchedPasswords = {
   confirmPassword: "passwor",
 };
 
-export const currentChatItemAdminMock = USER_ONE;
-
-export const currentChatItemMemberMock = USER_TWO;
-
 export const createUserInput = {
   username: USER_ONE_DETAILS.username,
   password: USER_ONE_DETAILS.password,
@@ -221,7 +217,7 @@ export const userContactsMock = [
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,
-  members: [currentChatItemAdminMock, userContactsMock[0].contactDetails],
+  members: [USER_ONE, userContactsMock[0].contactDetails],
   avatar: null,
 };
 
@@ -229,7 +225,7 @@ export const NewGroupChatDetails = {
   name: "Group Chat",
   description: null,
   members: [
-    currentChatItemAdminMock,
+    USER_ONE,
     userContactsMock[0].contactDetails,
     userContactsMock[1].contactDetails,
   ],

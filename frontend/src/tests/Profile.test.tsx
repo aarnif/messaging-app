@@ -5,7 +5,7 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Profile from "../pages/Settings/Profile";
-import { currentChatItemAdminMock } from "./helpers/data";
+import { USER_ONE } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
 import {
@@ -26,13 +26,13 @@ vi.mock("react-router", async () => {
   };
 });
 
-const { name, username } = currentChatItemAdminMock;
+const { name, username } = USER_ONE;
 
 const renderComponent = (
   mocks: MockLink.MockedResponse[] = [editProfile24h],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentChatItemAdminMock,
+    currentUser: USER_ONE,
   });
 
   return render(

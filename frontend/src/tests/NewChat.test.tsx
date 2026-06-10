@@ -7,10 +7,10 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import NewChat from "../pages/NewChat";
 import {
-  currentChatItemAdminMock,
   MESSAGE_DETAILS,
   NewGroupChatDetails,
   NewPrivateChatDetails,
+  USER_ONE,
   USER_ONE_DETAILS,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
@@ -41,7 +41,7 @@ const renderComponent = (
   ],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentChatItemAdminMock,
+    currentUser: USER_ONE,
   });
 
   return render(
