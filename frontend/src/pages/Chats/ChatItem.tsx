@@ -2,7 +2,7 @@ import type {
   ChatItem as ChatItemType,
   User,
 } from "../../__generated__/graphql";
-import { formatDisplayDate, getChatName, truncateText } from "../../helpers";
+import { formatDisplayDate, truncateText } from "../../helpers";
 
 const ChatItem = ({
   currentUser,
@@ -36,7 +36,7 @@ const ChatItem = ({
       <div className="flex w-full flex-col gap-1 border-b border-slate-200 dark:border-slate-700">
         <div className="flex items-center justify-between">
           <h2 className="text-sm font-bold text-slate-900 dark:text-slate-50">
-            {getChatName(chat, currentUser?.id ?? "")}
+            {chat.name}
           </h2>
           {formattedTime && (
             <p className="text-xs font-medium text-slate-700 dark:text-slate-200">

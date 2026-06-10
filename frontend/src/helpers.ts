@@ -28,17 +28,6 @@ export const formatDisplayDate = (
 export const truncateText = (text: string, maxLength: number = 20): string =>
   text.length > maxLength ? text.slice(0, maxLength) + "..." : text;
 
-export const getChatName = (chat: ChatItem, currentUserId: string): string => {
-  if (chat.isGroupChat) {
-    return chat.name || "Group Chat";
-  }
-
-  const otherMember = chat.members.find(
-    (member) => member.userId !== currentUserId,
-  );
-  return otherMember?.name || "Private Chat";
-};
-
 export const isValidChatForUser = (
   chat: ChatItem | undefined | null,
   currentUser: User | undefined | null,

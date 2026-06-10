@@ -19,7 +19,6 @@ import {
   CHAT_ITEM_UPDATED,
 } from "../../graphql/subscriptions";
 import {
-  getChatName,
   isValidChatForUser,
   updateChatByIdCache,
   updateUserChatsCache,
@@ -71,7 +70,6 @@ const ListMenu = ({
             ? {
                 ...updatedChat,
                 unreadCount: isViewingChat ? 0 : updatedChat.unreadCount,
-                name: getChatName(updatedChat, currentUser!.id),
               }
             : chat,
         ),
@@ -93,7 +91,7 @@ const ListMenu = ({
 
       updateUserChatsCache(client.cache, searchWord.value, (chats) => [
         ...chats,
-        { ...createdChat, name: getChatName(createdChat, currentUser!.id) },
+        createdChat,
       ]);
     },
   });
