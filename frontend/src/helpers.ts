@@ -41,7 +41,7 @@ export const isValidChatForUser = (
 const sortChatsByLatestMessage = (chats: ChatItem[]) =>
   chats.sort((a, b) => b.latestMessage.createdAt - a.latestMessage.createdAt);
 
-export const updateUserChatsCache = (
+const updateUserChatsQuery = (
   cache: ApolloCache,
   searchValue: string,
   updateFn: (chats: ChatItem[]) => ChatItem[],
@@ -52,9 +52,7 @@ export const updateUserChatsCache = (
       variables: { search: searchValue },
     },
     (existingData) => {
-      if (!existingData?.allChatsByUser) {
-        return existingData;
-      }
+      if (!existingData?.allChatsByUser) return existingData;
       return {
         allChatsByUser: sortChatsByLatestMessage(
           updateFn(existingData.allChatsByUser),
@@ -62,6 +60,18 @@ export const updateUserChatsCache = (
       };
     },
   );
+};
+
+export const updateUserChatsCache = (
+  cache: ApolloCache,
+  searchValue: string,
+  updateFn: (chats: ChatItem[]) => ChatItem[],
+) => {
+  updateUserChatsQuery(cache, "", updateFn);
+
+  if (searchValue) {
+    updateUserChatsQuery(cache, searchValue, updateFn);
+  }
 };
 
 export const updateChatByIdCache = (
