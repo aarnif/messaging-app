@@ -9,9 +9,9 @@ import NotificationProvider from "../components/NotificationProvider";
 import Contact from "../pages/Contact";
 import {
   CONTACT_DETAILS,
-  currentChatItemAdminMock,
   NewPrivateChatDetails,
   PRIVATE_CHAT_DETAILS,
+  USER_ONE,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import { mockMatch, mockNavigate, mockUseOutletContext } from "./helpers/mocks";
@@ -48,7 +48,7 @@ const renderComponent = (
   mocks: MockLink.MockedResponse[] = [findContactById, isBlockedByUserFalse],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentChatItemAdminMock,
+    currentUser: USER_ONE,
   });
 
   return render(

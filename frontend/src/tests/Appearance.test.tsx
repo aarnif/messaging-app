@@ -6,7 +6,7 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import Appearance from "../pages/Settings/Appearance";
-import { currentChatItemAdminMock } from "./helpers/data";
+import { USER_ONE } from "./helpers/data";
 import { assertErrorModalAndDismissal } from "./helpers/funcs";
 import {
   mockNavigate,
@@ -35,7 +35,7 @@ Object.defineProperty(window, "matchMedia", windowMockContent);
 
 const renderComponent = (mocks = [editProfile24h]) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentChatItemAdminMock,
+    currentUser: USER_ONE,
   });
 
   return render(

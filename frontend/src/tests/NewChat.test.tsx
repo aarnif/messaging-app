@@ -7,11 +7,10 @@ import { beforeEach, describe, expect, test, vi } from "vitest";
 import NotificationProvider from "../components/NotificationProvider";
 import NewChat from "../pages/NewChat";
 import {
-  currentChatItemAdminMock,
   MESSAGE_DETAILS,
   NewGroupChatDetails,
   NewPrivateChatDetails,
-  USER_ONE_DETAILS,
+  USER_ONE,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
 import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
@@ -41,7 +40,7 @@ const renderComponent = (
   ],
 ) => {
   mockUseOutletContext.mockReturnValue({
-    currentUser: currentChatItemAdminMock,
+    currentUser: USER_ONE,
   });
 
   return render(
@@ -73,9 +72,7 @@ describe("<NewChat />", () => {
         screen.queryByText(
           NewPrivateChatDetails.members
             ?.map((member) =>
-              member?.username === USER_ONE_DETAILS.username
-                ? "You"
-                : member?.name,
+              member?.username === USER_ONE.username ? "You" : member?.name,
             )
             .join(", "),
         ),
@@ -94,9 +91,7 @@ describe("<NewChat />", () => {
         screen.getByText(
           NewGroupChatDetails.members
             ?.map((member) =>
-              member?.username === USER_ONE_DETAILS.username
-                ? "You"
-                : member?.name,
+              member?.username === USER_ONE.username ? "You" : member?.name,
             )
             .join(", "),
         ),

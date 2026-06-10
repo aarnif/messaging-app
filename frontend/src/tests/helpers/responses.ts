@@ -108,7 +108,6 @@ import {
   chatItemsMock,
   CONTACT_DETAILS,
   createUserInput,
-  currentChatItemAdminMock,
   GROUP_CHAT_DETAILS,
   invalidLoginPassword,
   LOGIN_TOKEN,
@@ -127,7 +126,7 @@ export const meMock: MockLink.MockedResponse<MeQuery, MeQueryVariables> = {
   },
   result: {
     data: {
-      me: currentChatItemAdminMock,
+      me: USER_ONE,
     },
   },
 };
@@ -155,7 +154,7 @@ export const createUserMock: MockLink.MockedResponse<
   },
   result: {
     data: {
-      createUser: currentChatItemAdminMock,
+      createUser: USER_ONE,
     },
   },
 };
@@ -824,9 +823,9 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
-        is24HourClock: currentChatItemAdminMock.is24HourClock,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
+        is24HourClock: USER_ONE.is24HourClock,
         isDarkMode: true,
       },
     },
@@ -834,7 +833,7 @@ export const editProfileDarkModeOn: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: {
-        ...currentChatItemAdminMock,
+        ...USER_ONE,
         isDarkMode: true,
       },
     },
@@ -849,9 +848,9 @@ export const editProfileDarkModeOnError: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
-        is24HourClock: currentChatItemAdminMock.is24HourClock,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
+        is24HourClock: USER_ONE.is24HourClock,
         isDarkMode: true,
       },
     },
@@ -867,16 +866,16 @@ export const editProfileDarkModeOff: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
-        is24HourClock: currentChatItemAdminMock.is24HourClock,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
+        is24HourClock: USER_ONE.is24HourClock,
         isDarkMode: false,
       },
     },
   },
   result: {
     data: {
-      editProfile: currentChatItemAdminMock,
+      editProfile: USER_ONE,
     },
   },
 };
@@ -889,8 +888,8 @@ export const editProfile24h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
         is24HourClock: true,
         isDarkMode: false,
       },
@@ -898,7 +897,7 @@ export const editProfile24h: MockLink.MockedResponse<
   },
   result: {
     data: {
-      editProfile: currentChatItemAdminMock,
+      editProfile: USER_ONE,
     },
   },
 };
@@ -911,8 +910,8 @@ export const editProfile12h: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
         is24HourClock: false,
         isDarkMode: false,
       },
@@ -921,7 +920,7 @@ export const editProfile12h: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: {
-        ...currentChatItemAdminMock,
+        ...USER_ONE,
         is24HourClock: false,
         isDarkMode: false,
       },
@@ -937,8 +936,8 @@ export const editProfile12hError: MockLink.MockedResponse<
     query: EDIT_PROFILE,
     variables: {
       input: {
-        name: currentChatItemAdminMock.name,
-        about: currentChatItemAdminMock.about,
+        name: USER_ONE.name,
+        about: USER_ONE.about,
         is24HourClock: false,
         isDarkMode: false,
       },
@@ -964,7 +963,7 @@ export const editProfileUpdate: MockLink.MockedResponse<
   },
   result: {
     data: {
-      editProfile: currentChatItemAdminMock,
+      editProfile: USER_ONE,
     },
   },
 };
@@ -1003,7 +1002,7 @@ export const changePassword: MockLink.MockedResponse<
   },
   result: {
     data: {
-      changePassword: currentChatItemAdminMock,
+      changePassword: USER_ONE,
     },
   },
 };
