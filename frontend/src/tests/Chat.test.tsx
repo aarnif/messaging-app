@@ -12,7 +12,6 @@ import {
   GROUP_CHAT_DETAILS,
   MESSAGE_DETAILS,
   USER_ONE,
-  USER_ONE_DETAILS,
   USER_TWO,
 } from "./helpers/data";
 import {
@@ -269,7 +268,7 @@ describe("<Chat />", () => {
         screen.getByText(
           GROUP_CHAT_DETAILS.members
             .map((member) =>
-              member.name === USER_ONE_DETAILS.name ? "You" : member.name,
+              member.name === USER_ONE.name ? "You" : member.name,
             )
             .join(", "),
         ),
@@ -277,7 +276,7 @@ describe("<Chat />", () => {
       GROUP_CHAT_DETAILS.messages.forEach((message) => {
         const { sender, content, createdAt } = message;
         const { name } = sender;
-        if (name === USER_ONE_DETAILS.name) {
+        if (name === USER_ONE.name) {
           expect(screen.getByRole("heading", { name: "You" })).toBeDefined();
         } else {
           expect(screen.getByRole("heading", { name: name })).toBeDefined();
@@ -338,7 +337,7 @@ describe("<Chat />", () => {
     await waitFor(() => {
       expect(screen.getByTestId("notification-message")).toBeDefined();
       expect(
-        screen.getByText(`${USER_ONE_DETAILS.name} created the group`),
+        screen.getByText(`${USER_ONE.name} created the group`),
       ).toBeDefined();
     });
   });
@@ -778,7 +777,7 @@ describe("<Chat />", () => {
     renderComponent();
 
     const originalContent = GROUP_CHAT_DETAILS.messages.find(
-      (message) => message.sender.name === USER_ONE_DETAILS.name,
+      (message) => message.sender.name === USER_ONE.name,
     )!.content;
 
     await openMessageEditMode(user);

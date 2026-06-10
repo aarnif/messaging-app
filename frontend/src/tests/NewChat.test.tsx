@@ -11,7 +11,6 @@ import {
   NewGroupChatDetails,
   NewPrivateChatDetails,
   USER_ONE,
-  USER_ONE_DETAILS,
 } from "./helpers/data";
 import { assertErrorModalAndDismissal, sendNewMessage } from "./helpers/funcs";
 import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
@@ -73,9 +72,7 @@ describe("<NewChat />", () => {
         screen.queryByText(
           NewPrivateChatDetails.members
             ?.map((member) =>
-              member?.username === USER_ONE_DETAILS.username
-                ? "You"
-                : member?.name,
+              member?.username === USER_ONE.username ? "You" : member?.name,
             )
             .join(", "),
         ),
@@ -94,9 +91,7 @@ describe("<NewChat />", () => {
         screen.getByText(
           NewGroupChatDetails.members
             ?.map((member) =>
-              member?.username === USER_ONE_DETAILS.username
-                ? "You"
-                : member?.name,
+              member?.username === USER_ONE.username ? "You" : member?.name,
             )
             .join(", "),
         ),
