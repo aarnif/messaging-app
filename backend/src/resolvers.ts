@@ -295,6 +295,20 @@ export const resolvers: Resolvers = {
             ],
           },
         ],
+        order: [
+          [
+            { model: Contact, as: "contacts" },
+            { model: User, as: "contactDetails" },
+            "name",
+            "ASC",
+          ],
+          [
+            { model: Contact, as: "contacts" },
+            { model: User, as: "contactDetails" },
+            "username",
+            "ASC",
+          ],
+        ],
       });
 
       return user?.contacts || [];
