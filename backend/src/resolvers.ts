@@ -7,6 +7,7 @@ import {
   CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
   CHAT_ORDER_MEMBERS_AND_MESSAGES,
   CHAT_WITH_MEMBERS_AND_MESSAGES,
+  CONTACTS_ORDER_BY_NAME_AND_USERNAME,
 } from "./constants.js";
 import { sequelize } from "./db.js";
 import { dateScalar, getChatName, validateInput } from "./helpers.js";
@@ -233,6 +234,7 @@ export const resolvers: Resolvers = {
             ],
           },
         ],
+        order: CONTACTS_ORDER_BY_NAME_AND_USERNAME,
       });
 
       const chatMemberIds = userPrivateChats?.chats?.map(
@@ -281,6 +283,7 @@ export const resolvers: Resolvers = {
             ],
           },
         ],
+        order: CONTACTS_ORDER_BY_NAME_AND_USERNAME,
       });
 
       return user?.contacts || [];
