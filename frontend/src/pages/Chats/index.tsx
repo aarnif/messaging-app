@@ -7,12 +7,18 @@ import NewGroupChatModal from "../../components/NewGroupChatModal";
 import NewPrivateChatModal from "../../components/NewPrivateChatModal";
 import Spinner from "../../components/ui/Spinner";
 import { ME } from "../../graphql/queries";
-import type { InputField } from "../../types";
+import useField from "../../hooks/useField";
 import ListMenu from "./ListMenu";
 
-const Chats = ({ searchWord }: { searchWord: InputField }) => {
+const Chats = () => {
   const { data, loading: meLoading } = useQuery(ME);
   const currentUser = data?.me;
+
+  const searchWord = useField(
+    "search-chats",
+    "text",
+    "Search by title or description...",
+  );
 
   const [isNewChatDropdownOpen, setIsNewChatDropdownOpen] = useState(false);
   const [isNewPrivateChatModalOpen, setIsNewPrivateChatModalOpen] =

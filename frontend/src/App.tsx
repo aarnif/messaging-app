@@ -2,7 +2,6 @@ import { useState } from "react";
 import { Navigate, Route, Routes } from "react-router";
 import NotificationProvider from "./components/NotificationProvider";
 import SelectionPrompt from "./components/ui/SelectionPrompt";
-import useField from "./hooks/useField";
 import Chat from "./pages/Chat";
 import Chats from "./pages/Chats";
 import Contact from "./pages/Contact";
@@ -20,11 +19,6 @@ const App = () => {
   const [token, setToken] = useState(
     localStorage.getItem("messaging-app-token") || null,
   );
-  const searchWord = useField(
-    "search-chats",
-    "text",
-    "Search by title or description...",
-  );
 
   return (
     <NotificationProvider>
@@ -39,7 +33,7 @@ const App = () => {
             )
           }
         >
-          <Route path="/" element={<Chats searchWord={searchWord} />}>
+          <Route path="/" element={<Chats />}>
             <Route
               index
               element={
