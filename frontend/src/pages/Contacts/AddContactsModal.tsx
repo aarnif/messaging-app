@@ -43,7 +43,12 @@ const AddContactsModal = ({
       console.log(error);
       showMessage("Failed to Add Contacts");
     },
-    refetchQueries: [ALL_CONTACTS_BY_USER],
+    refetchQueries: [
+      {
+        query: ALL_CONTACTS_BY_USER,
+        variables: { search: "" },
+      },
+    ],
   });
 
   useEffect(() => {
