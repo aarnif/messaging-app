@@ -1,5 +1,5 @@
 import type { Includeable, Order } from "sequelize";
-import { Message, User } from "./models/index.js";
+import { Contact, Message, User } from "./models/index.js";
 
 export const CHAT_INCLUDE_MEMBERS_AND_MESSAGES: Includeable[] = [
   {
@@ -26,3 +26,18 @@ export const CHAT_WITH_MEMBERS_AND_MESSAGES = {
   include: CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
   order: CHAT_ORDER_MEMBERS_AND_MESSAGES,
 };
+
+export const CONTACTS_ORDER_BY_NAME_AND_USERNAME: Order = [
+  [
+    { model: Contact, as: "contacts" },
+    { model: User, as: "contactDetails" },
+    "name",
+    "ASC",
+  ],
+  [
+    { model: Contact, as: "contacts" },
+    { model: User, as: "contactDetails" },
+    "username",
+    "ASC",
+  ],
+];
