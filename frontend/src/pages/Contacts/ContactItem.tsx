@@ -11,7 +11,7 @@ const ContactItem = ({ contact }: { contact: Contact }) => {
       className={({ isActive }) =>
         isActive
           ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700 p-2"
-          : "rounded-lg transition-colors hover:bg-slate-100 dark:hover:bg-slate-700 p-2"
+          : "rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 p-2"
       }
     >
       <UserCard user={contactDetails} borderVariant="bottom" />
