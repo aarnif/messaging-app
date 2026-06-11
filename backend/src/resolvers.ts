@@ -324,6 +324,10 @@ export const resolvers: Resolvers = {
           },
           ...whereClause,
         },
+        order: [
+          ["name", "ASC"],
+          ["username", "ASC"],
+        ],
       });
 
       return availableUsers;
