@@ -19,7 +19,7 @@ import {
   assertErrorMessageAndDismissal,
   selectContacts,
 } from "./helpers/funcs";
-import { mockChatsSearchWord, mockNavigate } from "./helpers/mocks";
+import { mockNavigate } from "./helpers/mocks";
 import {
   allChatsByUser,
   allChatsByUserEmpty,
@@ -60,7 +60,7 @@ const renderComponent = (
   render(
     <MockedProvider mocks={mocks}>
       <MemoryRouter>
-        <Chats searchWord={mockChatsSearchWord} />
+        <Chats />
       </MemoryRouter>
     </MockedProvider>,
   );
