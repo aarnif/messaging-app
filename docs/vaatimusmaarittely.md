@@ -47,3 +47,19 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
   - [x] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
 
 - [x] **Käyttäjä voi kirjautua ulos järjestelmästä**
+
+## Jatkokehitysideoita
+
+Sovellus toimii tällä hetkellä, mutta esim. seuraavat toiminnallisuudet voisivat parantaa sen käytettävyyttä.
+
+- Käyttäjä voi lisätä profiilikuvan
+- Käyttäjä voi nollata unohdetun salasanan
+- Käyttäjä voi lisätä ryhmächatille kuvan
+- Käyttäjä voi jakaa kuvia chatissa
+- Käyttäjä voi jakaa videoita chatissa
+- Käyttäjä voi poistaa käyttäjätunnuksen
+- Käyttäjä voi hakea viestejä
+- Käyttäjä voi reagoida viesteihin emojilla
+- Käyttäjä voi nähdä muiden käyttäjien statuksen
+- Käyttäjä voi nähdä, milloin muut käyttäjät ovat viimeksi olleet paikalla
+- Käyttäjä voi nähdä, kun muut käyttäjät kirjoittavat viestiä chatissa
