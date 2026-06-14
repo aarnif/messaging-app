@@ -255,3 +255,14 @@ Ei muutoksia
 - Refaktoroi GrahpQL-resolverien koodi
 - Käytä fragmentteja GrahpQL-operaatioissa
 - Refaktoroi komponenttitestien data
+
+## Viikko 38 (8.6-14.6.2026)
+
+- Yhdistä yksittäisen kontaktin kyselyt findContact-kyselyksi
+- Paranna chatin info sivun ulkoasua
+- Luo komponentti UserCard toisteiselle käyttäjäkortti koodille
+- Korjaa bugi: Uusi chatti ei näkynyt käyttäjän chateissa, jos chattien hakukenttä oli aktiivinen
+- Korjaa bugi: Uusi kontakti ei näkynyt käyttäjän kontakteissa, jos kontaktien hakukenttä oli aktiivinen
+- Korjaa väärä kontakti-linkin taustaväri
+- Näytä käyttäjät aakkojärjestyksessä nimen perusteella
+- Lisää jatkokehitysideat sovelluksen vaatimusmäärittelyyn
