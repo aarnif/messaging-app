@@ -172,4 +172,12 @@
 |  5.6  | 1    | koodin refaktorointi                          |
 |  6.6  | 2    |                                               |
 |  7.6  | 1.5  |                                               |
-|  yht  | 315  |                                               |
+|  8.6  | 2    | koodin refaktorointi                          |
+|  9.6  | 3    |                                               |
+| 10.6  | 1    |                                               |
+| 10.6  | 1    | bugin korjaus                                 |
+| 11.6  | 1    |                                               |
+| 11.6  | 2    | koodin refaktorointi                          |
+| 12.6  | 0.5  |                                               |
+| 12.6  | 0.5  | dokumentaation päivitys                       |
+|  yht  | 326  |                                               |
