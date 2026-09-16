@@ -2,7 +2,7 @@ import bcrypt from "bcrypt";
 import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
-import config from "../config.js";
+import config, { isDevelopment } from "../config.js";
 import {
   CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
   CHAT_ORDER_MEMBERS_AND_MESSAGES,
@@ -1447,6 +1447,11 @@ export const resolvers: Resolvers = {
       }
     },
     resetDatabase: async () => {
+      if (!isDevelopment) {
+        throw new GraphQLError("Not available", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      }
       await emptyDatabase();
       await createDatabase();
       return true;
