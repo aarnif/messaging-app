@@ -59,7 +59,7 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
 3. Asenna kaikki riippuvuudet
 
    ```bash
-   npm run install
+   npm install
    ```
 
 4. Määritä ympäristömuuttujat
@@ -71,51 +71,45 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
    ```bash
    DATABASE_URL=YOUR_DATABASE_URL_HERE
    JWT_SECRET=YOUR_JWT_SECRET_HERE
-   SERVER_URL=YOUR_SERVER_URL_HERE
-   WS_URL=YOUR_WS_URL_HERE
-   REDIS_URI=YOUR_REDIS_URI_HERE
-   CI=false
    ```
 
-   **Vaihtoehto A: Docker PostgreSQL ja Redis (suositeltava kehitykseen)**
+   **Vaihtoehto A: Docker PostgreSQL (suositeltava kehitykseen)**
 
-   Jos käytät Docker-kontteja, ympäristömuuttujien tulisi olla:
+   Jos käytät Docker-konttia, ympäristömuuttujien tulisi olla:
 
    ```bash
    DATABASE_URL=postgres://postgres:mysecretpassword@localhost:6001/postgres
    JWT_SECRET=your-development-secret-key
-   SERVER_URL=http://localhost:4000
-   WS_URL=ws://localhost:4000
-   REDIS_URI=redis://localhost:6379
-   CI=false
    ```
 
-   Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa (jätä ne käyntiin):
+   Käynnistä tietokanta Docker-kontissa uudessa terminaalissa (jätä se käyntiin):
 
    ```bash
    npm run backend:db:start
    ```
 
-   **Vaihtoehto B: Oma PostgreSQL ja Redis**
+   Komento käynnistää myös Redis-kontin, jota tarvitaan vain tuotantotilassa ajettaessa.
 
-   Määritä `DATABASE_URL` ja `REDIS_URI` osoittamaan omiin tietokantoihisi.
+   **Vaihtoehto B: Oma PostgreSQL**
+
+   Määritä `DATABASE_URL` osoittamaan omaan tietokantaasi.
 
    **Frontend**
 
-   Luo `.env.development` ja `.env.production` tiedostot `frontend`-hakemistoon seuraavilla tiedoilla:
+   Luo `.env.development` ja `.env.production` tiedostot `frontend`-hakemistoon (jälkimmäinen tuotantoversion paikallista esikatselua varten) seuraavilla tiedoilla:
 
    `.env.development`:
 
    ```bash
-   VITE_API_URL=http://localhost:4000
-   VITE_WS_URL=ws://localhost:4000
+   VITE_SERVER_URL=http://localhost:4000/graphql
+   VITE_WS_URL=ws://localhost:4000/subscriptions
    ```
 
    `.env.production`:
 
    ```bash
-   VITE_API_URL=YOUR_PRODUCTION_API_URL_HERE
-   VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
+   VITE_SERVER_URL=http://localhost:4000/graphql
+   VITE_WS_URL=ws://localhost:4000/subscriptions
    ```
 
 5. Lisää seed data tietokantaan
@@ -138,24 +132,36 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
 
 ## Sovelluksen käynnistäminen Docker-kontissa
 
-1. Luo tuotantoympäristössä käytettävän sovelluksen Docker-image
+1. Määritä ympäristömuuttujat
+
+   **Backend**
+
+   Käytä `backend`-hakemiston `.env`-tiedostossa seuraavia muuttujia:
+
+   ```bash
+   NODE_ENV=production
+   DATABASE_URL=postgres://postgres:mysecretpassword@host.docker.internal:6001/postgres
+   JWT_SECRET=your-development-secret-key
+   REDIS_URI=redis://host.docker.internal:6379
+   ```
+
+2. Luo tuotantoympäristössä käytettävän sovelluksen Docker-image
 
    ```bash
    docker build -t messaging-app .
    ```
 
-2. Käynnistä sovellus Docker-kontissa
+3. Käynnistä sovellus Docker-kontissa
 
    ```bash
    docker run --env-file backend/.env -p 4000:4000 messaging-app
    ```
 
-
 ## npm-komennot
 
 ### Yleiset
 
-- `npm run install` - Asenna kaikki sovellusriippuvuudet
+- `npm install` - Asenna kaikki sovellusriippuvuudet
 
 ### Tietokanta
 
@@ -167,6 +173,7 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
 - `npm run backend:dev` - Käynnistä backend kehitystilassa
 - `npm run backend:prod` - Käynnistä backend tuotantotilassa
 - `npm run backend:test` - Suorita backendin testit
+- `npm run backend:test:coverage` - Suorita backendin testit kattavuusraportin kanssa
 - `npm run backend:typecheck` - Suorita TypeScript-tyyppitarkistus backendille
 - `npm run backend:lint` - Suorita linttaus backendin koodille
 - `npm run backend:generate` - Generoi GraphQL-tyypit
