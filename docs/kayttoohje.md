@@ -1,65 +1,8 @@
 # Käyttöohje
 
-## Sovelluksen konfigurointi
+Voit kokeilla sovellusta osoitteessa [https://messaging-app-2frl.onrender.com](https://messaging-app-2frl.onrender.com/).
 
-Luo `.env`-tiedosto `backend`-hakemistoon seuraavilla tiedoilla:
-
-```bash
-DATABASE_URL=postgres://postgres:example@localhost:6001/postgres
-JWT_SECRET=YOUR-SECRET-KEY
-SERVER_URL=http://localhost:4000
-WS_URL=ws://localhost:4000
-REDIS_URI=redis://localhost:6379
-CI=false
-```
-
-Luo `.env.development` ja `.env.production` tiedostot `frontend`-hakemistoon seuraavilla tiedoilla:
-
-`.env.development`:
-
-```bash
-VITE_API_URL=http://localhost:4000
-VITE_WS_URL=ws://localhost:4000
-```
-
-`.env.production`:
-
-```bash
-VITE_API_URL=YOUR_PRODUCTION_API_URL_HERE
-VITE_WS_URL=YOUR_PRODUCTION_WS_URL_HERE
-```
-
-## Sovelluksen käynnistäminen
-
-1. Asenna sovelluksen vaatimat riippuvuudet:
-
-   ```bash
-   npm run install
-   ```
-
-2. Käynnistä tietokanta ja Redis Docker-konteissa uudessa terminaalissa:
-
-   ```bash
-   npm run backend:db:start
-   ```
-
-3. Lisää seed data tietokantaan:
-
-   ```bash
-   npm run backend:db:populate
-   ```
-
-4. Käynnistä backend kehitystilassa uudessa terminaalissa:
-
-   ```bash
-   npm run backend:dev
-   ```
-
-5. Käynnistä frontend kehitystilassa uudessa terminaalissa:
-
-   ```bash
-   npm run frontend:dev
-   ```
+Ohjeet sovelluksen käynnistämiseen paikallisesti löytyvät [README:n kehitys-osiosta](../README.md#kehitys).
 
 ## Kirjautuminen
 
