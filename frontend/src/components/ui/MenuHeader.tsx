@@ -1,4 +1,4 @@
-import { MdOpenInNew } from "react-icons/md";
+import { MdAdd } from "react-icons/md";
 import type { InputField } from "../../types";
 import SearchBox from "./SearchBox";
 
@@ -19,11 +19,12 @@ const MenuHeader = ({
         {title}
       </h1>
       <button
+        type="button"
         data-testid={buttonTestId}
         onClick={callback}
-        className="cursor-pointer"
+        className="flex h-8 w-8 cursor-pointer items-center justify-center rounded-full bg-green-600 text-white hover:text-slate-200 shadow-[0px_2px] shadow-green-900 transition hover:bg-green-700 focus:outline-none active:translate-y-0.5 active:shadow-[0px_0px] dark:bg-green-500  dark:hover:bg-green-600"
       >
-        <MdOpenInNew className="h-6 w-6 fill-current text-slate-700 hover:text-slate-900 dark:text-slate-100 dark:hover:text-slate-300" />
+        <MdAdd className="h-6 w-6 fill-current" />
       </button>
     </div>
     <SearchBox searchWord={searchWord} />
