@@ -3,6 +3,17 @@ import { FaAddressBook, FaCog, FaComments, FaSignOutAlt } from "react-icons/fa";
 import { NavLink, useNavigate } from "react-router";
 import useModal from "../hooks/useModal";
 
+const Tooltip = ({ title }: { title: string }) => (
+  <div
+    aria-hidden="true"
+    className="hidden sm:block opacity-0 group-hover:opacity-100 group-focus-visible:opacity-100 group-hover:translate-x-2 text-center whitespace-nowrap absolute left-12 p-2 text-slate-900
+    dark:text-white font-bold bg-purple-200 dark:bg-purple-500 rounded-lg transition pointer-events-none before:absolute before:top-1/2 before:-left-1 before:size-2 before:-translate-y-1/2
+    before:rotate-45 before:bg-inherit before:content-['']"
+  >
+    {title}
+  </div>
+);
+
 const Menu = ({
   setToken,
 }: {
@@ -24,9 +35,9 @@ const Menu = ({
   const styles = {
     container: {
       default:
-        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-slate-900 hover:text-slate-700 dark:text-slate-50 dark:hover:text-slate-200",
+        "relative group flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-slate-900 hover:text-slate-700 dark:text-slate-50 dark:hover:text-slate-200",
       active:
-        "flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-green-600 dark:text-green-500",
+        "relative group flex gap-0.5 flex-col items-center justify-center py-2 sm:px-4 cursor-pointer text-xs font-medium text-green-600 dark:text-green-500",
     },
     title: "sm:hidden",
     icon: "h-7 w-7",
@@ -76,6 +87,7 @@ const Menu = ({
         >
           {item.icon}
           <p className={styles.title}>{item.title}</p>
+          <Tooltip title={item.title} />
         </NavLink>
       ))}
       <button
@@ -94,6 +106,7 @@ const Menu = ({
       >
         <FaSignOutAlt className={styles.icon} />
         <p className={styles.title}>Log Out</p>
+        <Tooltip title="Log Out" />
       </button>
     </div>
   );
