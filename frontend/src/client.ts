@@ -34,6 +34,19 @@ const wsLink = new GraphQLWsLink(
         Authorization: token ? `Bearer ${token}` : "",
       };
     },
+    retryAttempts: Infinity,
+    shouldRetry: () => true,
+    retryWait: (retries) =>
+      new Promise<void>((resolve) =>
+        setTimeout(resolve, Math.min(1000 * 2 ** retries, 10000)),
+      ),
+    on: {
+      connected: (_socket, _payload, wasRetry) => {
+        if (wasRetry) {
+          void client.refetchQueries({ include: "active" });
+        }
+      },
+    },
   }),
 );
 
@@ -71,6 +84,7 @@ const cache = new InMemoryCache({
 const client = new ApolloClient({
   link: splitLink,
   cache: cache,
+  defaultOptions: { watchQuery: { notifyOnNetworkStatusChange: false } },
 });
 
 export default client;
