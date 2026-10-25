@@ -1,4 +1,5 @@
 import bcrypt from "bcrypt";
+import { v2 as cloudinary } from "cloudinary";
 import { GraphQLError } from "graphql";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
@@ -660,13 +661,14 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const { name, about, is24HourClock, isDarkMode } = input;
+      const { name, about, is24HourClock, isDarkMode, image } = input;
 
       validateInput(editProfileInputSchema, {
         name,
         about,
         is24HourClock,
         isDarkMode,
+        image,
       });
 
       const user = await User.findByPk(context.currentUser.id);
@@ -685,6 +687,19 @@ export const resolvers: Resolvers = {
         user.about = about || null;
         user.is24HourClock = is24HourClock;
         user.isDarkMode = isDarkMode;
+
+        if (image) {
+          const { secure_url } = await cloudinary.uploader.upload(image, {
+            public_id: `avatars/${user.id}`,
+            overwrite: true,
+            invalidate: true,
+            allowed_formats: ["jpg", "png", "webp"],
+            transformation: [
+              { width: 256, height: 256, crop: "thumb", gravity: "face" },
+            ],
+          });
+          user.avatar = secure_url;
+        }
 
         await user.save();
         return user;
