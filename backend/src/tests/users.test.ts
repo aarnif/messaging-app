@@ -1,3 +1,5 @@
+import type { UploadApiOptions } from "cloudinary";
+import { v2 as cloudinary } from "cloudinary";
 import assert from "node:assert";
 import { beforeEach, describe, test } from "node:test";
 import { expectedUser1, user1Details, user1Input } from "./helpers/data.js";
@@ -166,6 +168,7 @@ describeGraphQLSuite("Users", () => {
 
   void describe("Edit profile", () => {
     let token: string;
+    const image = "data:image/png;base64,iVBORw0KGgo=";
 
     beforeEach(async () => {
       await createUser(user1Input);
@@ -296,6 +299,98 @@ describeGraphQLSuite("Users", () => {
         ...expectedUser1,
         isDarkMode: true,
       });
+    });
+
+    void test("fails with image that is not a JPEG, PNG or WebP file", async () => {
+      const responseBody = await editProfile(
+        {
+          name: expectedUser1.name,
+          about: expectedUser1.about,
+          image: "not-an-image",
+          is24HourClock: true,
+          isDarkMode: false,
+        },
+        token,
+      );
+
+      const user = responseBody.data;
+
+      assert.strictEqual(user, null, "User should be null");
+      assertError(
+        responseBody,
+        "Image must be a JPEG, PNG or WebP file",
+        "BAD_USER_INPUT",
+      );
+    });
+
+    void test("succeeds uploading profile image", async (t) => {
+      const avatarUrl =
+        "https://res.cloudinary.com/demo/image/upload/v1/avatars/1.png";
+      let uploadedImage: string | undefined;
+      let uploadOptions: UploadApiOptions | undefined;
+
+      t.mock.method(
+        cloudinary.uploader,
+        "upload",
+        (file: string, options: UploadApiOptions) => {
+          uploadedImage = file;
+          uploadOptions = options;
+          return Promise.resolve({ secure_url: avatarUrl });
+        },
+      );
+
+      const responseBody = await editProfile(
+        {
+          name: expectedUser1.name,
+          about: expectedUser1.about,
+          image,
+          is24HourClock: true,
+          isDarkMode: false,
+        },
+        token,
+      );
+
+      const user = responseBody.data?.editProfile;
+
+      assertUserEquality(user, {
+        ...expectedUser1,
+        avatar: avatarUrl,
+      });
+      assert.strictEqual(uploadedImage, image);
+      assert.strictEqual(
+        uploadOptions?.public_id,
+        `avatars/${expectedUser1.id}`,
+      );
+    });
+
+    void test("fails without changes when image upload fails", async (t) => {
+      t.mock.method(cloudinary.uploader, "upload", () =>
+        Promise.reject(new Error("Upload failed")),
+      );
+
+      const responseBody = await editProfile(
+        {
+          name: "Updated Name",
+          about: expectedUser1.about,
+          image,
+          is24HourClock: true,
+          isDarkMode: false,
+        },
+        token,
+      );
+
+      const user = responseBody.data;
+
+      assert.strictEqual(user, null, "User should be null");
+      assertError(
+        responseBody,
+        "Failed to edit profile",
+        "INTERNAL_SERVER_ERROR",
+      );
+
+      const meBody = await me(token);
+
+      assertUserEquality(meBody.data?.me, expectedUser1);
     });
   });
 
