@@ -10,9 +10,9 @@ const Avatar = ({
   isLatestMessage?: boolean;
 }) => {
   const sizeStyles = {
-    small: "h-10 max-w-10 text-xl",
-    medium: "h-12 max-w-12 text-2xl",
-    large: "h-20 max-w-20 text-4xl",
+    small: "h-10 w-10 text-xl",
+    medium: "h-12 w-12 text-2xl",
+    large: "h-20 w-20 text-4xl",
   };
 
   if (avatar) {
@@ -20,7 +20,7 @@ const Avatar = ({
       <img
         src={avatar}
         alt={`${name}'s avatar`}
-        className={`w-full rounded-full ${sizeStyles[size]} ${isLatestMessage && "animate-fade-in"}`}
+        className={`shrink-0 rounded-full ${sizeStyles[size]} ${isLatestMessage && "animate-fade-in"}`}
       />
     );
   }
@@ -29,7 +29,7 @@ const Avatar = ({
 
   return (
     <div
-      className={`font-oswald flex w-full items-center justify-center rounded-full bg-slate-300 font-medium text-white ${sizeStyles[size]} ${isLatestMessage && "animate-fade-in"}`}
+      className={`font-oswald flex shrink-0 items-center justify-center rounded-full bg-slate-300 font-medium text-white ${sizeStyles[size]} ${isLatestMessage && "animate-fade-in"}`}
     >
       {first?.[0].toUpperCase()}
       {last?.[0].toUpperCase()}
