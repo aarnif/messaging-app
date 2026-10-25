@@ -21,6 +21,14 @@ export const editProfileInputSchema = z.object({
   about: z.string().nullable(),
   is24HourClock: z.boolean(),
   isDarkMode: z.boolean(),
+  image: z
+    .string()
+    .regex(
+      /^data:image\/(jpeg|png|webp);base64,/,
+      "Image must be a JPEG, PNG or WebP file",
+    )
+    .max(7000000, "Image must be smaller than 5 MB")
+    .nullish(),
 });
 
 export const newChatSchema = z

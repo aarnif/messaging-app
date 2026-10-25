@@ -5,7 +5,7 @@ import userEvent, { type UserEvent } from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import Profile from "../pages/Settings/Profile";
-import { USER_ONE } from "./helpers/data";
+import { PROFILE_IMAGE, USER_ONE } from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import { mockNavigate, mockUseOutletContext } from "./helpers/mocks";
 import {
@@ -13,6 +13,7 @@ import {
   changePasswordError,
   editProfile24h,
   editProfileError,
+  editProfileImage,
   editProfileUpdate,
 } from "./helpers/responses";
 
@@ -88,6 +89,19 @@ const editAndConfirmProfile = async (
   }
 
   await user.click(screen.getByTestId("submit-edit-profile-button"));
+};
+
+const profileImage = new File(["image"], "avatar.png", { type: "image/png" });
+
+const pickProfileImage = async (user: UserEvent) => {
+  await user.upload(screen.getByTestId("profile-image-input"), profileImage);
+
+  await waitFor(() => {
+    expect(screen.getByAltText(`${name}'s avatar`)).toHaveAttribute(
+      "src",
+      PROFILE_IMAGE,
+    );
+  });
 };
 
 const openChangePasswordModal = async (user: UserEvent) => {
@@ -236,6 +250,66 @@ describe("<Profile />", () => {
     await editAndConfirmProfile(user, "New Profile Name", "New About Text");
 
     await assertErrorMessageAndDismissal(user, "Failed to edit profile");
+  });
+
+  test("shows preview of picked profile image", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    assertProfilePageLoaded();
+
+    await openEditProfileModal(user);
+
+    await pickProfileImage(user);
+  });
+
+  test("shows spinner while uploading profile image and closes modal", async () => {
+    const user = userEvent.setup();
+    renderComponent([editProfileImage]);
+
+    assertProfilePageLoaded();
+
+    await openEditProfileModal(user);
+
+    await pickProfileImage(user);
+
+    await editAndConfirmProfile(user, "New Profile Name", "New About Text");
+
+    await waitFor(() => {
+      expect(screen.getByTestId("spinner")).toBeDefined();
+      expect(screen.getByText("Saving...")).toBeDefined();
+      expect(screen.getByTestId("submit-edit-profile-button")).toBeDisabled();
+      expect(screen.getByTestId("close-edit-profile-button")).toBeDisabled();
+      expect(
+        screen.getByPlaceholderText("Enter your name here..."),
+      ).toBeDisabled();
+    });
+
+    await waitFor(() => {
+      expect(
+        screen.queryByRole("heading", { name: "Edit Profile" }),
+      ).toBeNull();
+    });
+  });
+
+  test("displays error message when profile image is larger than 5 MB", async () => {
+    const user = userEvent.setup();
+    renderComponent();
+
+    assertProfilePageLoaded();
+
+    await openEditProfileModal(user);
+
+    // Fake the size instead of building a 5 MB file
+    const largeImage = new File(["image"], "large.png", { type: "image/png" });
+    Object.defineProperty(largeImage, "size", { value: 5 * 1024 * 1024 + 1 });
+
+    await user.upload(screen.getByTestId("profile-image-input"), largeImage);
+
+    await assertErrorMessageAndDismissal(
+      user,
+      "Image must be smaller than 5 MB",
+    );
   });
 
   test("shows change password modal when change password button is clicked", async () => {

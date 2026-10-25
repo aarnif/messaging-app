@@ -115,6 +115,7 @@ import {
   MESSAGE_DETAILS,
   nonContactUsersMock,
   PRIVATE_CHAT_DETAILS,
+  PROFILE_IMAGE,
   USER_ONE,
   USER_TWO_DETAILS,
   userContactsMock,
@@ -964,6 +965,34 @@ export const editProfileUpdate: MockLink.MockedResponse<
   result: {
     data: {
       editProfile: USER_ONE,
+    },
+  },
+};
+
+export const editProfileImage: MockLink.MockedResponse<
+  EditProfileMutation,
+  EditProfileMutationVariables
+> = {
+  request: {
+    query: EDIT_PROFILE,
+    variables: {
+      input: {
+        name: "New Profile Name",
+        about: "New About Text",
+        is24HourClock: true,
+        isDarkMode: false,
+        image: PROFILE_IMAGE,
+      },
+    },
+  },
+  // Keep the mutation pending long enough to assert the loading state
+  delay: 100,
+  result: {
+    data: {
+      editProfile: {
+        ...USER_ONE,
+        avatar: "https://res.cloudinary.com/demo/image/upload/avatars/1.png",
+      },
     },
   },
 };

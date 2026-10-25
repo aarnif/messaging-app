@@ -117,6 +117,7 @@ input LoginInput {
 input EditProfileInput {
   name: String!
   about: String
+  image: String
   is24HourClock: Boolean!
   isDarkMode: Boolean!
 }

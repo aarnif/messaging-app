@@ -88,7 +88,7 @@ const start = async (): Promise<ApolloServer<BaseContext>> => {
   app.use(
     "/graphql",
     cors<cors.CorsRequest>(),
-    express.json(),
+    express.json({ limit: "7mb" }),
     expressMiddleware(server, {
       context: async ({ req }) => {
         const auth = req ? req.headers.authorization : null;
