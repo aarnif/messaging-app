@@ -71,7 +71,10 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
    ```bash
    DATABASE_URL=YOUR_DATABASE_URL_HERE
    JWT_SECRET=YOUR_JWT_SECRET_HERE
+   CLOUDINARY_URL=YOUR_CLOUDINARY_URL_HERE
    ```
+
+   Profiilikuvien lisäämiseen tarvitset Cloudinary-tilin. Ilman tiliä jätä `CLOUDINARY_URL` pois, jolloin sovellus toimii muuten normaalisti, mutta profiilikuvan lisääminen epäonnistuu. Virheellinen `CLOUDINARY_URL` estää backendin käynnistymisen.
 
    **Vaihtoehto A: Docker PostgreSQL (suositeltava kehitykseen)**
 
@@ -80,6 +83,7 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
    ```bash
    DATABASE_URL=postgres://postgres:mysecretpassword@localhost:6001/postgres
    JWT_SECRET=your-development-secret-key
+   CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@your_cloud_name
    ```
 
    Käynnistä tietokanta Docker-kontissa uudessa terminaalissa (jätä se käyntiin):
@@ -143,6 +147,7 @@ Tämän lisäksi kielimallien avulla on generoitu koodia, git commit-viestejä j
    DATABASE_URL=postgres://postgres:mysecretpassword@host.docker.internal:6001/postgres
    JWT_SECRET=your-development-secret-key
    REDIS_URI=redis://host.docker.internal:6379
+   CLOUDINARY_URL=cloudinary://<your_api_key>:<your_api_secret>@your_cloud_name
    ```
 
 2. Luo tuotantoympäristössä käytettävän sovelluksen Docker-image
