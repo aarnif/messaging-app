@@ -9,6 +9,8 @@ import type {
 
 export const LOGIN_TOKEN = "fake-token-12345";
 
+export const PROFILE_IMAGE = "data:image/png;base64,aW1hZ2U=";
+
 export const USER_ONE_DETAILS = {
   id: "1",
   name: "User1",

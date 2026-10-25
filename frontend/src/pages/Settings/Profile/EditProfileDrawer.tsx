@@ -136,6 +136,7 @@ const EditProfileDrawer = ({
               {isUploadingImage ? "Saving..." : "Change profile image"}
             </div>
             <input
+              data-testid="profile-image-input"
               ref={fileInputRef}
               hidden={true}
               type="file"
