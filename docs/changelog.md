@@ -266,3 +266,25 @@ Ei muutoksia
 - Korjaa väärä kontakti-linkin taustaväri
 - Näytä käyttäjät aakkojärjestyksessä nimen perusteella
 - Lisää jatkokehitysideat sovelluksen vaatimusmäärittelyyn
+
+## Viikot 39-51 (15.6-13.9.2026)
+
+Ei muutoksia
+
+## Viikko 52 (14.9-20.9.2026)
+
+- Estä tietokannan nollaus muualla kuin kehitys- ja testiympäristössä
+- Korjaa README:n asennusohjeet
+- Korvaa käyttöohjeen asennusohjeet linkillä README:hen ja lisää linkki tuotantoversioon
+- Korvaa Vite-logo sovelluksen omalla faviconilla
+- Päivitä uuden chatin ja uusien kontaktien lisäyspainikkeen ulkoasu
+- Lisää tooltipit sivuvalikon painikkeisiin
+
+## Viikot 53-56 (21.9-18.10.2026)
+
+Ei muutoksia
+
+## Viikko 57 (19.10-25.10.2026)
+
+- Korjaa bugi: GraphQL-tilaukset lakkasivat toimimasta WebSocket-yhteyden katkettua (esim. puhelimen näytön lukituksen jälkeen)
+- Mahdollista profiilikuvan lisääminen (Cloudinary)

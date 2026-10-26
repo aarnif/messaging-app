@@ -43,7 +43,8 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
   - [x] Käyttäjä voi blokata kontaktin
 
 - [x] **Profiili**
-  - [x] Käyttäjä voi vaihtaa päivittää tietojaan, kuten nimensä ja salasanan
+  - [x] Käyttäjä voi päivittää tietojaan, kuten nimensä ja salasanan
+  - [x] Käyttäjä voi lisätä profiilikuvan
   - [x] Käyttäjä voi vaihtaa asetuksia, kuten teeman dark- ja light moden välillä
 
 - [x] **Käyttäjä voi kirjautua ulos järjestelmästä**
@@ -52,7 +53,6 @@ Sovelluksessa on vain yhdenlaisia käyttäjiä, jotka ovat rekisteröityneitä k
 
 Sovellus toimii tällä hetkellä, mutta esim. seuraavat toiminnallisuudet voisivat parantaa sen käytettävyyttä.
 
-- Käyttäjä voi lisätä profiilikuvan
 - Käyttäjä voi nollata unohdetun salasanan
 - Käyttäjä voi lisätä ryhmächatille kuvan
 - Käyttäjä voi jakaa kuvia chatissa
