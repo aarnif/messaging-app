@@ -62,7 +62,7 @@ Pääset katsomaan yksittäisen kontaktin tietoja klikkaamalla kontaktia kontakt
 
 ![Asetukset näkymä](images/asetukset.png)
 
-Pääset muuttamaan asetuksia klikkaamalla sivuvalikon asetukset-painiketta. Tämän jälkeen avautuu näkymä käyttäjän profiilista, mistä voit muuttaa profiilitietoja, kuten näytettävää nimeä ja about-tekstiä, klikkaamalla näkymän oikeassa yläkulmassa olevaa painiketta ja vaihtaa salasanaa klikkaamalla `Change Password` painiketta.
+Pääset muuttamaan asetuksia klikkaamalla sivuvalikon asetukset-painiketta. Tämän jälkeen avautuu näkymä käyttäjän profiilista, mistä voit muuttaa profiilitietoja, kuten profiilikuvaa, näytettävää nimeä ja about-tekstiä, klikkaamalla näkymän oikeassa yläkulmassa olevaa painiketta ja vaihtaa salasanaa klikkaamalla `Change Password` painiketta. Profiilikuvan voit vaihtaa klikkaamalla muokkausnäkymässä `Change profile image` -kohtaa. Kuvan tulee olla JPEG-, PNG- tai WebP-muotoinen ja kooltaan alle 5 Mt.
 
 ![Ulkoasu näkymä](images/ulkoasu.png)
 
