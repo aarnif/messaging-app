@@ -15,6 +15,7 @@ import { sequelize } from "./db.js";
 import {
   dateScalar,
   getChatName,
+  isChatAdmin,
   isChatMember,
   validateInput,
 } from "./helpers.js";
@@ -842,11 +843,22 @@ export const resolvers: Resolvers = {
         CHAT_WITH_MEMBERS_AND_MESSAGES,
       );
 
-      if (!chatToBeDeleted) {
+      if (
+        !chatToBeDeleted ||
+        !(await isChatMember(chatToBeDeleted.id, context.currentUser.id))
+      ) {
         throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
+          },
+        });
+      }
+
+      if (!(await isChatAdmin(chatToBeDeleted.id, context.currentUser.id))) {
+        throw new GraphQLError("Only the chat admin can delete the chat", {
+          extensions: {
+            code: "FORBIDDEN",
           },
         });
       }
@@ -902,11 +914,22 @@ export const resolvers: Resolvers = {
         include: CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
       });
 
-      if (!chatToBeEdited) {
+      if (
+        !chatToBeEdited ||
+        !(await isChatMember(chatToBeEdited.id, context.currentUser.id))
+      ) {
         throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
+          },
+        });
+      }
+
+      if (!(await isChatAdmin(chatToBeEdited.id, context.currentUser.id))) {
+        throw new GraphQLError("Only the chat admin can edit the chat", {
+          extensions: {
+            code: "FORBIDDEN",
           },
         });
       }

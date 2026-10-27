@@ -52,6 +52,16 @@ export const isChatMember = async (
   return member !== null;
 };
 
+export const isChatAdmin = async (
+  chatId: string | number,
+  userId: number,
+): Promise<boolean> => {
+  const admin = await ChatMember.findOne({
+    where: { chatId: Number(chatId), userId, isAdmin: true },
+  });
+  return admin !== null;
+};
+
 export const formatZodErrorMessage = (error: z.ZodError): string => {
   return error.issues.map((issue) => issue.message).join(", ");
 };
