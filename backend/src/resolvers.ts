@@ -1,6 +1,7 @@
 import bcrypt from "bcrypt";
 import { v2 as cloudinary } from "cloudinary";
 import { GraphQLError } from "graphql";
+import { withFilter } from "graphql-subscriptions";
 import jwt from "jsonwebtoken";
 import { Op } from "sequelize";
 import config, { isDevelopment } from "../config.js";
@@ -11,7 +12,12 @@ import {
   CONTACTS_ORDER_BY_NAME_AND_USERNAME,
 } from "./constants.js";
 import { sequelize } from "./db.js";
-import { dateScalar, getChatName, validateInput } from "./helpers.js";
+import {
+  dateScalar,
+  getChatName,
+  isChatMember,
+  validateInput,
+} from "./helpers.js";
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
@@ -26,6 +32,18 @@ import {
   newMessageInputSchema,
   newUserInputSchema,
 } from "./validationSchemas.js";
+
+const filteredSubscription = <Payload>(
+  trigger: string,
+  isAllowed: (payload: Payload, userId: number) => boolean | Promise<boolean>,
+) =>
+  withFilter<unknown, unknown, { currentUser: User | null }>(
+    () => pubsub.asyncIterableIterator<Payload>([trigger]),
+    (payload, _args, context) =>
+      context?.currentUser
+        ? isAllowed(payload as Payload, context.currentUser.id)
+        : false,
+  );
 
 export const resolvers: Resolvers = {
   Date: dateScalar,
@@ -1506,13 +1524,23 @@ export const resolvers: Resolvers = {
   },
   Subscription: {
     messageSent: {
-      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_SENT"]),
+      subscribe: filteredSubscription<{ messageSent: Message }>(
+        "MESSAGE_SENT",
+        (payload, userId) => isChatMember(payload.messageSent.chatId, userId),
+      ),
     },
     messageEdited: {
-      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_EDITED"]),
+      subscribe: filteredSubscription<{ messageEdited: Message }>(
+        "MESSAGE_EDITED",
+        (payload, userId) => isChatMember(payload.messageEdited.chatId, userId),
+      ),
     },
     messageDeleted: {
-      subscribe: () => pubsub.asyncIterableIterator(["MESSAGE_DELETED"]),
+      subscribe: filteredSubscription<{ messageDeleted: Message }>(
+        "MESSAGE_DELETED",
+        (payload, userId) =>
+          isChatMember(payload.messageDeleted.chatId, userId),
+      ),
     },
     chatEdited: {
       subscribe: () => pubsub.asyncIterableIterator(["CHAT_EDITED"]),
