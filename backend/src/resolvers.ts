@@ -1149,6 +1149,15 @@ export const resolvers: Resolvers = {
         });
       }
 
+      if (!(await isChatMember(id, context.currentUser.id))) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
       const t = await sequelize.transaction();
       let notificationMessageId: number | undefined;
 
@@ -1247,6 +1256,15 @@ export const resolvers: Resolvers = {
         content,
         isNotification,
       });
+
+      if (!(await isChatMember(id, context.currentUser.id))) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
 
       const t = await sequelize.transaction();
 
