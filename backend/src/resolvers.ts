@@ -881,6 +881,8 @@ export const resolvers: Resolvers = {
 
       await pubsub.publish("CHAT_ITEM_DELETED", {
         chatItemDeleted: String(chatToBeDeleted.id),
+        formerMemberIds:
+          chatToBeDeleted.members?.map((member) => member.id) || [],
       });
 
       return chatToBeDeleted;
@@ -1565,7 +1567,10 @@ export const resolvers: Resolvers = {
       ),
     },
     chatItemDeleted: {
-      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_DELETED"]),
+      subscribe: filteredSubscription<{ formerMemberIds: number[] }>(
+        "CHAT_ITEM_DELETED",
+        (payload, userId) => payload.formerMemberIds.includes(userId),
+      ),
     },
     chatItemLeft: {
       subscribe: filteredSubscription<{
