@@ -21,7 +21,7 @@ import {
 import { Chat, ChatMember, Contact, Message, User } from "./models/index.js";
 import { createDatabase, emptyDatabase } from "./populateDatabase.js";
 import pubsub from "./pubsub.js";
-import type { Resolvers } from "./types/graphql.js";
+import type { ChatItem, Resolvers } from "./types/graphql.js";
 import {
   changePasswordInputSchema,
   editChatSchema,
@@ -1543,19 +1543,39 @@ export const resolvers: Resolvers = {
       ),
     },
     chatEdited: {
-      subscribe: () => pubsub.asyncIterableIterator(["CHAT_EDITED"]),
+      subscribe: filteredSubscription<{ chatEdited: Chat }>(
+        "CHAT_EDITED",
+        (payload, userId) => isChatMember(payload.chatEdited.id, userId),
+      ),
     },
     chatItemUpdated: {
-      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_UPDATED"]),
+      subscribe: filteredSubscription<{
+        chatItemUpdated: ChatItem;
+      }>(
+        "CHAT_ITEM_UPDATED",
+        (payload, userId) => payload.chatItemUpdated.userId === String(userId),
+      ),
     },
     chatItemCreated: {
-      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_CREATED"]),
+      subscribe: filteredSubscription<{
+        chatItemCreated: ChatItem;
+      }>(
+        "CHAT_ITEM_CREATED",
+        (payload, userId) => payload.chatItemCreated.userId === String(userId),
+      ),
     },
     chatItemDeleted: {
       subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_DELETED"]),
     },
     chatItemLeft: {
-      subscribe: () => pubsub.asyncIterableIterator(["CHAT_ITEM_LEFT"]),
+      subscribe: filteredSubscription<{
+        chatItemLeft: {
+          chatId: string;
+          memberId: string;
+        };
+      }>("CHAT_ITEM_LEFT", (payload, userId) =>
+        isChatMember(payload.chatItemLeft.chatId, userId),
+      ),
     },
   },
 };
