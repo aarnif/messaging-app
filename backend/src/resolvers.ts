@@ -364,15 +364,7 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const contact = await Contact.findOne({
-        where: {
-          contactId: context.currentUser.id,
-          ownerId: Number(id),
-        },
-        include: [{ model: User, as: "contactDetails" }],
-      });
-
-      return !contact ? false : contact.isBlocked;
+      return isBlockedBy(context.currentUser.id, Number(id));
     },
     findContact: async (
       _,
