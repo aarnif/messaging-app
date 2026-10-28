@@ -15,6 +15,8 @@ import { sequelize } from "./db.js";
 import {
   dateScalar,
   getChatName,
+  isBlockedBy,
+  isChatAdmin,
   isChatMember,
   validateInput,
 } from "./helpers.js";
@@ -362,15 +364,7 @@ export const resolvers: Resolvers = {
         });
       }
 
-      const contact = await Contact.findOne({
-        where: {
-          contactId: context.currentUser.id,
-          ownerId: Number(id),
-        },
-        include: [{ model: User, as: "contactDetails" }],
-      });
-
-      return !contact ? false : contact.isBlocked;
+      return isBlockedBy(context.currentUser.id, Number(id));
     },
     findContact: async (
       _,
@@ -746,6 +740,15 @@ export const resolvers: Resolvers = {
         initialMessage,
       });
 
+      if (
+        members.length === 1 &&
+        (await isBlockedBy(context.currentUser.id, Number(members[0])))
+      ) {
+        throw new GraphQLError("Contact has blocked you", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      }
+
       let chatId: number | undefined;
 
       const t = await sequelize.transaction();
@@ -842,11 +845,22 @@ export const resolvers: Resolvers = {
         CHAT_WITH_MEMBERS_AND_MESSAGES,
       );
 
-      if (!chatToBeDeleted) {
+      if (
+        !chatToBeDeleted ||
+        !(await isChatMember(chatToBeDeleted.id, context.currentUser.id))
+      ) {
         throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
+          },
+        });
+      }
+
+      if (!(await isChatAdmin(chatToBeDeleted.id, context.currentUser.id))) {
+        throw new GraphQLError("Only the chat admin can delete the chat", {
+          extensions: {
+            code: "FORBIDDEN",
           },
         });
       }
@@ -902,11 +916,22 @@ export const resolvers: Resolvers = {
         include: CHAT_INCLUDE_MEMBERS_AND_MESSAGES,
       });
 
-      if (!chatToBeEdited) {
+      if (
+        !chatToBeEdited ||
+        !(await isChatMember(chatToBeEdited.id, context.currentUser.id))
+      ) {
         throw new GraphQLError("Chat not found", {
           extensions: {
             code: "NOT_FOUND",
             invalidArgs: id,
+          },
+        });
+      }
+
+      if (!(await isChatAdmin(chatToBeEdited.id, context.currentUser.id))) {
+        throw new GraphQLError("Only the chat admin can edit the chat", {
+          extensions: {
+            code: "FORBIDDEN",
           },
         });
       }
@@ -1126,6 +1151,15 @@ export const resolvers: Resolvers = {
         });
       }
 
+      if (!(await isChatMember(id, context.currentUser.id))) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
       const t = await sequelize.transaction();
       let notificationMessageId: number | undefined;
 
@@ -1224,6 +1258,32 @@ export const resolvers: Resolvers = {
         content,
         isNotification,
       });
+
+      if (!(await isChatMember(id, context.currentUser.id))) {
+        throw new GraphQLError("Chat not found", {
+          extensions: {
+            code: "NOT_FOUND",
+            invalidArgs: id,
+          },
+        });
+      }
+
+      const privateChat = await Chat.findOne({
+        where: { id: Number(id), isGroupChat: false },
+        include: [{ model: User, as: "members" }],
+      });
+      const otherMember = privateChat?.members?.find(
+        (member) => member.id !== context.currentUser?.id,
+      );
+
+      if (
+        otherMember &&
+        (await isBlockedBy(context.currentUser.id, otherMember.id))
+      ) {
+        throw new GraphQLError("Contact has blocked you", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      }
 
       const t = await sequelize.transaction();
 

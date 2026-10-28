@@ -31,6 +31,7 @@ import {
   login,
   markChatAsRead,
   sendMessage,
+  toggleBlockContact,
 } from "./helpers/funcs.js";
 import { describeGraphQLSuite } from "./helpers/setup.js";
 
@@ -52,6 +53,21 @@ describeGraphQLSuite("Chats", () => {
   });
 
   void describe("Create chat", () => {
+    let token2: string;
+
+    beforeEach(async () => {
+      const loginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
+      });
+
+      assert.ok(
+        loginResponseBody.data,
+        "User2 login token value should be defined",
+      );
+      token2 = loginResponseBody.data.login.value;
+    });
+
     void test("fails without authentication", async () => {
       const responseBody = await createChat(privateChatDetails, "");
 
@@ -118,6 +134,20 @@ describeGraphQLSuite("Chats", () => {
       );
     });
 
+    void test("fails when trying to create private chat after being blocked", async () => {
+      const contactBody = await addContacts([user1Details.id], token2);
+      const contact = contactBody.data?.addContacts[0];
+      assert.ok(contact?.id, "Contact ID should be defined");
+      await toggleBlockContact(contact.id, token2);
+
+      const responseBody = await createChat(privateChatDetails, token);
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Contact has blocked you", "FORBIDDEN");
+    });
+
     void test("succeeds creating private chat", async () => {
       const responseBody = await createChat(privateChatDetails, token);
 
@@ -146,15 +176,55 @@ describeGraphQLSuite("Chats", () => {
         ],
       });
     });
+
+    void test("succeeds creating group chat after being blocked by a member", async () => {
+      const contactBody = await addContacts([user1Details.id], token2);
+      const contact = contactBody.data?.addContacts[0];
+      assert.ok(contact?.id, "Contact ID should be defined");
+      await toggleBlockContact(contact.id, token2);
+
+      const responseBody = await createChat(groupChatDetails, token);
+
+      assert.ok(responseBody.data?.createChat.id, "Chat ID should be defined");
+      assert.strictEqual(
+        responseBody.errors,
+        undefined,
+        "Should have no errors",
+      );
+    });
   });
 
   void describe("Edit chat", () => {
     let chatId: string;
+    let token2: string;
+    let token3: string;
 
     beforeEach(async () => {
       const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
+
+      const user2LoginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
+      });
+
+      assert.ok(
+        user2LoginResponseBody.data,
+        "User2 login token value should be defined",
+      );
+      token2 = user2LoginResponseBody.data.login.value;
+
+      const user3LoginResponseBody = await login({
+        username: user3Details.username,
+        password: user3Details.password,
+      });
+
+      assert.ok(
+        user3LoginResponseBody.data,
+        "User3 login token value should be defined",
+      );
+      token3 = user3LoginResponseBody.data.login.value;
     });
 
     void test("fails without authentication", async () => {
@@ -231,6 +301,47 @@ describeGraphQLSuite("Chats", () => {
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
+    });
+
+    void test("fails when trying to edit chat as non-member", async () => {
+      const chatBody = await createChat(privateChatDetails, token);
+      assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+
+      const responseBody = await editChat(
+        {
+          id: chatBody.data.createChat.id,
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id],
+        },
+        token3,
+      );
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Chat not found", "NOT_FOUND");
+    });
+
+    void test("fails when trying to edit chat as non-admin member", async () => {
+      const responseBody = await editChat(
+        {
+          id: chatId,
+          name: "Updated Chat",
+          description: "Updated description",
+          members: [user2Details.id, user3Details.id],
+        },
+        token2,
+      );
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(
+        responseBody,
+        "Only the chat admin can edit the chat",
+        "FORBIDDEN",
+      );
     });
 
     void test("succeeds updating chat name and description", async () => {
@@ -386,11 +497,35 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("Delete chat", () => {
     let chatId: string;
+    let token2: string;
+    let token3: string;
 
     beforeEach(async () => {
       const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
+
+      const user2LoginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
+      });
+
+      assert.ok(
+        user2LoginResponseBody.data,
+        "User2 login token value should be defined",
+      );
+      token2 = user2LoginResponseBody.data.login.value;
+
+      const user3LoginResponseBody = await login({
+        username: user3Details.username,
+        password: user3Details.password,
+      });
+
+      assert.ok(
+        user3LoginResponseBody.data,
+        "User3 login token value should be defined",
+      );
+      token3 = user3LoginResponseBody.data.login.value;
     });
 
     void test("fails without authentication", async () => {
@@ -409,6 +544,34 @@ describeGraphQLSuite("Chats", () => {
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Chat not found", "NOT_FOUND");
+    });
+
+    void test("fails when trying to delete chat as non-member", async () => {
+      const chatBody = await createChat(privateChatDetails, token);
+      assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+
+      const responseBody = await deleteChat(
+        chatBody.data.createChat.id,
+        token3,
+      );
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Chat not found", "NOT_FOUND");
+    });
+
+    void test("fails when trying to delete chat as non-admin member", async () => {
+      const responseBody = await deleteChat(chatId, token2);
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(
+        responseBody,
+        "Only the chat admin can delete the chat",
+        "FORBIDDEN",
+      );
     });
 
     void test("succeeds deleting chat with valid ID", async () => {
@@ -482,11 +645,35 @@ describeGraphQLSuite("Chats", () => {
 
   void describe("Send message", () => {
     let chatId: string;
+    let token2: string;
+    let token3: string;
 
     beforeEach(async () => {
       const chatBody = await createChat(privateChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
+
+      const user2LoginResponseBody = await login({
+        username: user2Details.username,
+        password: user2Details.password,
+      });
+
+      assert.ok(
+        user2LoginResponseBody.data,
+        "User2 login token value should be defined",
+      );
+      token2 = user2LoginResponseBody.data.login.value;
+
+      const user3LoginResponseBody = await login({
+        username: user3Details.username,
+        password: user3Details.password,
+      });
+
+      assert.ok(
+        user3LoginResponseBody.data,
+        "User3 login token value should be defined",
+      );
+      token3 = user3LoginResponseBody.data.login.value;
     });
 
     void test("fails without authentication", async () => {
@@ -523,6 +710,43 @@ describeGraphQLSuite("Chats", () => {
         "Message content cannot be empty",
         "BAD_USER_INPUT",
       );
+    });
+
+    void test("fails when trying to send message as non-member", async () => {
+      const responseBody = await sendMessage(
+        {
+          id: chatId,
+          content: "Hello from non-member",
+          isNotification: false,
+        },
+        token3,
+      );
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Chat not found", "NOT_FOUND");
+    });
+
+    void test("fails when trying to send message after being blocked", async () => {
+      const contactBody = await addContacts([user1Details.id], token2);
+      const contact = contactBody.data?.addContacts[0];
+      assert.ok(contact?.id, "Contact ID should be defined");
+      await toggleBlockContact(contact.id, token2);
+
+      const responseBody = await sendMessage(
+        {
+          id: chatId,
+          content: "Hello after being blocked",
+          isNotification: false,
+        },
+        token,
+      );
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Contact has blocked you", "FORBIDDEN");
     });
 
     void test("succeeds sending message to chat", async () => {
@@ -744,22 +968,34 @@ describeGraphQLSuite("Chats", () => {
   void describe("Leave chat", () => {
     let chatId: string;
     let token2: string;
+    let token3: string;
 
     beforeEach(async () => {
       const chatBody = await createChat(groupChatDetails, token);
       assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
       chatId = chatBody.data.createChat.id;
 
-      const loginResponseBody = await login({
+      const user2LoginResponseBody = await login({
         username: user2Details.username,
         password: user2Details.password,
       });
 
       assert.ok(
-        loginResponseBody.data,
+        user2LoginResponseBody.data,
         "User2 login token value should be defined",
       );
-      token2 = loginResponseBody.data.login.value;
+      token2 = user2LoginResponseBody.data.login.value;
+
+      const user3LoginResponseBody = await login({
+        username: user3Details.username,
+        password: user3Details.password,
+      });
+
+      assert.ok(
+        user3LoginResponseBody.data,
+        "User3 login token value should be defined",
+      );
+      token3 = user3LoginResponseBody.data.login.value;
     });
 
     void test("fails without authentication", async () => {
@@ -769,6 +1005,18 @@ describeGraphQLSuite("Chats", () => {
 
       assert.strictEqual(chat, null, "Chat should be null");
       assertError(responseBody, "Not authenticated", "UNAUTHENTICATED");
+    });
+
+    void test("fails when trying to leave chat as non-member", async () => {
+      const chatBody = await createChat(privateChatDetails, token);
+      assert.ok(chatBody.data?.createChat.id, "Chat ID should be defined");
+
+      const responseBody = await leaveChat(chatBody.data.createChat.id, token3);
+
+      const chat = responseBody.data;
+
+      assert.strictEqual(chat, null, "Chat should be null");
+      assertError(responseBody, "Chat not found", "NOT_FOUND");
     });
 
     void test("succeeds when member leaves group chat", async () => {
