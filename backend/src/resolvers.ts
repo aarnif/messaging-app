@@ -15,6 +15,7 @@ import { sequelize } from "./db.js";
 import {
   dateScalar,
   getChatName,
+  isBlockedBy,
   isChatAdmin,
   isChatMember,
   validateInput,
@@ -747,6 +748,15 @@ export const resolvers: Resolvers = {
         initialMessage,
       });
 
+      if (
+        members.length === 1 &&
+        (await isBlockedBy(context.currentUser.id, Number(members[0])))
+      ) {
+        throw new GraphQLError("Contact has blocked you", {
+          extensions: { code: "FORBIDDEN" },
+        });
+      }
+
       let chatId: number | undefined;
 
       const t = await sequelize.transaction();
@@ -1263,6 +1273,23 @@ export const resolvers: Resolvers = {
             code: "NOT_FOUND",
             invalidArgs: id,
           },
+        });
+      }
+
+      const privateChat = await Chat.findOne({
+        where: { id: Number(id), isGroupChat: false },
+        include: [{ model: User, as: "members" }],
+      });
+      const otherMember = privateChat?.members?.find(
+        (member) => member.id !== context.currentUser?.id,
+      );
+
+      if (
+        otherMember &&
+        (await isBlockedBy(context.currentUser.id, otherMember.id))
+      ) {
+        throw new GraphQLError("Contact has blocked you", {
+          extensions: { code: "FORBIDDEN" },
         });
       }
 

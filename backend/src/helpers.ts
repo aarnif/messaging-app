@@ -1,6 +1,6 @@
 import { GraphQLError, GraphQLScalarType, Kind } from "graphql";
 import { z } from "zod";
-import { Chat, ChatMember, User } from "./models/index.js";
+import { Chat, ChatMember, Contact, User } from "./models/index.js";
 
 // Date scalar implementation from Apollo Server documentation
 // https://www.apollographql.com/docs/apollo-server/schema/custom-scalars#example-the-date-scalar
@@ -60,6 +60,16 @@ export const isChatAdmin = async (
     where: { chatId: Number(chatId), userId, isAdmin: true },
   });
   return admin !== null;
+};
+
+export const isBlockedBy = async (
+  userId: number,
+  blockerId: number,
+): Promise<boolean> => {
+  const contact = await Contact.findOne({
+    where: { contactId: userId, ownerId: blockerId },
+  });
+  return contact?.isBlocked ?? false;
 };
 
 export const formatZodErrorMessage = (error: z.ZodError): string => {
