@@ -45,7 +45,10 @@ const assertSignInPageLoaded = async () => {
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
   expect(screen.getByRole("button", { name: "Sign In" })).toBeDefined();
-  expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+  expect(
+    screen.getByRole("button", { name: "Continue as Test User" }),
+  ).toBeDefined();
+  expect(screen.getByRole("link", { name: "Sign Up" })).toBeDefined();
 };
 
 const fillSignInForm = async (
@@ -113,13 +116,12 @@ describe("<SignIn />", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  test("navigates to signup page on sign up button click", async () => {
-    const user = userEvent.setup();
-
+  test("links to signup page", () => {
     renderComponent();
     assertSignInPageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Sign Up" }));
-    expect(mockNavigate).toHaveBeenCalledWith("/signup");
+    expect(
+      screen.getByRole("link", { name: "Sign Up" }).getAttribute("href"),
+    ).toBe("/signup");
   });
 });

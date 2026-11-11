@@ -1,7 +1,8 @@
 import { useApolloClient, useMutation } from "@apollo/client/react";
 import { AnimatePresence } from "motion/react";
 import { useState } from "react";
-import { useNavigate } from "react-router";
+import { Link, useNavigate } from "react-router";
+import type { LoginInput } from "../../__generated__/graphql";
 import Button from "../../components/ui/Button";
 import Error from "../../components/ui/Error";
 import FormField from "../../components/ui/FormField";
@@ -33,24 +34,10 @@ const SignIn = ({
     },
   });
 
-  const handleSubmit = async (event: React.SyntheticEvent) => {
-    event.preventDefault();
-
-    if (!username.value.length || !password.value.length) {
-      showMessage("Please fill all fields.");
-      return;
-    }
-
+  const signIn = async (input: LoginInput) => {
     setIsSubmitting(true);
 
-    const { data } = await mutate({
-      variables: {
-        input: {
-          username: username.value,
-          password: password.value,
-        },
-      },
-    });
+    const { data } = await mutate({ variables: { input } });
 
     if (data?.login.value) {
       localStorage.setItem("messaging-app-token", data.login.value);
@@ -59,6 +46,17 @@ const SignIn = ({
       setIsSubmitting(false);
       navigate("/");
     }
+  };
+
+  const handleSubmit = async (event: React.SyntheticEvent) => {
+    event.preventDefault();
+
+    if (!username.value.length || !password.value.length) {
+      showMessage("Please fill all fields.");
+      return;
+    }
+
+    await signIn({ username: username.value, password: password.value });
   };
 
   return (
@@ -102,17 +100,28 @@ const SignIn = ({
               variant="primary"
               text={isSubmitting ? "Signing In..." : "Sign In"}
             />
-            <div>
-              <p className="text-sm text-slate-700 dark:text-slate-200">
-                Don't have an account?
-              </p>
-              <Button
-                type="button"
-                variant="secondary"
-                text="Sign Up"
-                onClick={() => navigate("/signup")}
-              />
+            <div className="flex items-center gap-4 py-2 text-sm text-slate-700 dark:text-slate-200">
+              <hr className="grow border-slate-200 dark:border-slate-700" />
+              or
+              <hr className="grow border-slate-200 dark:border-slate-700" />
             </div>
+            <Button
+              type="button"
+              variant="secondary"
+              text="Continue as Test User"
+              disabled={isSubmitting}
+              // Public test account from the seed data
+              onClick={() => signIn({ username: "test", password: "password" })}
+            />
+            <p className="pt-2 text-center text-sm text-slate-700 dark:text-slate-200">
+              Don't have an account?{" "}
+              <Link
+                to="/signup"
+                className="font-bold text-green-600 underline-offset-4 hover:underline dark:text-green-500"
+              >
+                Sign Up
+              </Link>
+            </p>
           </div>
         </form>
       </div>
