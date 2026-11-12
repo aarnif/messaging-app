@@ -5,10 +5,19 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SignIn from "../pages/SignIn";
-import { invalidLoginPassword, LOGIN_TOKEN, loginInput } from "./helpers/data";
+import {
+  invalidLoginPassword,
+  LOGIN_TOKEN,
+  loginInput,
+  TEST_USER_LOGIN_TOKEN,
+} from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
-import { loginErrorMock, loginMock } from "./helpers/responses";
+import {
+  loginErrorMock,
+  loginMock,
+  testUserLoginMock,
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -45,7 +54,10 @@ const assertSignInPageLoaded = async () => {
   expect(screen.getByLabelText("Username")).toBeDefined();
   expect(screen.getByLabelText("Password")).toBeDefined();
   expect(screen.getByRole("button", { name: "Sign In" })).toBeDefined();
-  expect(screen.getByRole("button", { name: "Sign Up" })).toBeDefined();
+  expect(
+    screen.getByRole("button", { name: "Continue as Test User" }),
+  ).toBeDefined();
+  expect(screen.getByRole("link", { name: "Sign Up" })).toBeDefined();
 };
 
 const fillSignInForm = async (
@@ -84,7 +96,7 @@ describe("<SignIn />", () => {
     await fillSignInForm(user, username, invalidLoginPassword);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByRole("button", { name: "Signing In..." }));
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
 
     await assertErrorMessageAndDismissal(user, "Invalid username or password");
   });
@@ -100,7 +112,7 @@ describe("<SignIn />", () => {
     await fillSignInForm(user, username, password);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByRole("button", { name: "Signing In..." }));
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
 
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
@@ -113,13 +125,38 @@ describe("<SignIn />", () => {
     expect(mockNavigate).toHaveBeenCalledWith("/");
   });
 
-  test("navigates to signup page on sign up button click", async () => {
+  test("signs in as test user", async () => {
     const user = userEvent.setup();
 
+    renderComponent([testUserLoginMock]);
+    assertSignInPageLoaded();
+
+    await user.click(
+      screen.getByRole("button", { name: "Continue as Test User" }),
+    );
+
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Continue as Test User" }),
+    ).toBeDisabled();
+
+    await waitFor(() => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "messaging-app-token",
+        TEST_USER_LOGIN_TOKEN,
+      );
+    });
+
+    expect(mockClient.resetStore).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+
+  test("links to signup page", () => {
     renderComponent();
     assertSignInPageLoaded();
 
-    await user.click(screen.getByRole("button", { name: "Sign Up" }));
-    expect(mockNavigate).toHaveBeenCalledWith("/signup");
+    expect(
+      screen.getByRole("link", { name: "Sign Up" }).getAttribute("href"),
+    ).toBe("/signup");
   });
 });

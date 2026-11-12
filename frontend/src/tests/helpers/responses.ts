@@ -116,6 +116,8 @@ import {
   nonContactUsersMock,
   PRIVATE_CHAT_DETAILS,
   PROFILE_IMAGE,
+  TEST_USER_LOGIN_TOKEN,
+  testUserLoginInput,
   USER_ONE,
   USER_TWO_DETAILS,
   userContactsMock,
@@ -216,6 +218,25 @@ export const loginErrorMock: MockLink.MockedResponse<
       },
     ],
     data: null,
+  },
+};
+
+export const testUserLoginMock: MockLink.MockedResponse<
+  LoginMutation,
+  LoginMutationVariables
+> = {
+  request: {
+    query: LOGIN,
+    variables: {
+      input: testUserLoginInput,
+    },
+  },
+  result: {
+    data: {
+      login: {
+        value: TEST_USER_LOGIN_TOKEN,
+      },
+    },
   },
 };
 

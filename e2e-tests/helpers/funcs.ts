@@ -149,7 +149,7 @@ export const signUp = async (
   password: string,
   confirmPassword: string,
 ) => {
-  await page.getByRole("button", { name: "Sign Up" }).click();
+  await page.getByRole("link", { name: "Sign Up" }).click();
   await page
     .getByRole("textbox", { name: "Confirm Password" })
     .waitFor({ state: "visible" });
