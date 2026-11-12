@@ -10,7 +10,7 @@ Sovellus käynnistyy kirjautumisnäkymään:
 
 ![Kirjautuminen](images/kirjautuminen.png)
 
-Kirjautumisnäkymässä voit syöttää käyttäjätunnuksesi ja salasanasi ja painamalla `Sign In` painiketta, kirjaudut sisään sovellukseen. Seed data sisältää useita valmiiksi luotuja käyttäjiä (ks. `backend/src/seedData/users.ts`), joilla voi kirjautua sovellukseen. Kaikkien näiden käyttäjien salasana on `password`.
+Kirjautumisnäkymässä voit syöttää käyttäjätunnuksesi ja salasanasi ja painamalla `Sign In` painiketta, kirjaudut sisään sovellukseen. Seed data sisältää useita valmiiksi luotuja käyttäjiä (ks. `backend/src/seedData/users.ts`), joilla voi kirjautua sovellukseen. Kaikkien näiden käyttäjien salasana on `password`. Voit myös kirjautua suoraan sisään ilman käyttäjätunnuksia testikäyttäjänä painamalla `Continue as Test User` painiketta.
 
 ## Uuden käyttäjän luominen
 
