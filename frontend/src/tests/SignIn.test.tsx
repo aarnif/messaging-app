@@ -96,7 +96,7 @@ describe("<SignIn />", () => {
     await fillSignInForm(user, username, invalidLoginPassword);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByRole("button", { name: "Signing In..." }));
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
 
     await assertErrorMessageAndDismissal(user, "Invalid username or password");
   });
@@ -112,7 +112,7 @@ describe("<SignIn />", () => {
     await fillSignInForm(user, username, password);
     await user.click(screen.getByRole("button", { name: "Sign In" }));
 
-    expect(screen.getByRole("button", { name: "Signing In..." }));
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
 
     await waitFor(() => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
