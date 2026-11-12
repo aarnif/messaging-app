@@ -9,6 +9,8 @@ import type {
 
 export const LOGIN_TOKEN = "fake-token-12345";
 
+export const TEST_USER_LOGIN_TOKEN = "fake-test-user-token";
+
 export const PROFILE_IMAGE = "data:image/png;base64,aW1hZ2U=";
 
 export const USER_ONE_DETAILS = {
@@ -194,6 +196,11 @@ export const loginInput = {
 };
 
 export const invalidLoginPassword = loginInput.password.slice(0, -1);
+
+export const testUserLoginInput = {
+  username: "test",
+  password: "password",
+};
 
 const createChatItem = (chat: Chat, unreadCount: number = 0): ChatItem => ({
   __typename: "ChatItem",

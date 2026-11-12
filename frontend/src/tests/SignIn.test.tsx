@@ -5,10 +5,19 @@ import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
 import SignIn from "../pages/SignIn";
-import { invalidLoginPassword, LOGIN_TOKEN, loginInput } from "./helpers/data";
+import {
+  invalidLoginPassword,
+  LOGIN_TOKEN,
+  loginInput,
+  TEST_USER_LOGIN_TOKEN,
+} from "./helpers/data";
 import { assertErrorMessageAndDismissal } from "./helpers/funcs";
 import { mockClient, mockNavigate, mockSetToken } from "./helpers/mocks";
-import { loginErrorMock, loginMock } from "./helpers/responses";
+import {
+  loginErrorMock,
+  loginMock,
+  testUserLoginMock,
+} from "./helpers/responses";
 
 vi.mock("react-router", async () => {
   const actual = await vi.importActual("react-router");
@@ -109,6 +118,32 @@ describe("<SignIn />", () => {
       expect(localStorage.setItem).toHaveBeenCalledWith(
         "messaging-app-token",
         LOGIN_TOKEN,
+      );
+    });
+
+    expect(mockClient.resetStore).toHaveBeenCalled();
+    expect(mockNavigate).toHaveBeenCalledWith("/");
+  });
+
+  test("signs in as test user", async () => {
+    const user = userEvent.setup();
+
+    renderComponent([testUserLoginMock]);
+    assertSignInPageLoaded();
+
+    await user.click(
+      screen.getByRole("button", { name: "Continue as Test User" }),
+    );
+
+    expect(screen.getByRole("button", { name: "Signing In..." })).toBeDefined();
+    expect(
+      screen.getByRole("button", { name: "Continue as Test User" }),
+    ).toBeDisabled();
+
+    await waitFor(() => {
+      expect(localStorage.setItem).toHaveBeenCalledWith(
+        "messaging-app-token",
+        TEST_USER_LOGIN_TOKEN,
       );
     });
 
