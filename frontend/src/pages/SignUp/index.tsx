@@ -116,9 +116,8 @@ const SignUp = ({
   };
 
   return (
-    <div className="flex min-h-screen">
-      <div className="max-w-105 grow bg-[url(/background-light.svg)] dark:bg-[url(/background-dark.svg)]"></div>
-      <div className="flex grow items-center justify-center bg-slate-50 p-8 dark:bg-slate-900">
+    <div className="flex min-h-screen bg-[url(/background-light.svg)] dark:bg-[url(/background-dark.svg)]">
+      <div className="flex grow items-center justify-center p-8 bg-linear-to-r from-transparent via-transparent via-10% to-slate-50 dark:to-slate-900 to-35%">
         <form
           className="flex w-full max-w-96 flex-col gap-12 rounded-2xl p-4"
           onSubmit={handleSubmit}
