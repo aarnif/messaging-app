@@ -150,11 +150,7 @@ const ListMenu = ({
         callback={() => setIsNewChatDropdownOpen(true)}
       />
       {meLoading || loading ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {Array.from({ length: 15 }).map((_, index) => (
-            <Skeleton key={index} />
-          ))}
-        </div>
+        <Skeleton />
       ) : hasChats ? (
         <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
           <AnimatePresence mode="popLayout" initial={false}>

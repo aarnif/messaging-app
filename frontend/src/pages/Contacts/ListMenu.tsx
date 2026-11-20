@@ -45,11 +45,7 @@ const ListMenu = ({
         callback={() => setIsAddContactsModalOpen(true)}
       />
       {loading ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {Array.from({ length: 15 }).map((_, index) => (
-            <Skeleton key={index} />
-          ))}
-        </div>
+        <Skeleton />
       ) : hasContacts ? (
         <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
           {contacts.map((contact) => (
