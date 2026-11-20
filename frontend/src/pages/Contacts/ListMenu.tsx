@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useLocation } from "react-router";
 import { useDebounce } from "use-debounce";
 import MenuHeader from "../../components/ui/MenuHeader";
@@ -44,21 +45,28 @@ const ListMenu = ({
         buttonTestId="add-new-contacts"
         callback={() => setIsAddContactsModalOpen(true)}
       />
-      {loading ? (
-        <Skeleton />
-      ) : hasContacts ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {contacts.map((contact) => (
-            <ContactItem key={contact.id} contact={contact} />
-          ))}
-        </div>
-      ) : (
-        <div className="px-4 py-2">
-          <h2 className="font-bold text-slate-700 dark:text-slate-200">
-            No contacts found.
-          </h2>
-        </div>
-      )}
+      <AnimatePresence mode="wait" initial={false}>
+        {loading ? (
+          <Skeleton key="skeleton" />
+        ) : hasContacts ? (
+          <motion.div
+            key="contacts"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2"
+          >
+            {contacts.map((contact) => (
+              <ContactItem key={contact.id} contact={contact} />
+            ))}
+          </motion.div>
+        ) : (
+          <div key="no-contacts" className="px-4 py-2">
+            <h2 className="font-bold text-slate-700 dark:text-slate-200">
+              No contacts found.
+            </h2>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
