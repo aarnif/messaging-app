@@ -44,7 +44,7 @@ const ListMenu = ({
   const match = useMatch("/chats/:id");
   const [debouncedValue] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
-  const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
+  const { data, previousData, loading } = useQuery(ALL_CHATS_BY_USER, {
     variables: {
       search: debouncedValue,
     },
@@ -134,7 +134,7 @@ const ListMenu = ({
   const location = useLocation();
   const showListOnMobile = location.pathname === "/";
 
-  const chats = data?.allChatsByUser;
+  const chats = (data ?? previousData)?.allChatsByUser;
   const hasChats = chats && chats.length > 0;
 
   return (
@@ -148,9 +148,10 @@ const ListMenu = ({
         searchWord={searchWord}
         buttonTestId="create-new-chat"
         callback={() => setIsNewChatDropdownOpen(true)}
+        isSearching={loading && !!chats}
       />
       <AnimatePresence mode="wait" initial={false}>
-        {meLoading || loading ? (
+        {meLoading || (loading && !chats) ? (
           <Skeleton key="skeleton" />
         ) : hasChats ? (
           <motion.div

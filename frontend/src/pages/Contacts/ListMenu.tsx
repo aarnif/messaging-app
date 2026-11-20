@@ -21,7 +21,7 @@ const ListMenu = ({
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
-  const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
+  const { data, previousData, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
       search: debouncedSearch,
     },
@@ -30,7 +30,7 @@ const ListMenu = ({
   const location = useLocation();
   const showListOnMobile = location.pathname === "/contacts";
 
-  const contacts = data?.allContactsByUser;
+  const contacts = (data ?? previousData)?.allContactsByUser;
   const hasContacts = contacts && contacts.length > 0;
 
   return (
@@ -44,9 +44,10 @@ const ListMenu = ({
         searchWord={searchWord}
         buttonTestId="add-new-contacts"
         callback={() => setIsAddContactsModalOpen(true)}
+        isSearching={loading && !!contacts}
       />
       <AnimatePresence mode="wait" initial={false}>
-        {loading ? (
+        {loading && !contacts ? (
           <Skeleton key="skeleton" />
         ) : hasContacts ? (
           <motion.div

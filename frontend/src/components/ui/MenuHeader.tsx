@@ -7,11 +7,13 @@ const MenuHeader = ({
   searchWord,
   buttonTestId = "",
   callback = () => {},
+  isSearching = false,
 }: {
   title: string;
   searchWord: InputField;
   buttonTestId: string;
   callback?: () => void;
+  isSearching?: boolean;
 }) => (
   <div className="flex w-full flex-col gap-4 p-4">
     <div className="flex items-center justify-between">
@@ -27,7 +29,7 @@ const MenuHeader = ({
         <MdAdd className="h-6 w-6 fill-current" />
       </button>
     </div>
-    <SearchBox searchWord={searchWord} />
+    <SearchBox searchWord={searchWord} isSearching={isSearching} />
   </div>
 );
 
