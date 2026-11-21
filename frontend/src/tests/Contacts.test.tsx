@@ -6,8 +6,13 @@ import { MemoryRouter } from "react-router";
 import { describe, expect, test } from "vitest";
 import type { User } from "../__generated__/graphql";
 import NotificationProvider from "../components/NotificationProvider";
+import { DEBOUNCE_DELAY } from "../constants";
 import Contacts from "../pages/Contacts";
-import { nonContactUsersMock, userContactsMock } from "./helpers/data";
+import {
+  contactSearchWord,
+  nonContactUsersMock,
+  userContactsMock,
+} from "./helpers/data";
 import {
   assertContactsDisplayed,
   assertContactsSelected,
@@ -20,6 +25,7 @@ import {
   addContactsError,
   allContactsByUser,
   allContactsByUserEmpty,
+  allContactsByUserSearch,
   meMock,
   nonContactUsers,
   nonContactUsersEmpty,
@@ -94,6 +100,38 @@ describe("<Contacts />", () => {
     await waitFor(() => {
       assertContactsDisplayed(userContactsMock);
     });
+  });
+
+  test("keeps previous contacts visible while searching", async () => {
+    const user = userEvent.setup();
+    const [otherContact, searchedContact] = userContactsMock;
+
+    renderComponent([meMock, allContactsByUser, allContactsByUserSearch]);
+
+    await waitFor(() => {
+      assertContactsDisplayed(userContactsMock);
+    });
+
+    await user.type(
+      screen.getByPlaceholderText("Search by name or username..."),
+      contactSearchWord,
+    );
+
+    await waitFor(
+      () => {
+        expect(screen.getByTestId("search-spinner")).toBeDefined();
+      },
+      { timeout: DEBOUNCE_DELAY + 1000 },
+    );
+    assertContactsDisplayed(userContactsMock);
+
+    await waitFor(() => {
+      expect(
+        screen.queryByTestId(`user-${otherContact.contactDetails.id}`),
+      ).toBeNull();
+    });
+    assertContactsDisplayed([searchedContact]);
+    expect(screen.queryByTestId("search-spinner")).toBeNull();
   });
 
   describe("adding new contacts", () => {

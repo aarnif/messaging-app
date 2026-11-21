@@ -18,7 +18,10 @@ const SearchBox = ({
       className="flex w-full items-center rounded-full border-[1.5px] border-slate-100 bg-slate-100 p-2 transition-all focus-within:border-purple-500 hover:border-purple-500 dark:border-slate-700 dark:bg-slate-700 focus-within:dark:border-purple-400 hover:dark:border-purple-400"
     >
       {isSearching ? (
-        <span className="relative flex h-4 w-4 items-center justify-center">
+        <span
+          data-testid="search-spinner"
+          className="relative flex h-4 w-4 items-center justify-center"
+        >
           <FaRegCircle className="absolute h-4 w-4 fill-current text-slate-300 dark:text-slate-500" />
           <AiOutlineLoading className="absolute h-4 w-4 fill-current text-slate-800 motion-safe:animate-spin dark:text-slate-300" />
         </span>

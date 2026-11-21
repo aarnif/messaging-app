@@ -223,6 +223,10 @@ export const userContactsMock = [
   createContact("2", USER_THREE),
 ];
 
+export const chatSearchWord = chatItemsMock[0].name ?? "";
+
+export const contactSearchWord = userContactsMock[1].contactDetails.name;
+
 export const NewPrivateChatDetails = {
   name: userContactsMock[0].contactDetails.name,
   description: null,

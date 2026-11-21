@@ -5,12 +5,14 @@ import type { UserEvent } from "@testing-library/user-event";
 import userEvent from "@testing-library/user-event";
 import { MemoryRouter } from "react-router";
 import { describe, expect, test, vi } from "vitest";
+import { DEBOUNCE_DELAY } from "../constants";
 import { formatDisplayDate, truncateText } from "../helpers";
 import Chats from "../pages/Chats";
 import {
   NewGroupChatDetails,
   NewPrivateChatDetails,
   chatItemsMock,
+  chatSearchWord,
   userContactsMock,
 } from "./helpers/data";
 import {
@@ -23,6 +25,7 @@ import { mockNavigate } from "./helpers/mocks";
 import {
   allChatsByUser,
   allChatsByUserEmpty,
+  allChatsByUserSearch,
   allContactsByUser,
   allContactsByUserEmpty,
   chatItemCreatedSubscription,
@@ -160,6 +163,45 @@ describe("<Chats />", () => {
           ).toBeDefined();
         });
       });
+    });
+
+    test("keeps previous chats visible while searching", async () => {
+      const user = userEvent.setup();
+      const [searchedChat, otherChat] = chatItemsMock;
+
+      renderComponent([
+        meMock,
+        allChatsByUser,
+        allChatsByUserSearch,
+        chatItemCreatedSubscription,
+        chatItemUpdatedSubscription,
+        chatItemDeletedSubscription,
+        chatItemLeftSubscription,
+      ]);
+
+      await waitFor(() => {
+        expect(screen.getByTestId(`chat-item-${otherChat.id}`)).toBeDefined();
+      });
+
+      await user.type(
+        screen.getByPlaceholderText("Search by title or description..."),
+        chatSearchWord,
+      );
+
+      await waitFor(
+        () => {
+          expect(screen.getByTestId("search-spinner")).toBeDefined();
+        },
+        { timeout: DEBOUNCE_DELAY + 1000 },
+      );
+      expect(screen.getByTestId(`chat-item-${searchedChat.id}`)).toBeDefined();
+      expect(screen.getByTestId(`chat-item-${otherChat.id}`)).toBeDefined();
+
+      await waitFor(() => {
+        expect(screen.queryByTestId(`chat-item-${otherChat.id}`)).toBeNull();
+      });
+      expect(screen.getByTestId(`chat-item-${searchedChat.id}`)).toBeDefined();
+      expect(screen.queryByTestId("search-spinner")).toBeNull();
     });
   });
 
