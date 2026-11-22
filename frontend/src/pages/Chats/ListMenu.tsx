@@ -44,7 +44,7 @@ const ListMenu = ({
   const match = useMatch("/chats/:id");
   const [debouncedValue] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
-  const { data, loading } = useQuery(ALL_CHATS_BY_USER, {
+  const { data, previousData, loading } = useQuery(ALL_CHATS_BY_USER, {
     variables: {
       search: debouncedValue,
     },
@@ -134,7 +134,7 @@ const ListMenu = ({
   const location = useLocation();
   const showListOnMobile = location.pathname === "/";
 
-  const chats = data?.allChatsByUser;
+  const chats = (data ?? previousData)?.allChatsByUser;
   const hasChats = chats && chats.length > 0;
 
   return (
@@ -148,45 +148,49 @@ const ListMenu = ({
         searchWord={searchWord}
         buttonTestId="create-new-chat"
         callback={() => setIsNewChatDropdownOpen(true)}
+        isSearching={loading && !!chats}
       />
-      {meLoading || loading ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {Array.from({ length: 15 }).map((_, index) => (
-            <Skeleton key={index} />
-          ))}
-        </div>
-      ) : hasChats ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          <AnimatePresence mode="popLayout" initial={false}>
-            {chats.map((chat) => (
-              <MotionNavLink
-                key={chat.id}
-                to={`/chats/${chat.id}`}
-                className={({ isActive }) =>
-                  isActive
-                    ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700"
-                    : `rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatIdRef.current === chat.id && "animate-highlight-light dark:animate-highlight-dark"}`
-                }
-                layout
-                onLayoutAnimationComplete={() =>
-                  (recentlyUpdatedChatIdRef.current = null)
-                }
-                transition={{
-                  duration: 0.5,
-                }}
-              >
-                <ChatItem currentUser={currentUser} chat={chat} />
-              </MotionNavLink>
-            ))}
-          </AnimatePresence>
-        </div>
-      ) : (
-        <div className="px-4 py-2">
-          <h2 className="font-bold text-slate-700 dark:text-slate-200">
-            No chats found.
-          </h2>
-        </div>
-      )}
+      <AnimatePresence mode="wait" initial={false}>
+        {meLoading || (loading && !chats) ? (
+          <Skeleton key="skeleton" />
+        ) : hasChats ? (
+          <motion.div
+            key="chats"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2"
+          >
+            <AnimatePresence mode="popLayout" initial={false}>
+              {chats.map((chat) => (
+                <MotionNavLink
+                  key={chat.id}
+                  to={`/chats/${chat.id}`}
+                  className={({ isActive }) =>
+                    isActive
+                      ? "rounded-lg bg-slate-200 transition-colors dark:bg-slate-700"
+                      : `rounded-lg transition-colors hover:bg-slate-200 dark:hover:bg-slate-700 ${recentlyUpdatedChatIdRef.current === chat.id && "animate-highlight-light dark:animate-highlight-dark"}`
+                  }
+                  layout
+                  onLayoutAnimationComplete={() =>
+                    (recentlyUpdatedChatIdRef.current = null)
+                  }
+                  transition={{
+                    duration: 0.5,
+                  }}
+                >
+                  <ChatItem currentUser={currentUser} chat={chat} />
+                </MotionNavLink>
+              ))}
+            </AnimatePresence>
+          </motion.div>
+        ) : (
+          <div key="no-chats" className="px-4 py-2">
+            <h2 className="font-bold text-slate-700 dark:text-slate-200">
+              No chats found.
+            </h2>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };

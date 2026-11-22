@@ -106,7 +106,9 @@ import {
 import {
   ADDED_CONTACTS,
   chatItemsMock,
+  chatSearchWord,
   CONTACT_DETAILS,
+  contactSearchWord,
   createUserInput,
   GROUP_CHAT_DETAILS,
   invalidLoginPassword,
@@ -275,6 +277,25 @@ export const allChatsByUser: MockLink.MockedResponse<
   maxUsageCount: 2,
 };
 
+export const allChatsByUserSearch: MockLink.MockedResponse<
+  AllChatsByUserQuery,
+  AllChatsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CHATS_BY_USER,
+    variables: {
+      search: chatSearchWord,
+    },
+  },
+  // Keep the query pending long enough to assert the searching state
+  delay: 100,
+  result: {
+    data: {
+      allChatsByUser: [chatItemsMock[0]],
+    },
+  },
+};
+
 export const allContactsByUserEmpty: MockLink.MockedResponse<
   AllContactsByUserQuery,
   AllContactsByUserQueryVariables
@@ -308,6 +329,25 @@ export const allContactsByUser: MockLink.MockedResponse<
     },
   },
   maxUsageCount: 2,
+};
+
+export const allContactsByUserSearch: MockLink.MockedResponse<
+  AllContactsByUserQuery,
+  AllContactsByUserQueryVariables
+> = {
+  request: {
+    query: ALL_CONTACTS_BY_USER,
+    variables: {
+      search: contactSearchWord,
+    },
+  },
+  // Keep the query pending long enough to assert the searching state
+  delay: 100,
+  result: {
+    data: {
+      allContactsByUser: [userContactsMock[1]],
+    },
+  },
 };
 
 export const findChatByIdGroup: MockLink.MockedResponse<

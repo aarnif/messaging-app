@@ -1,4 +1,5 @@
 import { useQuery } from "@apollo/client/react";
+import { AnimatePresence, motion } from "motion/react";
 import { useLocation } from "react-router";
 import { useDebounce } from "use-debounce";
 import MenuHeader from "../../components/ui/MenuHeader";
@@ -20,7 +21,7 @@ const ListMenu = ({
   );
   const [debouncedSearch] = useDebounce(searchWord.value, DEBOUNCE_DELAY);
 
-  const { data, loading } = useQuery(ALL_CONTACTS_BY_USER, {
+  const { data, previousData, loading } = useQuery(ALL_CONTACTS_BY_USER, {
     variables: {
       search: debouncedSearch,
     },
@@ -29,7 +30,7 @@ const ListMenu = ({
   const location = useLocation();
   const showListOnMobile = location.pathname === "/contacts";
 
-  const contacts = data?.allContactsByUser;
+  const contacts = (data ?? previousData)?.allContactsByUser;
   const hasContacts = contacts && contacts.length > 0;
 
   return (
@@ -43,26 +44,30 @@ const ListMenu = ({
         searchWord={searchWord}
         buttonTestId="add-new-contacts"
         callback={() => setIsAddContactsModalOpen(true)}
+        isSearching={loading && !!contacts}
       />
-      {loading ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {Array.from({ length: 15 }).map((_, index) => (
-            <Skeleton key={index} />
-          ))}
-        </div>
-      ) : hasContacts ? (
-        <div className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2">
-          {contacts.map((contact) => (
-            <ContactItem key={contact.id} contact={contact} />
-          ))}
-        </div>
-      ) : (
-        <div className="px-4 py-2">
-          <h2 className="font-bold text-slate-700 dark:text-slate-200">
-            No contacts found.
-          </h2>
-        </div>
-      )}
+      <AnimatePresence mode="wait" initial={false}>
+        {loading && !contacts ? (
+          <Skeleton key="skeleton" />
+        ) : hasContacts ? (
+          <motion.div
+            key="contacts"
+            initial={{ opacity: 0, y: 10 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="flex h-0 grow flex-col gap-2 overflow-y-auto p-2"
+          >
+            {contacts.map((contact) => (
+              <ContactItem key={contact.id} contact={contact} />
+            ))}
+          </motion.div>
+        ) : (
+          <div key="no-contacts" className="px-4 py-2">
+            <h2 className="font-bold text-slate-700 dark:text-slate-200">
+              No contacts found.
+            </h2>
+          </div>
+        )}
+      </AnimatePresence>
     </div>
   );
 };
