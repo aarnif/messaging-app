@@ -1,4 +1,5 @@
 import { ApolloProvider } from "@apollo/client/react";
+import { MotionConfig } from "motion/react";
 import { StrictMode } from "react";
 import { createRoot } from "react-dom/client";
 import { BrowserRouter as Router } from "react-router";
@@ -10,7 +11,9 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <ApolloProvider client={client}>
       <Router>
-        <App />
+        <MotionConfig reducedMotion="user">
+          <App />
+        </MotionConfig>
       </Router>
     </ApolloProvider>
   </StrictMode>,
