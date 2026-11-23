@@ -288,3 +288,22 @@ Ei muutoksia
 
 - Korjaa bugi: GraphQL-tilaukset lakkasivat toimimasta WebSocket-yhteyden katkettua (esim. puhelimen näytön lukituksen jälkeen)
 - Mahdollista profiilikuvan lisääminen (Cloudinary)
+
+## Viikko 58 (26.10-1.11.2026)
+
+- Estä GraphQL-tilausten tapahtumien välittyminen muille kuin chatin jäsenille
+- Estä chattien muokkaus, poisto ja viestien lähetys ilman oikeuksia GraphQL-rajapinnan kautta (aiemmin vain käyttöliittymässä)
+
+## Viikko 59 (2.11-8.11.2026)
+
+Ei muutoksia
+
+## Viikko 60 (9.11-15.11.2026)
+
+- Mahdollista sovelluksen kokeilu testikäyttäjänä ilman tunnuksia
+
+## Viikko 61 (16.11-22.11.2026)
+
+- Päivitä kirjautumis- ja käyttäjän luontinäkymien ulkoasu
+- Paranna chat- ja kontaktilistojen latausnäkymää
+- Näytä haun aikana edelliset hakutulokset ja latausikoni hakukentässä
